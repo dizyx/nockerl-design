@@ -16,6 +16,7 @@ import componentsNav from './src/components-nav.json';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://design.nockerl.ai',
   // Local dev host; build emits a static site under dist/.
   server: { host: 'localhost', port: 4321 },
   // Disable the Astro dev toolbar so it never leaks into screenshot captures

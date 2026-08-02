@@ -10,12 +10,17 @@
  * the two wordmark spans read as one link.
  */
 import NockerlLockup from './NockerlLockup';
+import pkg from '../../../package.json';
 
 const { siteTitleHref } = Astro.locals.starlightRoute;
+// Read straight from the manifest the bump script maintains, so the badge can never
+// drift from the version the site was built at.
+const version = pkg.version;
 ---
 
 <a href={siteTitleHref} class="site-title sl-flex" aria-label="Nockerl Design" translate="no">
   <NockerlLockup size={24} product="Design" />
+  <span class="version" title={`Documenting version ${version}`}>v{version}</span>
 </a>
 
 <style>
@@ -28,5 +33,25 @@ const { siteTitleHref } = Astro.locals.starlightRoute;
        (theme.css remaps --sl-color-white to #f5f5f5 dark / #1a1a1a light). The
        product word "Design" carries its own cyan accent token. */
     color: var(--sl-color-white);
+  }
+
+  /* The version the docs describe. Quiet by default: this is a reference detail, not a
+     headline, so it sits at the small mono size in muted ink rather than competing with
+     the lockup beside it. */
+  .version {
+    margin-left: 0.55rem;
+    padding: 0.08rem 0.36rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 6px;
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 0.68rem;
+    line-height: 1.35;
+    color: var(--sl-color-gray-2);
+    letter-spacing: 0;
+  }
+
+  @media (max-width: 50rem) {
+    /* The mobile header is tight; the lockup matters more than the badge. */
+    .version { display: none; }
   }
 </style>

@@ -1,0 +1,123 @@
+name: Deploy docs
+
+# Publishes the documentation site to Bunny Storage, which a pull zone serves at
+# design.nockerl.ai. The site is a fully static Astro build, so there is nothing to
+# run in production: upload the files, purge the edge cache, done.
+#
+# Runs on a push to main that touched the site or the tokens it renders, and can be
+# triggered by hand. Deliberately not gated on a tag: docs should be able to ship a
+# typo fix without cutting a release.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'tokens/**'
+      - 'packages/react/**'
+      - 'logos/**'
+      - '.github/workflows/docs-deploy.yml'
+  workflow_dispatch:
+    inputs:
+      purge:
+        description: 'Purge the CDN cache after upload'
+        type: boolean
+        default: true
+
+concurrency:
+  # One deploy at a time. A half-uploaded site is worse than a stale one.
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Is this repo configured to deploy?
+        id: configured
+        env:
+          ZONE: ${{ secrets.BUNNY_STORAGE_ZONE }}
+        run: |
+          if [ -z "$ZONE" ]; then
+            echo "no BUNNY_STORAGE_ZONE here, skipping"
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.configured.outputs.go == 'true'
+      - uses: oven-sh/setup-bun@v2
+        if: steps.configured.outputs.go == 'true'
+
+      - name: Install root deps
+        if: steps.configured.outputs.go == 'true'
+        run: bun install --frozen-lockfile
+      - name: Install site deps
+        if: steps.configured.outputs.go == 'true'
+        working-directory: site
+        run: bun install --frozen-lockfile
+
+      - name: Build tokens
+        if: steps.configured.outputs.go == 'true'
+        run: bun run build
+
+      - name: Build site
+        if: steps.configured.outputs.go == 'true'
+        working-directory: site
+        run: bun run build
+
+      - name: Sanity check the build
+        if: steps.configured.outputs.go == 'true'
+        working-directory: site
+        run: |
+          test -f dist/index.html || { echo "no index.html, refusing to deploy"; exit 1; }
+          count=$(find dist -name '*.html' | wc -l)
+          echo "built $count pages"
+          # A collapse from ~114 pages to a handful means something broke upstream.
+          if [ "$count" -lt 50 ]; then
+            echo "only $count pages, expected many more, refusing to deploy"; exit 1
+          fi
+
+      - name: Upload to Bunny Storage
+        if: steps.configured.outputs.go == 'true'
+        working-directory: site/dist
+        env:
+          ZONE: ${{ secrets.BUNNY_STORAGE_ZONE }}
+          PASSWORD: ${{ secrets.BUNNY_STORAGE_PASSWORD }}
+          HOST: ${{ secrets.BUNNY_STORAGE_HOST }}
+        run: |
+          set -euo pipefail
+          uploaded=0
+          while IFS= read -r -d '' f; do
+            rel="${f#./}"
+            code=$(curl -s -o /dev/null -w '%{http_code}' -X PUT \
+              -H "AccessKey: $PASSWORD" \
+              --data-binary "@$f" \
+              "https://$HOST/$ZONE/$rel")
+            if [ "$code" != "201" ] && [ "$code" != "200" ]; then
+              echo "FAILED $rel ($code)"; exit 1
+            fi
+            uploaded=$((uploaded+1))
+          done < <(find . -type f -print0)
+          echo "uploaded $uploaded files"
+
+      - name: Purge the CDN cache
+        if: ${{ steps.configured.outputs.go == 'true' && env.API_KEY != '' }}
+        env:
+          API_KEY: ${{ secrets.BUNNY_API_KEY }}
+          PULLZONE: ${{ secrets.BUNNY_PULLZONE_ID }}
+        run: |
+          # Optional. Astro fingerprints its JS, CSS and images, so those filenames
+          # change every build and can never be served stale. Only the HTML has stable
+          # names, and a short cache TTL on the pull zone handles that. Skip this step
+          # and you avoid storing an account-wide key at all.
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+            -H "AccessKey: $API_KEY" \
+            "https://api.bunny.net/pullzone/$PULLZONE/purgeCache")
+          echo "purge returned $code"
+          [ "$code" = "204" ] || [ "$code" = "200" ]
+
+      - name: Report
+        if: steps.configured.outputs.go == 'true'
+        run: echo "https://design.nockerl.ai is updated"
