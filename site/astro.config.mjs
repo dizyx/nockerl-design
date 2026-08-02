@@ -36,6 +36,12 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Nockerl Design',
+      favicon: '/favicon.svg',
+      head: [
+        { tag: 'link', attrs: { rel: 'icon', href: '/favicon-32.png', sizes: '32x32', type: 'image/png' } },
+        { tag: 'link', attrs: { rel: 'icon', href: '/favicon-16.png', sizes: '16x16', type: 'image/png' } },
+        { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' } },
+      ],
       description:
         'The single source of truth for everything visual across Nockerl: tokens, foundations, and cross-platform component specs.',
       // A3: theme Expressive-Code's SURFACE from our tokens so code blocks read as our own

@@ -1,0 +1,124 @@
+---
+/**
+ * Pipeline: how one token source becomes three platform outputs.
+ *
+ * This was an ASCII drawing inside a fenced code block, which read as source you
+ * could copy and run rather than as a diagram. Rendered from tokens instead, so
+ * it also inherits the theme rather than sitting there as monospace text.
+ */
+const STAGES = [
+  {
+    label: 'Source',
+    items: ['tokens/*.json'],
+    note: 'W3C DTCG, layered core to semantic',
+  },
+  {
+    label: 'Build',
+    items: ['Style Dictionary'],
+    note: 'one build, three emitters',
+  },
+  {
+    label: 'Outputs',
+    items: ['CSS custom properties', 'Kotlin (Compose)', 'Swift (SwiftUI)'],
+    note: 'generated, never hand-edited',
+  },
+  {
+    label: 'Published',
+    items: ['@dizyx/nockerl-tokens', 'com.dizyx.nockerl', 'NockerlDesign (SPM)'],
+    note: 'one version line, semver',
+  },
+];
+---
+
+<div class="nk-pipe" role="img" aria-label="Design tokens are built by Style Dictionary into web, Android and Swift outputs, then published as versioned packages on one version line.">
+  {STAGES.map((s, i) => (
+    <>
+      <div class="nk-pipe__stage">
+        <span class="nk-pipe__label">{s.label}</span>
+        <ul class="nk-pipe__items">
+          {s.items.map((it) => <li>{it}</li>)}
+        </ul>
+        <span class="nk-pipe__note">{s.note}</span>
+      </div>
+      {i < STAGES.length - 1 && <div class="nk-pipe__arrow" aria-hidden="true"></div>}
+    </>
+  ))}
+</div>
+
+<style>
+  .nk-pipe {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+  }
+  .nk-pipe__stage {
+    flex: 1 1 12rem;
+    min-width: 11rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 12px;
+    background: var(--sl-color-black);
+  }
+  .nk-pipe__label {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--sl-color-accent-high, #0cc0df);
+  }
+  .nk-pipe__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .nk-pipe__items li {
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--sl-color-white);
+  }
+  .nk-pipe__note {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--sl-color-gray-3);
+    margin-top: auto;
+  }
+  /* The connector between stages. A caret rather than a drawn line, so it stays
+     crisp at any zoom and disappears cleanly when the stages wrap. */
+  .nk-pipe__arrow {
+    flex: 0 0 1.6rem;
+    align-self: center;
+    height: 1px;
+    background: var(--sl-color-gray-5);
+    position: relative;
+  }
+  .nk-pipe__arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-top: 1px solid var(--sl-color-gray-5);
+    border-right: 1px solid var(--sl-color-gray-5);
+    transform: rotate(45deg);
+  }
+  @media (max-width: 60rem) {
+    .nk-pipe { flex-direction: column; }
+    .nk-pipe__arrow {
+      flex: 0 0 1.1rem;
+      width: 1px;
+      height: 1.1rem;
+      align-self: center;
+    }
+    .nk-pipe__arrow::after { right: -3px; top: auto; bottom: 0; transform: rotate(135deg); }
+  }
+</style>

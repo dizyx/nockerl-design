@@ -35,6 +35,9 @@ export interface NockerlLogoProps {
   mono?: boolean;
   /** Single-ink color when `mono`. Default 'currentColor'. */
   color?: string;
+  /** Draw the cyan ground line the peaks stand on. This is what makes the mark read
+   *  as the parent brand rather than as one of the app icons. Default true. */
+  ground?: boolean;
   /** Accessible name (role="img"). Default "Nockerl". */
   title?: string;
   /** Hide from assistive tech (aria-hidden); use beside a visible wordmark. */
@@ -43,9 +46,9 @@ export interface NockerlLogoProps {
   style?: CSSProperties;
 }
 
-const VIEW_BOX = '16 20 64 56';
+const VIEW_BOX = '16 20 64 60';
 const NATIVE_W = 64;
-const NATIVE_H = 56;
+const NATIVE_H = 60;
 
 // Paint order matches the apps: left, center, right (left behind, right in front).
 const PEAKS = [
@@ -85,6 +88,7 @@ export function NockerlLogo({
   size = 24,
   tone,
   mono = false,
+  ground = true,
   color = 'currentColor',
   title = 'Nockerl',
   decorative = false,
@@ -118,6 +122,15 @@ export function NockerlLogo({
       {PEAKS.map((p, i) => (
         <polygon key={p.cls} className={p.cls} points={p.points} style={fillFor(i)} />
       ))}
+      {ground && (
+        <line
+          className="nk-mark__ground"
+          x1="18" y1="74.5" x2="78" y2="74.5"
+          strokeWidth="4"
+          strokeLinecap="round"
+          style={{ stroke: 'var(--color-accent-primary, #0cc0df)' }}
+        />
+      )}
     </svg>
   );
 }
