@@ -1,0 +1,106 @@
+---
+title: Density
+description: The two density tiers (compact and comfortable), what a tier changes, and how components opt in.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Density is a **two-tier** system: **`compact`** and **`comfortable`**. It matches the
+ratified two-density ramp (B10: [Markdown Content](/components/markdown-content/) ships
+exactly these two) and the [Table](/components/table/) v1 `density` prop. There is
+deliberately **no third tier**. A `spacious` step only earns its way in with a product
+driver, and none exists.
+
+The core rule, generalized from Table v1:
+
+> **A tier changes rhythm only (row height and vertical padding), never the fill, never
+> the ink.** Colors, borders, elevation, and states are identical across tiers.
+
+## What a tier changes
+
+| Dimension | `compact` | `comfortable` | Token |
+| --- | --- | --- | --- |
+| Min row height | 32px (`{space.8}`) | 48px (`{space.12}`) | `--density-row-height-*` |
+| Cell / row vertical padding | 4px (`{space.1}`) | 12px (`{space.3}`) | `--density-pad-y-*` |
+| Type ramp pairing | chat ramp (B10 compact) | docs ramp (B10 comfortable) | via [Markdown Content](/components/markdown-content/) |
+
+- **Row height is a floor.** Taller rows exceed it legitimately: the two-line List item
+  is 56px in *comfortable*. Compact 32px is the documented dense List row.
+- **Padding is the mechanism in tables.** Table v1 keeps `min-height` off cells and swings
+  only the vertical padding (12 → 4 on body cells, 12 → 8 on header cells): "padding
+  only, never the fill."
+- **Type pairs, it doesn't shrink.** A compact context uses the compact *ramp* (the
+  Android chat heading map); it never downscales text by a multiplier. Font is always a
+  token.
+
+The four values are **aliases over the spacing scale** (`tokens/semantic/density.json`),
+not new primitives; density re-selects existing rhythm, it doesn't invent geometry.
+Compose: `NockerlDensity.rowHeightCompact` / `.rowHeightComfortable` / `.padYCompact` /
+`.padYComfortable` (dp). Swift: `NockerlDensity` (pt).
+
+<Aside type="caution" title="Compact is a visual height, not a touch target">
+Android's 48dp touch law (design-laws §13) still applies inside compact surfaces:
+an interactive 32px row exposes a 48dp hit area via expanded touch bounds (the standard
+dense-list technique). Web's 24px floor and macOS's ~44pt pointer comfort are unaffected
+at 32px.
+</Aside>
+
+## How components opt in
+
+The canonical API shape is **Table v1's prop**, a per-component, explicitly-passed
+union, defaulting to comfortable:
+
+```tsx
+density?: 'comfortable' | 'compact';   // default 'comfortable' (rhythm only)
+```
+
+- **Explicit, not ambient.** Density is passed where it applies (`<Table
+  density="compact" />`), never inherited from a global context/provider. A screen mixes
+  tiers legitimately (a compact console table above a comfortable form).
+- **Per component, not per app.** There is no app-wide density switch; "the app feels
+  dense" is a smell that individual surfaces chose the wrong tier.
+- **Same names everywhere.** Compose and Swift mirror the union
+  (`NockerlTableDensity.Compact` / a Swift `density: .compact` parameter) as components
+  gain the prop.
+
+Shipped today: [Table](/components/table/) (`comfortable | compact`) and
+[Markdown Content](/components/markdown-content/) (`comfortable | compact` ramps).
+Documented but pending: [List](/components/list/). Its spec currently says
+`'comfortable' | 'dense'`; **`dense` is a naming drift** and conforms to `compact` when
+the List container is extracted (rhythm values already agree).
+
+## When to use which
+
+| Surface | Tier | Why |
+| --- | --- | --- |
+| Chat / session transcript | `compact` | Conversation is a stream, so maximize visible turns; B10 pairs the chat ramp. |
+| Consoles, log viewers, dense data tables | `compact` | Scanning many rows beats lingering on one. |
+| Docs / reading surfaces | `comfortable` | Reading measure and breathing room win; B10 docs ramp. |
+| Settings, forms | `comfortable` | Fields carry the 44px touch floor anyway; compact forms save nothing. |
+| Dashboards / stat overviews | `comfortable` | Few, glanceable elements; density buys nothing at 4 cards per row. |
+
+Default to **comfortable**; reach for compact only where the user's job is *scanning
+volume*, not *acting on an item*.
+
+## Rules
+
+1. **Two tiers.** No `spacious`, no numeric density multipliers, no per-app scale.
+2. **Rhythm only.** A tier never changes color, elevation, radius, or state styling.
+3. **Floors hold.** Touch targets keep their platform floors in compact via expanded hit
+   areas. Visual density is never an a11y discount.
+4. **Explicit opt-in.** The `density` prop is passed at the call site; there is no
+   ambient inheritance.
+5. **Ramps pair, text never scales.** Compact pairs the compact type ramp; a tier is not
+   a font-size multiplier.
+
+## Tokens
+
+Published in `@dizyx/nockerl-tokens` as `--density-*` CSS custom properties, and as
+`NockerlDensity` on Compose (dp) and Swift (pt), built from
+`tokens/semantic/density.json` (four aliases over the
+[spacing scale](/foundations/spacing/)).

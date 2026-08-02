@@ -1,0 +1,134 @@
+---
+title: Keyboard key
+description: A single raised keycap, the dimensional key-hint chip shared across shortcuts, menu hints, and the command palette.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import KbdDemo from '../../../components/demos/KbdDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+`Kbd` is a **single raised keycap**, the dimensional key-hint chip the whole system shares:
+the command palette's trigger + per-row hints, menu / tooltip / popover shortcut legends, and
+any "press X" caption. It renders a real `<kbd>` (so it is keyboard input in the a11y tree) and
+self-injects its recipe; the host still owns the accessible shortcut description.
+
+Depth is built the same way every other lifted surface is (the lift law): a mono legend on a
+raised surface, a 1px **top catch-light**, and a **weighted neutral bottom** (a hard side-wall
+edge + a soft ambient drop). No glow, no colored shadow, no fat bottom border. On `:active` the
+cap **depresses** (it travels down and the bottom weight collapses), the way a physical key moves.
+For a chord, render several caps side by side in a tight flex row.
+
+<Example caption="Live · web">
+  <KbdDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. NockerlKbd is a shipped leaf primitive in the
+// published @dizyx/nockerl-react package (it is web-only today; see the drift note).
+import { NockerlKbd } from '@dizyx/nockerl-react';
+
+export function ShortcutLegend() {
+  return (
+    <p>
+      Open the palette with{' '}
+      {/* a CHORD: several caps side by side in a tight flex row (gap: var(--space-1)) */}
+      <span style={{ display: 'inline-flex', gap: 'var(--space-1)' }}>
+        <NockerlKbd>⌘</NockerlKbd>
+        <NockerlKbd>K</NockerlKbd>
+      </span>
+      , dismiss it with <NockerlKbd>Esc</NockerlKbd>.
+    </p>
+  );
+}
+
+// A single key inline in prose (it sits on the text baseline).
+Press <NockerlKbd>Tab</NockerlKbd> to move focus.
+
+// Riding a NockerlButton's trailingIcon slot (the command-palette trigger). The slot is a fixed
+// 1em box, so release it to size to content when it hosts a chord, then the caps sit neatly.
+<NockerlButton text="Search commands" variant="secondary" trailingIcon={<NockerlKbd>⌘</NockerlKbd>} />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. There is NO Nockerl keycap component on Compose yet (see the
+// drift note): shortcut hints today are plain monospace Text, not a dimensional key. This is
+// the closest existing idiom, pending a real NockerlKbd wrapper.
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontFamily
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+val colors = LocalNockerlColors.current
+
+Text(
+    "⌘K",
+    fontFamily = FontFamily.Monospace,
+    color = colors.onCardMuted,   // muted mono legend, no raised keycap surface yet
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. Voice has NO keycap view (see the drift note); shortcuts are declared with
+// the native .keyboardShortcut modifier (which draws no visible key), and any inline hint is a
+// monospaced Text. This is the closest existing idiom, pending a real NockerlKbd.
+Text("⌘K")
+    .font(.system(.footnote, design: .monospaced))
+    .foregroundStyle(NockerlTheme.onCardMuted)
+
+// The actual shortcut is bound (invisibly) on the control:
+Button("Search commands") { openPalette() }
+    .keyboardShortcut("k", modifiers: .command)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlKbd" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+No Compose component. Shortcut hints are plain `Text(fontFamily = FontFamily.Monospace)` today.
+A real `NockerlKbd` keycap (the raised surface + catch-light + depress) still needs designing.
+
+</TabItem>
+<TabItem label="Swift">
+
+No SwiftUI component. Shortcuts are bound with the native `.keyboardShortcut` modifier and any
+inline hint is a monospaced `Text`. A real `NockerlKbd` keycap still needs designing.
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Kbd is **web-only today**, an honest coverage gap:
+
+- **No native keycap.** Only web ships a dimensional `Kbd`. Compose renders shortcut hints as
+  plain monospace `Text`; Voice declares shortcuts with the invisible `.keyboardShortcut` modifier
+  and shows at most a monospaced `Text`. A native `NockerlKbd` (the raised surface + top
+  catch-light + neutral bottom weight + `:active` depress) needs designing for both.
+- **Where it is used on web.** The command palette (trigger chord + per-row hints + the footer /
+  esc caps), and the Menu / Tooltip / Popover shortcut legends all now compose this one primitive
+  instead of hand-rolled flat mono chips, so a keycap-look change is one edit, not many.
+</Aside>

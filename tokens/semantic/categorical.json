@@ -1,0 +1,71 @@
+{
+  "$description": "SEMANTIC categorical color sets: shared across themes (the 400-level hue family). Hue slots reference core; the 'neutral/idle' slots reference {color.dotIdle} so they resolve per-theme; status slots reference the per-theme semantic status tokens.",
+  "color": {
+    "family": {
+      "$description": "Tool families (inline pills, tool-card rails, nested-task surface).",
+      "shellFs": { "$type": "color", "$value": "{color.core.categorical.cyan400}" },
+      "agent": { "$type": "color", "$value": "{color.core.categorical.orange400}" },
+      "scheduling": { "$type": "color", "$value": "{color.core.categorical.indigo400}" },
+      "planning": { "$type": "color", "$value": "{color.core.categorical.sky400}" },
+      "external": { "$type": "color", "$value": "{color.core.categorical.fuchsia400}" }
+    },
+    "modelType": {
+      "$description": "Cluster-grid model-type accents.",
+      "gpu": { "$type": "color", "$value": "{color.core.categorical.violet400}" },
+      "llm": { "$type": "color", "$value": "{color.core.categorical.purple400}" },
+      "embedding": { "$type": "color", "$value": "{color.core.categorical.emerald400}" },
+      "vision": { "$type": "color", "$value": "{color.core.categorical.sky400}" },
+      "audio": { "$type": "color", "$value": "{color.core.categorical.pink400}" },
+      "creative": { "$type": "color", "$value": "{color.core.categorical.fuchsia400}" },
+      "utility": { "$type": "color", "$value": "{color.core.categorical.teal400}" },
+      "temperature": { "$type": "color", "$value": "{color.core.categorical.orange400}" }
+    },
+    "fileType": {
+      "$description": "File-tree accents by extension family.",
+      "kotlin": { "$type": "color", "$value": "{color.core.categorical.purple400}" },
+      "typescript": { "$type": "color", "$value": "{color.core.categorical.sky400}" },
+      "javascript": { "$type": "color", "$value": "{color.core.categorical.orange400}" },
+      "json": { "$type": "color", "$value": "{color.core.categorical.teal400}" },
+      "css": { "$type": "color", "$value": "{color.core.categorical.indigo400}" },
+      "html": { "$type": "color", "$value": "{color.core.categorical.fuchsia400}" },
+      "yaml": { "$type": "color", "$value": "{color.core.categorical.emerald400}" },
+      "shell": { "$type": "color", "$value": "{color.core.categorical.green400}" },
+      "python": { "$type": "color", "$value": "{color.core.categorical.cyan400}" },
+      "rust": { "$type": "color", "$value": "{color.statusError}" },
+      "image": { "$type": "color", "$value": "{color.core.categorical.violet400}" },
+      "folder": { "$type": "color", "$value": "{color.core.categorical.sky400}" },
+      "default": { "$type": "color", "$value": "{color.dotIdle}" }
+    },
+    "task": {
+      "$description": "Task status + priority. Status/priority warmth via the per-theme semantic status tokens.",
+      "statusTodo": { "$type": "color", "$value": "{color.dotIdle}" },
+      "statusInProgress": { "$type": "color", "$value": "{color.core.categorical.sky400}" },
+      "statusBlocked": { "$type": "color", "$value": "{color.statusError}" },
+      "statusDone": { "$type": "color", "$value": "{color.statusSuccess}" },
+      "statusCancelled": { "$type": "color", "$value": "{color.dotIdle}" },
+      "priorityLow": { "$type": "color", "$value": "{color.core.categorical.teal400}" },
+      "priorityMedium": { "$type": "color", "$value": "{color.statusWarning}" },
+      "priorityHigh": { "$type": "color", "$value": "{color.core.categorical.orange400}" },
+      "priorityUrgent": { "$type": "color", "$value": "{color.statusError}" }
+    },
+    "notif": {
+      "$description": "Notification source + priority (inbox).",
+      "sourceSystem": { "$type": "color", "$value": "{color.core.categorical.indigo400}" },
+      "sourceAgent": { "$type": "color", "$value": "{color.core.categorical.orange400}" },
+      "sourceTask": { "$type": "color", "$value": "{color.core.categorical.emerald400}" },
+      "sourceCi": { "$type": "color", "$value": "{color.core.categorical.violet400}" },
+      "sourceMention": { "$type": "color", "$value": "{color.core.categorical.fuchsia400}" },
+      "priorityLow": { "$type": "color", "$value": "{color.dotIdle}" },
+      "priorityNormal": { "$type": "color", "$value": "{color.core.categorical.sky400}" },
+      "priorityHigh": { "$type": "color", "$value": "{color.statusError}" }
+    },
+    "modelBadge": {
+      "$description": "Model-tier chips (large / medium / small / local / other).",
+      "large": { "$type": "color", "$value": "{color.core.categorical.purple400}" },
+      "medium": { "$type": "color", "$value": "{color.core.categorical.indigo400}" },
+      "small": { "$type": "color", "$value": "{color.core.categorical.emerald400}" },
+      "local": { "$type": "color", "$value": "{color.core.categorical.cyan400}" },
+      "other": { "$type": "color", "$value": "{color.dotIdle}" }
+    }
+  }
+}

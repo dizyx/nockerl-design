@@ -1,0 +1,170 @@
+---
+title: Dialog / modal
+description: The centered modal dialog, with scrim, title, body, and right-aligned actions for confirmations and short forms.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import DialogDemo from '../../../components/demos/DialogDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DialogDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// NockerlDialog composes the shipped NockerlOverlay primitive (scrim + focus-trap + Esc);
+// it supplies the centered card, the scale-in motion, and the Enter=confirm shortcut.
+import { NockerlDialog } from '@dizyx/nockerl-react';
+
+export function DeleteSessionDialog({ open, name, stage, onCancel, onDelete }: Props) {
+  return (
+    <NockerlDialog
+      open={open}
+      stage={stage}
+      title="Delete session?"
+      tone="destructive"
+      icon="warning"
+      confirmLabel="Delete"
+      onConfirm={onDelete}
+      onDismiss={onCancel}
+    >
+      <p>“{name}” will be permanently removed.</p>
+      <p className="muted">Chat history is preserved on the server.</p>
+    </NockerlDialog>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). Material 3 AlertDialog with the title /
+// text / confirmButton / dismissButton slots, filled by NockerlButton.
+// chat/ui/SessionChipsDialogs.kt → DeleteSubSessionDialog.
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import com.nockerl.app.core.ui.NockerlButton
+import com.nockerl.app.core.ui.NockerlButtonVariant
+
+AlertDialog(
+    onDismissRequest = onDismiss,
+    title = { Text("Delete session?") },
+    text = { Text("\"${session.name}\" will be permanently removed.") },
+    confirmButton = {
+        NockerlButton(
+            text = "Delete",
+            onClick = { onConfirm(session.slug) },
+            variant = NockerlButtonVariant.DESTRUCTIVE,
+        )
+    },
+    dismissButton = {
+        NockerlButton("Cancel", onClick = onDismiss, variant = NockerlButtonVariant.GHOST)
+    },
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). Voice uses the STOCK presenters: .alert for a
+// message + actions, .confirmationDialog for a destructive choice (role-driven).
+// NockerlVoice/UI/HistoryView.swift → "Clear All".
+Button("Clear All") { confirmClear = true }
+    .buttonStyle(.nockerlDestructive)
+    .confirmationDialog(
+        "Delete all \(records.count) transcriptions? This can't be undone.",
+        isPresented: $confirmClear, titleVisibility: .visible
+    ) {
+        Button("Delete All", role: .destructive) { HistoryStore.shared.deleteAll() }
+        Button("Cancel", role: .cancel) {}
+    }
+
+// A non-destructive prompt uses .alert with the same role-tagged buttons.
+.alert("Rename session", isPresented: $showRename) {
+    TextField("Name", text: $name)
+    Button("Rename") { rename(name) }
+    Button("Cancel", role: .cancel) {}
+} message: {
+    Text("Enter a new name for this session.")
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlDialog" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'onDismissRequest', type: '() -> Unit', required: true, description: 'Invoked on scrim tap, the system back gesture, or <code>Esc</code>. Wire to the same handler as the Cancel button.' },
+    { name: 'confirmButton', type: '@Composable -> Unit', required: true, description: 'The default action slot. Fill with a <code>NockerlButton</code> (<code>PRIMARY</code>, or <code>DESTRUCTIVE</code> for a delete).' },
+    { name: 'dismissButton', type: '@Composable (() -> Unit)?', default: 'null', description: 'The secondary action slot, typically a <code>GHOST</code> <code>NockerlButton</code> labelled "Cancel". Omit for a single-action alert.' },
+    { name: 'title', type: '@Composable (() -> Unit)?', default: 'null', description: 'Heading slot. A <code>Row</code> with an <code>Icon</code> + <code>Text</code> gives the icon-header variant.' },
+    { name: 'text', type: '@Composable (() -> Unit)?', default: 'null', description: 'Body slot: supporting <code>Text</code> (and a <code>Column</code> with an <code>OutlinedTextField</code> for a form dialog).' },
+    { name: 'properties', type: 'DialogProperties', default: 'DialogProperties()', description: 'Platform dialog behavior, such as dismiss-on-back and dismiss-on-outside.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI presents dialogs as **view modifiers** bound to a `Bool`, not a component
+with parameters. Voice uses the stock presenters; buttons carry semantics via
+`role`.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.alert(_:isPresented:actions:message:)', type: 'modifier', description: 'A titled message with action buttons + an optional <code>message</code>. May contain a <code>TextField</code> for a short prompt.' },
+    { name: '.confirmationDialog(_:isPresented:titleVisibility:actions:)', type: 'modifier', description: 'A choice sheet for a destructive/irreversible action. <code>titleVisibility: .visible</code> shows the prompt as the title.' },
+    { name: 'isPresented', type: 'Binding<Bool>', description: 'Drives presentation; set <code>false</code> from any action to dismiss. There is no explicit scrim/elevation parameter, since the system supplies them.' },
+    { name: 'Button(role:)', type: '.destructive | .cancel', description: 'Action emphasis. <code>.destructive</code> tints the confirm red; <code>.cancel</code> is the dismiss. The platform orders the buttons.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Dialog vs. bottom sheet">
+Reach for a **dialog** when the choice is short, blocking, and platform-neutral: a
+confirm, an alert, or a one-field prompt that wants the user's full attention,
+centered over a scrim. Reach for the [bottom sheet](/components/bottom-sheet/) when
+the surface is a longer, scrollable, thumb-reachable list of actions or settings on
+mobile. Same scrim + focus-trap + Esc/scrim-dismiss vocabulary; different anchor
+(centered card vs. bottom edge) and posture (decision vs. browse).
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Custom vs. stock:** Android centers a custom-styled Material `AlertDialog`
+  filled with `NockerlButton`s; **Voice uses the stock SwiftUI `.alert` /
+  `.confirmationDialog`** (no bespoke card), so the macOS scrim, radius, and button
+  order are system-supplied, not token-driven. Web is the intended original.
+- **Icon header:** web + Compose support a leading glyph in the title; SwiftUI
+  alerts have no icon slot.
+- **Button order:** web + Compose place Cancel ← Confirm (confirm trailing);
+  SwiftUI orders role-tagged buttons itself.
+</Aside>

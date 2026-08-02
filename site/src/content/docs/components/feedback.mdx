@@ -1,0 +1,49 @@
+---
+title: Feedback & status
+description: Components that communicate state, covering what's happening, what succeeded, and what needs attention.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="draft" />
+
+Components that **communicate state**. Status is **never color alone**: hue + icon + text,
+on a static surface.
+
+### Status color is warm, and separate from the brand
+
+Warm tones (**amber / orange / red**) are **status signals only**, never decorative.
+Cyan stays the single brand accent; it is not a status color, and status is never cyan
+(see [Design laws](/foundations/design-laws/)).
+
+### Severity hierarchy
+
+- **Info:** neutral / cool, lowest urgency.
+- **Success:** green.
+- **Warning:** amber.
+- **Error:** red, highest urgency; pairs with an icon and text every time.
+
+Pick the level by consequence, not by how much attention you want.
+
+### Motion is purposeful
+
+- Progress, spinners, and shimmer animate **interpolatable properties only** (opacity,
+  scale, transform), never a fill swap (see [Motion](/foundations/motion/)).
+- A status dot signals via opacity / scale, **never a colored glow**.
+- Motion is choreographed, not decoration, and **respects reduced-motion**. Fall back to
+  a static state.
+
+## Components
+
+| Component | Status |
+| --- | --- |
+| [Banner / inline alert](/components/banner/) | ▢ queued |
+| [Info block / callout](/components/callout/) | ▢ queued |
+| [Toast / snackbar](/components/toast/) | ▢ queued |
+| [Progress bar](/components/progress-bar/) | ▢ queued |
+| [Spinner / loading](/components/spinner/) | ▢ queued |
+| [Skeleton loader](/components/skeleton/) | ▢ queued |
+| [Empty state](/components/empty-state/) | ▢ queued |
+| [Status dot / badge](/components/status-dot/) | ▢ queued |

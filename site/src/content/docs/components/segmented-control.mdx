@@ -1,0 +1,171 @@
+---
+title: Segmented control
+description: A connected single-track view/mode switch, one sliding cyan pill over equal segments.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import SegmentedControlDemo from '../../../components/demos/SegmentedControlDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SegmentedControlDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlSegmentedControl } from '@dizyx/nockerl-react';
+
+export function TaskViewSwitch() {
+  const [view, setView] = useState('list');
+  return (
+    <>
+      <NockerlSegmentedControl
+        label="Task view"
+        value={view}
+        onChange={setView}
+        segments={[
+          { value: 'list', label: 'List', icon: 'list' },
+          { value: 'grid', label: 'Grid', icon: 'grid' },
+          { value: 'board', label: 'Board', icon: 'board' },
+        ]}
+      />
+      {view === 'list' ? <TaskList /> : view === 'grid' ? <TaskGrid /> : <TaskBoard />}
+    </>
+  );
+}
+
+// NockerlIcon-only, compact: pass `icon` + `title` (the accessible name) and no `label`.
+<NockerlSegmentedControl label="Appearance" size="sm" value={theme} onChange={setTheme}
+  segments={[
+    { value: 'light', icon: 'sun', title: 'Light' },
+    { value: 'dark', icon: 'moon', title: 'Dark' },
+    { value: 'auto', icon: 'auto', title: 'Auto' },
+  ]} />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). PUBLISHED: com.dizyx.nockerl.design.components.NockerlSegmented
+// (com.dizyx.nockerl.design on GitHub Packages Maven). One muted track; the ACTIVE
+// segment is filled with SOFT cyan + a cyan medium label; the rest stay transparent +
+// muted. Pass Modifier.fillMaxWidth() for a full-width control.
+import com.dizyx.nockerl.design.components.NockerlSegmented
+
+enum class TaskView(val display: String) { LIST("List"), GRID("Grid"), BOARD("Board") }
+
+var view by remember { mutableStateOf(TaskView.LIST) }
+
+NockerlSegmented(
+    options = TaskView.entries.toList(),
+    selected = view,
+    onSelect = { view = it },
+    label = { it.display },
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift
+// The active option is a cyan OUTLINE (the 1pt @0.45 selection weight), not a fill;
+// equal-width segments
+// on an inset `canvasAlt` track.
+SegmentedSelector(
+    options: TaskView.allCases,
+    selection: $view
+) { $0.label }
+
+// System stand-in (more segments / native feel), the platform segmented picker:
+Picker("Task view", selection: $view) {
+    ForEach(TaskView.allCases) { view in
+        Text(view.label).tag(view)
+    }
+}
+.pickerStyle(.segmented)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlSegmentedControl" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'options', type: 'List<T>', required: true, description: 'The segments, in order (typically an <code>enum</code>). Each gets an equal-weight share of the track.' },
+    { name: 'selected', type: 'T', required: true, description: 'The currently-active option. Its segment gets the soft-cyan fill + cyan medium-weight label.' },
+    { name: 'onSelect', type: '(T) -> Unit', required: true, description: 'Invoked with the tapped option. No-op while <code>enabled = false</code>.' },
+    { name: 'label', type: '(T) -> String', required: true, description: 'Maps an option to its display string (e.g. <code>{ it.display }</code>).' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. Pass <code>Modifier.fillMaxWidth()</code> for a full-width control.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the whole control is dimmed (alpha) and non-interactive.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the control as the custom `SegmentedSelector` (cyan outline) or a
+system `Picker(.segmented)`. State is two-way bound; there are no per-segment
+state parameters.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'options', type: '[Option]', description: 'The segments (<code>Hashable & Identifiable</code>), rendered left-to-right as equal-width segments.' },
+    { name: 'selection', type: 'Binding<Option>', description: 'Two-way bound active option. The active segment gets a cyan <strong>outline</strong> at the selection weight (<code>border.width.selection</code> @ <code>border.opacity.selection</code>), not a fill.' },
+    { name: 'label', type: '(Option) -> String', description: 'Maps an option to its visible text (e.g. <code>{ $0.label }</code>).' },
+    { name: '.pickerStyle', type: 'PickerStyle', description: 'System stand-in: <code>.segmented</code> for the native segmented look on a standard <code>Picker</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Segmented control is the **connected, single-track view/mode switch**, distinct
+from its neighbours: [tabs](/components/tabs/) navigate **page/section content**
+(each tab owns a tabpanel; `role="tablist"`), whereas a segmented control just
+flips a small set of mutually-exclusive **views/modes** with no associated panels
+(`role="radiogroup"`). A [radio group](/components/radio-group/) is the same
+single-choice intent but **looser and labelled**: separate rows that can carry
+descriptions; reach for it for 4+ rich choices, and for the segmented control for
+**2 to 5 compact peers**.
+
+Real divergences between the shipped platforms:
+
+- **Active-segment treatment** *(resolved by [adjudication 2026-07-02 · B3])*: the **sliding filled
+  cyan pill** (filled, `on-accent` label) wins. Android (today a soft-cyan fill + cyan label) and
+  Voice/Swift (a 1.5pt cyan outline, no fill) conform to the one expression.
+- **The slide** *(resolved by [adjudication 2026-07-02 · B3])*: the pill **animates transform +
+  width, never the fill**, wherever the control is ours. Both apps hard-cut today (Compose swaps
+  the fill, Swift the stroke); they adopt the slide.
+- **Track surface.** Swift uses the inset `canvasAlt` well (radius 10, 4pt
+  inset); Compose uses `cardAlt2` at the control radius (2dp inset). Web sinks the
+  track as a recessed well at the **12px control radius**, which is close, but the
+  inset radius/value should converge on tokens.
+</Aside>

@@ -1,0 +1,170 @@
+---
+title: Banner / inline alert
+description: An inline status alert that sits in the layout with a tonal fill, status icon, optional action and dismiss.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import BannerDemo from '../../../components/demos/BannerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <BannerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. No Banner ships yet on ANY
+// platform; this is the proposed @dizyx/nockerl-react API, derived from the
+// shipped inline-alert vocabulary (errorContainer + the agent ErrorSegment).
+
+export function SessionBanners() {
+  return (
+    <>
+      <Banner intent="info" message="A new session was created on api-server." />
+      <Banner intent="success" title="Memory indexed" message="1,204 messages embedded." dismissible onDismiss={ack} />
+      <Banner
+        intent="warning"
+        title="Local model unreachable"
+        message="Falling back to the cloud provider for this turn."
+        actionLabel="Retry"
+        onAction={retry}
+      />
+      <Banner intent="danger" message="Build failed: the container exited 1." actionLabel="Logs" onAction={openLogs} />
+      <Banner intent="neutral" icon={false} message="Read-only: this workspace is locked." />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. No NockerlBanner ships yet; this is the proposed
+// com.nockerl.app.core.ui.NockerlBanner, built on NockerlSurface + the status
+// tokens (the same treatment as core/theme errorContainer / the ErrorSegment).
+import com.nockerl.app.core.ui.NockerlBanner
+import com.nockerl.app.core.ui.NockerlBannerIntent
+
+NockerlBanner(
+    message = "Falling back to the cloud provider for this turn.",
+    intent = NockerlBannerIntent.WARNING,
+    title = "Local model unreachable",
+    action = {
+        NockerlButton("Retry", onClick = viewModel::retry, variant = NockerlButtonVariant.GHOST)
+    },
+    onDismiss = viewModel::dismissBanner,   // null → not dismissible
+)
+
+NockerlBanner("A new session was created on api-server.", intent = NockerlBannerIntent.INFO)
+NockerlBanner("Build failed: the container exited 1.", intent = NockerlBannerIntent.DANGER)
+NockerlBanner("Read-only: this workspace is locked.", intent = NockerlBannerIntent.NEUTRAL, showIcon = false)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Voice). No banner component ships; the RecordingHUD error row
+// is the closest shipped pattern (a status glyph + message). This is the proposed
+// NockerlBanner view built from NockerlTheme status tokens.
+NockerlBanner(
+    "Falling back to the cloud provider for this turn.",
+    intent: .warning,
+    title: "Local model unreachable",
+    action: .init(label: "Retry") { retry() },
+    onDismiss: { dismiss() }            // nil → not dismissible
+)
+
+NockerlBanner("A new session was created on api-server.", intent: .info)
+NockerlBanner("Build failed: the container exited 1.", intent: .danger)
+NockerlBanner("Read-only: this workspace is locked.", intent: .neutral, showIcon: false)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'message', type: 'string', required: true, description: 'Body copy: the alert text. Bound to the <code>body.medium</code> role.' },
+    { name: 'intent', type: "'info' | 'success' | 'warning' | 'danger' | 'neutral'", default: "'info'", description: 'Drives the status color, default icon, and ARIA role. <strong>Cyan is used only for <code>info</code></strong> (<code>status.info</code>); <code>neutral</code> uses on-card, never cyan.' },
+    { name: 'title', type: 'string', description: 'Optional bold heading (one short line) above the message, in the status color.' },
+    { name: 'icon', type: 'boolean', default: 'true', description: 'Show the leading status icon (top-aligned to the first text line). <strong>Never color alone</strong>: color + icon + text.' },
+    { name: 'actionLabel', type: 'string', description: 'Optional inline action rendered as a quiet text button in the status color, right-aligned.' },
+    { name: 'onAction', type: '() => void', description: 'Action handler. Ignored when no <code>actionLabel</code> is set.' },
+    { name: 'dismissible', type: 'boolean', default: 'false', description: 'Show a dismiss (X), a <strong>separate</strong> focusable control with its own focus-visible ring.' },
+    { name: 'onDismiss', type: '() => void', description: 'Dismiss handler (the X). The collapse animates opacity + height only (reduced-motion aware).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`NockerlBanner` is the proposed Compose component: a `NockerlSurface` (panel radius +
+the shared lit-from-above material) washed with the intent's status color and bordered with
+its hairline, exactly the shipped `errorContainer` / `ErrorSegment` treatment generalised.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'message', type: 'String', required: true, description: 'Body copy, rendered with <code>bodyMedium</code> on the card foreground.' },
+    { name: 'intent', type: 'NockerlBannerIntent', default: 'INFO', description: 'Status intent: <code>INFO · SUCCESS · WARNING · DANGER · NEUTRAL</code>. <code>INFO</code> is the only cyan; <code>NEUTRAL</code> uses <code>onCard</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. Pass <code>Modifier.fillMaxWidth()</code> for a full-bleed banner.' },
+    { name: 'title', type: 'String?', default: 'null', description: 'Optional heading (one line) above the message, in the status color.' },
+    { name: 'showIcon', type: 'Boolean', default: 'true', description: 'Show the leading status icon (top-aligned). Color is paired with the icon + text, never alone.' },
+    { name: 'action', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional trailing action slot, typically a <code>GHOST</code> <code>NockerlButton</code>, pinned right.' },
+    { name: 'onDismiss', type: '(() -> Unit)?', default: 'null', description: 'When non-null, renders a dismiss <code>NockerlIconButton</code> (PLAIN) as a separate target. <code>null</code> → not dismissible.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlBanner` is the proposed SwiftUI view: a rounded-rect surface tinted by the intent's
+`NockerlTheme` status token (`error` / `warning` / `success` / `accent` for info), echoing the
+shipped `RecordingHUD` error row (status glyph + message) as a reusable inline alert.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'init(_:intent:)', type: 'View', description: 'The message + intent (<code>.info</code> / <code>.success</code> / <code>.warning</code> / <code>.danger</code> / <code>.neutral</code>). <code>.info</code> uses <code>NockerlTheme.accent</code> (cyan); <code>.neutral</code> uses <code>onSurface</code>.' },
+    { name: 'title:', type: 'String?', description: 'Optional heading above the message, in the status color. Defaults to <code>nil</code>.' },
+    { name: 'showIcon:', type: 'Bool', description: 'Leading SF Symbol in the status color (e.g. <code>exclamationmark.triangle.fill</code>), top-aligned. Defaults to <code>true</code>.' },
+    { name: 'action:', type: 'BannerAction?', description: 'Optional <code>(label, handler)</code> for a quiet trailing <code>.nockerlGhost</code> button, right-aligned. Defaults to <code>nil</code>.' },
+    { name: 'onDismiss:', type: '(() -> Void)?', description: 'When non-nil, shows a trailing dismiss <code>NockerlIconButton</code> (<code>xmark</code>) as a separate control. <code>nil</code> → not dismissible.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+**No banner ships on any platform yet**. This spec is designed originally from the laws + the
+shipped inline-alert vocabulary. The real divergences to reconcile when it lands, tracked in
+the [Review queue](/review-queue/):
+
+- **Source patterns differ:** Android has the inline `ErrorSegment` + the `errorContainer`
+  tokens (tonal status fill + status hairline + status icon/text); Voice has only the
+  `RecordingHUD` error row (a warning glyph + message). Neither is a reusable component, so this
+  page proposes the shared one.
+- **`info` intent color:** Android/web map `info` to the brand cyan (`status.info`); Voice has
+  no `info` status token and would use `NockerlTheme.accent`. One mapping should be canonized.
+- **Neutral intent:** Voice has no neutral-status surface; it would fall back to a plain
+  `chromeSurface` card with on-surface text. Android/web wash with `onCard`.
+</Aside>

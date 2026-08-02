@@ -1,0 +1,17 @@
+{
+  "$description": "HARD-OFFSET directional shadow: a crisp shadow cast straight DOWN (blur 0, x 0) so nothing spills sideways or above the top edge, and the lifted surface agrees with an inset well's inner-top-shade (one top-down light source). Each rung's value is the downward y-offset; blur is a constant 0. Paired with the surfaceHighlight catch-light.",
+  "elevation": {
+    "level1": { "$type": "dimension", "$value": "1px", "$description": "Resting hairline lift: the 1px downward y-offset for chips, inline rows, notification cards. v1.17.2: ladder stepped down one rung (was 1.5px) to a new 1px hairline floor." },
+    "level2": { "$type": "dimension", "$value": "1.5px", "$description": "Standard card lift: the 1.5px downward y-offset for most cards, message bubbles. v1.17.2: ladder stepped down one rung (was 3px), so a level2 card now renders at the prior level1's distance." },
+    "level3": { "$type": "dimension", "$value": "3px", "$description": "Raised: the 3px downward y-offset for the input bar, status pills, popovers, FABs. v1.17.2: ladder stepped down one rung (was 5px)." },
+    "sheet": { "$type": "dimension", "$value": "5px", "$description": "Bottom-sheet lift: the 5px downward y-offset. v1.17.2: ladder stepped down one rung (was 8px)." },
+    "blur": { "$type": "dimension", "$value": "0px", "$description": "The constant hard-edge blur for the HARD-OFFSET shadow model (v1.17.0): always 0. The drop shadow is crisp, never Gaussian-softened, and x is 0 too, so only the per-rung y-offset (elevation.level1..sheet) varies." },
+    "shadowTintAlpha": {
+      "$description": "The lift-shadow opacity ladder (how strongly the neutral shadowTint reads at each rung), paired 1:1 with the y-offset levels above (level1/level2/level3/sheet). UNITLESS numbers (0..1), NOT dimensions. Consumed per platform: web = color-mix percentage (× 100%), Compose = shadowTint.copy(alpha = …), Swift = shadowTint.opacity(…). Deliberately subtle, a shallow ramp (0.28 → 0.35), 'quality over size'.",
+      "level1": { "$type": "number", "$value": 0.28, "$description": "Resting hairline-lift shadow opacity (pairs with elevation.level1)." },
+      "level2": { "$type": "number", "$value": 0.3, "$description": "Standard card-lift shadow opacity (pairs with elevation.level2)." },
+      "level3": { "$type": "number", "$value": 0.33, "$description": "Raised-lift shadow opacity (pairs with elevation.level3)." },
+      "sheet": { "$type": "number", "$value": 0.35, "$description": "Sheet-lift shadow opacity (pairs with elevation.sheet)." }
+    }
+  }
+}

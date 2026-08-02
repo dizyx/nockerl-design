@@ -1,0 +1,228 @@
+---
+title: List item
+description: A single row in a list (leading slot, primary + supporting text, trailing value or control).
+status: review
+platforms: [web, android, swift]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ListItemDemo from '../../../components/demos/ListItemDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ListItemDemo client:visible />
+</Example>
+
+<Aside type="tip" title="Collapsible / accordion variant">
+Pass `expandable` (with `expanded` + `onToggle` + a `details` body) to turn a row into a
+collapsible accordion, the pattern the native Android messages list uses: tap a row to
+reveal its message body, tap again to collapse. Key behaviours:
+
+- **Affordance:** the trailing chevron points **down** at rest and **rotates up** when
+  expanded (the canonical tree disclosure, made interpolatable), *not* the right-pointing
+  `chevron`, which stays reserved for genuinely **navigational** rows.
+- **Reveal:** the body is a sibling `role="region"` below the row, revealed via an
+  interpolated `grid-template-rows: 0fr → 1fr` + opacity, never a display or fill swap;
+  `prefers-reduced-motion` drops the transition.
+- **A11y:** the row stays one `<button>` carrying `aria-expanded` + `aria-controls`; the
+  region is `aria-labelledby` the primary text and `hidden` while collapsed.
+- **Selection vs expansion:** selection now renders its cyan check in the **leading** slot
+  (a soft cyan wash + a leading mark), so selection and the trailing nav/expand chevron no
+  longer compete for the one trailing slot.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlListItem } from '@dizyx/nockerl-react';
+
+export function SessionList({ sessions, activeId, onSelect }: SessionListProps) {
+  return (
+    <div className="nk-card" role="listbox" aria-label="Sessions">
+      {sessions.map((s) => (
+        <NockerlListItem
+          key={s.id}
+          primary={s.name}
+          secondary={s.statusLine}
+          status={s.status}          // 'success' | 'warning' | 'error' | 'info', never cyan
+          value={s.timeAgo}
+          chevron
+          selected={s.id === activeId}
+          onSelect={() => onSelect(s.id)}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). PUBLISHED: the NockerlListItem grammar in
+// com.dizyx.nockerl.design.components (com.dizyx.nockerl.design on GitHub Packages Maven):
+// the row scaffold NockerlListItemRow + the unified leading NockerlLeadingStatusMark
+// (a status ICON at NockerlListItemDefaults.LeadingMarkSize, 18dp).
+import com.dizyx.nockerl.design.components.NockerlListItemRow
+import com.dizyx.nockerl.design.components.NockerlLeadingStatusMark
+
+// The row scaffold applies NO height/padding/background/click. The caller supplies
+// them via `modifier`, so the dense tree and the card body both keep their own anatomy.
+NockerlListItemRow(
+    leadingMark = {
+        NockerlLeadingStatusMark(
+            icon = statusIcon(task.status),     // shape + color, from a semantic mapping
+            tint = statusColor(task.status),    // status color, never the brand cyan
+            contentDescription = task.status.displayName,
+        )
+    },
+    modifier = Modifier
+        .fillMaxWidth()
+        .clickable(onClick = { onSelect(task) })
+        .padding(horizontal = 16.dp, vertical = 12.dp),
+    trailing = { Icon(Icons.Default.ChevronRight, contentDescription = null) },
+) {
+    // RowScope body: each list fills its own anatomy (ticket # + title + subtask badge).
+    Text(task.ticket, style = MaterialTheme.typography.labelMedium)
+    Spacer(Modifier.width(8.dp))
+    Text(task.title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+}
+
+// A configuration row. The same scaffold fills its body with label + value; the
+// caller owns padding/click via `modifier`, and the trailing slot carries a chevron.
+NockerlListItemRow(
+    leadingMark = {
+        NockerlLeadingStatusMark(
+            icon = Icons.Default.Palette,
+            tint = LocalNockerlColors.current.onCardMuted,
+            contentDescription = null,          // the adjacent "Theme" label names it
+        )
+    },
+    modifier = Modifier
+        .fillMaxWidth()
+        .clickable(onClick = ::openThemePicker)
+        .padding(horizontal = 16.dp, vertical = 12.dp),
+    trailing = { Icon(Icons.Default.ChevronRight, contentDescription = null) },
+) {
+    Text("Theme", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+    Text("System", style = MaterialTheme.typography.bodyMedium, color = LocalNockerlColors.current.onCardMuted)
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI (Voice). NockerlVoice/UI/HistoryView.swift
+// There is NO extracted list-item component on Swift yet; rows are built INLINE.
+// This is the shipped HistoryView row pattern (the page documents the intended grammar).
+private func row(_ record: TranscriptionRecord) -> some View {
+    HStack(spacing: 10) {
+        Button { toggle(record.id) } label: {           // whole row = one tap target
+            HStack(spacing: 8) {
+                ProviderBadge(text: record.provider.badge)   // leading mark (status-tinted)
+                Text(record.createdAt, format: .dateTime.month().day().hour().minute())
+                    .font(.system(size: 11))
+                    .foregroundStyle(NockerlTheme.onSurfaceMuted)
+                Text(oneLine(record.text))                    // primary text
+                    .font(.system(size: 13))
+                    .foregroundStyle(NockerlTheme.onSurface)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+
+        NockerlIconButton(systemName: "doc.on.doc", tint: NockerlTheme.accent, help: "Copy") { copy(record) }
+        NockerlIconButton(systemName: "trash", tint: NockerlTheme.error, help: "Delete") { delete(record) }
+    }
+    .padding(.horizontal, 14).padding(.vertical, 10)
+    // Rows are FLAT: the wrapping ScrollView's card carries the elevation, and a
+    // 1pt hairline (not a shadow) separates rows.
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlListItem" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`NockerlListItemRow` is the row **scaffold**; it applies no height, padding, background, or
+click of its own. Callers supply those via `modifier`, so each list keeps its own anatomy.
+The leading mark is the canonical `NockerlLeadingStatusMark`.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'leadingMark', type: '@Composable -> Unit', required: true, description: 'The leading status mark slot, typically a <code>NockerlLeadingStatusMark</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier: the caller supplies <strong>height, padding, background, and click</strong> here (the row adds none).' },
+    { name: 'trailing', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional trailing content pinned after the body (e.g. a chevron).' },
+    { name: 'content', type: 'RowScope.() -> Unit', required: true, description: 'The row body, laid out in a <code>RowScope</code> between the leading mark and any trailing content.' },
+    { name: 'icon', type: 'ImageVector', required: true, description: '<em>NockerlLeadingStatusMark</em>: the status icon (from a semantic <code>statusIcon</code> mapping).' },
+    { name: 'tint', type: 'Color', required: true, description: '<em>NockerlLeadingStatusMark</em>: the status color (a semantic <code>statusColor</code> token). <strong>Never a raw <code>Color(0x…)</code> or the brand cyan.</strong>' },
+    { name: 'contentDescription', type: 'String?', required: true, description: '<em>NockerlLeadingStatusMark</em>: accessibility label for the status; <code>null</code> only when an adjacent label already names it.' },
+    { name: 'size', type: 'Dp', default: 'LeadingMarkSize (18.dp)', description: '<em>NockerlLeadingStatusMark</em>: mark size; defaults to the canonical shared 18dp.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI (Voice) has **no extracted list-item component**. Rows are composed **inline** from
+an `HStack` whose label `Button` (`.buttonStyle(.plain)`) is the whole-row tap target, plus
+trailing `NockerlIconButton`s. There is no parameterized API to table; these are the inline
+building blocks the shipped `HistoryView` row uses. Tracked as a conformance item below.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Button(.plain)', type: 'ButtonStyle', description: 'Wraps the row content (leading badge + text) so the <strong>whole row is one tap target</strong> with one accessible name; <code>.contentShape(Rectangle())</code> makes the full width tappable.' },
+    { name: 'ProviderBadge', type: 'View', description: 'The leading mark, a small capsule tag tinted by <code>NockerlTheme.accent</code> / a status color (the inline stand-in for <code>NockerlLeadingStatusMark</code>).' },
+    { name: 'NockerlIconButton', type: 'View', description: 'A trailing CONTROL (copy / delete) that is a <strong>separate</strong> focusable target from the row, with its own <code>help</code> / accessibility label.' },
+    { name: 'Rectangle (hairline)', type: 'View', description: 'A 1pt <code>NockerlTheme.hairline</code> bottom overlay separates rows; depth is the wrapping card, not a per-row shadow.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The grammar is shared; these are the real divergences between the shipped platforms, tracked
+in the [Review queue](/review-queue/):
+
+- **No Swift component:** Voice builds rows **inline** in each view (`HistoryView.row(_:)`);
+  there is no `NockerlListItemRow` equivalent. Status, spacing, and the leading mark are
+  re-implemented per row, exactly the drift the Compose grammar exists to prevent. Extracting
+  a shared Swift row is the open conformance item.
+- **Leading mark shape** *(resolved by [adjudication 2026-07-02 · B20])*: the leading mark is an
+  **icon** (shape + color dual-coding), **never a bare colored dot**. Compose ships the icon at
+  18dp; web now renders it **inside the `NockerlListItem` primitive** (pass `status`, get the B20
+  icon by default; no wrapper needed). Voice (a colored dot / capsule badge today) is the
+  remaining conformance item.
+- **Selection model** *(resolved by [adjudication 2026-07-02 · B20])*: the one selection expression
+  is a **soft cyan wash + trailing check, never a left stripe**. The web row exposes an explicit
+  `selected`; the Compose scaffold (a caller `modifier` background) and Voice (no persistent
+  selection; it toggles *expanded*) conform.
+- **Trailing control:** web makes the trailing toggle a separate `role="switch"`; Voice uses
+  `NockerlIconButton`s; Compose leaves it to the row's `trailing` slot.
+</Aside>

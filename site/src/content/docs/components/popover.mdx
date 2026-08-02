@@ -1,0 +1,170 @@
+---
+title: Popover
+description: A non-modal floating panel of rich content, anchored to a trigger with an optional beak.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import PopoverDemo from '../../../components/demos/PopoverDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <PopoverDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// A popover is a NON-MODAL anchored panel of free-form content: not a menu,
+// not a tooltip, not a dialog.
+import { NockerlPopover } from '@dizyx/nockerl-react';
+
+export function SessionHeader() {
+  return (
+    <NockerlPopover
+      placement="bottom"
+      arrow
+      trigger={<button aria-label="Profile">PM</button>}
+    >
+      {({ close }) => (
+        <>
+          <h3 className="title">the design lead</h3>
+          <p className="muted">Owner · dizyx</p>
+          <button onClick={close}>View full profile</button>
+        </>
+      )}
+    </NockerlPopover>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. NO NockerlPopover ships yet; this is the INTENDED
+// API, built on Material 3 Popup + the reserved tier-3 popover surface
+// (NockerlSurface, NockerlElevation.Level3, NockerlPanelShape). See the drift note.
+@Composable
+fun NockerlPopover(
+    expanded: Boolean,
+    onDismissRequest: -> Unit,
+    anchorEdge: PopoverEdge = PopoverEdge.Bottom,
+    arrow: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    if (!expanded) return
+    Popup(onDismissRequest = onDismissRequest, properties = PopupProperties(focusable = true)) {
+        NockerlSurface(
+            shape = NockerlPanelShape,
+            gradient = nockerlSurfaceGradient(),     // cardSurface2 → cardSurface1
+            elevation = NockerlElevation.Level3,      // reserved for popovers
+            border = LocalNockerlColors.current.cardHairline,
+        ) {
+            Column(Modifier.padding(16.dp), content = content)
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift `InfoTip`
+// uses the native `.popover` with an arrow edge, themed to the palette.
+@State private var show = false
+
+Button { show.toggle() } label: {
+    Image(systemName: "info.circle")
+}
+.popover(isPresented: $show, arrowEdge: .bottom) {
+    VStack(alignment: .leading, spacing: 8) {
+        Text("Ada Lovelace").font(.system(size: 14, weight: .semibold))
+        Text("Owner · dizyx").foregroundStyle(NockerlTheme.onSurfaceMuted)
+        Button("View full profile") { show = false }
+    }
+    .padding(12)
+    .frame(width: 250, alignment: .leading)
+    .background(NockerlTheme.card2)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'trigger', type: 'ReactNode', required: true, description: 'The anchor element. Gets <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code>; opens on click / <code>Enter</code> / <code>Space</code>.' },
+    { name: 'children', type: 'ReactNode | (ctx: { close }) => ReactNode', required: true, description: 'The free-form panel content (title, body, fields, actions). The render-prop form receives <code>close()</code>.' },
+    { name: 'placement', type: "'top' | 'bottom' | 'left' | 'right'", default: "'bottom'", description: 'Preferred side of the trigger. Flips to the opposite side and clamps on-screen if it would overflow.' },
+    { name: 'arrow', type: 'boolean', default: 'true', description: 'Show the directional beak. The beak wears the panel surface + hairline and stays centered on the trigger edge.' },
+    { name: 'open', type: 'boolean', description: 'Controlled open state. Omit for the uncontrolled (internal) state.' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Fires on open / close (trigger, <code>Esc</code>, outside click). Pair with <code>open</code> for controlled use.' },
+    { name: 'offset', type: 'number', default: '12', description: 'Gap in px between the trigger and the panel (leaves room for the beak).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'expanded', type: 'Boolean', required: true, description: 'Whether the popover is shown. The host owns this state (e.g. <code>remember { mutableStateOf(false) }</code>).' },
+    { name: 'onDismissRequest', type: '() -> Unit', required: true, description: 'Invoked on an outside tap / back press. The host sets <code>expanded = false</code>.' },
+    { name: 'anchorEdge', type: 'PopoverEdge', default: 'Bottom', description: 'Preferred edge relative to the anchor (<code>Top · Bottom · Start · End</code>); the underlying <code>Popup</code> aligns + flips to fit.' },
+    { name: 'arrow', type: 'Boolean', default: 'true', description: 'Draw the beak on <code>anchorEdge</code>, filled with the panel surface + hairline.' },
+    { name: 'content', type: '@Composable ColumnScope.() -> Unit', required: true, description: 'The free-form panel content, laid out in a padded <code>Column</code> on the tier-3 <code>NockerlSurface</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the popover as the native `.popover` view modifier driven by a
+`Bool`/`Item` binding. The panel is themed by styling the content (padding,
+`NockerlTheme.card2` background); there is no separate Nockerl wrapper type.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'isPresented', type: 'Binding<Bool>', description: 'Drives visibility. The trigger toggles it; the system clears it on an outside click / <code>Esc</code>.' },
+    { name: 'arrowEdge', type: 'Edge', description: 'The edge the beak points from (<code>.top · .bottom · .leading · .trailing</code>). macOS draws the native beak.' },
+    { name: 'content', type: '() -> View', description: 'The free-form panel content. Theme it: <code>.padding(12)</code>, <code>.frame(width:)</code>, <code>.background(NockerlTheme.card2)</code>, <code>.foregroundStyle(NockerlTheme.onSurface)</code>.' },
+    { name: '.presentationCompactAdaptation', type: 'modifier', description: 'On compact width, force <code>.popover</code> instead of an auto sheet so it stays an anchored panel.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Popover vs. menu vs. tooltip vs. dialog">
+Four anchored/floating siblings. Pick by content and modality:
+- **Popover** (this page) is a **non-modal anchored panel of free-form content**: a profile card, a small form, a filter panel. Opens on click/focus, points a beak at its trigger, never dims the ground.
+- **[Menu](/components/menu/)** is the same anchor + beak machinery but holds a **list of action items** (icons, shortcuts, checks), not arbitrary content.
+- **[Tooltip](/components/tooltip/)** is a **tiny, non-interactive hover hint** (one line, no controls, no focus). When you need a field or a button inside, it's a popover.
+- **[Dialog](/components/dialog/)** is **modal and centered**: it dims the ground and traps focus until resolved, and is *not* anchored to a trigger.
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Android has no shipped popover.** `NockerlSurface.kt` reserves tier-3 elevation for "popovers", but no `NockerlPopover` exists yet; the Kotlin sample is the intended API on Material `Popup` (`RichTooltip` / `TooltipBox` are the nearest stock substrate). Drift until built.
+- **Beak:** web + macOS draw a beak; the intended Android `Popup` would need a custom one (Material `Popup` has none).
+- **Width:** macOS `InfoTip` fixes `width: 250`; web sizes per content. Tokenize a shared popover width when Android lands.
+</Aside>

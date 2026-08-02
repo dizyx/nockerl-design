@@ -1,0 +1,195 @@
+---
+title: Search field
+description: The search-specific input with magnifier, clear, and live filtering in place.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import SearchFieldDemo from '../../../components/demos/SearchFieldDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SearchFieldDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function SessionFilter() {
+  const [query, setQuery] = useState('');
+  const results = sessions.filter((s) => s.name.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <>
+      <SearchField
+        label="Search sessions"
+        value={query}
+        onValueChange={setQuery}     // filters in place on every keystroke
+        onSubmit={runSearch}         // explicit submit on Enter
+        placeholder="Search sessions…"
+        shortcut="⌘K"                // inline key hint; Esc / the ✕ clears
+        recents={recentQueries}      // optional dropdown when focused + empty
+        onPickRecent={setQuery}
+      />
+      {results.length === 0 ? <NoMatches query={query} /> : <SessionList rows={results} />}
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlSearchField
+// (com.dizyx.nockerl.design on GitHub Packages Maven). Magnifier leading (built in) + the
+// clear (✕) trailing when non-empty (built in), on the shared recessed-well treatment.
+// No visible label by convention, so the accessible name is `contentDescription`.
+import com.dizyx.nockerl.design.components.NockerlSearchField
+
+var query by rememberSaveable { mutableStateOf("") }
+val results = sessions.filter { it.name.contains(query, ignoreCase = true) }
+
+NockerlSearchField(
+    value = query,
+    onValueChange = { query = it },          // filters in place
+    placeholder = "Search sessions",          // also the default accessible name
+    contentDescription = "Search sessions",   // the required a11y name (no visible label)
+    onSearch = ::runSearch,                   // ImeAction.Search / keyboard submit
+    enabled = true,
+    loading = isSearching,                     // swaps the ✕ for a 16dp progress spinner
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS / iOS: SwiftUI, from the NockerlDesign package (the parity twin
+// of this canon; Voice's hand-rolled HistoryView field retires on adoption).
+// Magnifier + recessed field-well + a clear that shows only when non-empty; the
+// query + placeholder render the REAL Outfit face (via .nockerlType, ).
+import NockerlDesign
+
+NockerlSearchField(
+    text: $search,
+    placeholder: "Search transcriptions",
+    accessibilityLabel: "Search history",
+    onSubmit: { query in runSearch(query) }   // optional: Enter / the search key
+)
+.disabled(isBusy)   // enablement flows from the environment (platform-idiomatic)
+
+// Async source in flight → the trailing slot shows a spinner instead of the clear:
+NockerlSearchField(text: $query, loading: isFetching)
+
+// Filtered in place; the empty state mirrors ContentUnavailableView("No matches").
+let filtered = search.isEmpty ? records
+    : records.filter { $0.text.localizedCaseInsensitiveContains(search) }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Accessible name for the searchbox (there is no persistent visible label). Sets <code>aria-label</code>.' },
+    { name: 'value', type: 'string', required: true, description: 'Current query (controlled).' },
+    { name: 'onValueChange', type: '(value: string) => void', description: 'Fires on every keystroke; the host filters its content live.' },
+    { name: 'onSubmit', type: '(value: string) => void', description: 'Fires on <kbd>Enter</kbd> with the current query (explicit submit).' },
+    { name: 'placeholder', type: 'string', default: "'Search…'", description: 'Ghost prompt inside the well, supplementary and never the label.' },
+    { name: 'shape', type: "'control' | 'pill'", default: "'control'", description: '12px control rectangle (default) or full-stadium pill for toolbars / the input bar.' },
+    { name: 'size', type: "'md' | 'sm'", default: "'md'", description: 'Control height: <code>md</code> (44px) or a compact <code>sm</code> (36px) for dense toolbars.' },
+    { name: 'shortcut', type: 'string', description: 'Inline keyboard hint pinned right (e.g. <code>⌘K</code> or <code>/</code>). Hidden once the query is non-empty.' },
+    { name: 'loading', type: 'boolean', default: 'false', description: 'Shows the searching spinner and sets <code>aria-busy</code> (async source in flight).' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert and <strong>clearly seen</strong> (never faded to invisible).' },
+    { name: 'recents', type: 'string[]', description: 'Recent searches; when focused + empty they drop under the field (arrow-navigable).' },
+    { name: 'onPickRecent', type: '(value: string) => void', description: 'Replay a recent query (the row sets the value + runs the search; it never selects a value).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'value', type: 'String', required: true, description: 'Current query.' },
+    { name: 'onValueChange', type: '(String) -> Unit', required: true, description: 'Invoked on every edit; filter in place.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. Pass <code>Modifier.fillMaxWidth()</code> for a toolbar-width field.' },
+    { name: 'placeholder', type: 'String', default: '"Search"', description: 'Ghost prompt inside the well; also the default <code>contentDescription</code>.' },
+    { name: 'contentDescription', type: 'String', default: 'placeholder', description: 'The field\'s accessible name, <strong>required by convention</strong> since search fields carry no visible label.' },
+    { name: 'onSearch', type: '(() -> Unit)?', default: 'null', description: 'Optional explicit-submit callback (<code>ImeAction.Search</code>).' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the well is dimmed (alpha) and non-interactive.' },
+    { name: 'loading', type: 'Boolean', default: 'false', description: 'Swaps the built-in ✕ clear for a 16dp <code>CircularProgressIndicator</code> while an async source is in flight.' },
+    { name: 'shape', type: 'Shape', default: 'NockerlControlShape', description: 'The 12dp control shape (default). Pass <code>NockerlPillShape</code> ONLY for the toolbar / input-bar idiom (pills are reserved, law §4).' },
+  ]}
+/>
+
+The magnifier (leading) and the ✕ clear (trailing, shown when the query is non-empty)
+are **built in**. There are no icon slots to pass; the field is self-contained.
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlSearchField` is the packaged twin: the recessed `.nockerlFieldWell()`
+chrome, a decorative leading magnifier, and an interactive trailing clear
+(`NockerlIconButton`, flat glyph) that shows only when non-empty. The query is a
+`Binding`; enablement flows from the environment (`.disabled(_:)`).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'Binding<String>', required: true, description: 'The current query (two-way); filters in place on every keystroke. (The SwiftUI controlled-input idiom for the canon&rsquo;s <code>value</code> + <code>onChange</code>.)' },
+    { name: 'placeholder', type: 'String', default: '"Search"', description: 'Hint text, and the default accessible name (search fields carry no visible label).' },
+    { name: 'accessibilityLabel', type: 'String?', default: 'nil', description: 'The field&rsquo;s accessible name; defaults to <code>placeholder</code> (law §14 persistent name).' },
+    { name: 'loading', type: 'Bool', default: 'false', description: 'Render a small accent spinner in the trailing slot (an async source in flight) in place of the clear.' },
+    { name: 'onSubmit', type: '((String) -> Void)?', default: 'nil', description: 'Optional explicit submit (Enter / the search key) handed the current query.' },
+    { name: '.disabled(_:)', type: 'modifier', description: 'Enablement flows from the SwiftUI environment (the canon&rsquo;s <code>enabled</code>), not a parameter. Disabled dims to 55%.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="search-field vs. combobox vs. command-palette">
+Three search-shaped controls, one each per job. **search-field** (this page) filters
+content **in place**: magnifier + clear + optional submit, no value to commit.
+**[Combobox](/components/combobox/)** is a type-to-filter **selector**; it commits an
+option (trailing check, fills the field). **[Command palette](/components/command-palette/)**
+is the modal **⌘K launcher**, a sheet that runs actions, not an inline field. Reach for
+search-field whenever you are narrowing a visible list, not picking a value or launching a command.
+</Aside>
+
+<Aside type="note" title="Cross-platform parity (all three shipped)">
+- **Android: shipped.** `NockerlSearchField` (`com.dizyx.nockerl.design.components`) is
+  a self-contained field with a built-in magnifier + ✕ clear on the shared recessed-well
+  treatment, superseding the per-screen `OutlinedTextField` + Search-icon idiom.
+- **Swift: shipped.** `NockerlSearchField` (`NockerlDesign`) is the parity twin:
+  the same contract on the recessed `.nockerlFieldWell()` chrome, the clear via the
+  `NockerlIconButton` icon canon, and the query in real Outfit (`.nockerlType`, ).
+  It **resolves the earlier drift**: the packaged well uses `radius.control` (12), not
+  Voice's hand-rolled `8`, and the affordance is one component, not a per-screen
+  hand-roll. Voice's `HistoryView` field retires on adoption.
+- **Platform delta (law §9):** the query is a `Binding` (SwiftUI controlled input) and
+  enablement flows from the environment (`.disabled(_:)`), the idiomatic forms of the
+  canon's `value` / `onChange` + `enabled`. `.searchable` remains the system option for a
+  toolbar / sidebar search bar bound to the same query.
+</Aside>

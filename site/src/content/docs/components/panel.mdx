@@ -1,0 +1,211 @@
+---
+title: Panel
+description: The Nockerl panel, a framed, in-layout region with a header bar, body, and optional footer.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import PanelDemo from '../../../components/demos/PanelDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <PanelDemo client:visible />
+</Example>
+
+<Aside type="tip" title="The dev-console SIDE PANEL is a view, not a component">
+Per the agent-console de-phantom verdict (task 2656): the web console's dockable side
+panel (inspector, outline, agent details) is a **composition of this Panel** (with its
+working splitter) beside the main surface, optionally inside a
+[`Drawer`](/components/drawer/) on narrow widths. It ships as an app VIEW; no
+`DevSidePanel` component exists or is planned. If drag-to-dock behavior is ever needed,
+it lands here as a Panel extension, never a fork.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function Inspector() {
+  return (
+    <Panel
+      title="Session settings"
+      subtitle="nockerl-cli · primary"
+      leadingIcon={<SettingsIcon />}
+      actions={<NockerlIconButton label="More" icon={<MoreIcon />} />}
+      footer={<><NockerlButton variant="ghost">Reset</NockerlButton><NockerlButton>Save</NockerlButton></>}
+    >
+      <p>A persistent, in-layout region: larger than a card, not an overlay.</p>
+    </Panel>
+  );
+}
+
+// Collapsible: the header chevron toggles the body (aria-expanded).
+<Panel title="Context window" collapsible defaultOpen>
+  <UsageMeter />
+</Panel>
+
+// Split pane: two panels + a draggable, keyboard-operable resize handle.
+<PanelGroup direction="horizontal">
+  <Panel title="Explorer" minSize={25} defaultSize={46}><Tree /></Panel>
+  <PanelResizeHandle />
+  <Panel title="Detail"><Detail /></Panel>
+</PanelGroup>
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). There is no single NockerlPanel yet;
+// a panel is COMPOSED from NockerlCard + NockerlPanelShape, exactly as the
+// shipped ToolCallCard / AgentTranscriptPanel do. (See drift.)
+import com.nockerl.app.core.theme.NockerlCard
+import com.nockerl.app.core.theme.NockerlElevation
+import com.nockerl.app.core.theme.NockerlPanelShape
+
+NockerlCard(
+    shape = NockerlPanelShape,                 // 12dp, a step tighter than a card
+    color = LocalNockerlColors.current.cardSurface1,
+    elevation = NockerlElevation.Level1,
+    border = LocalNockerlColors.current.cardHairline,
+    modifier = Modifier.fillMaxWidth(),
+) {
+    Column {
+        // Header bar: icon tile + title/subtitle (start) · actions (end).
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(11.dp)) {
+            ToolIconTile(icon = Icons.Filled.Tune, accent = colors.accentPrimary)
+            Spacer(Modifier.width(8.dp))
+            Text("Session settings", fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+            // Collapse toggle. The header chevron drives AnimatedVisibility(expanded).
+            Icon(if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown, null)
+        }
+        AnimatedVisibility(visible = expanded) {      // flash-free collapse
+            Column(Modifier.padding(11.dp)) { /* body */ }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). The titled content panel is SettingsCard
+// (NockerlVoice/UI/SettingsComponents.swift): a header label row + body, on the
+// chrome surface with a hairline + the lit-from-above elevation.
+SettingsCard("Session settings", info: "nockerl-cli · primary") {
+    Text("A persistent, in-layout region: larger than a card, not an overlay.")
+        .foregroundStyle(NockerlTheme.onSurface)
+}
+
+// Split pane: Voice builds it by hand (a fixed-width pane + content in an
+// HStack), deliberately NOT NavigationSplitView (its opaque sidebar fights the
+// facet background). See drift.
+HStack(spacing: 0) {
+    leftPane.frame(width: 216)
+    Rectangle().fill(NockerlTheme.hairline).frame(width: 1)   // the divider
+    detail.frame(maxWidth: .infinity, maxHeight: .infinity)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'title', type: 'string', required: true, description: 'Header bar title. Bound to the <code>title.small</code> type role.' },
+    { name: 'subtitle', type: 'string', description: 'Optional second line under the title (muted).' },
+    { name: 'leadingIcon', type: 'ReactNode', description: 'Optional glyph rendered in the accent header tile.' },
+    { name: 'actions', type: 'ReactNode', description: 'Header-bar actions, right-aligned (icon buttons / overflow).' },
+    { name: 'toolbar', type: 'ReactNode', description: 'Optional control strip on a raised tier between the header and body.' },
+    { name: 'footer', type: 'ReactNode', description: 'Optional footer content; actions are right-aligned by convention.' },
+    { name: 'collapsible', type: 'boolean', default: 'false', description: 'Renders the header as a toggle (<code>aria-expanded</code>); the body collapses flush.' },
+    { name: 'defaultOpen', type: 'boolean', default: 'true', description: 'Initial expanded state when <code>collapsible</code>.' },
+    { name: 'children', type: 'ReactNode', description: 'Body content. Padded by the panel; never bleeds to the edge.' },
+  ]}
+/>
+
+`PanelGroup` takes `direction` (`'horizontal' | 'vertical'`); each `Panel` in a
+group accepts `minSize` / `maxSize` / `defaultSize` (percent), and
+`PanelResizeHandle` is the draggable, keyboard-operable
+(`role="separator"`, Arrow keys) splitter.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+A panel is composed from [`NockerlCard`](/components/card/). These are its
+panel-relevant parameters; the header / body / footer / collapse are built in the
+content lambda (icon tile, title `Row`, `AnimatedVisibility`).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier (size, alignment, <code>.clickable { }</code> for a collapse toggle).' },
+    { name: 'shape', type: 'Shape', default: 'NockerlPanelShape', description: 'Panel silhouette: the <strong>12dp</strong> <code>NockerlPanelShape</code> (a step tighter than the 18dp card).' },
+    { name: 'color', type: 'Color', default: 'cardSurface1', description: 'Surface fill. Nested section panels step up to <code>cardSurface2</code>.' },
+    { name: 'elevation', type: 'Dp', default: 'NockerlElevation.Level1', description: 'Drop-shadow elevation. Panels sit low (<code>Level1</code>); the lift reads from the hairline + catch-light.' },
+    { name: 'border', type: 'Color?', default: 'cardHairline', description: 'Hairline border. Header / body / footer dividers are separate hairlines.' },
+    { name: 'content', type: '@Composable BoxScope.() -> Unit', required: true, description: 'Panel content: the header <code>Row</code>, body, and (in <code>AnimatedVisibility</code>) the collapsible region.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The titled panel is `SettingsCard` (NockerlVoice/UI). The parameters below are its
+real signature; the split-pane region is hand-built from layout primitives + the
+theme tokens (no panel wrapper).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'title', type: 'String', required: true, description: 'Header label (rendered UPPERCASE, tracked, muted) in the header row.' },
+    { name: 'info', type: 'String?', default: 'nil', description: 'Optional help text. Adds an <code>InfoTip</code> ⓘ beside the title.' },
+    { name: 'content', type: '@ViewBuilder -> Content', required: true, description: 'Panel body, laid out under the header.' },
+    { name: 'NockerlTheme.chromeSurface', type: 'Color', description: 'Panel fill (<code>#15171A</code> dark / <code>#FFFFFF</code> light).' },
+    { name: 'NockerlTheme.panelRadius', type: 'CGFloat', default: '12', description: 'Panel corner radius, matching <code>radius.panel</code> (SettingsCard currently uses <code>cardRadius</code> = 14; see drift).' },
+    { name: 'NockerlTheme.hairline', type: 'Color', description: 'Hairline border + the split-pane divider rectangle.' },
+    { name: '.nockerlElevation()', type: 'modifier', description: 'The lit-from-above neutral shadow (soft black; near-invisible on dark, structure on light).' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Panel vs. card vs. drawer: a **panel** is a persistent, in-layout region defined
+by a header bar + body (+ footer). It is larger than a [card](/components/card/) (a
+content tile) and, unlike a [drawer](/components/drawer/), it stays in the layout
+rather than overlaying as an edge-anchored sheet. The real divergences:
+
+- **No panel component yet (web + Android + Swift).** Web ships the intended
+  `Panel` / `PanelGroup` API above; Android composes a panel from `NockerlCard` +
+  `NockerlPanelShape` (as `ToolCallCard` / `AgentTranscriptPanel` do); Swift's
+  closest is `SettingsCard` (title + body, no footer / toolbar / collapse). One
+  `Panel` wrapper per platform is the planned step.
+- **Panel radius:** the token `radius.panel` is **12** (Compose `NockerlPanelShape`
+  = 12dp matches). Swift's `SettingsCard` uses `cardRadius` (**14pt**) though
+  `NockerlTheme.panelRadius` (**12**) exists; it should read the panel token.
+- **Split pane:** web has a draggable, keyboard-operable `PanelResizeHandle`
+  (`role="separator"` + Arrow keys). Swift builds a **fixed-width** pane in an
+  `HStack` (no live resize) and **deliberately avoids `NavigationSplitView`** (its
+  opaque sidebar fights the facet background). Compose has no split-pane idiom yet.
+- **Collapse:** web animates grid height; Compose uses `AnimatedVisibility`; Swift
+  `SettingsCard` has no collapse. One collapse affordance needs to win.
+</Aside>

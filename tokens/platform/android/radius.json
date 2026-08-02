@@ -1,0 +1,6 @@
+{
+  "$description": "ANDROID platform overrides: ONLY the deltas from semantic. Compose-specific geometry. Everything else (control 12, panel 12, card 18, pill, track, bubble) falls through to semantic unchanged.",
+  "radius": {
+    "chamfer": { "$type": "dimension", "$value": "14px", "$description": "Chamfered-corner cut size (ChamferedCornerShape), workspace pill / team card accents. Android-only." }
+  }
+}

@@ -1,0 +1,58 @@
+---
+title: Actions
+description: Controls that trigger an action, the most-used surface in the system.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="review" />
+
+Controls that **do something now**. [Button](/components/button/) is the gold-standard
+reference (v1 locked); every other action follows its shape.
+
+### Emphasis ladder
+
+One **primary** per view. Everything else steps down so the eye lands on the single most
+important action.
+
+- **Primary:** filled cyan. The one action you want taken.
+- **Secondary:** soft cyan fill, lower weight.
+- **Tertiary:** cyan outline.
+- **Ghost:** text + cyan on hover/press, no container.
+- **Destructive:** warm (status red), not cyan; always confirm irreversible ones.
+
+The fill ladder is **cyan-only**: filled → soft → outline → text. Warm appears solely for
+destructive intent.
+
+### Shared state model
+
+Every action runs the same states: **rest → hover** (pointer only) **→ focus-visible →
+pressed → disabled → loading**. Loading swaps the label for a spinner and stays the same
+width (no layout jump).
+
+Feedback **animates brightness, scale, and elevation**, never a fill or gradient swap
+(CSS and Compose hard-cut between fills and flash; see [Motion](/foundations/motion/)).
+Keep the fill static; move the light.
+
+### Shape & platform
+
+- One **control radius (12px)**, never a pill. Pill is reserved for chips + the input bar.
+- Depth is neutral shadow + top catch-light, never a glow (see
+  [Design laws](/foundations/design-laws/)).
+- **Web** = hover + focus-visible ring + pointer. **Android** = ripple + long-press +
+  haptics, **no hover**. **macOS** = pointer + focus ring. Touch surfaces never rely on
+  hover-only affordance.
+
+## Components
+
+| Component | Status |
+| --- | --- |
+| [Button](/components/button/) | ⚠ in review |
+| [Icon button](/components/icon-button/) | ⚠ in review |
+| [FAB](/components/fab/) | ▢ queued |
+| [Segmented control](/components/segmented-control/) | ▢ queued |
+| [Split button](/components/split-button/) | ▢ queued |
+| [Toolbar](/components/toolbar/) | ▢ queued |
+| [Link / text action](/components/link/) | ▢ queued |

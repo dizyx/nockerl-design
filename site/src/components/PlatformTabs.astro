@@ -1,0 +1,85 @@
+---
+// PlatformTabs: Web / Android / Swift tabbed panels.
+// Pass content per platform via named slots: <Fragment slot="web">…</Fragment>,
+// slot="android", slot="swift". Only tabs with content are shown. Accessible:
+// roving tabindex + arrow-key navigation, ARIA tab/tabpanel roles.
+const all = [
+  { key: 'web', label: 'Web' },
+  { key: 'android', label: 'Android' },
+  { key: 'swift', label: 'Swift' },
+] as const;
+
+const tabs = all.filter((t) => Astro.slots.has(t.key));
+const groupId = `pt-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="nk-tabs" data-platform-tabs>
+  <div class="nk-tabs__list" role="tablist" aria-label="Platform">
+    {
+      tabs.map((t, i) => (
+        <button
+          class="nk-tabs__tab"
+          role="tab"
+          type="button"
+          id={`${groupId}-tab-${t.key}`}
+          aria-controls={`${groupId}-panel-${t.key}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          {t.label}
+        </button>
+      ))
+    }
+  </div>
+  {
+    tabs.map((t, i) => (
+      <div
+        class="nk-tabs__panel"
+        role="tabpanel"
+        id={`${groupId}-panel-${t.key}`}
+        aria-labelledby={`${groupId}-tab-${t.key}`}
+        hidden={i !== 0}
+      >
+        <slot name={t.key} />
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  // Wire up every tab group on the page. Idempotent across view transitions.
+  function initPlatformTabs() {
+    document.querySelectorAll<HTMLElement>('[data-platform-tabs]').forEach((group) => {
+      if (group.dataset.ptReady === 'true') return;
+      group.dataset.ptReady = 'true';
+
+      const tabs = Array.from(group.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+      const panels = Array.from(group.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+
+      const select = (index: number) => {
+        tabs.forEach((tab, i) => {
+          const selected = i === index;
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+          panels[i]?.toggleAttribute('hidden', !selected);
+        });
+      };
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => select(i));
+        tab.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            const dir = e.key === 'ArrowRight' ? 1 : -1;
+            const next = (i + dir + tabs.length) % tabs.length;
+            select(next);
+            tabs[next]?.focus();
+          }
+        });
+      });
+    });
+  }
+
+  initPlatformTabs();
+  document.addEventListener('astro:page-load', initPlatformTabs);
+</script>

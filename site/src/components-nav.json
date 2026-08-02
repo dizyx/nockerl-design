@@ -1,0 +1,410 @@
+[
+  {
+    "label": "Actions",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/actions"
+      },
+      {
+        "label": "Button",
+        "slug": "components/button"
+      },
+      {
+        "label": "Icon button",
+        "slug": "components/icon-button"
+      },
+      {
+        "label": "FAB",
+        "slug": "components/fab"
+      },
+      {
+        "label": "Segmented control",
+        "slug": "components/segmented-control"
+      },
+      {
+        "label": "Split button",
+        "slug": "components/split-button"
+      },
+      {
+        "label": "Toolbar",
+        "slug": "components/toolbar"
+      },
+      {
+        "label": "Link / text action",
+        "slug": "components/link"
+      }
+    ]
+  },
+  {
+    "label": "Inputs & forms",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/inputs"
+      },
+      {
+        "label": "Text field",
+        "slug": "components/text-field"
+      },
+      {
+        "label": "Text area",
+        "slug": "components/text-area"
+      },
+      {
+        "label": "Search field",
+        "slug": "components/search-field"
+      },
+      {
+        "label": "Select / dropdown",
+        "slug": "components/select"
+      },
+      {
+        "label": "Combobox / autocomplete",
+        "slug": "components/combobox"
+      },
+      {
+        "label": "Multi-select",
+        "slug": "components/multi-select"
+      },
+      {
+        "label": "Checkbox",
+        "slug": "components/checkbox"
+      },
+      {
+        "label": "Radio group",
+        "slug": "components/radio-group"
+      },
+      {
+        "label": "Switch / toggle",
+        "slug": "components/switch"
+      },
+      {
+        "label": "Slider / range",
+        "slug": "components/slider"
+      },
+      {
+        "label": "Stepper / number input",
+        "slug": "components/stepper"
+      },
+      {
+        "label": "Date picker / calendar",
+        "slug": "components/date-picker"
+      },
+      {
+        "label": "Time picker",
+        "slug": "components/time-picker"
+      },
+      {
+        "label": "Date range picker",
+        "slug": "components/date-range-picker"
+      },
+      {
+        "label": "File upload / dropzone",
+        "slug": "components/file-upload"
+      },
+      {
+        "label": "OTP / PIN input",
+        "slug": "components/otp-input"
+      },
+      {
+        "label": "Field validation",
+        "slug": "components/field-validation"
+      },
+      {
+        "label": "Form layout",
+        "slug": "components/form-layout"
+      }
+    ]
+  },
+  {
+    "label": "Containers & surfaces",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/containers"
+      },
+      {
+        "label": "Card",
+        "slug": "components/card"
+      },
+      {
+        "label": "Panel / well",
+        "slug": "components/panel"
+      },
+      {
+        "label": "Bottom sheet",
+        "slug": "components/bottom-sheet"
+      },
+      {
+        "label": "Dialog / modal",
+        "slug": "components/dialog"
+      },
+      {
+        "label": "Popover",
+        "slug": "components/popover"
+      },
+      {
+        "label": "Tooltip",
+        "slug": "components/tooltip"
+      },
+      {
+        "label": "Accordion / expander",
+        "slug": "components/accordion"
+      },
+      {
+        "label": "Drawer / side panel",
+        "slug": "components/drawer"
+      },
+      {
+        "label": "Divider",
+        "slug": "components/divider"
+      },
+      {
+        "label": "App shell / scaffold",
+        "slug": "components/app-shell"
+      }
+    ]
+  },
+  {
+    "label": "Feedback & status",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/feedback"
+      },
+      {
+        "label": "Banner / inline alert",
+        "slug": "components/banner"
+      },
+      {
+        "label": "Info block / callout",
+        "slug": "components/callout"
+      },
+      {
+        "label": "Toast / snackbar",
+        "slug": "components/toast"
+      },
+      {
+        "label": "Progress bar",
+        "slug": "components/progress-bar"
+      },
+      {
+        "label": "Spinner / loading",
+        "slug": "components/spinner"
+      },
+      {
+        "label": "Skeleton loader",
+        "slug": "components/skeleton"
+      },
+      {
+        "label": "Empty state",
+        "slug": "components/empty-state"
+      },
+      {
+        "label": "Status dot / badge",
+        "slug": "components/status-dot"
+      }
+    ]
+  },
+  {
+    "label": "Data display & lists",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/data-display"
+      },
+      {
+        "label": "List item",
+        "slug": "components/list-item"
+      },
+      {
+        "label": "Chip",
+        "slug": "components/chip"
+      },
+      {
+        "label": "Keyboard key",
+        "slug": "components/kbd"
+      },
+      {
+        "label": "List / virtualized list",
+        "slug": "components/list"
+      },
+      {
+        "label": "Table / data grid",
+        "slug": "components/table"
+      },
+      {
+        "label": "Tree / file tree",
+        "slug": "components/tree"
+      },
+      {
+        "label": "Avatar",
+        "slug": "components/avatar"
+      },
+      {
+        "label": "Badge / tag",
+        "slug": "components/badge"
+      },
+      {
+        "label": "Stat / metric card",
+        "slug": "components/stat-card"
+      },
+      {
+        "label": "Chart / sparkline",
+        "slug": "components/chart"
+      },
+      {
+        "label": "Key-value / description list",
+        "slug": "components/key-value"
+      },
+      {
+        "label": "Code block",
+        "slug": "components/code-block"
+      },
+      {
+        "label": "Diff viewer",
+        "slug": "components/diff-viewer"
+      },
+      {
+        "label": "Markdown content",
+        "slug": "components/markdown-content"
+      },
+      {
+        "label": "Timeline / activity feed",
+        "slug": "components/timeline"
+      }
+    ]
+  },
+  {
+    "label": "Navigation",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/navigation"
+      },
+      {
+        "label": "Top bar / app bar",
+        "slug": "components/top-bar"
+      },
+      {
+        "label": "Tabs",
+        "slug": "components/tabs"
+      },
+      {
+        "label": "Breadcrumbs",
+        "slug": "components/breadcrumbs"
+      },
+      {
+        "label": "Sidebar / nav rail",
+        "slug": "components/sidebar"
+      },
+      {
+        "label": "Menu / context menu",
+        "slug": "components/menu"
+      },
+      {
+        "label": "Pagination",
+        "slug": "components/pagination"
+      },
+      {
+        "label": "Wizard / process steps",
+        "slug": "components/wizard"
+      },
+      {
+        "label": "Command palette",
+        "slug": "components/command-palette"
+      }
+    ]
+  },
+  {
+    "label": "Dev console",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/dev-console"
+      },
+      {
+        "label": "Dev status bar",
+        "slug": "components/dev-status-bar"
+      },
+      {
+        "label": "Dev tab bar",
+        "slug": "components/dev-tab-bar"
+      },
+      {
+        "label": "File explorer",
+        "slug": "components/file-explorer"
+      },
+      {
+        "label": "Code panel",
+        "slug": "components/code-panel"
+      }
+    ]
+  },
+  {
+    "label": "Nockerl signature surfaces",
+    "items": [
+      {
+        "label": "Overview",
+        "slug": "components/nockerl-surfaces"
+      },
+      {
+        "label": "Chat input",
+        "slug": "components/chat-input"
+      },
+      {
+        "label": "Approval content",
+        "slug": "components/approval-content"
+      },
+      {
+        "label": "Chat message bubble",
+        "slug": "components/chat-bubble"
+      },
+      {
+        "label": "Gateway / agent message",
+        "slug": "components/agent-message"
+      },
+      {
+        "label": "Tool-call card",
+        "slug": "components/tool-call-card"
+      },
+      {
+        "label": "Faceted background",
+        "slug": "components/faceted-background"
+      },
+      {
+        "label": "Recording HUD",
+        "slug": "components/recording-hud"
+      },
+      {
+        "label": "Long-press pop menu",
+        "slug": "components/long-press-pop"
+      },
+      {
+        "label": "Floating pill controls",
+        "slug": "components/floating-pills"
+      },
+      {
+        "label": "Context gauge / right rail",
+        "slug": "components/context-gauge"
+      },
+      {
+        "label": "Job notification row",
+        "slug": "components/job-row"
+      },
+      {
+        "label": "Cluster status grid",
+        "slug": "components/cluster-grid"
+      },
+      {
+        "label": "Todo widget",
+        "slug": "components/todo-widget"
+      },
+      {
+        "label": "Brand mark / logo",
+        "slug": "components/brand-mark"
+      }
+    ]
+  }
+]

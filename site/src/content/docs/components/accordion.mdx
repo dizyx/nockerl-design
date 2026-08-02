@@ -1,0 +1,207 @@
+---
+title: Accordion / expander
+description: A disclosure, a header that reveals a panel of content, flash-free.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import AccordionDemo from '../../../components/demos/AccordionDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <AccordionDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+import { useState } from 'react';
+
+export function SessionAdvanced() {
+  // Single-open: opening one closes the rest (Voice `expandedID` semantics).
+  const [open, setOpen] = useState<string | null>('sampling');
+  return (
+    <Accordion mode="single" value={open} onValueChange={setOpen}>
+      <AccordionItem
+        id="sampling"
+        title="Sampling"
+        hint="Temperature, top-p, penalties"
+        icon={<TuneIcon />}
+        pill={{ text: 'MODIFIED', tone: 'accent' }}
+      >
+        <SamplingSliders />
+      </AccordionItem>
+      <AccordionItem id="workspace" title="Workspace" hint="Locked by your administrator" disabled>
+        <WorkspaceFields />
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose, canonical). The packaged NockerlAccordion: trailing
+// rotating chevron, `mode` single/multiple, per-item headerAccessory + controlled
+// expansion. headerAccessory is declared BEFORE content so the trailing
+// lambda still binds to the body.
+val expanded = remember { mutableStateOf(setOf("drafts")) }   // controlled
+
+NockerlAccordion(
+    items = listOf(
+        NockerlAccordionItem(
+            id = "drafts",
+            title = "Drafts",
+            headerAccessory = {                                  // always-visible, never toggles
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    NockerlBadge(text = "3", tone = NockerlBadgeTone.ACCENT)
+                    NockerlIconButton(icon = Icons.Filled.Delete, contentDescription = "Delete drafts", onClick = ::deleteDrafts)
+                }
+            },
+        ) { Text("Three unsaved drafts.") },
+    ),
+    mode = NockerlAccordionMode.SINGLE,
+    expanded = expanded.value,                                  // host owns the open-id set…
+    onExpandedChange = { expanded.value = it },                 // …drive it to auto-open a new item
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS / iOS: SwiftUI, from the NockerlDesign package (the parity twin;
+// Voice's hand-rolled VocabRow retires on adoption). Trailing rotating chevron,
+// `mode` single/multiple, a per-item headerAccessory (always-visible, never toggles)
+// + controlled expansion via a Set binding the host owns.
+import NockerlDesign
+
+@State private var openIDs: Set<String> = ["drafts"]   // controlled; drive to auto-open
+
+NockerlAccordion(
+    items: [
+        NockerlAccordionItem(
+            id: "drafts",
+            title: "Drafts",
+            headerAccessory: {                              // left of the chevron; independent taps
+                NockerlIconButton(systemName: "trash", label: "Delete drafts",
+                                  tint: .destructive) { deleteDrafts() }
+            }
+        ) {
+            Text("Three unsaved drafts.").nockerlType(.bodySmall)
+        },
+    ],
+    mode: .single,
+    expanded: $openIDs                                   // add a term → openIDs.insert(id) opens it
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'mode', type: "'single' | 'multiple'", default: "'single'", description: 'Disclosure policy. <code>single</code> closes siblings on open (Voice); <code>multiple</code> lets sections stack open (Android).' },
+    { name: 'value', type: 'string | string[] | null', description: 'Controlled open id(s). A <code>string | null</code> in single mode, a <code>string[]</code> in multiple mode.' },
+    { name: 'onValueChange', type: '(value) => void', description: 'Fired on toggle with the next open id(s). Pair with <code>value</code> for a controlled accordion.' },
+    { name: 'AccordionItem.id', type: 'string', required: true, description: 'Stable identity used by <code>value</code> to track which item is open.' },
+    { name: 'AccordionItem.title', type: 'string', required: true, description: "Header label: the disclosure's accessible name (<code>label.large</code> role)." },
+    { name: 'AccordionItem.hint', type: 'string', description: 'Optional supporting line under the title (<code>body.small</code> role).' },
+    { name: 'AccordionItem.icon', type: 'ReactNode', description: 'Optional leading glyph rendered in a fixed slot, so titles align with or without it.' },
+    { name: 'AccordionItem.pill', type: "{ text: string; tone: 'accent' | 'success' | 'warning' }", description: "Optional trailing header pill. <code>accent</code> for 'modified', warm tones for status only." },
+    { name: 'AccordionItem.headerAccessory', type: 'ReactNode', description: 'Always-visible header controls pinned to the trailing edge, left of the chevron. Rendered <strong>outside</strong> the toggle button so a delete <code>IconButton</code> / count <code>Badge</code> fires independently and never toggles the row. Reserves trailing space via <code>--nk-acc-accessory-reserve</code> (default 64px). Matches the <code>headerAccessory</code> seat from FormSection / TodoWidget.' },
+    { name: 'AccordionItem.expanded', type: 'boolean', description: 'Controlled open state. When set, the item is controlled. Pair with <code>onExpandedChange</code>.' },
+    { name: 'AccordionItem.onExpandedChange', type: '(next: boolean) => void', description: 'Fired with the requested next open state on toggle (controlled).' },
+    { name: 'AccordionItem.defaultExpanded', type: 'boolean', default: 'false', description: 'Initial open state for <strong>uncontrolled</strong> usage: the item self-manages when neither <code>expanded</code> nor <code>onExpandedChange</code> is given.' },
+    { name: 'AccordionItem.disabled', type: 'boolean', default: 'false', description: 'Inert and <strong>clearly seen</strong> (never faded to invisible); header is not focusable.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+Compose ships the disclosure as a composed pattern (a clickable header `Row` + an
+`AnimatedVisibility` body), not a single `NockerlAccordion` component. These are the
+real parameters of that pattern.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'expanded', type: 'Boolean', required: true, description: 'Hoisted open state (<code>var expanded by remember { mutableStateOf(false) }</code>). Stack rows for a multi-open group.' },
+    { name: 'onToggle', type: '() -> Unit', required: true, description: 'Header <code>clickable</code> handler that flips <code>expanded</code>.' },
+    { name: 'visible', type: 'Boolean', required: true, description: '<code>AnimatedVisibility(visible = expanded)</code> gates the body.' },
+    { name: 'enter', type: 'EnterTransition', default: 'expandVertically() + fadeIn()', description: 'Reveal animation. The shipped combo grows height while fading in.' },
+    { name: 'exit', type: 'ExitTransition', default: 'shrinkVertically() + fadeOut()', description: 'Collapse animation, the inverse of <code>enter</code>.' },
+    { name: 'imageVector', type: 'ImageVector', default: 'KeyboardArrowDown / KeyboardArrowUp', description: 'Trailing chevron; swapped (not rotated) on toggle, right-aligned via <code>Modifier.weight(1f)</code> on the title.' },
+    { name: 'contentDescription', type: 'String', required: true, description: 'Chevron a11y label: "Expand …" / "Collapse …".' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI ships the disclosure as a header `Button` toggling a single `@State expandedID`
+with a `withAnimation` spring, the body gated by `if expandedID == id`
+(`SettingsView.swift` · `VocabRow`, `HistoryView.swift`). There is no `NockerlAccordion`
+style yet.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'expandedID', type: '@State UUID?', description: 'The single open id (<code>nil</code> = all collapsed). Single-open by construction: assigning a new id collapses the previous.' },
+    { name: 'isExpanded', type: 'Bool', description: "Per-row <code>expandedID == id</code>; selects the chevron glyph and gates the body." },
+    { name: 'onToggle', type: '() -> Void', description: 'Header button action; runs the toggle inside <code>withAnimation</code>.' },
+    { name: 'withAnimation', type: '.spring(response: 0.3, dampingFraction: 0.8)', description: 'Springy, choreographed layout change as the body inserts / removes.' },
+    { name: 'Image(systemName:)', type: '"chevron.right" / "chevron.down"', description: 'Trailing chevron with a glyph swap on toggle (right → down), leading the row in the shipped layout.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Header accessory + controlled binding (, cross-platform)">
+A header **trailing-accessory** slot renders always-visible controls (a delete button, a
+count badge) in the header, collapsed or expanded, pinned left of the chevron and
+**outside** the toggle target so interactive controls fire independently and never toggle
+the row (a real `<button>` cannot nest inside the row's toggle `<button>`, so the
+accessory is a sibling). Expansion is **controlled** (`expanded` + `onExpandedChange`) or
+**uncontrolled** (`defaultExpanded`, self-managed). One shared contract: Compose (a
+sibling in the header `Row`) and Swift (a sibling in the header `HStack`) mirror the same
+shape; group single/multi-open coordination stays host-owned as before.
+</Aside>
+
+<Aside type="tip" title="Experimental: row zebra (task 2763, not ratified)">
+An opt-in **zebra** wash tones alternating rows (even rows a whisper of neutral `on-card` @
+4%, odd rows plain) on the accordion **container**, theme-following, default off, resting
+surface only (beneath hairlines / selection / hover). **Experimental**: the design lead is
+evaluating; not canon. Mirror lives on all three platforms via the same container opt-in.
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The intended spec is unified; these are the real divergences between the shipped platforms:
+
+- **Disclosure indicator** *(resolved in [adjudication 2026-07-02 · B4 / C1])*: a **rotating chevron** wins (interpolatable, reduced-motion-safe). Compose (today swaps `KeyboardArrowDown`↔`KeyboardArrowUp`) and Swift (swaps `chevron.right`↔`chevron.down`) conform to rotation, not icon-swap.
+- **Chevron position** *(resolved in [adjudication 2026-07-02 · B4 / C1])*: **trailing** wins (leading is content's seat, trailing is the affordance's). Swift (today leading) conforms.
+- **Open policy** *(resolved in [adjudication 2026-07-02 · B4])*: a **`mode` param, default `single`, `multiple` opt-in**. Voice (single-open `expandedID`) and Android (multi-open stacked sections) both adopt the shared `mode`.
+- **Reveal motion:** web animates `grid-rows` height + opacity; Compose `expandVertically + fadeIn`; Swift a `.spring` layout change. Same intent, three engines.
+- **Packaging:** neither native app ships a reusable `Accordion`; both inline the header+body pattern. Web's `@dizyx/nockerl-react` `Accordion`/`AccordionItem` is the intended canonical surface.
+</Aside>

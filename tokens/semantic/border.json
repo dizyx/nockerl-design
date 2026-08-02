@@ -1,0 +1,30 @@
+{
+  "border": {
+    "width": {
+      "$description": "ONE cyan-stroke weight scale, and the weight is SEMANTIC. THICK cyan (`floating`) = a layer hovering ON TOP of content. THIN cyan (`selection`, paired with border.opacity.selection) = a CHOICE/selection state. `indicator` is the sliding marker BAR, not an outline. Never hand-author a stroke weight. Consume these.",
+      "floating": {
+        "$type": "dimension",
+        "$value": "1.5px",
+        "$description": "The design-laws §2 SIGNATURE floating-over-content border width: any element fixed + floating over a scrollable/other-content area carries a THICK cyan (accent) border of this width on its floating PARENT container (reference weight: the native Kotlin ChatInputBar). Pair with color.accentPrimary at FULL opacity: the thickness + solidity is what says 'this floats above content'. The border rides the floating CONTAINER only, never every child. Native Compose currently hand-authors the same value as NockerlFloatingBorderWidth (1.5.dp) in NockerlSurface.kt. Binding that constant to this token is tracked; web consumes var(--border-width-floating)."
+      },
+      "selection": {
+        "$type": "dimension",
+        "$value": "1px",
+        "$description": "The SELECTION / CHOICE border width. Every 'this one is chosen' cyan outline (nav row, selected list/select row, open trigger, selected card, active segment, checked control) is THIN at this width and softened to border.opacity.selection. Reference implementation: the nav row's selected edge (accentPrimary @ 0.45, 1pt), the house selection feel. Selection reads via cyan INK + the indicator, NOT via WEIGHT (hierarchy comes from size and ink, never weight). A selection border must NEVER be drawn at `floating` weight. That would claim the row is floating above content."
+      },
+      "indicator": {
+        "$type": "dimension",
+        "$value": "1px",
+        "$description": "The sliding INDICATOR BAR thickness (tabs underline), 1pt: selection reads via cyan INK + the indicator, never weight; thick cyan is reserved for floating only. Solid (full opacity)."
+      }
+    },
+    "opacity": {
+      "$description": "Stroke opacities. UNITLESS numbers (0..1), NOT dimensions. Consumed per platform: web = color-mix percentage (× 100%), Compose = accentPrimary.copy(alpha = …), Swift = accentPrimary.opacity(…).",
+      "selection": {
+        "$type": "number",
+        "$value": 0.45,
+        "$description": "The softening applied to every SELECTION/CHOICE cyan border (pair with border.width.selection). The NockerlNavRow feel: present enough to mark the choice, quiet enough that the cyan INK and the indicator carry the meaning. Floating borders (border.width.floating) and indicator bars (border.width.indicator) stay SOLID and do NOT take this."
+      }
+    }
+  }
+}

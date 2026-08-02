@@ -1,0 +1,167 @@
+---
+title: Key-value / description list
+description: Read-only label → value pairs for one record's properties, a description list.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import KeyValueDemo from '../../../components/demos/KeyValueDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <KeyValueDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// Renders a semantic <dl> of <dt>/<dd> pairs: ONE record's properties.
+
+export function SessionInspector({ session }) {
+  return (
+    <KeyValueList title="Session details" labelWidth={112}>
+      <KeyValueRow label="Status">
+        <StatusValue status="info">Streaming</StatusValue>
+      </KeyValueRow>
+      <KeyValueRow label="Model">{session.model}</KeyValueRow>
+      <KeyValueRow label="Session ID" mono copyText={session.id}>
+        {session.id}
+      </KeyValueRow>
+      <KeyValueRow label="Tokens" mono>{session.tokens}</KeyValueRow>
+      <KeyValueRow label="Repo">
+        <a href={session.repoUrl}>{session.repo}</a>
+      </KeyValueRow>
+      <KeyValueRow label="Ended" />{/* empty → renders a muted "-" */}
+    </KeyValueList>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The shipped pattern is a per-row
+// label → Spacer.weight(1f) → value, laid out ON a card (ClusterSheet's metric
+// rows / ToolCallCard params). No dedicated NockerlKeyValue composable yet.
+// This is the intended extraction of that row.
+@Composable
+fun KeyValueRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    mono: Boolean = false,
+) {
+    val colors = LocalNockerlColors.current
+    Row(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(label, style = MaterialTheme.typography.labelMedium, color = colors.onCardMuted)
+        Spacer(Modifier.weight(1f))
+        Text(
+            text = value.ifBlank { "-" },
+            style = MaterialTheme.typography.labelMedium,
+            color = colors.onCard,
+            fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default,
+        )
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical, Nockerl Voice). Built manually as an HStack
+// label → Spacer() → value on a card (HomeSection / HistoryView). SwiftUI's
+// own LabeledContent is NOT used in the shipped app; see the drift note.
+struct KeyValueRow: View {
+    let label: String
+    let value: String
+    var mono: Bool = false
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 13))
+                .foregroundStyle(NockerlTheme.onSurfaceMuted)
+            Spacer()
+            Text(value.isEmpty ? "-" : value)
+                .font(.system(size: 13))
+                .foregroundStyle(NockerlTheme.onSurface)
+                .monospacedDigit()                 // mono for ids / counts
+        }
+        .padding(.horizontal, 16).padding(.vertical, 10)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'The key, rendered as the muted <code>&lt;dt&gt;</code> in the aligned label column.' },
+    { name: 'children', type: 'ReactNode', description: 'The value (<code>&lt;dd&gt;</code>): text, a <code>StatusValue</code> pill, a link, an avatar+name. Omit / empty → a muted <code>-</code>.' },
+    { name: 'mono', type: 'boolean', default: 'false', description: 'Render the value in the <code>font.family.mono</code> token (ids, token counts, hashes, commits).' },
+    { name: 'multiline', type: 'boolean', default: 'false', description: 'Let the value wrap across lines (paths, descriptions) instead of staying on one baseline.' },
+    { name: 'copyText', type: 'string', description: 'Reveals a copy button (a separate focusable target) that writes this string and confirms <code>Copied</code> for 2s.' },
+  ]}
+/>
+
+<p><code>KeyValueList</code> wraps the rows in the lifted card + semantic <code>&lt;dl&gt;</code>. Props: <code>title?</code>, <code>labelWidth?</code> (aligned column, px), <code>variant?: 'aligned' | 'stacked'</code> (stacked puts the label above the value for narrow panes).</p>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'label', type: 'String', required: true, description: 'The key. Rendered with <code>labelMedium</code> in <code>colors.onCardMuted</code>.' },
+    { name: 'value', type: 'String', required: true, description: 'The value. Rendered in <code>colors.onCard</code>; blank falls back to <code>"-"</code> via <code>ifBlank</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. The row fills width and pads <code>16.dp × 12.dp</code>.' },
+    { name: 'mono', type: 'Boolean', default: 'false', description: 'Render the value with <code>FontFamily.Monospace</code> (ids, counts, container names, loads).' },
+  ]}
+/>
+
+<p>The shipped rows live inside <code>ClusterSheet</code> / <code>ToolCallCard</code> on a card; <code>Spacer(Modifier.weight(1f))</code> pushes the value to the trailing edge. Status values reuse <code>colors.statusSuccess / statusWarning / statusError / statusInfo</code>, never the brand cyan.</p>
+
+</TabItem>
+<TabItem label="Swift">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'label', type: 'String', required: true, description: 'The key. <code>.foregroundStyle(NockerlTheme.onSurfaceMuted)</code>.' },
+    { name: 'value', type: 'String', required: true, description: 'The value. <code>.foregroundStyle(NockerlTheme.onSurface)</code>; empty falls back to <code>"-"</code>.' },
+    { name: 'mono', type: 'Bool', default: 'false', description: 'Apply <code>.monospacedDigit()</code> for numeric ids / counts.' },
+  ]}
+/>
+
+<p>The value is pushed right by <code>Spacer()</code> inside an <code>HStack</code>. A status value uses a <code>ProviderBadge</code>-style capsule; a copyable value pairs a <code>NockerlIconButton</code> that flips <code>doc.on.doc → checkmark</code> and <code>accent → success</code> on copy.</p>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **No shipped component yet.** All three platforms render this pattern inline (Compose in `ClusterSheet` / `ToolCallCard`; Swift in `HomeSection` / `HistoryView`); none has a reusable `KeyValue` API. The signatures above are the intended extraction.
+- **SwiftUI ignores `LabeledContent`.** The native `LabeledContent` (which exists and does exactly this) is **not** used. Voice hand-builds `HStack { label · Spacer · value }`. It should adopt `LabeledContent` for free platform alignment.
+- **Copy affordance is web + Android + Swift, but not uniform:** Compose's `CopyableCodeSurface` and Voice's copy icon both flip to a check on success; the web reveals the button on row hover/focus. Reconcile the reveal + confirm timing.
+</Aside>

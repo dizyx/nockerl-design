@@ -1,0 +1,241 @@
+---
+title: Form layout
+description: The Nockerl form scaffold, with grouped sections, label+field rows, single vs two-column, and a right-aligned actions footer.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import FormLayoutDemo from '../../../components/demos/FormLayoutDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FormLayoutDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the intended API,
+// not yet exported from @dizyx/nockerl-react (promotion tracked).) Form layout is the COMPOSITION that
+// arranges fields: the section (a lifted card + header), the row grid (single/two
+// column), the settings row (label+desc left, control right), and the actions footer.
+// The fields themselves are NockerlTextField / ValidatedField; this is the scaffold around them.
+import { NockerlButton, NockerlTextField, NockerlSwitch } from '@dizyx/nockerl-react';
+
+export function AccountForm() {
+  return (
+    <Form onSubmit={save} aria-label="Account settings" maxWidth="md">
+      <FormSection title="Profile" description="Shown on your sessions and in the directory.">
+        <FormRow columns={2}>
+          <NockerlTextField label="Full name" required value={name} onValueChange={setName} />
+          <NockerlTextField label="Handle" required leadingIcon="@" value={handle} onValueChange={setHandle} />
+          <NockerlTextField label="Work email" type="email" required span value={email} onValueChange={setEmail} />
+          <Select label="Role" optional value={role} onValueChange={setRole} options={roles} />
+        </FormRow>
+      </FormSection>
+
+      <FormSection title="Preferences" optional description="Defaults for new sessions and how we reach you.">
+        <SettingRow label="Weekly digest" description="A Monday summary of every session.">
+          <NockerlSwitch checked={digest} onChange={setDigest} ariaLabel="Weekly digest" />
+        </SettingRow>
+        <SettingRow label="Mentions" description="Notify me when an agent needs a decision.">
+          <NockerlSwitch checked={mentions} onChange={setMentions} ariaLabel="Mentions" />
+        </SettingRow>
+      </FormSection>
+
+      <FormActions sticky={false}>
+        <NockerlButton text="Cancel" variant="ghost" onClick={cancel} />
+        <NockerlButton text="Save changes" variant="primary" type="submit" loading={saving} />
+      </FormActions>
+    </Form>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). A form is a scrolling Column: each SECTION is
+// started by a HorizontalDivider() + a labelMedium/Medium header, fields are stacked with
+// Spacer(16.dp) (12.dp within a section), and the footer is a Row(Arrangement.End) with a
+// GHOST Cancel + PRIMARY Save. Pattern from SessionConfigFields / AvatarSettingsSheet /
+// NockerlSettingsRow. (No extracted NockerlForm scaffold yet; see the drift note.)
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import com.nockerl.app.core.ui.NockerlButton
+import com.nockerl.app.core.ui.NockerlButtonVariant
+import com.nockerl.app.core.ui.NockerlSettingsRow
+
+Column(
+    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+) {
+    // ── Section: Profile ──────────────────────────
+    Text("Profile", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Spacer(Modifier.height(12.dp))
+    NockerlTextField(value = name, onValueChange = ::setName, label = "Full name", required = true)
+    Spacer(Modifier.height(16.dp))
+    NockerlTextField(value = email, onValueChange = ::setEmail, label = "Work email", required = true)
+
+    // ── Section: Preferences ──────────────────────
+    Spacer(Modifier.height(20.dp)); HorizontalDivider(); Spacer(Modifier.height(16.dp))
+    Text("Preferences", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Spacer(Modifier.height(12.dp))
+    // Settings row: label + description on the left, the control on the right.
+    NockerlSettingsRow(label = "Weekly digest", value = "A Monday summary of every session", onClick = {}) {
+        Switch(checked = digest, onCheckedChange = ::setDigest)
+    }
+
+    // ── Actions footer ────────────────────────────
+    Spacer(Modifier.height(24.dp))
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        NockerlButton("Cancel", onClick = ::cancel, variant = NockerlButtonVariant.GHOST)
+        Spacer(Modifier.width(8.dp))
+        NockerlButton(if (saving) "Saving…" else "Save", onClick = ::save, variant = NockerlButtonVariant.PRIMARY, enabled = canSave)
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). The form is a VStack(spacing: 16) of SettingsCards capped
+// at maxWidth 640 (SettingsComponents.SettingsCard / AppSettingsView). Each card is the
+// SECTION: an uppercase muted header (+ optional ⓘ) over stacked content at spacing 12.
+// A settings row is an HStack { label; Spacer(); control }. Save is a .nockerlPrimary
+// Button placed inline or in a trailing HStack. (No extracted Form/Section type yet.)
+ScrollView {
+    VStack(alignment: .leading, spacing: 16) {
+        SectionTitle(title: "Account")
+
+        SettingsCard("Profile") {
+            TextField("Full name", text: $name).textFieldStyle(.plain).nockerlFieldBackground()
+            TextField("Work email", text: $email).textFieldStyle(.plain).nockerlFieldBackground()
+        }
+
+        SettingsCard("Preferences") {
+            // Settings row: label on the left, control on the right.
+            HStack(spacing: 6) {
+                Text("Weekly digest").foregroundStyle(NockerlTheme.onSurface)
+                InfoTip(text: "A Monday summary of every session.")
+                Spacer()
+                Toggle("", isOn: $digest).labelsHidden().toggleStyle(.switch)
+            }
+        }
+
+        // Actions footer, trailing-aligned.
+        HStack {
+            Spacer()
+            Button("Cancel") { cancel() }.buttonStyle(.nockerlGhost)
+            Button("Save") { save() }.buttonStyle(.nockerlPrimary).disabled(!canSave)
+        }
+    }
+    .padding(24).frame(maxWidth: 640, alignment: .leading)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'Form · onSubmit', type: '(e: FormEvent) => void', description: 'Submit handler on the underlying <code>&lt;form&gt;</code>. Wire the primary action’s <code>type="submit"</code> to it so Enter submits.' },
+    { name: 'Form · maxWidth', type: "'sm' | 'md' | 'lg' | number", default: "'md'", description: 'Bounded content width so sections, the two-column grid, and the footer all align to one edge.' },
+    { name: 'FormSection · title', type: 'string', required: true, description: 'Section header, rendered uppercase + tracked in the muted token (the Voice <code>SettingsCard</code> idiom).' },
+    { name: 'FormSection · description', type: 'string', description: 'One muted help line under the header.' },
+    { name: 'FormSection · optional', type: 'boolean', default: 'false', description: 'Marks a whole section optional with an <code>Optional</code> tag beside the title.' },
+    { name: 'FormSection · headerAccessory', type: 'ReactNode', description: 'Optional slot trailing the header, center-aligned: the ⓘ <b>InfoTip seat</b> (settings grammar, task 2657). Empty → the header renders exactly as before.' },
+    { name: 'FormSection · footer', type: 'ReactNode', description: 'Optional card footer INSIDE the section under a full-bleed hairline, for muted hints or quiet section actions (settings grammar, task 2657).' },
+    { name: 'FormRow · columns', type: '1 | 2', default: '1', description: 'Single-column (stacked) or two-column grid. Fields stay aligned to the grid; collapses to one column when narrow.' },
+    { name: 'field · span', type: 'boolean', default: 'false', description: 'In a two-column row, makes a field span both columns (e.g. email, bio).' },
+    { name: 'field · required', type: 'boolean', default: 'false', description: 'Adds a status-colored <code>*</code> and sets the control <code>required</code>. Paired with a form-level legend, never color alone.' },
+    { name: 'field · optional', type: 'boolean', default: 'false', description: 'Adds an <code>Optional</code> marker for forms that mark optional rather than required.' },
+    { name: 'SettingRow · label / description', type: 'string', required: true, description: 'The settings-style row: label + description on the LEFT, a control (its child) on the RIGHT. The control is a separate focusable target.' },
+    { name: 'FormActions · sticky', type: 'boolean', default: 'false', description: 'Pins the right-aligned Cancel/Save footer to the bottom of the scroll area on long forms.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+**Update (task 2657):** Compose now ships the extracted scaffold
+`NockerlFormSection(title, description?, headerAccessory?, footer?, content)`, the
+ratified lifted-card section with the same settings-grammar slots as the web
+`FormSection` (the ⓘ seat + the hairline footer). The rows below remain as the
+building blocks the pre-scaffold screens used inline.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'Column', type: 'Modifier', default: 'fillMaxWidth + verticalScroll + padding(horizontal = 20.dp)', description: 'The form root. A long form scrolls; add <code>imePadding()</code> so the active field clears the keyboard.' },
+    { name: 'section header', type: 'Text', description: 'A <code>labelMedium</code> <code>Text</code> in <code>onSurfaceVariant</code> with <code>FontWeight.Medium</code>, preceded by a <code>HorizontalDivider()</code> + <code>Spacer(16.dp)</code>.' },
+    { name: 'field rhythm', type: 'Spacer', description: '<code>Spacer(Modifier.height(16.dp))</code> between top-level fields; <code>12.dp</code> within a section; <code>20.dp</code> before a section divider.' },
+    { name: 'NockerlSettingsRow', type: '(label, value?, trailingContent?) -> Unit', description: 'The settings row: <code>label</code> + optional <code>value</code> description on the left (a weighted <code>Column</code>), <code>trailingContent</code> (a <code>Switch</code> / chevron) on the right.' },
+    { name: 'actions footer', type: 'Row', default: 'horizontalArrangement = Arrangement.End', description: 'A trailing <code>Row</code>: <code>NockerlButton</code> GHOST Cancel, <code>Spacer(8.dp)</code>, PRIMARY Save (<code>enabled = canSave</code>; spinner + "Saving…" via <code>leadingContent</code>).' },
+    { name: 'required indicator', type: 'n/a', description: 'Not extracted. Android marks required in the label copy (no <code>*</code> mark yet). See the drift note.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI assembles the form from `SettingsComponents`. There is **no** `Form` /
+`Section` type. The section is `SettingsCard`; the form is a `VStack` of cards.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'SettingsCard(_:info:)', type: 'View', description: 'The form SECTION, a lifted card (<code>chromeSurface</code> + hairline + elevation, <code>cardRadius</code> 14) with an uppercase muted header (11pt, tracking .6), optional ⓘ <code>InfoTip</code>, and content at <code>spacing: 12</code>.' },
+    { name: 'SectionTitle(title:)', type: 'View', description: 'The page/form heading above the cards (22pt bold, <code>onSurface</code>).' },
+    { name: 'VStack(spacing: 16)', type: 'Layout', description: 'The form body: cards stacked at <code>spacing: 16</code>, <code>.padding(24)</code>, <code>.frame(maxWidth: 640, alignment: .leading)</code> (the bounded content width).' },
+    { name: 'settings row', type: 'HStack', description: 'Label + optional ⓘ on the left, <code>Spacer()</code>, then the control (<code>Toggle().labelsHidden()</code> / a <code>Menu</code>) on the right.' },
+    { name: '.nockerlFieldBackground()', type: 'ViewModifier', description: 'The recessed input well a stacked field sits in: <code>canvasAlt</code> inset + hairline, rounded rect.' },
+    { name: 'NockerlHint / .nockerlHint()', type: 'View · ViewModifier', description: '<strong>Packaged</strong>: the inline form micro-copy voice (<code>onCanvasMuted</code> + size-12 light + the Field-help <code>space.1</code> gap above). Quiet, always visible, never interactive (an <code>InfoTip</code> is the popover trigger; a <code>Callout</code> is the banner).' },
+    { name: 'actions footer', type: 'HStack', description: 'A trailing <code>HStack { Spacer(); Button.nockerlGhost; Button.nockerlPrimary }</code>, with Save <code>.disabled(!canSave)</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The scaffold (a `Form` of `FormSection`s + `FormRow`/`SettingRow` + `FormActions`)
+is the target; these are the real divergences between the shipped platforms:
+
+- **Section grouping** *(resolved in [adjudication 2026-07-02 · B8 / C3])*: grouping is the
+  **lifted section card** everywhere (cards lift, per Law 2 applied to forms); the divider + header
+  on a flat surface is retired. Voice's `SettingsCard` already matches; Android's flat
+  `HorizontalDivider` + header conforms to the card.
+- **No extracted form component:** neither app ships a `Form` / `FormSection` type.
+  Both hand-assemble the `Column` / `VStack`, the spacing, and the footer per screen.
+  An extracted scaffold is owed on all three (it follows the text-field drift; there
+  is no `NockerlTextField` / `NockerlForm` yet).
+- **Required / optional markers** *(resolved in [adjudication 2026-07-02 · B8 / C3])*: the
+  required `*` / Optional markers are part of the **shared contract on all platforms**. The
+  web `*` + legend + `Optional` tag port to Android (today required-in-copy) and Voice.
+- **Two-column layout:** designed here (and shown live). Android forms are
+  single-column (sheets are narrow); Voice caps width and stacks. Neither ships a
+  responsive two-column grid yet.
+- **Sticky footer:** web-only. Android keeps Save inline at the end of the scroll;
+  Voice places it inline in/after the card.
+</Aside>

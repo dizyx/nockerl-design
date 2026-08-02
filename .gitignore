@@ -1,0 +1,40 @@
+# Generated token outputs. The source of truth is tokens/*.json, not build/
+build/
+dist/
+
+# Node / Bun tooling
+node_modules/
+.bun/
+*.log
+
+# Logo export artifacts. SVG source is canonical; raster and pdf exports are generated
+logos/**/export/
+*.DS_Store
+
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Secrets (none expected here, but just in case)
+.env
+.env.*
+
+# Built package artifacts (published from CI, not committed)
+packages/*/dist/
+
+# Astro build cache + output
+.astro/
+site/dist/
+# Atomic-publish staging dirs (#2531): astro builds into dist-next/, then swap-dist.mjs renames it
+# into dist/ so the preview server never serves a partial build. dist-prev/ is the old snapshot,
+# dropped after the swap. Both are transient.
+site/dist-next/
+site/dist-prev/
+site/.astro/
+
+# Visual-regression transient dirs. The BASELINES (vrt/baseline/) are COMMITTED (the CI
+# `vrt` job diffs against them); only the per-run current/ + diff/ outputs are ignored.
+# Re-baseline a deliberate visual change with `bun run vrt:update` and commit the PNGs.
+vrt/current/
+vrt/diff/

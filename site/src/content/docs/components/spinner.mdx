@@ -1,0 +1,178 @@
+---
+title: Spinner
+description: The Nockerl spinner, the indeterminate circular loader for work of unknown length.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import SpinnerDemo from '../../../components/demos/SpinnerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SpinnerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// The spinner is the INDETERMINATE CIRCULAR loader: no value, no %, no track
+// number. For a determinate ring use the NockerlGauge (shape="ring").
+import { NockerlSpinner, NockerlButton } from '@dizyx/nockerl-react';
+
+// Sizes. Stroke scales with the diameter. role="status" + aria-label baked in.
+<NockerlSpinner size="md" label="Loading" />
+
+// Beside a label (the most common form).
+<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+  <NockerlSpinner size="sm" /> Loading sessions…
+</span>
+
+// Centered in a content region while it loads.
+<div className="file-preview" aria-busy>
+  <NockerlSpinner size="lg" label="Loading file" />
+</div>
+
+// In a button, the NockerlButton primitive owns its OWN loading spinner (on-accent tinted)
+// and holds its width. Pass `loading` + an optional `loadingText`; do NOT nest a
+// NockerlSpinner inside it (NockerlButton takes `text`, not children).
+<NockerlButton text="Save" loading loadingText="Saving…" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The spinner IS Material 3's
+// CircularProgressIndicator (indeterminate overload, no `progress` lambda),
+// used app-wide: 12dp/stroke 1.5dp inline-in-cards, 20 to 24dp/stroke 2dp for
+// in-button + scrollback, larger when centered. Color defaults to the cyan
+// accent (colorScheme.primary); pass `color = accent` in cards and
+// `color = LocalContentColor.current` inside a button so it matches the label.
+import androidx.compose.material3.CircularProgressIndicator
+
+// Inline in a tool card, small and accent-tinted (ToolAdapterCards).
+CircularProgressIndicator(
+    modifier = Modifier.size(12.dp),
+    strokeWidth = 1.5.dp,
+    color = colors.accentPrimary,
+)
+
+// Centered in a region. Wrap in a Box(contentAlignment = Center) (FileViewer).
+Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+}
+
+// In a button, supplied as leadingContent while loading, tinted to the
+// button's own content color so it reads on the fill (LoginScreen).
+CircularProgressIndicator(
+    modifier = Modifier.size(20.dp),
+    strokeWidth = 2.dp,
+    color = LocalContentColor.current,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Nockerl Voice). The indeterminate circular loader is a plain
+// ProgressView() tinted to the brand accent, shipped in the RecordingHUD beside
+// a "Transcribing…" label. (A DETERMINATE ring is ProgressView(value:) with
+// .progressViewStyle(.circular), which lives on the progress-bar page.)
+import SwiftUI
+
+// Beside a label (the shipped form).
+HStack(spacing: 10) {
+    ProgressView()
+        .controlSize(.small)
+        .tint(NockerlTheme.accent)
+    Text("Transcribing…")
+        .font(.system(size: 12, weight: .medium))
+        .foregroundStyle(NockerlTheme.onSurface)
+}
+
+// Centered in a region.
+ProgressView()
+    .controlSize(.large)
+    .tint(NockerlTheme.accent)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlSpinner" />
+
+The spinner is presentational (not focusable). It honors `prefers-reduced-motion`:
+the continuous spin stops and degrades to a static partial arc with a gentle opacity
+pulse, never an infinite fast spin.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The spinner is Material 3 `CircularProgressIndicator` (the **indeterminate**
+overload; omit the `progress` lambda) styled to the Nockerl accent. There is no
+bespoke `NockerlSpinner` composable; size + stroke are passed at each call site.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Sizing. Convention: <code>Modifier.size(12.dp)</code> inline, <code>20.dp</code> to <code>24.dp</code> in buttons / scrollback, larger when centered.' },
+    { name: 'color', type: 'Color', default: 'colorScheme.primary', description: 'Arc color, the brand cyan accent by default. Use <code>colors.accentPrimary</code> in cards, <code>LocalContentColor.current</code> inside a button.' },
+    { name: 'strokeWidth', type: 'Dp', default: '4.dp', description: 'Arc thickness. The app uses <code>1.5.dp</code> at 12.dp and <code>2.dp</code> at 18 to 24.dp. Keep stroke proportional to size.' },
+    { name: 'trackColor', type: 'Color', default: 'transparent (app)', description: 'The recessed track behind the arc. The Nockerl usage leaves it trackless (transparent); set it for a visible ring.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Nockerl Voice uses a plain `ProgressView()` (no value) tinted to the accent, the
+shipped indeterminate circular loader. State is implicit (it always animates);
+there are no explicit parameters beyond the view modifiers below.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'ProgressView()', type: 'View', description: 'The indeterminate spinner: no <code>value</code>. (Pass a <code>value</code> + <code>.progressViewStyle(.circular)</code> only for the determinate ring, which is the progress bar.)' },
+    { name: '.controlSize', type: 'ControlSize', default: '.regular', description: 'Diameter step: <code>.small</code> (beside a label, as in the RecordingHUD), <code>.regular</code>, or <code>.large</code> when centered.' },
+    { name: '.tint', type: 'Color', default: 'NockerlTheme.accent', description: 'The arc color, the brand cyan accent.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The **spinner** is the indeterminate *circular* loader for unknown-length work,
+distinct from its neighbours: the [progress bar](/components/progress-bar/) owns
+determinate / indeterminate **linear** progress *and* the **determinate ring** (it
+intentionally left circular-indeterminate to the spinner); the
+[context gauge](/components/context-gauge/) is the threshold-banded budget meter;
+and the [skeleton](/components/skeleton/) is a content-shaped placeholder. The
+spinner has **no value, no %, and no track number**.
+
+- **Android (canonical):** the spinner is Material's `CircularProgressIndicator`
+  used everywhere. There is no bespoke `NockerlSpinner`; size + stroke are set per
+  call site (12.dp/1.5.dp inline, 20 to 24.dp/2.dp in buttons, larger when centered).
+- **Swift:** Nockerl Voice ships only the small, label-paired `ProgressView()`
+  (RecordingHUD). No centered/overlay or in-button form is shipped yet. Those are
+  designed here from the laws + the Android treatment.
+- **Track:** the apps ship a **trackless** arc (transparent track); the web `track`
+  prop is an opt-in recessed ring, off by default to match.
+</Aside>

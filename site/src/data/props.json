@@ -1,0 +1,4156 @@
+{
+  "generated": "scripts/extract-props.ts",
+  "components": {
+    "NockerlApprovalActions": {
+      "file": "packages/react/src/composites/ApprovalContent.tsx",
+      "propsType": "NockerlApprovalActionsProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "confirmLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Approve'",
+          "description": "Confirm label (e.g. \"Approve\", \"Run tool\", \"Submit\")."
+        },
+        {
+          "name": "cancelLabel",
+          "type": "string | null",
+          "optional": true,
+          "default": "'Deny'",
+          "description": "Cancel label. <code>null</code> hides cancel (rare: a single-action acknowledge)."
+        },
+        {
+          "name": "tone",
+          "type": "'primary' | 'destructive'",
+          "optional": true,
+          "default": "'primary'",
+          "description": "Emphasis of the confirm: outline cyan (default) or destructive outline-red."
+        },
+        {
+          "name": "onConfirm",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "onCancel",
+          "type": "(() => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "confirmDisabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Disable confirm (e.g. an unsatisfied option row)."
+        }
+      ]
+    },
+    "NockerlApprovalContent": {
+      "file": "packages/react/src/composites/ApprovalContent.tsx",
+      "propsType": "NockerlApprovalContentProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional title row for hosts WITHOUT their own header (panels). Sheet/Dialog hosts carry the title themselves and omit this."
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional supporting line under the title."
+        },
+        {
+          "name": "preview",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The PREVIEW slot: what is being approved (ToolCallCard · Markdown · diff…)."
+        },
+        {
+          "name": "options",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The OPTIONS slot: choice rows (RadioGroup / Checkbox / TextField)."
+        },
+        {
+          "name": "riskNote",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The RISK-NOTE slot: a Banner / Callout carrying caveats."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional INLINE actions (panel hosts). Sheet hosts pin NockerlApprovalActions in the sheet footer instead and omit this."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class."
+        }
+      ]
+    },
+    "NockerlAttachmentPopover": {
+      "file": "packages/react/src/composites/AttachmentPopover.tsx",
+      "propsType": "NockerlAttachmentPopoverProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "attachments",
+          "type": "NockerlAttachment[]",
+          "optional": false,
+          "default": null,
+          "description": "One entry per pending attachment, in display order."
+        },
+        {
+          "name": "onRemove",
+          "type": "(index: number) => void",
+          "optional": false,
+          "default": null,
+          "description": "Fired with the index whose remove badge was activated."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert remove badges (freeze ruling per law §9: react uses <code>disabled</code>; compose keeps <code>enabled</code>)."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class on the row."
+        }
+      ]
+    },
+    "NockerlAvatar": {
+      "file": "packages/react/src/primitives/Avatar.tsx",
+      "propsType": "NockerlAvatarProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'children' | 'type'>",
+      "props": [
+        {
+          "name": "src",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Image URL. When set (and it loads) it wins over the initials/icon fallback."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Full name. Used for the accessible label and to derive the initials + tint."
+        },
+        {
+          "name": "size",
+          "type": "NockerlAvatarSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Pixel diameter ramp."
+        },
+        {
+          "name": "shape",
+          "type": "NockerlAvatarShape",
+          "optional": true,
+          "default": "'circle'",
+          "description": "Circle (the Android default) or a 12px rounded square."
+        },
+        {
+          "name": "presence",
+          "type": "Presence",
+          "optional": true,
+          "default": null,
+          "description": "Presence/status dot, bottom-right. Status colors only, never the brand cyan."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + desaturated (never invisible) state."
+        },
+        {
+          "name": "onClick",
+          "type": "(e: React.MouseEvent<HTMLButtonElement>) => void",
+          "optional": true,
+          "default": null,
+          "description": "Makes the avatar a focusable button (e.g. the top-bar → settings tap target). Receives the MouseEvent so trigger callers can anchor to <code>e.currentTarget</code>."
+        }
+      ]
+    },
+    "NockerlBadge": {
+      "file": "packages/react/src/primitives/Badge.tsx",
+      "propsType": "NockerlBadgeProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLSpanElement>, 'color'>",
+      "props": [
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Numeric count. Clamped to <code>max</code>, rendering e.g. <code>99+</code> past it."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Free-text label (use instead of <code>count</code> for a status badge)."
+        },
+        {
+          "name": "dot",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render a bare dot: no number, no text (the \"unseen\" indicator)."
+        },
+        {
+          "name": "tone",
+          "type": "NockerlBadgeTone",
+          "optional": true,
+          "default": "'accent'",
+          "description": "Status / accent hue. Cyan is <code>accent</code>; the rest are warm status + neutral."
+        },
+        {
+          "name": "variant",
+          "type": "NockerlBadgeVariant",
+          "optional": true,
+          "default": "'solid'",
+          "description": "<code>solid</code> = filled hue + contrast label; <code>soft</code> = low-alpha tint + hue label."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Override the tone hue with an ARBITRARY color (e.g. a per-language code color the 6 fixed tones can't express). Drives the soft tint/label/border (or the solid fill). Falls back to <code>tone</code> when unset."
+        },
+        {
+          "name": "mono",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render the label in the monospace family (for code / file-type / version pills)."
+        },
+        {
+          "name": "size",
+          "type": "NockerlBadgeSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "NockerlBadge scale."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "default": "99",
+          "description": "Overflow ceiling for <code>count</code> (e.g. 99 → <code>99+</code>)."
+        },
+        {
+          "name": "anchored",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Pin to the parent host's top-right corner (overlapping, ringed). The parent must be the positioned host (the demo's <code>Anchored</code> wrapper provides it). Else the badge renders inline."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name announced for the badge when it stands alone (e.g. \"3 unread\"). When the badge is anchored, name the HOST instead and leave this unset. The count is decorative there."
+        }
+      ]
+    },
+    "NockerlBarChart": {
+      "file": "packages/react/src/primitives/BarChart.tsx",
+      "propsType": "NockerlBarChartProps",
+      "extendsClause": "HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "bars",
+          "type": "ChartBar[]",
+          "optional": false,
+          "default": null,
+          "description": "The bars to render, left to right."
+        },
+        {
+          "name": "valueFormat",
+          "type": "(v: number) => string",
+          "optional": true,
+          "default": null,
+          "description": "Value formatter for the figure. Default String(value)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Explicit full-scale max; else the max of the values."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": true,
+          "default": "148",
+          "description": "Strip height in px. Default 148."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Overrides the auto-generated data summary (role=\"img\" name)."
+        }
+      ]
+    },
+    "NockerlBottomSheet": {
+      "file": "packages/react/src/composites/BottomSheet.tsx",
+      "propsType": "NockerlBottomSheetProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": false,
+          "default": null,
+          "description": "Whether the sheet is presented."
+        },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Dismiss handler: scrim tap, Esc, or (when opted-in) the close button."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible title shown in the header (carries the dialog name)."
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional supporting line under the title."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional LEADING ICON shown top-left beside the title (e.g. a settings cog next to \"Settings\"). A plain functional glyph on the on-plane ink, NOT a status disc, NOT cyan. It aligns to the title line; omit for the default text-only header. The header divider is unchanged either way (explicitly neutral, never cyan)."
+        },
+        {
+          "name": "detent",
+          "type": "SheetDetent",
+          "optional": true,
+          "default": "'half'",
+          "description": "Detent: a half-height peek or a near-full panel."
+        },
+        {
+          "name": "grip",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Show the drag grip at the top."
+        },
+        {
+          "name": "showClose",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "OPT-IN close (X) button. Material canon: a bottom sheet has NO X by default. The drag handle + scrim-tap + Esc ARE the dismissal. Set true only when a persistent, always-visible dismiss affordance is genuinely warranted. Default false."
+        },
+        {
+          "name": "stage",
+          "type": "HTMLElement | null",
+          "optional": false,
+          "default": null,
+          "description": "The contained stage element that gates rendering so the sheet never escapes it."
+        },
+        {
+          "name": "footer",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "PINNED FOOTER-ACTION BAR (task 2653): an approve/deny row that NEVER scrolls away, rendered below the scrolling body on the sheet's own plane, with a hairline top edge and an upward scroll-under cue when more body remains beneath it. Compose the ratified CTA grammar in here (outline confirm · ghost cancel · destructive outline-red, the Dialog r5 canon). Empty = no footer, byte-identical sheet."
+        },
+        {
+          "name": "onBack",
+          "type": "(() => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "NESTED-SHEET BACK NAVIGATION (task 2653): when set, the header leads with a back chevron (a real NockerlIconButton) BEFORE the title. View swapping stays with the host (swap <code>title</code>/<code>children</code> on your own state); this is the affordance + a11y."
+        },
+        {
+          "name": "backLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Back'",
+          "description": "Accessible name for the back affordance. Default \"Back\"."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Sheet body."
+        }
+      ]
+    },
+    "NockerlButton": {
+      "file": "packages/react/src/primitives/Button.tsx",
+      "propsType": "NockerlButtonProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'children' | 'type'>",
+      "props": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Visible label."
+        },
+        {
+          "name": "variant",
+          "type": "NockerlButtonVariant",
+          "optional": true,
+          "default": "'primary'",
+          "description": "Emphasis ladder."
+        },
+        {
+          "name": "size",
+          "type": "NockerlButtonSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Control height + padding."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Shows a spinner, holds the button width, blocks re-click."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading glyph (icon slot)."
+        },
+        {
+          "name": "trailingIcon",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional trailing glyph (icon slot AFTER the label), e.g. a chevron / arrow."
+        },
+        {
+          "name": "loadingText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Label shown WHILE loading (e.g. \"Saving…\"); falls back to <code>text</code>."
+        },
+        {
+          "name": "type",
+          "type": "'button' | 'submit' | 'reset'",
+          "optional": true,
+          "default": "'button'",
+          "description": "Native button type: <code>submit</code>/<code>reset</code> for real forms (default <code>button</code>)."
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Stretch to the container width (e.g. a full-width CTA / sheet action)."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name override (when the label alone is ambiguous)."
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "optional": true,
+          "default": null,
+          "description": "TOGGLE mode: when set, the button HOLDS state: it renders <code>aria-pressed</code> and, when true, the pressed VISUAL is the selection wash (soft cyan + cyan ink, design-laws section 6), NOT a separate control. Omit it for a plain command button."
+        }
+      ]
+    },
+    "NockerlCalendar": {
+      "file": "packages/react/src/behaviors/Calendar.tsx",
+      "propsType": "NockerlCalendarProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'className'>",
+      "props": [
+        {
+          "name": "view",
+          "type": "{ y: number; m: number }",
+          "optional": false,
+          "default": null,
+          "description": "The month/year this grid renders."
+        },
+        {
+          "name": "mode",
+          "type": "NockerlCalendarMode",
+          "optional": true,
+          "default": "'single'",
+          "description": "'single' (a <code>selected</code> day) or 'range' (a <code>range</code> of two endpoints + preview). Default 'single'."
+        },
+        {
+          "name": "selected",
+          "type": "Day | null",
+          "optional": true,
+          "default": null,
+          "description": "SINGLE mode: the chosen day (accent fill)."
+        },
+        {
+          "name": "range",
+          "type": "{ start: Day | null; end: Day | null }",
+          "optional": true,
+          "default": null,
+          "description": "RANGE mode: the committed start/end endpoints (accent fill + in-range tint between them)."
+        },
+        {
+          "name": "preview",
+          "type": "Day | null",
+          "optional": true,
+          "default": null,
+          "description": "RANGE mode: the live preview end - the hovered/focused day while only the start is chosen. Draws the lighter preview band from start toward it. Ignored once the range is full."
+        },
+        {
+          "name": "min",
+          "type": "Day",
+          "optional": true,
+          "default": null,
+          "description": "Inclusive selectable bounds; days outside are disabled (still legible)."
+        },
+        {
+          "name": "max",
+          "type": "Day",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "onPick",
+          "type": "(d: Day) => void",
+          "optional": false,
+          "default": null,
+          "description": "Click / Enter / Space on an in-bounds day."
+        },
+        {
+          "name": "onHover",
+          "type": "(d: Day | null) => void",
+          "optional": true,
+          "default": null,
+          "description": "RANGE mode: hover/blur a day (drives the preview band). Optional - omit to skip preview wiring."
+        },
+        {
+          "name": "focusIdx",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Roving-focus cell index for THIS grid (0-41). Default: internal state seeded to today/selected."
+        },
+        {
+          "name": "setFocusIdx",
+          "type": "(i: number) => void",
+          "optional": true,
+          "default": null,
+          "description": "Roving-focus setter (when the parent owns focus across multiple grids)."
+        },
+        {
+          "name": "onKey",
+          "type": "(e: KeyboardEvent<HTMLDivElement>) => void",
+          "optional": true,
+          "default": null,
+          "description": "Keyboard handler for the grid (when the parent owns multi-grid arrow paging)."
+        },
+        {
+          "name": "gridRef",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "default": null,
+          "description": "Forwarded ref to the day-grid element (for the parent's roving-focus queries)."
+        },
+        {
+          "name": "today",
+          "type": "Day",
+          "optional": true,
+          "default": null,
+          "description": "Drives the today RING. Default: a fixed demo date is NOT assumed - pass the demo TODAY."
+        },
+        {
+          "name": "cellMinHeight",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Per-cell day min-height (px). DatePicker 34, DateRangePicker 32. Default 32."
+        },
+        {
+          "name": "outsideOpacity",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Out-of-month dim opacity. DatePicker .55, DateRangePicker .5. Default .55."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name for the day grid (e.g. \"June 2026\")."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class on the day grid (for a demo's column-width sizing)."
+        }
+      ]
+    },
+    "NockerlChatInput": {
+      "file": "packages/react/src/composites/ChatInput.tsx",
+      "propsType": "NockerlChatInputProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The message text (controlled)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(next: string) => void",
+          "optional": false,
+          "default": null,
+          "description": "Text edits."
+        },
+        {
+          "name": "onSend",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Fired when the action button is in SEND mode and activated (tap or Enter)."
+        },
+        {
+          "name": "onMic",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Fired when the action button is in MIC mode and tapped."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "default": "'Message Nockerl…'",
+          "description": "The empty-field hint."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Message'",
+          "description": "Accessible name for the text field (screen readers)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert input + actions. Freeze ruling (task 2686/): react uses <code>disabled</code> (the DOM/react family idiom); compose keeps <code>enabled</code> (its idiom): semantics shared, casing platform-idiomatic per law §9."
+        },
+        {
+          "name": "onAttach",
+          "type": "(() => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading attach action; omit to hide the attach button."
+        },
+        {
+          "name": "attachIcon",
+          "type": "ReactNode",
+          "optional": true,
+          "default": "IconPlus",
+          "description": "The attach glyph (default a plus; pass a paperclip from your set)."
+        },
+        {
+          "name": "leadingAccessory",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "GENERIC leading-accessory SLOT (task 2682) that replaces the built-in attach button entirely when provided (compose any control cluster; you own its a11y). The onAttach/attachIcon pair stays as the zero-config default."
+        },
+        {
+          "name": "attachments",
+          "type": "NockerlAttachment[]",
+          "optional": true,
+          "default": null,
+          "description": "PENDING ATTACHMENTS MODEL (task 2682): when non-empty the composite renders the real NockerlAttachmentPopover floating directly ABOVE the pill (the canonical r5 integration), aligned to the pill's column. Empty (default) renders nothing: the resting DOM is byte-identical to the bare pill."
+        },
+        {
+          "name": "onRemoveAttachment",
+          "type": "((index: number) => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Remove handler for the attachments model (fired with the index)."
+        },
+        {
+          "name": "contextAccessory",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "GENERIC context/accessory SLOT (task 2682) that rides directly above the pill (below the attachments row): session chips, a context-gauge strip, the Recording HUD. Deliberately untyped (never session-typed props); empty renders nothing."
+        },
+        {
+          "name": "maxLines",
+          "type": "number",
+          "optional": true,
+          "default": "5",
+          "description": "Max visible text lines before the field scrolls (the native maxLines). Default 5."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class on the pill."
+        }
+      ]
+    },
+    "NockerlCheckbox": {
+      "file": "packages/react/src/primitives/Checkbox.tsx",
+      "propsType": "NockerlCheckboxProps",
+      "extendsClause": "Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'checked' | 'size'>",
+      "props": [
+        {
+          "name": "checked",
+          "type": "CheckedState",
+          "optional": false,
+          "default": null,
+          "description": "Tri-state checked value. <code>'mixed'</code> renders the indeterminate dash."
+        },
+        {
+          "name": "onChange",
+          "type": "(next: boolean) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next boolean value. Ignored while disabled."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Persistent visible label (rendered beside the box, the box is its target)."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Supporting line under the label."
+        },
+        {
+          "name": "size",
+          "type": "NockerlCheckboxSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Box scale. <code>md</code> matches the platform default."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible) state."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Invalid: warm error border + a \"!\" mark + a message. Color is never alone."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "aria-label when there is no visible <code>label</code> (standalone / inline use)."
+        }
+      ]
+    },
+    "NockerlChip": {
+      "file": "packages/react/src/primitives/Chip.tsx",
+      "propsType": "NockerlChipProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>",
+      "props": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Visible label. Bound to the label type role."
+        },
+        {
+          "name": "selected",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Whether this chip is the active selection (filter idiom)."
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Toggle/tap handler. Ignored while disabled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible) state."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading glyph (e.g. a status dot) before the label."
+        },
+        {
+          "name": "swatch",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "A per-item COLOR swatch dot before the label (e.g. a chart series color). Unlike <code>leadingIcon='dot'</code> (which inherits the chip's currentColor), this paints an arbitrary fixed color, so a row of chips can each carry a distinct key color."
+        },
+        {
+          "name": "onRemove",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "When set, renders a trailing x; invoked when it is pressed (input idiom)."
+        },
+        {
+          "name": "token",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "TOKEN mode: render the chip as a NON-interactive &lt;span&gt; container (NOT a &lt;button&gt;), so a removable token can sit INSIDE another interactive element (e.g. a MultiSelect trigger &lt;button&gt;) without nesting a real &lt;button&gt; (the React #418 nested-button hydration bug fixed in Wave 1). The removable x stays its own span[role=button] control (a span, never a nested &lt;button&gt;). A token is a static tag + a remove, not a toggle, so <code>selected</code> / <code>onClick</code> / <code>aria-pressed</code> do not apply in this mode."
+        }
+      ]
+    },
+    "NockerlCircularProgress": {
+      "file": "packages/react/src/primitives/CircularProgress.tsx",
+      "propsType": "NockerlCircularProgressProps",
+      "extendsClause": "HTMLAttributes<HTMLSpanElement>",
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Determinate value, 0-100 (clamped + rounded)."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "default": "64",
+          "description": "Outer diameter in px. Default 64."
+        },
+        {
+          "name": "thickness",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Ring stroke width in px. Defaults to ~1/8 of the size."
+        },
+        {
+          "name": "tone",
+          "type": "ProgressTone",
+          "optional": true,
+          "default": "'accent'",
+          "description": "Arc tone: the plain cyan accent (default) or a warm status hue."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible name (role=\"progressbar\"). REQUIRED."
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render the center % figure. Ignored when <code>centerContent</code> is supplied."
+        },
+        {
+          "name": "centerContent",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Override the center figure with custom content (e.g. a check glyph at 100%)."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class names appended to the wrapper."
+        }
+      ]
+    },
+    "NockerlClusterGrid": {
+      "file": "packages/react/src/composites/ClusterGrid.tsx",
+      "propsType": "NockerlClusterGridProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The node tiles (NockerlNodeCell children)."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Cluster status'",
+          "description": "Accessible name for the mosaic (role=\"group\")."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlContextChip": {
+      "file": "packages/react/src/composites/SessionChip.tsx",
+      "propsType": "NockerlContextChipProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "engineGlyph",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The engine identity glyph (an &lt;NockerlIcon&gt;, currentColor)."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The session name (ellipsized)."
+        },
+        {
+          "name": "ratio",
+          "type": "number | null",
+          "optional": false,
+          "default": null,
+          "description": "Context-usage ratio 0..1 → the inner line; null = a faint empty track."
+        },
+        {
+          "name": "tooltip",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Native hover tooltip. Named <code>tooltip</code> because <code>title</code> means heading-text everywhere else in the family."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlDefinitionTrigger": {
+      "file": "packages/react/src/primitives/DefinitionTrigger.tsx",
+      "propsType": "NockerlDefinitionTriggerProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'type'>",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The inline term (rendered as body text with a dotted underline)."
+        }
+      ]
+    },
+    "NockerlDevStatusBar": {
+      "file": "packages/react/src/composites/DevStatusBar.tsx",
+      "propsType": "NockerlDevStatusBarProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "start",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Leading segments (left-aligned)."
+        },
+        {
+          "name": "end",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Trailing segments (right-aligned)."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Status bar'",
+          "description": "Accessible name of the bar region. Default \"Status bar\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class on the bar."
+        }
+      ]
+    },
+    "NockerlDevStatusSegment": {
+      "file": "packages/react/src/composites/DevStatusBar.tsx",
+      "propsType": "NockerlDevStatusSegmentProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The segment text (chrome-muted at rest; full chrome ink on hover when interactive)."
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading glyph (12px box; currentColor)."
+        },
+        {
+          "name": "dot",
+          "type": "StatusKind",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading status dot, on the shared NockerlStatusDot semantic ladder."
+        },
+        {
+          "name": "kbd",
+          "type": "string[]",
+          "optional": true,
+          "default": null,
+          "description": "Optional trailing keyboard hint(s), rendered as real NockerlKbd keycaps."
+        },
+        {
+          "name": "onSelect",
+          "type": "(() => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Makes the segment a real button. Omitted = a plain informational span."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name override (defaults to the label + kbd hint)."
+        }
+      ]
+    },
+    "NockerlDialog": {
+      "file": "packages/react/src/composites/Dialog.tsx",
+      "propsType": "NockerlDialogProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": false,
+          "default": null,
+          "description": "Whether the dialog is presented."
+        },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Dismiss handler: scrim tap, Esc, Cancel, or the close (X) button."
+        },
+        {
+          "name": "onConfirm",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Default-action handler: the confirm button + Enter."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible title; carries the dialog name (aria-labelledby)."
+        },
+        {
+          "name": "confirmLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Confirm'",
+          "description": "Confirm-button label."
+        },
+        {
+          "name": "cancelLabel",
+          "type": "string | null",
+          "optional": true,
+          "default": "'Cancel'",
+          "description": "Cancel-button label. <code>null</code> hides Cancel (a single-action alert)."
+        },
+        {
+          "name": "tone",
+          "type": "'primary' | 'destructive'",
+          "optional": true,
+          "default": "'primary'",
+          "description": "Emphasis of the default action: primary cyan or destructive red."
+        },
+        {
+          "name": "icon",
+          "type": "'warning' | 'fork'",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading header glyph key (warning for destructive, fork for branch)."
+        },
+        {
+          "name": "confirmDisabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Disable the confirm action (e.g. an unsatisfied form)."
+        },
+        {
+          "name": "stage",
+          "type": "HTMLElement | null",
+          "optional": false,
+          "default": null,
+          "description": "The contained stage element, which gates rendering so the dialog never escapes it."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Body: supporting text and/or a form field."
+        }
+      ]
+    },
+    "NockerlDivider": {
+      "file": "packages/react/src/primitives/Divider.tsx",
+      "propsType": "NockerlDividerProps",
+      "extendsClause": "HTMLAttributes<HTMLHRElement>",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "NockerlDividerOrientation",
+          "optional": true,
+          "default": "'horizontal'",
+          "description": "Lay the rule horizontally (default) or vertically between inline items."
+        },
+        {
+          "name": "tone",
+          "type": "NockerlDividerTone",
+          "optional": true,
+          "default": "'default'",
+          "description": "Hairline tone: standard, alt-plane, the cyan signature line, a status rule, or the rare warm (accent.warm) feature line."
+        },
+        {
+          "name": "inset",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Symmetric inset (indent) from the container edges, in token spacing steps."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional centered label (\"OR\") with balanced rules on each side."
+        },
+        {
+          "name": "sectionLabel",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render the label flush-left as a section header (one trailing rule)."
+        }
+      ]
+    },
+    "NockerlDrawer": {
+      "file": "packages/react/src/composites/Drawer.tsx",
+      "propsType": "NockerlDrawerProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": false,
+          "default": null,
+          "description": "Whether the drawer is presented."
+        },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Dismiss handler: scrim tap, Esc, or the close button."
+        },
+        {
+          "name": "edge",
+          "type": "DrawerEdge",
+          "optional": true,
+          "default": "'left'",
+          "description": "Which vertical edge the panel is anchored to + slides from."
+        },
+        {
+          "name": "mode",
+          "type": "DrawerMode",
+          "optional": true,
+          "default": "'overlay'",
+          "description": "'overlay' = the drawer role (scrim + focus trap); 'inline' = the persistent nav-rail role (no scrim, app stays live). 'modal' is a deprecated alias of 'overlay'. Default 'overlay'."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible title shown in the header (carries the dialog/region name)."
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional supporting line under the title."
+        },
+        {
+          "name": "footer",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional right-aligned action row pinned to the panel footer."
+        },
+        {
+          "name": "stage",
+          "type": "HTMLElement | null",
+          "optional": false,
+          "default": null,
+          "description": "The contained stage element, which gates rendering so the drawer never escapes it."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Panel body: a nav list (left) or detail content (right)."
+        }
+      ]
+    },
+    "NockerlFacetedBackground": {
+      "file": "packages/react/src/primitives/FacetedBackground.tsx",
+      "propsType": "NockerlFacetedBackgroundProps",
+      "extendsClause": "HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "reduced",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "When true, freezes to a single composed static frame (prefers-reduced-motion). Resolved by the consumer; not a user-facing control."
+        },
+        {
+          "name": "bare",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "BARE mode: render just the full-bleed facet field with NO surface chrome (no border, radius, shadow, or 16:9 aspect). Use it for a full-bleed app-shell / stage background. The default is the bordered card-radius signature surface. The MESH + tone-wave are identical either way (one implementation); <code>bare</code> only drops the chrome. Positioned <code>absolute inset:0</code>, so the parent must be positioned."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Children render ON the surface (proving legibility over the live mesh)."
+        }
+      ]
+    },
+    "NockerlFileExplorer": {
+      "file": "packages/react/src/composites/FileExplorer.tsx",
+      "propsType": "NockerlFileExplorerProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": "'Files'",
+          "description": "Eyebrow title in the header strip."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Open header slot (IconButtons, a Menu trigger); the shell owns no controls."
+        },
+        {
+          "name": "nodes",
+          "type": "NockerlTreeNode[]",
+          "optional": false,
+          "default": null,
+          "description": "The forest (pass-through to NockerlTree). Empty → the built-in empty state."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name for the tree (defaults to the title)."
+        },
+        {
+          "name": "expandedIds",
+          "type": "Set<string>",
+          "optional": false,
+          "default": null,
+          "description": "Controlled expanded folder ids (pass-through)."
+        },
+        {
+          "name": "onToggleExpand",
+          "type": "((next: Set<string>) => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Expansion changes (pass-through)."
+        },
+        {
+          "name": "selectedId",
+          "type": "string | null",
+          "optional": true,
+          "default": null,
+          "description": "Selected node id (single-select explorer mode; pass-through)."
+        },
+        {
+          "name": "onSelect",
+          "type": "((id: string) => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Leaf activation (pass-through)."
+        },
+        {
+          "name": "emptyTitle",
+          "type": "string",
+          "optional": true,
+          "default": "'No files'",
+          "description": "Empty-state title (nodes empty)."
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "optional": true,
+          "default": "'Nothing to show here yet.'",
+          "description": "Empty-state supporting message."
+        },
+        {
+          "name": "emptyAction",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional empty-state action node (e.g. a NockerlButton)."
+        },
+        {
+          "name": "maxBodyHeight",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Cap the tree body height; overflow scrolls (the panel, not the page)."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class on the shell."
+        }
+      ]
+    },
+    "NockerlGauge": {
+      "file": "packages/react/src/primitives/Gauge.tsx",
+      "propsType": "NockerlGaugeProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "shape",
+          "type": "NockerlGaugeShape",
+          "optional": false,
+          "default": null,
+          "description": "Which meter form to render."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Current value (0..max)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "default": "100",
+          "description": "Full-scale value. Default 100."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible name (role=\"meter\"). REQUIRED."
+        },
+        {
+          "name": "valueText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Human value description for screen readers (e.g. \"82K / 200K · 41%, elevated\")."
+        },
+        {
+          "name": "low",
+          "type": "number",
+          "optional": true,
+          "default": "GAUGE_LOW",
+          "description": "Lower / upper band thresholds as RATIOS of max (default .60 / .85)."
+        },
+        {
+          "name": "high",
+          "type": "number",
+          "optional": true,
+          "default": "GAUGE_HIGH",
+          "description": ""
+        },
+        {
+          "name": "centerPrimary",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Ring only: the big center figure (e.g. \"41%\")."
+        },
+        {
+          "name": "centerSecondary",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Ring only, the small center caption under the figure (e.g. \"CTX\")."
+        },
+        {
+          "name": "showTicks",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render the .60 / .85 threshold ticks on the track (bar only)."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class names appended to the root."
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "optional": true,
+          "default": null,
+          "description": "Inline style applied to the rendered root (positioning / sizing hooks)."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional id on the root meter element."
+        }
+      ]
+    },
+    "NockerlIcon": {
+      "file": "packages/react/src/primitives/Icon.tsx",
+      "propsType": "NockerlIconProps",
+      "extendsClause": "Omit<SVGAttributes<SVGSVGElement>, 'name' | 'children'>",
+      "props": [
+        {
+          "name": "name",
+          "type": "IconName",
+          "optional": true,
+          "default": null,
+          "description": "Registry glyph (exact-match only - else use <code>path</code>)."
+        },
+        {
+          "name": "path",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Exact path 'd' for a bespoke glyph."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Multi-element glyph: raw &lt;path&gt;/&lt;circle&gt;/... children."
+        },
+        {
+          "name": "size",
+          "type": "number | IconSizeToken",
+          "optional": true,
+          "default": null,
+          "description": "width+height. number = px; scale key = ICON_SIZE[key]. Omit -&gt; CSS sizes it."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name -&gt; role=\"img\" + &lt;title&gt;. Omit -&gt; decorative (aria-hidden)."
+        }
+      ]
+    },
+    "NockerlIconButton": {
+      "file": "packages/react/src/primitives/IconButton.tsx",
+      "propsType": "NockerlIconButtonProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'children' | 'type'>",
+      "props": [
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The glyph to render (inline SVG node - e.g. &lt;NockerlIcon .../&gt;)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible name (REQUIRED - the only thing that names an icon-only control)."
+        },
+        {
+          "name": "variant",
+          "type": "NockerlIconButtonStyle",
+          "optional": true,
+          "default": "'plain'",
+          "description": "The icon-button idiom. Defaults to <code>plain</code>."
+        },
+        {
+          "name": "accent",
+          "type": "string",
+          "optional": true,
+          "default": "'var(--color-accent-primary)'",
+          "description": "Circle fill for <code>filled-circle</code> (defaults to the cyan accent token). Pass a var(--token)."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "default": "40",
+          "description": "Touch-target dimension in px. Defaults to 40 (Compose default)."
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "optional": true,
+          "default": null,
+          "description": "TOGGLE mode: when set, the icon button HOLDS state: renders <code>aria-pressed</code> and, when true, the pressed VISUAL is the selection wash (soft cyan + cyan glyph, design-laws section 6). The primary home for icon toggles (toolbar toggles, wrap, etc.). Omit for a plain command icon button."
+        }
+      ]
+    },
+    "NockerlJobRow": {
+      "file": "packages/react/src/composites/JobRow.tsx",
+      "propsType": "NockerlJobRowProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The job / notification title (the row's accessible name)."
+        },
+        {
+          "name": "detail",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Supporting detail line (\"finished in 4m 12s · 3,412 documents\")."
+        },
+        {
+          "name": "state",
+          "type": "NockerlJobState",
+          "optional": false,
+          "default": null,
+          "description": "Job state → the leading mark: B20 status icon, a live spinner, or a muted clock."
+        },
+        {
+          "name": "time",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Relative timestamp display label (\"2m ago\"), the Timeline time idiom."
+        },
+        {
+          "name": "dateTime",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Machine-readable instant for the timestamp (ISO). Surfaces as the row's title attr."
+        },
+        {
+          "name": "unread",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Unread: full-strength ink. Read rows dim. Defaults to read."
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Grouped-notification count → a trailing accent NockerlBadge (unread only)."
+        },
+        {
+          "name": "trailing",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Extra trailing node (a NockerlChip, an action) rendered after the badge."
+        },
+        {
+          "name": "onSelect",
+          "type": "(() => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlKbd": {
+      "file": "packages/react/src/primitives/Kbd.tsx",
+      "propsType": "NockerlKbdProps",
+      "extendsClause": "HTMLAttributes<HTMLElement>",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The key legend: a glyph or short label (e.g. the cmd glyph, K, Esc, a chevron)."
+        }
+      ]
+    },
+    "NockerlLanguageBadge": {
+      "file": "packages/react/src/primitives/LanguageBadge.tsx",
+      "propsType": "NockerlLanguageBadgeProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLSpanElement>, 'color' | 'children'>",
+      "props": [
+        {
+          "name": "language",
+          "type": "string | null",
+          "optional": true,
+          "default": null,
+          "description": "The language name in any casing (e.g. 'TypeScript'). Normalized to a lowercase tag by the shared <code>nockerlLanguageLabel</code> contract; a blank / absent value renders nothing."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "OPTIONAL app-side tag color: tints the soft wash + the lettering via NockerlBadge's arbitrary-color path. The APP owns the language→color mapping; the framework never hardcodes one. Unset = the neutral default."
+        },
+        {
+          "name": "size",
+          "type": "NockerlBadgeSize",
+          "optional": true,
+          "default": "'sm'",
+          "description": "Badge scale. Defaults to <code>sm</code> (the code-header pill size)."
+        }
+      ]
+    },
+    "NockerlLineChart": {
+      "file": "packages/react/src/primitives/LineChart.tsx",
+      "propsType": "NockerlLineChartProps",
+      "extendsClause": "HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "series",
+          "type": "ChartSeries[]",
+          "optional": false,
+          "default": null,
+          "description": "The series to RENDER (the consumer filters on/off + passes the active set)."
+        },
+        {
+          "name": "xLabels",
+          "type": "string[]",
+          "optional": false,
+          "default": null,
+          "description": "Category labels along the x-axis (left to right)."
+        },
+        {
+          "name": "area",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Also fill under the line (the AREA variant). Default false (line only)."
+        },
+        {
+          "name": "yMax",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Explicit y-max; else auto nice-rounded from the data."
+        },
+        {
+          "name": "yTicks",
+          "type": "number[]",
+          "optional": true,
+          "default": null,
+          "description": "Explicit y-tick values; else [0, max/2, max]."
+        },
+        {
+          "name": "valuePrefix",
+          "type": "string",
+          "optional": true,
+          "default": "''",
+          "description": "Shown on ticks + tooltip, e.g. \"$\". Ignored when valueFormat is set."
+        },
+        {
+          "name": "valueFormat",
+          "type": "(v: number) => string",
+          "optional": true,
+          "default": null,
+          "description": "Overrides valuePrefix for tick / tooltip formatting."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": true,
+          "default": "DEFAULT_H",
+          "description": "viewBox height (an SVG coordinate, not design px). Default 200."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Overrides the auto-generated data summary (role=\"img\" name)."
+        }
+      ]
+    },
+    "NockerlLink": {
+      "file": "packages/react/src/primitives/Link.tsx",
+      "propsType": "NockerlLinkProps",
+      "extendsClause": "Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'children' | 'onClick'>",
+      "props": [
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Visible link text."
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "optional": true,
+          "default": "'#'",
+          "description": "Destination. Demo uses \"#\"; real links pass a URL."
+        },
+        {
+          "name": "variant",
+          "type": "NockerlLinkVariant",
+          "optional": true,
+          "default": "'default'",
+          "description": "Emphasis: cyan accent (default) or subtle/inherit-color (muted)."
+        },
+        {
+          "name": "onAccent",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Renders on a cyan accent surface, so text flips to the on-accent token."
+        },
+        {
+          "name": "visited",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Force the visited (already-read) treatment regardless of history: the recede state a real visited link earns via :visited. For docs/showcase + tests."
+        },
+        {
+          "name": "external",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Marks the link as external: adds the ↗ glyph + target/rel + a11y hint."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible) state. aria-disabled, not focusable."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading glyph (e.g. a download icon), baseline-aligned."
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Click handler (the demo blocks navigation so \"#\" doesn't jump)."
+        }
+      ]
+    },
+    "NockerlListItem": {
+      "file": "packages/react/src/behaviors/ListItem.tsx",
+      "propsType": "NockerlListItemProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'value' | 'onSelect' | 'onToggle'>",
+      "props": [
+        {
+          "name": "primary",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Primary text. Carries the row's accessible name (label.large role)."
+        },
+        {
+          "name": "secondary",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional supporting line under the primary text (body.small role)."
+        },
+        {
+          "name": "status",
+          "type": "NockerlListItemStatus",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading status mark: renders the canonical B20 status ICON (shape + color dual-coding, never a bare dot) in the status color. Status colors only, never cyan."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading ICON (any node) for action rows (share / rename / delete). Shown in the leading slot when the row is neither selected nor carrying a status mark."
+        },
+        {
+          "name": "danger",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Destructive treatment. The primary text + leading icon go status-error (a delete row)."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional trailing value text (e.g. a count, a timestamp)."
+        },
+        {
+          "name": "trailing",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional trailing NODE (a NockerlBadge / NockerlChip / status pill) shown before the chevron. For rich rows: an accordion header's tone pill, a tool-card's state chip. Compose a real component (NockerlBadge / NockerlStatusDisc / NockerlChip), never a hand-rolled facsimile."
+        },
+        {
+          "name": "chevron",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Show a trailing NAV chevron (right-pointing, for genuinely navigational rows)."
+        },
+        {
+          "name": "expandable",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Make the row an accordion: trailing chevron points DOWN at rest, rotates UP when expanded; the row gets aria-expanded + aria-controls and reveals a body region below it. Mutually exclusive with the nav chevron."
+        },
+        {
+          "name": "expanded",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Expanded state for an expandable row; drives the chevron rotation + body reveal."
+        },
+        {
+          "name": "onToggle",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Toggle handler for an expandable row (whole-row tap). Ignored while disabled."
+        },
+        {
+          "name": "details",
+          "type": "React.ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The body of an expandable row, revealed when the row expands."
+        },
+        {
+          "name": "selected",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Selected state: soft cyan wash + a LEADING check. NOT a glow, not a left-rail."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible) state."
+        },
+        {
+          "name": "onSelect",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Activate handler (whole-row tap). Ignored while disabled."
+        }
+      ]
+    },
+    "NockerlListboxOption": {
+      "file": "packages/react/src/behaviors/ListboxOption.tsx",
+      "propsType": "NockerlListboxOptionProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'id' | 'className'>",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Stable id (the listbox points aria-activedescendant here). REQUIRED."
+        },
+        {
+          "name": "primary",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Primary line: the option's accessible name. May include &lt;mark&gt; for a typed-match highlight."
+        },
+        {
+          "name": "secondary",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Supporting line under the primary (a description / hint)."
+        },
+        {
+          "name": "selected",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Chosen state. Sets aria-selected + a faint cyan wash (single-select check / multi box fill)."
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Keyboard-highlighted state (the aria-activedescendant target). Neutral highlight + cyan ring."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible)."
+        },
+        {
+          "name": "status",
+          "type": "NockerlListboxOptionStatus",
+          "optional": true,
+          "default": null,
+          "description": "Leading STATUS dot (status colors only). Ignored when <code>leadingIcon</code> is set."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Leading ICON (any node), e.g. a command-row glyph. Takes the lead slot over <code>status</code>."
+        },
+        {
+          "name": "multi",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Multi-select: render a leading CHECKBOX indicator (filled when selected) + suppress the trailing check."
+        },
+        {
+          "name": "run",
+          "type": "ListboxOptionRun",
+          "optional": true,
+          "default": "'single'",
+          "description": "Position in a CONTIGUOUS RUN of selected rows. Squares the corners where a selected row TOUCHES its selected neighbor so the run's washes merge into one block (no white notches), rounding only the run's outer corners. Only meaningful on a selected row; defaults to <code>single</code> (all corners rounded for the lone/non-run case, and every single-select consumer). See ."
+        },
+        {
+          "name": "trailing",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Arbitrary trailing content (e.g. shortcut keys). Replaces the auto single-select check."
+        },
+        {
+          "name": "ariaKeyshortcuts",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "aria-keyshortcuts for the row (e.g. a command shortcut)."
+        },
+        {
+          "name": "onActivate",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Pointer-enter: the consumer sets this row active (aria-activedescendant)."
+        },
+        {
+          "name": "onSelect",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Click commits (single-select) or toggles (multi). Ignored while disabled."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Extra class names appended to the row."
+        }
+      ]
+    },
+    "NockerlMenu": {
+      "file": "packages/react/src/behaviors/Menu.tsx",
+      "propsType": "NockerlMenuProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "stageRef",
+          "type": "RefObject<HTMLDivElement | null>",
+          "optional": false,
+          "default": null,
+          "description": "The contained STAGE the menu opens INSIDE + is clamped to (the trigger host)."
+        },
+        {
+          "name": "triggerRefs",
+          "type": "RefObject<Record<string, HTMLButtonElement | null>>",
+          "optional": false,
+          "default": null,
+          "description": "The trigger element map (id → button), shared with the host's trigger buttons."
+        },
+        {
+          "name": "checks",
+          "type": "Record<string, boolean>",
+          "optional": true,
+          "default": null,
+          "description": "Which checkbox rows are checked (id → boolean). Optional in <code>onActivate</code> mode."
+        },
+        {
+          "name": "radio",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "The selected radio id (one per group). Optional in <code>onActivate</code> mode."
+        },
+        {
+          "name": "setChecks",
+          "type": "(updater: (c: Record<string, boolean>) => Record<string, boolean>) => void",
+          "optional": true,
+          "default": null,
+          "description": "Activation side-effects (state writes) owned by the host showcase. Optional in <code>onActivate</code> mode."
+        },
+        {
+          "name": "setRadio",
+          "type": "(id: string) => void",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "setLast",
+          "type": "(label: string) => void",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "current",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Mark ONE item with a leading check: the CURRENT / default choice (a split-button's active action). Reserves the leading-check column so action labels align. Used with <code>onActivate</code>."
+        },
+        {
+          "name": "dim",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Dim the ground with a modal scrim (a point-anchored contextual menu that reads as a focused surface, as in long-press-pop), instead of the default transparent non-modal outside-click catcher."
+        },
+        {
+          "name": "onActivate",
+          "type": "(item: MenuItem) => void",
+          "optional": true,
+          "default": null,
+          "description": "Host-owned activation: called on any item activation so the host runs the side-effect (e.g. run the action AND promote it to the new default). The menu then closes (a <code>checkbox</code> stays open, toggled in place). When omitted, the built-in showcase checks/radio model is used."
+        },
+        {
+          "name": "children",
+          "type": "(api: MenuTriggerApi) => ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The host's TRIGGER buttons, authored as a render function so they stay demo-owned scaffolding yet re-render with the menu's open/close state. The menu surface + scrim render after them (inside the same stage)."
+        }
+      ]
+    },
+    "NockerlNavItem": {
+      "file": "packages/react/src/behaviors/NavItem.tsx",
+      "propsType": "NockerlNavItemProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'children' | 'type' | 'title'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Visible label, the row's accessible name (also the rail tooltip)."
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Leading glyph (an &lt;NockerlIcon&gt;). STAYS visible + tints cyan when active."
+        },
+        {
+          "name": "layout",
+          "type": "NockerlNavItemLayout",
+          "optional": true,
+          "default": "'row'",
+          "description": "row (sidebar, default) · rail (icon-only + tooltip) · stack (icon-over-label, bottom-nav)."
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Active destination: soft cyan wash + cyan tint + aria-current=\"page\" (icon stays; no check, no rail)."
+        },
+        {
+          "name": "current",
+          "type": "boolean",
+          "optional": true,
+          "default": null,
+          "description": "aria-current override, independent of the active VISUAL (e.g. a parent row that shows the wash because a child is selected, but is not itself the current page). Defaults to <code>active</code>."
+        },
+        {
+          "name": "flat",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Tint-only active (no wash / no border), for a bar that carries its OWN selection indicator (a bottom-nav's sliding pill). The active row still tints cyan + aria-current."
+        },
+        {
+          "name": "status",
+          "type": "NockerlNavItemStatus",
+          "optional": true,
+          "default": null,
+          "description": "Status dot riding the icon corner (status colors only, never cyan)."
+        },
+        {
+          "name": "count",
+          "type": "NavItemCount",
+          "optional": true,
+          "default": null,
+          "description": "Trailing count pill (row/stack); in the rail it collapses to a corner attention dot."
+        },
+        {
+          "name": "showLabel",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Show the label. false hides it VISUALLY but keeps it as the accessible name, for a bottom-nav in \"labels: selected-only\" mode (unselected tabs are icon-only)."
+        },
+        {
+          "name": "sub",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Nested sub-row: denser, no icon, indented under a parent (the shell draws the guide rail)."
+        },
+        {
+          "name": "expandable",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Disclosure row: the trailing chevron rotates 90° when expanded (aria-expanded)."
+        },
+        {
+          "name": "expanded",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Expanded state for an expandable row."
+        },
+        {
+          "name": "onToggle",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Toggle handler for an expandable row (whole-row tap)."
+        },
+        {
+          "name": "onSelect",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Activate handler (whole-row tap) for a non-expandable row."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible-name override (when the label alone is ambiguous)."
+        }
+      ]
+    },
+    "NockerlNodeCell": {
+      "file": "packages/react/src/composites/NodeCell.tsx",
+      "propsType": "NockerlNodeCellProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The node name (\"node-1 · GB10\")."
+        },
+        {
+          "name": "status",
+          "type": "StatusKind",
+          "optional": false,
+          "default": null,
+          "description": "Node health on the shared status ladder, lives in the DOT, never the card."
+        },
+        {
+          "name": "statusLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible health label (\"online\", \"degraded\"). Also shown beside the dot."
+        },
+        {
+          "name": "badge",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional soft role badge (\"GPU · prod\")."
+        },
+        {
+          "name": "metrics",
+          "type": "NockerlNodeMetric[]",
+          "optional": true,
+          "default": null,
+          "description": "Metric rows, rendered in order."
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Open footer slot (chips, counts, an action)."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlOverlay": {
+      "file": "packages/react/src/behaviors/Overlay.tsx",
+      "propsType": "NockerlOverlayProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": false,
+          "default": null,
+          "description": "Whether the overlay is presented."
+        },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Dismiss handler: scrim tap + Esc call this; the consumer typically also restores trigger focus here."
+        },
+        {
+          "name": "stage",
+          "type": "HTMLElement | null",
+          "optional": false,
+          "default": null,
+          "description": "The contained stage element, which gates rendering so the overlay never escapes it (pass the demo stage)."
+        },
+        {
+          "name": "placement",
+          "type": "NockerlOverlayPlacement",
+          "optional": true,
+          "default": "'center'",
+          "description": "Panel position + which wrap layout to use. Default 'center'."
+        },
+        {
+          "name": "closeDurationMs",
+          "type": "number",
+          "optional": true,
+          "default": "240",
+          "description": "ms the exit animation runs before unmount (match the panel's transition). Default 240."
+        },
+        {
+          "name": "onKeyDown",
+          "type": "(e: ReactKeyboardEvent) => void",
+          "optional": true,
+          "default": null,
+          "description": "Consumer keydown (e.g. Dialog's Enter=confirm). Runs BEFORE the built-in Esc/Tab trap; call e.preventDefault() in it to stop the trap from also acting on that key."
+        },
+        {
+          "name": "initialFocus",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "CSS selector for the preferred initial focus target inside the panel (e.g. a field)."
+        },
+        {
+          "name": "initialFocusRef",
+          "type": "RefObject<HTMLElement | null>",
+          "optional": true,
+          "default": null,
+          "description": "Explicit initial focus target (used when the selector matches nothing, e.g. a confirm button ref)."
+        },
+        {
+          "name": "scrimLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Dismiss'",
+          "description": "Accessible name for the scrim dismiss button. Default 'Dismiss'."
+        },
+        {
+          "name": "dim",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "false = a transparent (non-dimming) click-catcher instead of the modal dim. Default true."
+        },
+        {
+          "name": "children",
+          "type": "(api: NockerlOverlayRenderApi) => ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Render the panel; receives the wiring api."
+        }
+      ]
+    },
+    "NockerlPageDots": {
+      "file": "packages/react/src/primitives/PageDots.tsx",
+      "propsType": "NockerlPageDotsProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "page",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Current page index (0-based)."
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Total number of pages."
+        },
+        {
+          "name": "onChange",
+          "type": "(page: number) => void",
+          "optional": false,
+          "default": null,
+          "description": "Called with the selected page index."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": "'Pages'",
+          "description": "Accessible name for the group (a \"N of M\" position is appended)."
+        }
+      ]
+    },
+    "NockerlPagination": {
+      "file": "packages/react/src/composites/Pagination.tsx",
+      "propsType": "NockerlPaginationProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "page",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Current page (1-based)."
+        },
+        {
+          "name": "pageCount",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Total number of pages."
+        },
+        {
+          "name": "onChange",
+          "type": "(page: number) => void",
+          "optional": false,
+          "default": null,
+          "description": "Called with the next page (already clamped to 1..pageCount)."
+        },
+        {
+          "name": "variant",
+          "type": "NockerlPaginationVariant",
+          "optional": true,
+          "default": "'numbered'",
+          "description": "numbered (default) · compact · prev-next."
+        },
+        {
+          "name": "siblings",
+          "type": "number",
+          "optional": true,
+          "default": "1",
+          "description": "How many page cells to show either side of the current page (numbered)."
+        },
+        {
+          "name": "tone",
+          "type": "NockerlPaginationTone",
+          "optional": true,
+          "default": "'neutral'",
+          "description": "Color of the compact \"Page X of Y\" label. 'neutral' (default) keeps the WHOLE phrase in the card text color (accent-restraint law); 'accent' tints the ENTIRE phrase cyan. Never a partial tint: the whole phrase shares one color, never a lone cyan digit. No effect on the numbered / prev-next variants."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": "'NockerlPagination'",
+          "description": "Accessible name for the &lt;nav&gt; landmark."
+        }
+      ]
+    },
+    "NockerlPopover": {
+      "file": "packages/react/src/behaviors/Popover.tsx",
+      "propsType": "NockerlPopoverProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "boundaryRef",
+          "type": "RefObject<HTMLElement | null>",
+          "optional": false,
+          "default": null,
+          "description": "The element the panel is clamped INTO: anchor rects are read relative to it and the panel never crosses its 10px inset. Pass the contained stage / a positioned host."
+        },
+        {
+          "name": "renderContent",
+          "type": "(id: string, titleId: string) => ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Render the rich body for the open popover. Receives the open id + the title id to wire <code>aria-labelledby</code>."
+        },
+        {
+          "name": "getWidth",
+          "type": "(id: string) => string | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Per-id panel width (the <code>--nk-pp-w</code> local). Defaults are applied by the CSS if omitted."
+        },
+        {
+          "name": "arrow",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Show the directional arrow/beak pointing at the trigger."
+        },
+        {
+          "name": "place",
+          "type": "'auto' | Side",
+          "optional": true,
+          "default": "'auto'",
+          "description": "Force a placement, or 'auto' to prefer the side the trigger requested (still flips/clamps)."
+        },
+        {
+          "name": "bare",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "BARE panel: padding 0, NO arrow, and NO baked <code>role=\"dialog\"</code>. The consumer's content (a listbox, a calendar grid, a time dial) owns the shell padding + its own ARIA role. For anchored dropdowns / pickers that want the shared anchor→flip→clamp + outside-click + Esc machinery but NOT the padded rich-panel shell. The elevated surface (lift + shadow) stays."
+        },
+        {
+          "name": "autoFocus",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Move focus INTO the panel on open (default true, the rich-panel contract). Set false when the consumer manages its OWN initial focus: a calendar's roving <code>focusIdx</code>, or a combobox that keeps focus in its external input and drives the list via <code>aria-activedescendant</code>. The Tab focus-TRAP still applies once focus is inside the panel; this only governs the initial focus move."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(id: string | null) => void",
+          "optional": true,
+          "default": null,
+          "description": "Notified whenever the open id changes (null when closed). Drives trigger aria-expanded + active state."
+        },
+        {
+          "name": "handleRef",
+          "type": "RefObject<NockerlPopoverHandle | null>",
+          "optional": true,
+          "default": null,
+          "description": "Imperative handle so triggers can call open/close + read openId."
+        }
+      ]
+    },
+    "NockerlProgressSegments": {
+      "file": "packages/react/src/primitives/ProgressTrack.tsx",
+      "propsType": "NockerlProgressSegmentsProps",
+      "extendsClause": "TrackRootProps",
+      "props": [
+        {
+          "name": "total",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Total cells."
+        },
+        {
+          "name": "filled",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "How many leading cells are filled (cyan)."
+        }
+      ]
+    },
+    "NockerlProgressTrack": {
+      "file": "packages/react/src/primitives/ProgressTrack.tsx",
+      "propsType": "NockerlProgressTrackProps",
+      "extendsClause": "HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "optional": true,
+          "default": "0",
+          "description": "Determinate fill, 0-100 (clamped + rounded). Ignored when <code>indeterminate</code>."
+        },
+        {
+          "name": "size",
+          "type": "ProgressSize",
+          "optional": true,
+          "default": "'thin'",
+          "description": "Track height ramp: thin (the app's 3-4dp) or thick."
+        },
+        {
+          "name": "tone",
+          "type": "ProgressTone",
+          "optional": true,
+          "default": "'accent'",
+          "description": "The fill tone, either the plain cyan accent (default) or a warm status hue."
+        },
+        {
+          "name": "buffer",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "A lighter secondary buffer (0-100) rendered BEHIND the primary fill."
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Work of unknown length. A sliding segment travels the track (no value)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Override the fill node's children (the demo never does; kept for parity)."
+        }
+      ]
+    },
+    "NockerlRadioGroup": {
+      "file": "packages/react/src/composites/RadioGroup.tsx",
+      "propsType": "NockerlRadioGroupProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "options",
+          "type": "RadioOption[]",
+          "optional": false,
+          "default": null,
+          "description": "Group options, rendered in order."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Currently selected value (controlled)."
+        },
+        {
+          "name": "onChange",
+          "type": "(next: string) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next value. Ignored for disabled options."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Visible group label, wired as the radiogroup's accessible name."
+        },
+        {
+          "name": "orientation",
+          "type": "'vertical' | 'horizontal'",
+          "optional": true,
+          "default": "'vertical'",
+          "description": "Stack vertically (default) or flow inline on one line."
+        },
+        {
+          "name": "size",
+          "type": "RadioSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Circle scale. <code>md</code> matches the platform default."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Whole-group invalid: warm error ring + a required message. Color never alone."
+        },
+        {
+          "name": "variant",
+          "type": "'list' | 'card'",
+          "optional": true,
+          "default": "'list'",
+          "description": "Render each option as a selectable CARD instead of a list row."
+        }
+      ]
+    },
+    "NockerlRangeSlider": {
+      "file": "packages/react/src/primitives/Slider.tsx",
+      "propsType": "NockerlRangeSliderProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "low",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "high",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "(low: number, high: number) => void",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "optional": true,
+          "default": "0",
+          "description": ""
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "default": "100",
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "default": "1",
+          "description": ""
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "optional": true,
+          "default": "''",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "NockerlSliderSize",
+          "optional": true,
+          "default": "'md'",
+          "description": ""
+        }
+      ]
+    },
+    "NockerlSegmentedControl": {
+      "file": "packages/react/src/primitives/SegmentedControl.tsx",
+      "propsType": "NockerlSegmentedControlProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "segments",
+          "type": "Segment[]",
+          "optional": false,
+          "default": null,
+          "description": "The segments, left-to-right. 2-5 mutually-exclusive peers."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The currently-active value (controlled). Exactly one is selected."
+        },
+        {
+          "name": "onChange",
+          "type": "(next: string) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next value. Ignored for a disabled segment."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible name for the group (wired via aria-label)."
+        },
+        {
+          "name": "size",
+          "type": "SegmentSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Control height + padding + type role."
+        },
+        {
+          "name": "orientation",
+          "type": "'horizontal' | 'vertical'",
+          "optional": true,
+          "default": "'horizontal'",
+          "description": "Track axis. <code>horizontal</code> (default) = segments in a row, pill slides X. <code>vertical</code> = segments stacked, pill slides Y (e.g. an AM/PM meridiem in a narrow slot). Additive: omitting it is a no-op for existing (horizontal) consumers."
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Stretch to fill the row (equal-width segments) vs. hug its content."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Dim + disable the whole control."
+        }
+      ]
+    },
+    "NockerlSelect": {
+      "file": "packages/react/src/composites/Select.tsx",
+      "propsType": "NockerlSelectProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Persistent label above the trigger, never a placeholder."
+        },
+        {
+          "name": "options",
+          "type": "NockerlSelectOption[]",
+          "optional": false,
+          "default": null,
+          "description": "The fixed set to pick one from."
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "optional": false,
+          "default": null,
+          "description": "The chosen value, or null for the empty/placeholder state."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "optional": false,
+          "default": null,
+          "description": "Commit a single selection (the option value), then close the popover."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "default": "'Select…'",
+          "description": "Shown when nothing is selected (label still persists above)."
+        },
+        {
+          "name": "helperText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Quiet supporting line under the well."
+        },
+        {
+          "name": "errorText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "When set, the field reads invalid (warm border + icon + this message)."
+        },
+        {
+          "name": "size",
+          "type": "NockerlSelectSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Control height + type: 'md' (44px) | 'sm' (34px)."
+        },
+        {
+          "name": "grouped",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Bucket options under their <code>group</code> header."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + still legible (never invisible)."
+        }
+      ]
+    },
+    "NockerlSessionChip": {
+      "file": "packages/react/src/composites/SessionChip.tsx",
+      "propsType": "NockerlSessionChipProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": false,
+          "default": null,
+          "description": "Selected keycap: the sanctioned cyan selection tint + higher lift + aria-pressed."
+        },
+        {
+          "name": "dot",
+          "type": "NockerlSessionChipDot",
+          "optional": false,
+          "default": null,
+          "description": "Leading status dot from the priority ladder. attention/streaming pulse."
+        },
+        {
+          "name": "engineGlyph",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The engine identity glyph (an &lt;NockerlIcon&gt;, currentColor)."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The session name (ellipsized). Carries the accessible name."
+        },
+        {
+          "name": "mark",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Optional selection mark (an accent check) shown only while active."
+        },
+        {
+          "name": "ratio",
+          "type": "number | null",
+          "optional": false,
+          "default": null,
+          "description": "Context-usage ratio 0..1 → the inner line (cyan → amber → red); null = a faint empty track."
+        },
+        {
+          "name": "onSelect",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlSessionChipsBar": {
+      "file": "packages/react/src/composites/SessionChipsBar.tsx",
+      "propsType": "NockerlSessionChipsBarProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "The keycaps: NockerlSessionChip children, rendered inside the fading scroller."
+        },
+        {
+          "name": "onAdd",
+          "type": "(() => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "Renders the trailing cyan \"+\" CTA (the real NockerlIconButton filled-circle) and wires it."
+        },
+        {
+          "name": "addLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'New session'",
+          "description": "Accessible label for the \"+\" CTA."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": "'Sessions'",
+          "description": "Accessible name for the bar (role=\"group\")."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlSlider": {
+      "file": "packages/react/src/primitives/Slider.tsx",
+      "propsType": "NockerlSliderProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "(v: number) => void",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "optional": true,
+          "default": "0",
+          "description": ""
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "default": "100",
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "default": "1",
+          "description": ""
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "optional": true,
+          "default": "''",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "NockerlSliderSize",
+          "optional": true,
+          "default": "'md'",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": ""
+        },
+        {
+          "name": "ticks",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render tick marks + min/max tick labels under the lane (stepped slider)."
+        }
+      ]
+    },
+    "NockerlSparkline": {
+      "file": "packages/react/src/primitives/Sparkline.tsx",
+      "propsType": "NockerlSparklineProps",
+      "extendsClause": "Omit<SVGAttributes<SVGSVGElement>, 'width' | 'height'>",
+      "props": [
+        {
+          "name": "data",
+          "type": "number[]",
+          "optional": false,
+          "default": null,
+          "description": "The series, left-to-right. Normalized to its OWN min/max (the Android algorithm)."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": true,
+          "default": "64",
+          "description": "SVG coordinate-space width in px."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": true,
+          "default": "22",
+          "description": "SVG coordinate-space height in px."
+        },
+        {
+          "name": "pad",
+          "type": "number",
+          "optional": true,
+          "default": "1",
+          "description": "Inset (px) so the stroke + the \"now\" dot never clip at the box edge. StatCard uses 1, the chart stat tiles use 3."
+        },
+        {
+          "name": "stroke",
+          "type": "string",
+          "optional": true,
+          "default": "'var(--color-accent-primary)'",
+          "description": "Line + dot color: a var(--token) the caller supplies (cyan / on-accent / categorical)."
+        },
+        {
+          "name": "showLast",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Render the trailing dot on the latest point (the \"now\" marker)."
+        },
+        {
+          "name": "draw",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Draw-on: the line strokes in once on mount (frozen under reduced-motion)."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible description (role=\"img\"); e.g. \"Tokens trend, 10 points, latest 13\"."
+        }
+      ]
+    },
+    "NockerlSpinner": {
+      "file": "packages/react/src/primitives/Spinner.tsx",
+      "propsType": "NockerlSpinnerProps",
+      "extendsClause": "HTMLAttributes<HTMLSpanElement>",
+      "props": [
+        {
+          "name": "size",
+          "type": "NockerlSpinnerSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Diameter step. Stroke width scales with the size (thinner when small)."
+        },
+        {
+          "name": "tone",
+          "type": "NockerlSpinnerTone",
+          "optional": true,
+          "default": "'accent'",
+          "description": "Arc color: the cyan accent (default), the on-accent label (in a primary button), or inherit."
+        },
+        {
+          "name": "track",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Render the faint recessed track ring behind the arc."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": "'Loading'",
+          "description": "Accessible name announced by assistive tech."
+        }
+      ]
+    },
+    "NockerlStatusDisc": {
+      "file": "packages/react/src/primitives/StatusDisc.tsx",
+      "propsType": "NockerlStatusDiscProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLSpanElement>, 'color'>",
+      "props": [
+        {
+          "name": "intent",
+          "type": "AlertIntent",
+          "optional": false,
+          "default": null,
+          "description": "Semantic intent that binds the coin fill from the shared ALERT_INTENT map."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The knockout glyph (a FILLED/stroke svg in currentColor, which inherits the canvas ink)."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Raw fill override for a tone with NO shared-map peer (e.g. Banner's local <code>neutral</code> = on-card). When set it wins over <code>ALERT_INTENT[intent].color</code>."
+        },
+        {
+          "name": "lineNudge",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional CSS length for the disc's top margin, the line-box centring nudge a multi-line alert uses to align the coin to its first text line. Omit for a bare, standalone coin (no nudge)."
+        },
+        {
+          "name": "inset",
+          "type": "boolean",
+          "optional": true,
+          "default": null,
+          "description": "Render the coin RECESSED (an inset well) instead of a raised filled coin: the intent color leaves the fill for the GLYPH + a soft status wash + a whisper status border, and the lift flips to an inner top shade (the EmptyState-well treatment). The persistent inline **banner** uses this: informational + non-interactive (the icon-interactivity canon) while status still lives in a DISC (Law 6). Default false = the raised filled coin the toast / callout / transcript keep."
+        }
+      ]
+    },
+    "NockerlStatusDot": {
+      "file": "packages/react/src/primitives/StatusDot.tsx",
+      "propsType": "NockerlStatusDotProps",
+      "extendsClause": "HTMLAttributes<HTMLSpanElement>",
+      "props": [
+        {
+          "name": "status",
+          "type": "StatusKind",
+          "optional": true,
+          "default": "'neutral'",
+          "description": "Which semantic state to render. The hue comes from the status / dot token ramp."
+        },
+        {
+          "name": "size",
+          "type": "StatusSize",
+          "optional": true,
+          "default": "'sm'",
+          "description": "Dot diameter ramp: xs 6 · sm 8 · md 10 (geometry derived from the spacing scale)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional visible label rendered after the dot (baseline-aligned)."
+        },
+        {
+          "name": "pulse",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Live: fade the dot's opacity (the shipped pulse). Use for streaming / recording / connected."
+        },
+        {
+          "name": "ping",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Live ring: an expanding concentric \"ping\" in the same hue (web-original; see the drift note)."
+        },
+        {
+          "name": "outline",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Outline-only: a hollow ring in the hue instead of a filled dot."
+        },
+        {
+          "name": "surface",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "The host surface the dot sits ON. It fills the notch ring so the dot reads as a chip on that surface. Defaults to the canvas; pass a card token on a card."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name. Required when there is no visible <code>label</code>, so the state is never conveyed by color alone (rendered as a role=\"img\" name + sr-only text)."
+        }
+      ]
+    },
+    "NockerlStepper": {
+      "file": "packages/react/src/composites/Stepper.tsx",
+      "propsType": "NockerlStepperProps",
+      "extendsClause": "HTMLAttributes<HTMLOListElement>",
+      "props": [
+        {
+          "name": "steps",
+          "type": "Step[]",
+          "optional": false,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "current",
+          "type": "number",
+          "optional": false,
+          "default": null,
+          "description": "Index of the current (active) step."
+        },
+        {
+          "name": "orientation",
+          "type": "NockerlStepperOrientation",
+          "optional": true,
+          "default": "'horizontal'",
+          "description": ""
+        },
+        {
+          "name": "errorAt",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Index that is in an error state (only when it is also the current step)."
+        },
+        {
+          "name": "onStepClick",
+          "type": "(index: number) => void",
+          "optional": true,
+          "default": null,
+          "description": "Jump handler - when set, DONE steps become real buttons."
+        }
+      ]
+    },
+    "NockerlSurface": {
+      "file": "packages/react/src/primitives/Surface.tsx",
+      "propsType": "NockerlSurfaceProps",
+      "extendsClause": "Omit<AllHTMLAttributes<HTMLElement>, 'className' | 'style' | 'children' | 'as'>",
+      "props": [
+        {
+          "name": "variant",
+          "type": "NockerlSurfaceVariant",
+          "optional": true,
+          "default": "'card'",
+          "description": "Sanctioned surface type: 'card' (--radius-card) | 'panel' (--radius-panel). Default card."
+        },
+        {
+          "name": "level",
+          "type": "NockerlSurfaceLevel",
+          "optional": true,
+          "default": null,
+          "description": "Canonical neutral shadow rung 1-4. OMIT to supply your own box-shadow (panel/drift)."
+        },
+        {
+          "name": "flat",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Drop the hairline border (depth then reads from shadow + sheen alone)."
+        },
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "default": null,
+          "description": "Element tag to render. Default 'div'."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlSwitch": {
+      "file": "packages/react/src/primitives/Switch.tsx",
+      "propsType": "NockerlSwitchProps",
+      "extendsClause": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "optional": false,
+          "default": null,
+          "description": "Controlled checked state."
+        },
+        {
+          "name": "onChange",
+          "type": "(next: boolean) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next checked value. Ignored while disabled or loading."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name. Rendered as a persistent label when <code>label</code> is set, else required."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Supporting line under the label (label rows only)."
+        },
+        {
+          "name": "size",
+          "type": "NockerlSwitchSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Track + thumb scale. <code>md</code> matches the Material/system default."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible) state."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Awaiting async confirmation. Shows a spinner in the thumb and blocks re-toggle."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "aria-label when there is no visible <code>label</code> (icon-only / inline use)."
+        }
+      ]
+    },
+    "NockerlTable": {
+      "file": "packages/react/src/composites/Table.tsx",
+      "propsType": "NockerlTableProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "columns",
+          "type": "NockerlTableColumn<Row>[]",
+          "optional": false,
+          "default": null,
+          "description": "The typed column definitions (order = column order)."
+        },
+        {
+          "name": "rows",
+          "type": "Row[]",
+          "optional": false,
+          "default": null,
+          "description": "The rows to render, verbatim. The caller sorts + paginates before passing them in."
+        },
+        {
+          "name": "getRowId",
+          "type": "(row: Row, index: number) => string",
+          "optional": true,
+          "default": null,
+          "description": "Stable id per row. It keys React and drives the selection set. Defaults to String(index)."
+        },
+        {
+          "name": "sort",
+          "type": "NockerlTableSort | null",
+          "optional": true,
+          "default": null,
+          "description": "Controlled sort state (the active column + direction), or null when unsorted."
+        },
+        {
+          "name": "onSortChange",
+          "type": "(next: NockerlTableSort) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next sort when a sortable header is clicked (toggles asc/desc on the same key)."
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Add a checkbox column + a header select-all (indeterminate on a partial page)."
+        },
+        {
+          "name": "selectedIds",
+          "type": "Set<string>",
+          "optional": true,
+          "default": null,
+          "description": "Controlled set of selected row ids (selectable)."
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(next: Set<string>) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next selected-id set when a box (row or select-all) toggles."
+        },
+        {
+          "name": "stickyHeader",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Pin the header (and footer) so they stay flush while the body scrolls."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Renders skeleton rows that hold the column grid; sets aria-busy."
+        },
+        {
+          "name": "loadingRows",
+          "type": "number",
+          "optional": true,
+          "default": "3",
+          "description": "How many skeleton rows to show while loading."
+        },
+        {
+          "name": "empty",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Shown in place of the body when <code>rows</code> is empty (and not loading)."
+        },
+        {
+          "name": "footer",
+          "type": "(rows: Row[]) => ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "A summary row pinned under the body (column totals, for example). Receives the rendered rows."
+        },
+        {
+          "name": "density",
+          "type": "NockerlTableDensity",
+          "optional": true,
+          "default": "'comfortable'",
+          "description": "Row density. It adjusts vertical padding only, never the fill."
+        },
+        {
+          "name": "maxHeight",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Max height of the scroll region (proves the sticky header). A CSS length; omit for no cap."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Accessible name for the &lt;table&gt;."
+        },
+        {
+          "name": "caption",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "A visually-hidden &lt;caption&gt; describing the table for assistive tech."
+        }
+      ]
+    },
+    "NockerlTabs": {
+      "file": "packages/react/src/composites/Tabs.tsx",
+      "propsType": "NockerlTabsProps",
+      "extendsClause": "Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "tabs",
+          "type": "TabItemDef[]",
+          "optional": false,
+          "default": null,
+          "description": "The tabs, left-to-right. Each owns a panel rendered via <code>renderPanel</code> or its own <code>panel</code>."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "The active tab value (controlled). Exactly one tab is selected."
+        },
+        {
+          "name": "onChange",
+          "type": "(next: string) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next value. Ignored for a disabled tab."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Accessible name for the whole tablist (wired via aria-label)."
+        },
+        {
+          "name": "variant",
+          "type": "NockerlTabsVariant",
+          "optional": true,
+          "default": "'underline'",
+          "description": "Underline indicator (default) vs. 'enclosed': the same cyan underline seated inside a recessed well."
+        },
+        {
+          "name": "size",
+          "type": "NockerlTabsSize",
+          "optional": true,
+          "default": "'md'",
+          "description": "Tab height + padding + type role."
+        },
+        {
+          "name": "renderPanel",
+          "type": "(value: string) => ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "Renders the body for the active tab. Falls back to the tab's own <code>panel</code>."
+        },
+        {
+          "name": "onClose",
+          "type": "((value: string) => void) | undefined",
+          "optional": true,
+          "default": null,
+          "description": "CLOSABLE tabs (task 2656 dev-tab-bar): when set, every tab grows a trailing close affordance (pointer) and DELETE / BACKSPACE closes the focused tab (the keyboard half of the ARIA deletable-tabs pattern; the X itself stays out of the tab order). The list stays CONTROLLED: this only reports the value; the host removes the tab + moves selection."
+        }
+      ]
+    },
+    "NockerlTextArea": {
+      "file": "packages/react/src/primitives/Field.tsx",
+      "propsType": "NockerlTextAreaProps",
+      "extendsClause": "Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChange'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Persistent label, bound to the field via htmlFor / id. Never a placeholder."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Current value (controlled)."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "default": null,
+          "description": "Change handler. Ignored while disabled or read-only."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Ghost prompt INSIDE the well. It is supplementary, never the label."
+        },
+        {
+          "name": "helperText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Helper text under the well. Replaced by errorText / statusText when set."
+        },
+        {
+          "name": "errorText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "When set, the area renders its error treatment (red border + this message)."
+        },
+        {
+          "name": "status",
+          "type": "FieldStatus",
+          "optional": true,
+          "default": null,
+          "description": "The validation ladder: warning / success (or error) border + a matching, icon-carrying help line showing <code>statusText</code>. <code>errorText</code> (and an over-cap counter) still win if set. Color is never the only signal. A glyph rides along."
+        },
+        {
+          "name": "statusText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "The message shown for <code>status</code> (ignored when <code>errorText</code> / over-cap wins)."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Marks the field required: renders the status-colored <code>*</code> after the label."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible)."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Value shown, selectable, not editable."
+        },
+        {
+          "name": "maxLength",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Optional max length; drives the character counter + over-cap error."
+        },
+        {
+          "name": "minRows",
+          "type": "number",
+          "optional": true,
+          "default": "3",
+          "description": "Rows the field starts at before it auto-grows."
+        },
+        {
+          "name": "maxRows",
+          "type": "number",
+          "optional": true,
+          "default": "8",
+          "description": "Rows it grows to before it starts scrolling instead."
+        }
+      ]
+    },
+    "NockerlTextField": {
+      "file": "packages/react/src/primitives/Field.tsx",
+      "propsType": "NockerlTextFieldProps",
+      "extendsClause": "Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'type' | 'onChange'>",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Persistent label, bound to the field via htmlFor / id. Never a placeholder."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Current value (controlled)."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "default": null,
+          "description": "Change handler. Ignored while disabled or read-only."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Ghost prompt INSIDE the well. It is supplementary, never the label."
+        },
+        {
+          "name": "helperText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Helper text under the well. Replaced by errorText / statusText when set."
+        },
+        {
+          "name": "errorText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "When set, the field renders its error treatment (red border + this message)."
+        },
+        {
+          "name": "status",
+          "type": "FieldStatus",
+          "optional": true,
+          "default": null,
+          "description": "The validation ladder: warning / success (or error) border + a matching, icon-carrying help line showing <code>statusText</code>. <code>errorText</code> still wins if both are set (back-compat). Color is never the only signal (a glyph always rides along)."
+        },
+        {
+          "name": "statusText",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "The message shown for <code>status</code> (ignored when <code>errorText</code> is set)."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Marks the field required: renders the status-colored <code>*</code> after the label."
+        },
+        {
+          "name": "maxLength",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Optional max length: adds a footer row with a right-aligned character counter (help on the left, \"{len} / {max}\" on the right); over the cap = error treatment."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Inert + clearly-seen (never invisible)."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Value shown, selectable, not editable."
+        },
+        {
+          "name": "leadingIcon",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional leading glyph rendered inside the well, before the text."
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "default": "'text'",
+          "description": "input type (text, email, password, …)."
+        }
+      ]
+    },
+    "NockerlToast": {
+      "file": "packages/react/src/composites/Toast.tsx",
+      "propsType": "NockerlToastProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Body copy that carries the toast's accessible text (rendered as HTML)."
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": false,
+          "default": null,
+          "description": "Dismiss handler, fired when the timer elapses, Esc is pressed, or the close (X) is clicked."
+        },
+        {
+          "name": "intent",
+          "type": "NockerlToastIntent",
+          "optional": true,
+          "default": "'info'",
+          "description": "Drives the status color, the default icon, and the live role."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional bold heading above the message (one short line)."
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Show the leading status disc (defaults to on)."
+        },
+        {
+          "name": "actionLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional quiet text button in the status color (right-aligned; e.g. Undo)."
+        },
+        {
+          "name": "onAction",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Action handler (ignored when no actionLabel)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "default": null,
+          "description": "Auto-dismiss after this many ms. 0 / undefined → PERSISTENT (no timeout); the toast then shows a \"pinned\" marker instead of the ring and waits for close."
+        }
+      ]
+    },
+    "NockerlTodoWidget": {
+      "file": "packages/react/src/composites/TodoWidget.tsx",
+      "propsType": "NockerlTodoWidgetProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": "'Plan'",
+          "description": "Card heading."
+        },
+        {
+          "name": "items",
+          "type": "NockerlTodoItem[]",
+          "optional": false,
+          "default": null,
+          "description": "The plan steps, in order."
+        },
+        {
+          "name": "headerAccessory",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": "The header ACCESSORY seat (the ratified settings-grammar name, task 2657/2686): a chip, an info tip, a collapse control owned by the host. It trails the title."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    },
+    "NockerlTooltip": {
+      "file": "packages/react/src/behaviors/Tooltip.tsx",
+      "propsType": "NockerlTooltipProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "place",
+          "type": "'auto' | Side",
+          "optional": true,
+          "default": "'auto'",
+          "description": "Forced placement, or <code>auto</code> to use each trigger's own preferred side."
+        },
+        {
+          "name": "delayMs",
+          "type": "number",
+          "optional": true,
+          "default": "600",
+          "description": "Open delay in ms before a hovered/focused tip floats in (0 = instant)."
+        },
+        {
+          "name": "children",
+          "type": "(args: NockerlTooltipRenderArgs) => ReactNode",
+          "optional": false,
+          "default": null,
+          "description": "Render the stage + triggers; receives <code>{ stageRef, triggerProps, shows }</code>."
+        }
+      ]
+    },
+    "NockerlTree": {
+      "file": "packages/react/src/composites/Tree.tsx",
+      "propsType": "NockerlTreeProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "nodes",
+          "type": "NockerlTreeNode[]",
+          "optional": false,
+          "default": null,
+          "description": "The recursive forest. Auto-expand root folders on first load to match the canonical behaviour."
+        },
+        {
+          "name": "selectable",
+          "type": "NockerlTreeSelectable",
+          "optional": true,
+          "default": "'single'",
+          "description": "<code>single</code>: one selected node (soft cyan wash). <code>multi</code>: tri-state checkboxes that propagate parent↔child."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "REQUIRED accessible name for the <code>role=\"tree\"</code> container."
+        },
+        {
+          "name": "expandedIds",
+          "type": "Set<string>",
+          "optional": false,
+          "default": null,
+          "description": "Controlled set of expanded folder ids."
+        },
+        {
+          "name": "onToggleExpand",
+          "type": "(next: Set<string>) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired with the next expanded set when a chevron (or a folder row) toggles."
+        },
+        {
+          "name": "selectedId",
+          "type": "string | null",
+          "optional": true,
+          "default": null,
+          "description": "Selected node id (single-select)."
+        },
+        {
+          "name": "onSelect",
+          "type": "(id: string) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired when a leaf is activated (single-select)."
+        },
+        {
+          "name": "checkedIds",
+          "type": "Set<string>",
+          "optional": true,
+          "default": null,
+          "description": "Checked leaf ids (multi-select). A folder reads on / off / mixed from its descendants."
+        },
+        {
+          "name": "onCheckedChange",
+          "type": "(next: Set<string>) => void",
+          "optional": true,
+          "default": null,
+          "description": "Fired when a node toggles its whole leaf-subtree (multi-select)."
+        }
+      ]
+    },
+    "NockerlWell": {
+      "file": "packages/react/src/primitives/Well.tsx",
+      "propsType": "NockerlWellProps",
+      "extendsClause": "Omit<AllHTMLAttributes<HTMLElement>, 'className' | 'style' | 'children' | 'as'>",
+      "props": [
+        {
+          "name": "layout",
+          "type": "NockerlWellLayout",
+          "optional": false,
+          "default": null,
+          "description": "Sanctioned layout: 'field' (flex row, 44px) | 'area' (block). The ONLY divergence."
+        },
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "default": null,
+          "description": "Element tag to render. Default 'div'."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Consumer classes. Pass the state ladder here (is-focus / is-error / is-disabled / is-readonly) plus any legacy/own class the consumer's descendant selectors need."
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "optional": true,
+          "default": null,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "default": null,
+          "description": ""
+        }
+      ]
+    }
+  }
+}

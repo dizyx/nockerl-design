@@ -1,0 +1,38 @@
+---
+// Example: a bordered demo frame (lit-from-above per the depth law: neutral shadow +
+// catch-light, never a glow). Drop anything inside, including a live React island:
+//
+//   <Example caption="Live · web">
+//     <ButtonDemo client:visible />
+//   </Example>
+interface Props {
+  /** Small uppercase label above the frame (e.g. "Live · web"). */
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+---
+
+<figure class="nk-example">
+  {caption && <figcaption class="nk-example__caption">{caption}</figcaption>}
+  <div class="nk-example__frame nk-demo-stage not-content">
+    <slot />
+  </div>
+</figure>
+
+<style>
+  /*
+   * The demo stage is the canonical DARK token context. Wrapping in `.dark` makes
+   * every `var(--color-*)` inside resolve to the dark palette (tokens.css defines
+   * dark values under `.dark`). Ground + foreground come straight from tokens so a
+   * single token edit moves every demo. Padding/border stay with theme.css's
+   * `.nk-example__frame`; we don't fight it.
+   */
+  /* The demo stage is a clean CARD SURFACE (white in light, dark chrome in dark), the
+     surface components are presented on, matching the original theme.css `--nk-card`
+     intent via the proper token. Components lift off it with their own shadow + hairline. */
+  .nk-demo-stage {
+    background: var(--color-chrome-surface);   /* #ffffff light / #15171a dark */
+    color: var(--color-on-card);
+  }
+</style>

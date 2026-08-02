@@ -1,0 +1,239 @@
+---
+title: Tooltip
+description: A brief, non-interactive text hint shown on hover or focus of a control.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import TooltipDemo from '../../../components/demos/TooltipDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TooltipDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// NockerlTooltip is HEADLESS: it owns the open delay + the anchor → flip → clamp → beak
+// engine, and hands a render-prop back {{ stageRef, triggerProps, tip }}. You mount
+// your OWN triggers inside a contained stage (stageRef) and wire each via
+// triggerProps(cfg); the tip floats as the LAST child INSIDE the stage. Each hint is
+// non-interactive (text only); for a panel you tab into, use NockerlPopover instead.
+import { NockerlTooltip, NockerlIconButton, NockerlIcon } from '@dizyx/nockerl-react';
+
+// Glyphs are inline SVG nodes (the NockerlIcon registry only carries a few named paths, so
+// pass a bespoke `path`/children for the rest).
+const CopyIcon = <NockerlIcon><path d="M9 9h11v11H9z" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></NockerlIcon>;
+const StarIcon = <NockerlIcon path="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.2l1-5.8L3.5 9.2l5.9-.9z" />;
+const InfoIcon = <NockerlIcon><path d="M12 16v-4" /><path d="M12 8h.01" /><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" /></NockerlIcon>;
+const TrashIcon = <NockerlIcon><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M6 6v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6" /></NockerlIcon>;
+
+export function SessionToolbar() {
+  return (
+    // `place` forces a side (or 'auto' = each trigger's own); `delayMs` is the open delay.
+    <NockerlTooltip place="auto" delayMs={600}>
+      {({ stageRef, triggerProps, tip }) => (
+        // The contained STAGE: every tip floats INSIDE here, clamped to it (never the page).
+        <div className="toolbar" ref={stageRef} style={{ position: 'relative' }}>
+          {/* NockerlIcon-only buttons are the canonical use. The tip NAMES the action. Each
+              trigger declares its own hint via triggerProps({{ key, text, side, ... }}). */}
+          <NockerlIconButton
+            icon={CopyIcon}
+            label="Copy link"
+            onClick={copyLink}
+            {...triggerProps({ key: 'copy', text: 'Copy link', side: 'bottom', multiline: false, width: 220 })}
+          />
+          <NockerlIconButton
+            icon={StarIcon}
+            label="Add to favorites"
+            onClick={favorite}
+            {...triggerProps({ key: 'star', text: 'Add to favorites', side: 'bottom', multiline: false, width: 220 })}
+          />
+
+          {/* A longer hint wraps (multiline); `side` is a preference, so it flips/clamps to fit. */}
+          <NockerlIconButton
+            icon={InfoIcon}
+            label="About context usage"
+            {...triggerProps({
+              key: 'info',
+              text: 'Context window usage across this session, including system prompt and tool results.',
+              side: 'left',
+              multiline: true,
+              width: 240,
+            })}
+          />
+
+          {/* A disabled control fires no hover/focus; wire an enabled wrapper so the tip still shows. */}
+          <span
+            tabIndex={0}
+            role="button"
+            aria-disabled="true"
+            aria-label="Delete"
+            {...triggerProps({ key: 'del', text: 'Finish the running task before deleting', side: 'top', multiline: true, width: 220 })}
+          >
+            <NockerlIconButton icon={TrashIcon} label="Delete" disabled />
+          </span>
+
+          {/* The live tip: render it as the LAST child INSIDE the stage. */}
+          {tip}
+        </div>
+      )}
+    </NockerlTooltip>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose, Material 3 (BOM 2026.02.01). The plain tooltip is the
+// intended path: a high-contrast PlainTooltip in a TooltipBox, shown on long-press
+// (touch) and on hover/focus (pointer + keyboard). NOTE: not yet adopted in-app;
+// icon-only actions name themselves via `contentDescription` today (see drift).
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CopyAction(onClick: -> Unit) {
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = { PlainTooltip { Text("Copy link") } },
+        state = rememberTooltipState(),
+    ) {
+        NockerlIconButton(
+            icon = Icons.Filled.ContentCopy,
+            contentDescription = "Copy link",
+            onClick = onClick,
+        )
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). The native `.help(_:)` modifier IS the macOS
+// tooltip: a brief hint shown on hover after the system delay (~2s), no styling
+// hooks. Applied to icon-only buttons and form controls, where the same string
+// also serves as the accessibility label. (For an instant, themed panel, use InfoTip.)
+Button(action: copyLink) {
+    Image(systemName: "doc.on.doc")
+}
+.buttonStyle(.borderless)
+.help("Copy link")
+
+// On the Nockerl icon button it is a first-class parameter:
+NockerlIconButton(systemName: "square.and.arrow.up", help: "Share session") {
+    share()
+}
+
+// Any control takes it, and a longer hint wraps automatically:
+Toggle("Input Monitoring", isOn: $monitoring)
+    .help("Needed for Input Monitoring to take effect.")
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+`Tooltip` is <strong>headless</strong>: it owns the open delay + the anchor → flip →
+clamp → beak engine and returns a render-prop. The <em>per-hint</em> text / side /
+wrapping are declared on each trigger through <code>triggerProps(cfg)</code>, not on
+<code>Tooltip</code>.
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'place', type: "'auto' | 'top' | 'bottom' | 'left' | 'right'", default: "'auto'", description: 'Forced placement for every tip, or <code>auto</code> to use each trigger&apos;s own preferred <code>side</code>. A <em>hint</em> only: the tip flips to the opposite side and clamps inside the stage if it would not fit.' },
+    { name: 'delayMs', type: 'number', default: '600', description: 'Open delay in ms after hover/focus before a tip floats in. Pass <code>0</code> for an immediate tip.' },
+    { name: 'children', type: '(args: TooltipRenderArgs) => ReactNode', required: true, description: 'Render-prop. Receives <code>{ stageRef, triggerProps, tip, shows }</code>: mount your triggers inside the <code>stageRef</code> stage, wire each with <code>triggerProps(cfg)</code>, and render <code>tip</code> as the stage&apos;s LAST child.' },
+  ]}
+/>
+
+Each trigger declares its own hint via `triggerProps(cfg: TooltipConfig)`:
+
+<PropsTable
+  nameLabel="triggerProps(cfg)"
+  rows={[
+    { name: 'key', type: 'string', required: true, description: 'Identity of the trigger that owns the open tip (so exactly one tip shows at a time).' },
+    { name: 'text', type: 'string', required: true, description: 'The hint. <strong>Plain text only</strong>, because a tooltip is non-interactive.' },
+    { name: 'side', type: "'top' | 'bottom' | 'left' | 'right'", required: true, description: 'Preferred side for this trigger (used when <code>Tooltip place=&quot;auto&quot;</code>). Flips / clamps to fit.' },
+    { name: 'multiline', type: 'boolean', required: true, description: 'Allow wrapping for a longer tip (otherwise a single line).' },
+    { name: 'width', type: 'number', required: true, description: 'Max width hint (px) for the bubble, so it stays compact.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`PlainTooltip` is shown inside a `TooltipBox`; the trigger is its `content`. The
+position provider, the state (delay/persistence), and the surface colors come from
+`TooltipDefaults`; there is no single tooltip parameter.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'positionProvider', type: 'PopupPositionProvider', required: true, description: 'Where the tip anchors. Use <code>TooltipDefaults.rememberPlainTooltipPositionProvider()</code> (above the anchor, flips/clamps to the window).' },
+    { name: 'tooltip', type: '@Composable TooltipScope.() -> Unit', required: true, description: 'The tip content: a <code>PlainTooltip { Text(…) }</code> for a brief hint. Keep it text only.' },
+    { name: 'state', type: 'TooltipState', required: true, description: 'From <code>rememberTooltipState()</code>. Drives show/dismiss; <code>isPersistent = false</code> auto-dismisses on the next interaction.' },
+    { name: 'enableUserInput', type: 'Boolean', default: 'true', description: 'Whether long-press / hover gestures trigger the tip (vs. showing it programmatically only).' },
+    { name: 'caretSize', type: 'DpSize', default: 'TooltipDefaults.caretSize', description: 'The arrow/beak size on <code>PlainTooltip</code>. <code>DpSize.Unspecified</code> hides the beak.' },
+    { name: 'containerColor', type: 'Color', default: 'inverseSurface', description: 'Tip surface on <code>PlainTooltip</code>, high-contrast/inverted (the Nockerl theme maps it to <code>onCanvas</code>); content uses <code>inverseOnSurface</code> → <code>canvas</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The macOS tooltip is the native `.help(_:)` view modifier, a single string. The
+~2s open delay, the dark high-contrast surface, and positioning are all
+system-owned; there are no styling or timing parameters.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.help(_:)', type: 'View modifier', description: 'The hint text (a <code>Text</code> / <code>LocalizedStringKey</code>). Shown on hover after the system delay; also read by VoiceOver. The only knob.' },
+    { name: 'help (param)', type: 'String', description: 'On <code>NockerlIconButton</code>, a first-class <code>help</code> parameter forwarded to <code>.help(_:)</code> to name the icon-only action.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Tooltip vs. Popover (and cross-platform drift)">
+A **tooltip** is a brief, non-interactive *hint* shown on hover/focus after a
+delay; you cannot click into it. A **[popover](/components/popover/)** is a
+rich, anchored *panel* you tab into (it holds text, fields, actions). When a hint
+needs a control or more than a sentence, reach for the popover. Voice's `InfoTip`
+is exactly that: an instant, themed popover used *because* the native `.help()`
+tooltip has a fixed ~2s delay and no styling.
+
+- **Trigger & delay:** web shows on hover **and** keyboard focus (configurable
+  delay); macOS `.help()` is hover-only with a fixed **~2s** system delay; Compose
+  `PlainTooltip` adds long-press for touch.
+- **Surface:** web + Compose render an **inverted/high-contrast** bubble (the one
+  place a surface flips); macOS uses the system tooltip surface (not themeable).
+- **Adoption** *(resolved in [adjudication 2026-07-02 · C3])*: **`TooltipBox`** is confirmed for
+  icon-only Android actions (persistent-label a11y). It is the ratified path; icon-only actions
+  rely on `contentDescription` today and adopt `TooltipBox` / `PlainTooltip`.
+</Aside>

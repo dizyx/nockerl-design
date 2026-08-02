@@ -1,0 +1,214 @@
+---
+title: Select / dropdown
+description: The plainest picker. Choose one value from a fixed list.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import SelectDemo from '../../../components/demos/SelectDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SelectDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. NockerlSelect ships from
+// @dizyx/nockerl-react: the recessed WELL trigger + the lifted popover listbox +
+// the selected-row check + the full keyboard model are all in the package.
+import { useState } from 'react';
+import { NockerlSelect } from '@dizyx/nockerl-react';
+
+export function SessionConfig() {
+  const [provider, setProvider] = useState<string | null>('cloud-personal');
+  const [model, setModel] = useState<string | null>('large-2-0');
+
+  return (
+    <>
+      <NockerlSelect
+        label="Provider"
+        value={provider}
+        onChange={setProvider}
+        placeholder="Select a provider…"
+        options={[
+          { value: 'cloud-personal', label: 'cloud-personal', secondary: 'Cloud Agent', status: 'success' },
+          { value: 'local', label: 'local', secondary: 'Local runtime', status: 'info' },
+          { value: 'openrouter', label: 'openrouter', secondary: 'Cloud · billable', status: 'warning' },
+        ]}
+      />
+      <NockerlSelect
+        label="Model"
+        value={model}
+        onChange={setModel}
+        grouped
+        options={[
+          { value: 'large-2-0', label: 'Large 2.0', secondary: 'coding', group: 'Cloud' },
+          { value: 'qwen3-32b', label: 'Qwen3 32B', secondary: 'local', group: 'Local' },
+        ]}
+      />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose, canonical). The shipped single-select dropdown is a
+// DropdownAnchor (recessed control-shaped field + ArrowDropDown) over a Material3
+// DropdownMenu of DropdownMenuItem rows. See chat/ui/SessionCreationDropdowns.kt.
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
+import com.nockerl.app.chat.ui.DropdownAnchor
+
+@Composable
+fun ProviderDropdown(
+    providers: List<ProviderInfo>,
+    selectedProvider: ProviderInfo?,
+    isLoading: Boolean,
+    onSelect: (ProviderInfo) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        DropdownAnchor(
+            label = selectedProvider?.name ?: "Select a provider",
+            placeholder = selectedProvider == null,
+            isLoading = isLoading,
+            onClick = { if (!isLoading && providers.isNotEmpty()) expanded = true },
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            providers.forEach { provider ->
+                DropdownMenuItem(
+                    text = { Text(provider.name) },
+                    onClick = { onSelect(provider); expanded = false },
+                )
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). The shipped single-select is a Menu of Buttons; the
+// chosen row carries a leading checkmark via Label(systemImage:). The trigger is a
+// chevron.up.chevron.down on a recessed accent-outlined field. See UI/AppSettingsView.swift.
+Menu {
+    Button { settings.selectedMicUID = "" } label: {
+        micMenuLabel("System Default", selected: settings.selectedMicUID.isEmpty)
+    }
+    ForEach(micMonitor.devices) { mic in
+        Button { settings.selectedMicUID = mic.uid } label: {
+            micMenuLabel(mic.name, selected: settings.selectedMicUID == mic.uid)
+        }
+    }
+} label: {
+    HStack(spacing: 8) {
+        Text(currentMicName).lineLimit(1).truncationMode(.middle)
+        Spacer(minLength: 0)
+        Image(systemName: "chevron.up.chevron.down")
+    }
+    .foregroundStyle(NockerlTheme.accent)
+    .padding(.horizontal, 12).padding(.vertical, 8)
+    .background(NockerlTheme.canvasAlt, in: RoundedRectangle(cornerRadius: 12))
+    .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(NockerlTheme.accent, lineWidth: 1.5))
+}
+.menuStyle(.borderlessButton)
+.menuIndicator(.hidden)
+
+// A checkmark on the selected row; a plain Text otherwise.
+@ViewBuilder
+func micMenuLabel(_ name: String, selected: Bool) -> some View {
+    if selected { Label(name, systemImage: "checkmark") } else { Text(name) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlSelect" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The single-select is composed from `DropdownAnchor` (the field) + Material3
+`DropdownMenu` / `DropdownMenuItem` (the list). Parameters are those of
+`DropdownAnchor` plus the menu items the caller emits.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'label', type: 'String', required: true, description: 'The value (or placeholder) shown in the anchor. Rendered with <code>bodyMedium</code>.' },
+    { name: 'placeholder', type: 'Boolean', required: true, description: 'When <code>true</code>, the label is rendered as muted placeholder text (nothing chosen yet).' },
+    { name: 'isLoading', type: 'Boolean', required: true, description: 'Shows an inline <code>CircularProgressIndicator</code> before the chevron and (by convention) gates opening.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the anchor is dimmed + filled (surfaceVariant) and non-clickable.' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'Opens the caller-owned <code>DropdownMenu</code> (typically sets <code>expanded = true</code>).' },
+    { name: 'expanded / onDismissRequest', type: 'Boolean / -> Unit', description: 'On the wrapping <code>DropdownMenu</code>: open state + outside-dismiss.' },
+    { name: 'DropdownMenuItem(text, onClick, enabled)', type: '@Composable', description: 'One option row: a <code>Text</code> label; <code>onClick</code> selects + dismisses; <code>enabled = false</code> for an inert option.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI builds the picker as a `Menu` whose `label` is the trigger and whose
+content is a `Button` per option. There is no single Nockerl wrapper type; these
+are the load-bearing modifiers + the per-row selection idiom.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Menu { content } label: { trigger }', type: 'View', description: 'The select. <code>content</code> is the option Buttons; <code>label</code> is the field (value text + <code>chevron.up.chevron.down</code>).' },
+    { name: '.menuStyle(.borderlessButton)', type: 'MenuStyle', description: 'Renders the trigger as a flat field, not a bordered system button.' },
+    { name: '.menuIndicator(.hidden)', type: 'View modifier', description: 'Hides the default disclosure chevron so the custom one is the only indicator.' },
+    { name: 'Button { select } label: { Label(name, systemImage: "checkmark") }', type: 'View', description: 'One option. The SELECTED row uses <code>Label(_, systemImage: "checkmark")</code>; others are a plain <code>Text</code>.' },
+    { name: '.foregroundStyle(NockerlTheme.accent) + RoundedRectangle(cornerRadius: 12)', type: 'View modifiers', description: 'The recessed accent-outlined field look (control radius 12, accent label + border).' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Pick the right picker">
+Select is the **plainest** picker: one value from a fixed list, no typing. Reach for a
+neighbour when you need more: [Combobox](/components/combobox/) when the user should
+**type to filter** a long list (autocomplete); [Multi-select](/components/multi-select/)
+when they pick **several** values (token chips, per-row checkboxes, select-all);
+[Menu](/components/menu/) when the rows are **actions**, not a value (icons, shortcuts,
+submenus).
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The spec is in review; these are the real divergences between the shipped platforms:
+
+- **Selected-row check** *(resolved in [adjudication 2026-07-02 · C5])*: a **trailing check** on
+  the selected row is the shared expression. Swift + web already stamp it; Compose adds a trailing
+  check to its `DropdownMenuItem` (today the selected value reads only in the anchor).
+- **Control radius:** Compose uses `NockerlControlShape` (**12dp**, the token); Swift's
+  mic picker hardcodes an **8pt** `RoundedRectangle`; it should consume `radius.control`.
+- **Grouping + secondary text:** web supports `group` headers and a `secondary` line per
+  option; the shipped Android/Swift pickers list flat label-only rows.
+- **Sizing:** web has `size` (sm/md); Compose's anchor is fixed at 48dp; Swift is intrinsic.
+- **Error state:** web has a first-class `errorText` (warm border + icon + message); the
+  apps surface validation outside the control today.
+</Aside>

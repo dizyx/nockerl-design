@@ -1,0 +1,162 @@
+---
+title: Markdown content
+description: The rendered-markdown prose system, the typographic scale and spacing rhythm for a block of assistant or docs markdown.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import MarkdownContentDemo from '../../../components/demos/MarkdownContentDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <MarkdownContentDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// Renders a whole markdown string as styled prose: headings bind to the type
+// ramp, inline + fenced code reuse <CodeBlock>, links reuse <NockerlLink>.
+
+export function AssistantMessage({ markdown }: { markdown: string }) {
+  return (
+    <MarkdownContent
+      content={markdown}
+      density="compact"          // chat-bubble density; "comfortable" for docs
+      onImageClick={openLightbox}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose, canonical). chat/ui/MarkdownContent.kt wraps the
+// mikepenz multiplatform-markdown-renderer with the Nockerl type ramp + colors.
+// StreamingMarkdownContent renders LIVE markdown flash-free during SSE streaming.
+import com.nockerl.app.chat.ui.StreamingMarkdownContent
+
+StreamingMarkdownContent(
+    text = block.text,
+    isStreaming = isStreaming,
+    onImageClick = { url -> onImageClick(url) },
+    textColor = if (isUser) colors.onUserCard else colors.onCardAlt,
+)
+
+// The shared styling, applied by MarkdownBody to both the streaming + final paths:
+Markdown(
+    rememberMarkdownState(content = text, immediate = true),   // synchronous parse, no empty frame
+    colors = markdownColor(
+        text = resolvedTextColor,
+        codeBackground = resolvedTextColor.copy(alpha = 0.07f),        // recessed code well
+        inlineCodeBackground = resolvedTextColor.copy(alpha = 0.10f),  // inline code chip
+    ),
+    typography = markdownTypography(
+        h1 = MaterialTheme.typography.titleMedium,   // compact (chat) heading ramp
+        h2 = MaterialTheme.typography.titleSmall,
+        h3 = MaterialTheme.typography.labelLarge,
+        h4 = MaterialTheme.typography.labelLarge,
+        text = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp),
+        code = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+    ),
+    padding = markdownPadding(block = 6.dp, list = 8.dp, listItemBottom = 6.dp, listIndent = 8.dp),
+    components = markdownComponents(codeBlock = highlightedCodeBlock, codeFence = highlightedCodeFence),
+    animations = markdownAnimations { this },       // disable the lib's per-text size spring
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS (Nockerl Voice) ships NO markdown prose surface. It is a dictation app:
+// transcripts render as PLAIN text, not styled markdown (UI/HistoryView.swift).
+Text(record.text)
+    .font(.system(size: 13))
+    .textSelection(.enabled)
+
+// The intended SwiftUI surface (not yet built) would parse markdown into an
+// AttributedString and apply the Nockerl type ramp, mirroring the Android map:
+let attributed = try AttributedString(
+    markdown: record.text,
+    options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace),
+)
+Text(attributed)
+    .font(NockerlTheme.body)            // body.medium role
+    .tint(NockerlTheme.accentPrimary)   // links use the single cyan accent
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'content', type: 'string', required: true, description: 'The raw markdown to render as styled prose.' },
+    { name: 'density', type: "'comfortable' | 'compact'", default: "'comfortable'", description: 'Typographic scale + spacing rhythm. <code>compact</code> = chat-bubble density (the Android heading map); <code>comfortable</code> = docs density (the scale stepped up).' },
+    { name: 'onImageClick', type: '(src: string) => void', description: 'Invoked when a rendered markdown image is clicked (opens a lightbox).' },
+    { name: 'textColor', type: 'string', description: 'Body text color override. Defaults to the surface\'s <code>on-*</code> token (e.g. <code>on-card</code> in an assistant bubble).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'String', required: true, description: 'The full (possibly partial) markdown for this content block.' },
+    { name: 'isStreaming', type: 'Boolean', required: true, description: 'When <code>true</code>, completed blocks parse once and stay stable; only the trailing block re-parses per SSE token (flash-free streaming, ).' },
+    { name: 'onImageClick', type: '(String) -> Unit', required: true, description: 'Invoked with a Coil model when a rendered markdown image is tapped.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier on the content Column.' },
+    { name: 'textColor', type: 'Color', default: 'Color.Unspecified', description: 'Body text override; <code>Unspecified</code> resolves to <code>onSurface</code>. The user bubble passes <code>onUserCard</code>, the assistant bubble <code>onCardAlt</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Nockerl Voice has **no markdown component**; transcripts render as plain
+`Text`. The signature below is the *intended* SwiftUI surface, not shipped code.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'content', type: 'String', description: 'Markdown source, parsed to an <code>AttributedString</code>.' },
+    { name: 'font', type: 'Font', description: 'Body type role (<code>NockerlTheme.body</code> = body.medium). Headings derive from the same ramp.' },
+    { name: 'tint', type: 'Color', description: 'Link accent: the single cyan <code>accentPrimary</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Swift has no markdown surface.** Nockerl Voice is a dictation app; transcripts
+  are plain `Text(record.text)`. There is no styled-prose renderer to mirror. The
+  Swift code/params above are the *intended* API, flagged here.
+- **Heading scale** *(resolved in [adjudication 2026-07-02 · B10])*: markdown ships a **shared
+  two-density ramp**: compact (chat) + comfortable (docs). Android (today the compact ramp only:
+  h1 → `title.medium`, h2 → `title.small`, h3/h4 → `label.large`) gains the comfortable ramp; the
+  demo's docs density is that shared second density, not a web-only extension.
+- **Code well** *(resolved in [adjudication 2026-07-02 · B10])*: code wells use the **`canvas-alt`
+  recessed token, one definition shared with [Code block](/components/code-block/)**. Android's
+  alpha-washed inline (10%) / fenced (7%) backgrounds give way to the shared recessed-well token.
+</Aside>

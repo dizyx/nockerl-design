@@ -1,0 +1,237 @@
+---
+title: Combobox / autocomplete
+description: A text input + filterable dropdown listbox. Type to filter, pick, optionally multi-select with tokens.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ComboboxDemo from '../../../components/demos/ComboboxDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ComboboxDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// The combobox = a recessed field WELL + a lifted popover listbox you type to filter.
+
+const PROJECTS: ComboOption[] = [
+  { value: 'api-server', label: 'api-server', secondary: 'API · service layer', status: 'success' },
+  { value: 'credential-store', label: 'credential-store', secondary: 'Credential store', status: 'warning' },
+];
+
+export function ProjectSwitcher() {
+  const [project, setProject] = useState('api-server');
+  const [tags, setTags] = useState<string[]>(['typescript']);
+
+  return (
+    <>
+      {/* Single-select: type to filter, ↑↓ to move, Enter to pick, Esc to close. */}
+      <Combobox
+        label="Project"
+        options={PROJECTS}
+        value={project}
+        onSelect={setProject}
+        placeholder="Search projects…"
+      />
+
+      {/* Multi-select: chosen values live as removable tokens; Backspace pops the last. */}
+      <Combobox
+        label="Stack tags"
+        options={TAGS}
+        value={tags}
+        multiple
+        onSelect={(v) => setTags((t) => [...t, v])}
+        onRemove={(v) => setTags((t) => t.filter((x) => x !== v))}
+      />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. The shipped pattern is a fixed-list SELECT:
+// a NockerlControlShape DropdownAnchor (label + trailing ▾ + inline spinner)
+// opening a Material3 DropdownMenu of DropdownMenuItem rows. Type-to-filter is
+// NOT yet shipped on Android (see drift). For autocomplete, wrap the anchor in
+// an ExposedDropdownMenuBox and feed it a query-filtered list.
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import com.nockerl.app.chat.ui.DropdownAnchor   // core anchor (NockerlControlShape)
+
+@Composable
+fun ProviderPicker(
+    providers: List<ProviderInfo>,
+    selected: ProviderInfo?,
+    isLoading: Boolean,
+    onSelect: (ProviderInfo) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        DropdownAnchor(
+            label = selected?.name ?: "Select a provider",
+            placeholder = selected == null,
+            isLoading = isLoading,
+            onClick = { if (!isLoading && providers.isNotEmpty()) expanded = true },
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            if (providers.isEmpty()) {
+                DropdownMenuItem(text = { Text("No providers available") }, enabled = false, onClick = {})
+            }
+            providers.forEach { p ->
+                DropdownMenuItem(text = { Text(p.name) }, onClick = { onSelect(p); expanded = false })
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. The shipped filterable pattern is a plain TextField bound to
+// a case-insensitive .filter (HistorySection in NockerlVoice), with a leading
+// magnifyingglass + a clear ✕ and a ContentUnavailableView empty state. A fixed
+// SELECT uses Menu { Button … } with a chevron (AppSettingsSection). There is no
+// single combined combobox control yet (see drift).
+@State private var query = ""
+@State private var selection: String?
+
+private var filtered: [ComboOption] {
+    guard !query.isEmpty else { return options }
+    return options.filter { $0.label.localizedCaseInsensitiveContains(query) }
+}
+
+var body: some View {
+    VStack(alignment: .leading, spacing: 8) {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass").foregroundStyle(NockerlTheme.onSurfaceMuted)
+            TextField("Search projects", text: $query).textFieldStyle(.plain)
+            if !query.isEmpty {
+                Button { query = "" } label: { Image(systemName: "xmark.circle.fill") }
+                    .buttonStyle(.borderless)
+            }
+        }
+        .padding(.horizontal, 12).padding(.vertical, 8)
+        .background(NockerlTheme.canvasAlt, in: RoundedRectangle(cornerRadius: 8))
+        .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(NockerlTheme.hairline))
+
+        if filtered.isEmpty {
+            ContentUnavailableView("No matches", systemImage: "magnifyingglass")
+        } else {
+            ForEach(filtered) { row in
+                Button { selection = row.value } label: { OptionRow(row, selected: selection == row.value) }
+                    .buttonStyle(.plain)
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Persistent label above the well, never a placeholder. Bound to the field via <code>htmlFor</code>.' },
+    { name: 'options', type: 'ComboOption[]', required: true, description: 'Full option set; filtered live by what is typed (case-insensitive substring of <code>label</code> / <code>secondary</code>).' },
+    { name: 'value', type: 'string | string[]', required: true, description: 'Single selected value, or the array of selected values in multi-select.' },
+    { name: 'onSelect', type: '(value: string) => void', required: true, description: 'Commit a selection (the option <code>value</code>). In multi-select, toggles the value in/out.' },
+    { name: 'multiple', type: 'boolean', default: 'false', description: 'Render selected values as removable tokens inside the well; <strong>Backspace</strong> on an empty input pops the last.' },
+    { name: 'onRemove', type: '(value: string) => void', description: 'Remove a token (multi-select). Fired by its ✕ or by Backspace.' },
+    { name: 'placeholder', type: 'string', description: 'Ghost prompt inside the well: supplementary, never the label.' },
+    { name: 'helperText', type: 'string', description: 'Quiet helper line under the well.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert + clearly seen (never faded to invisible).' },
+    { name: 'loading', type: 'boolean', default: 'false', description: 'Inline spinner in the well + a <code>Searching…</code> hint in the list (async source).' },
+    { name: 'grouped', type: 'boolean', default: 'false', description: 'Bucket options under their <code>group</code> header.' },
+  ]}
+/>
+
+<PropsTable
+  nameLabel="ComboOption"
+  rows={[
+    { name: 'value', type: 'string', required: true, description: 'Stable identity + the selected-value carrier.' },
+    { name: 'label', type: 'string', required: true, description: 'Primary line: the option’s accessible name (<code>label.large</code> role). The matched run is highlighted with a <code>&lt;mark&gt;</code>.' },
+    { name: 'secondary', type: 'string', description: 'Supporting line under the label (<code>body.small</code> role).' },
+    { name: 'status', type: "'success' | 'warning' | 'error' | 'info' | 'idle'", description: 'Leading status mark color. Status colors only, never the brand cyan (cyan is reserved for the selected check).' },
+    { name: 'group', type: 'string', description: 'Bucket name; options sharing a group render under one header when <code>grouped</code>.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Unselectable + skipped by the keyboard cursor, but still legible.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'expanded', type: 'Boolean', required: true, description: 'Whether the <code>DropdownMenu</code> is open. Hoisted state, toggled by the anchor + <code>onDismissRequest</code>.' },
+    { name: 'onDismissRequest', type: '() -> Unit', required: true, description: 'Close the menu (tap-outside / back). Sets <code>expanded = false</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier on the menu, e.g. <code>Modifier.fillMaxWidth(0.85f)</code> to match the anchor width.' },
+    { name: 'label', type: 'String', required: true, description: 'DropdownAnchor: the current selection text (or a placeholder).' },
+    { name: 'placeholder', type: 'Boolean', required: true, description: 'DropdownAnchor: render the label muted as a placeholder when nothing is selected.' },
+    { name: 'isLoading', type: 'Boolean', required: true, description: 'DropdownAnchor: show an inline <code>CircularProgressIndicator</code> before the ▾.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'DropdownAnchor: when false, the anchor is dimmed + non-interactive (the <code>filled</code> surface).' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'DropdownAnchor: open the menu (guarded by <code>enabled</code> / <code>isLoading</code> / non-empty list).' },
+    { name: 'DropdownMenuItem.enabled', type: 'Boolean', default: 'true', description: 'Per-row enablement; the empty state renders a single disabled “No X available” item.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI has no single combobox control; the filterable pattern composes a `TextField`
+bound to a `.filter` (`HistorySection`) and the fixed-select pattern is a `Menu`
+(`AppSettingsSection`). These are the real parameters of those building blocks.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'TextField(_:text:)', type: 'View', description: 'The query input. Bound to a <code>@State String</code>; style with <code>.textFieldStyle(.plain)</code> in a <code>canvasAlt</code> well + hairline border.' },
+    { name: 'filter { … }', type: '[T]', description: 'Live filter using <code>localizedCaseInsensitiveContains(query)</code> over each option’s label (the HistorySection idiom).' },
+    { name: 'ContentUnavailableView', type: 'View', description: 'Empty / no-results state ("No matches", systemImage), never an error color.' },
+    { name: 'Menu { Button … } label:', type: 'View', description: 'Fixed-select alternative: a borderless <code>Menu</code> of <code>Button</code> rows; label is the current selection + a <code>chevron.up.chevron.down</code>, accent-bordered.' },
+    { name: '.menuStyle(.borderlessButton)', type: 'MenuStyle', description: 'The Nockerl select menu style; pair with <code>.menuIndicator(.hidden)</code> to supply your own chevron.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The combobox is **web-led**. Only web ships the full type-to-filter + popover +
+multi-select-token control. The native deltas:
+
+- **Filtering** *(resolved in [adjudication 2026-07-02 · C5])*: the combobox **gains type-to-filter**
+  everywhere. Android’s shipped selector (`DropdownMenu` + `DropdownAnchor`) is a fixed-list select
+  today; type-ahead (`ExposedDropdownMenuBox` + a query-filtered list) is the ratified target.
+- **One control vs. composed:** Swift has the **pieces** (a `TextField`+`.filter`
+  searchable list in `HistorySection`, a `Menu` select in `AppSettingsSection`) but
+  **no single combobox component**; they’re assembled per-screen.
+- **Multi-select tokens:** only web renders chosen values as removable chips inside the
+  field; Android/Swift have no token-in-field idiom for this yet.
+- **Container radius:** Swift’s wells/menus hardcode **8pt**; the token is **12**
+  (`radius.control`). Swift should consume `radius.control`.
+</Aside>

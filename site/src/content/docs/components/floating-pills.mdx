@@ -1,0 +1,181 @@
+---
+title: Floating pills
+description: A floating cluster of tappable pills that hovers over a scrolling surface.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import FloatingPillsDemo from '../../../components/demos/FloatingPillsDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FloatingPillsDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: SHIPPED in @dizyx/nockerl-react (promoted from this page's canon, task 2654).
+// NockerlSessionChipsBar floats a scroll-fading cluster of keycaps OVER content,
+// distinct from the inline NockerlChip. Positioning is HOST-owned (place it
+// absolutely over the feed, top or bottom, exactly like native).
+import { NockerlContextChip, NockerlSessionChip, NockerlSessionChipsBar } from '@dizyx/nockerl-react';
+
+<NockerlSessionChipsBar ariaLabel="Sessions" onAdd={createSession}>
+  {sessions.map((s) => (
+    <NockerlSessionChip
+      key={s.slug}
+      name={s.name}
+      engineGlyph={s.engine === 'nockerl' ? chipGlyph : cloudGlyph} // engine identity, shape-coded
+      dot={s.dot}            // status-dot priority: attention > streaming > unread > active > idle
+      ratio={s.ratio}        // 0..1 fills the inner context line; null = a faint empty track
+      active={s.slug === active}
+      mark={checkGlyph}      // the cyan selection check, shown only while active
+      onSelect={() => selectSession(s.slug)}
+    />
+  ))}
+</NockerlSessionChipsBar>
+
+// The same pill, read-only, for an inline strip (the Context gauge right rail):
+<NockerlContextChip engineGlyph={cloudGlyph} name="docs site" ratio={0.42} />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). com.nockerl.app.chat.ui.SessionChipsBar
+// The shipped floating-pills surface: a flat, horizontally-scrollable LazyRow of filled
+// session keycaps + a trailing cyan "+" CTA, floating over the chat feed (NO surrounding
+// pill, NO border). Each keycap carries a status dot, engine glyph, name, and an under-cap
+// context line; the active keycap takes a brighter chromeActive fill at a HIGHER elevation.
+SessionChipsBar(
+    sessions = subSessions,
+    activeSessionSlug = activeSlug,
+    onSessionSelect = viewModel::selectSession,
+    onCreateSession = viewModel::createSession,
+    onRenameSession = viewModel::rename,
+    onEditSession = viewModel::editProvider,
+    onClearContextSession = viewModel::clearContext,
+    onDeleteSession = viewModel::delete,
+    onForkSession = viewModel::fork,
+    streamStates = streamStates,          // per-slug StreamState → the status dots
+    contextRatios = contextRatios,        // per-slug 0..1 → the under-cap context line
+    engineAccent = engineAccent,          // harness accent for the LOW (healthy) band
+)
+
+// The floating scroll-to-bottom FAB lives in ChatScreen.kt: a circular Surface
+// (CircleShape) on chromeSurface with an engine-accent border, lifted at
+// NockerlElevation.Level3, shown only while the feed is scrolled up.
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). NockerlVoice/UI/RecordingHUD.swift
+// Voice ships a SINGLE floating status pill (not a tappable row): a Capsule on
+// chromeSurface with an accent stroke + tinted drop shadow, floating centered in an
+// NSPanel over whatever has focus. Its width springs as the phase content cross-fades.
+private var pill: some View {
+    HStack(spacing: 11) {
+        NockerlLogo().frame(width: 18, height: 16)   // the fixed left anchor
+        Rectangle().fill(NockerlTheme.divider).frame(width: 1, height: 22)
+        content                                       // recording / transcribing / result / error
+            .transition(.opacity)
+            .id(state.phase.transitionID)
+    }
+    .padding(.horizontal, 14)
+    .padding(.vertical, 9)
+    .background(NockerlTheme.chromeSurface, in: Capsule())
+    .overlay(Capsule().strokeBorder(borderColor, lineWidth: 1.5))
+    .shadow(color: .black.opacity(0.4), radius: 14, y: 5)
+    .animation(.spring(response: 0.42, dampingFraction: 0.82), value: state.phase)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlSessionChipsBar" />
+
+<PropsTable nameLabel="Prop" component="NockerlSessionChip" />
+
+<PropsTable nameLabel="Prop" component="NockerlContextChip" />
+
+The scroll-to-bottom key on this page is the site-level `_ScrollToBottom` composition
+(a lifted circle + the same floating border + an unread-count badge), not yet a
+package export.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'sessions', type: 'List<SubSession>', required: true, description: 'The sub-sessions rendered as keycaps. Blank / duplicate slugs are filtered; an empty list hides the bar.' },
+    { name: 'activeSessionSlug', type: 'String', required: true, description: 'The selected sub-session slug → the brighter <code>chromeActive</code> keycap at the higher lift.' },
+    { name: 'onSessionSelect', type: '(String) -> Unit', required: true, description: 'Invoked with a slug when a keycap is tapped.' },
+    { name: 'onCreateSession', type: '() -> Unit', required: true, description: 'Invoked when the trailing cyan “+” keycap is tapped.' },
+    { name: 'onRenameSession / onEditSession / onClearContextSession / onDeleteSession / onForkSession', type: '(SubSession) -> Unit', required: true, description: 'Long-press context-menu actions (rename / delete hidden on the primary; fork gated to the Cloud Agent harness).' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier; the row fills max width.' },
+    { name: 'streamStates', type: 'Map<String, StreamState>', default: 'emptyMap()', description: 'Per-slug stream state driving each keycap’s status dot.' },
+    { name: 'contextRatios', type: 'Map<String, Float>', default: 'emptyMap()', description: 'Per-slug context-usage ratio (0..1) → the under-cap context line. A slug ABSENT from the map renders an empty track.' },
+    { name: 'engineAccent', type: 'Color?', default: 'null', description: 'Accent for the LOW (healthy) context band, the active harness accent. Falls back to <code>accentPrimary</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI ships a **single** floating pill (the recording HUD status pill), not a tappable
+cluster. It’s a `Capsule` on `chromeSurface` with an accent stroke, lifted by a tinted drop
+shadow and centered in a floating `NSPanel`. There is **no** scrolling row, session keycap, or
+suggestion-pill type on this platform yet (see drift note).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'HUDState.phase', type: 'HUDPhase', description: 'Drives the pill content + border color: <code>recording</code> / <code>transcribing</code> / <code>result(pasted:)</code> / <code>error(message:)</code>. The pill width springs as the content cross-fades.' },
+    { name: '.background(_:in: Capsule())', type: 'ShapeStyle', description: 'The pill fill: <code>NockerlTheme.chromeSurface</code> (the shared floating-chrome material).' },
+    { name: '.overlay(Capsule().strokeBorder(…))', type: 'Color', description: 'Accent stroke at 1.5pt: <code>accent</code> normally, <code>warning</code> on an error phase.' },
+    { name: '.shadow(color:radius:y:)', type: 'Shadow', description: 'The tinted drop shadow that lifts the pill off the focused app behind it.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+These are the real divergences between the shipped platforms:
+
+- **Different scope per platform.** **Android** ships the full surface: a scrolling row of
+  tappable **session keycaps** + a cyan “+” CTA, plus a circular scroll-to-bottom FAB.
+  **Swift** ships a **single, non-interactive** floating status pill (the recording HUD).
+  **Web** unifies them into the session-chips + scroll-to-bottom float.
+- **Suggested-prompt / quick-action pills: removed (D4 · ).** The exploratory suggestion
+  strip (a dismissible `SuggestionPill`, never sourced from a real app) was dropped; recover it
+  from git history at `7cbf645` if a real suggested-prompt surface is designed later.
+- **Container treatment.** Android’s session row is **bare** (no surrounding pill / border).
+  The keycaps carry their own fill + shadow. Web wraps the cluster in a lifted, inset
+  chrome-surface **track** so the float reads as one hovering object; Swift’s single pill is its
+  own container.
+- **Shadow opacity.** Swift hardcodes `.black.opacity(0.4)`; the depth law wants the
+  palette-tinted `shadowTint` token (as Android’s `nockerlShadow` + web’s `--color-shadow-tint`
+  do). Swift should consume the token.
+- **Context line.** The per-keycap usage line (cyan → amber → red) is **Android + web**; Swift’s
+  pill has none.
+</Aside>

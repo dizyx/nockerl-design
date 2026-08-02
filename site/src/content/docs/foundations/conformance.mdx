@@ -1,0 +1,111 @@
+---
+title: Conformance
+description: How a consumer proves it matches canon, covering the full-consumption doctrine and the L1 value-parity attestation every component audit fills in.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+**A green audit is not a matching app.** A consumer can compose the right components,
+name the right tokens, and still render the wrong thing. The proof is below. This page
+is the conformance spec: the one doctrine that makes drift structurally impossible, and
+the attestation table every component audit fills in to *prove* it, value by value.
+
+## The doctrine
+
+> **Full component consumption is the visual-parity mechanism. Drift lives where you
+> hand-mirror or keep-custom.**
+
+Every design value a client renders comes from exactly one of three sources:
+
+- **consumed**: the published component/token renders it (`NockerlStatCard`,
+  `var(--space-4)`, `NockerlType`). Bump the package, the value moves with you. **Zero
+  drift surface.**
+- **hand-mirrored**: the client re-declares a canon value locally (a copied `16` pad,
+  a re-typed `"Outfit"`, a hand-rolled row). It was right the day it was copied and
+  drifts silently forever after.
+- **kept-custom**: the client deliberately holds its own value (a bespoke layout, an
+  app-only surface). Legitimate, but it is **outside** conformance and must be declared,
+  not audited as if it matched.
+
+Conformance is therefore not "did it look right once"; it is **"is every rendered value
+*sourced from* the package."** Anywhere the answer is hand-mirrored, you have a drift
+site whether or not it currently matches.
+
+## Why composition-green is not enough: the L1 gap
+
+Audits before this spec asked *"does it compose the right parts?"*, a **static** check.
+Static checks pass on structure and miss **rendered values**. The canonical failure:
+
+<Aside type="danger" title="The  proof case: 11 green audits, wrong font">
+`NockerlType` declared every role in the **Outfit** family, but the Swift package
+shipped **no font resource and no registration**, so the `"Outfit"` family name never
+resolved and macOS silently fell back to **SF**. Eleven consecutive audits passed: the
+token names were right, the sizes were right, the composition was right. **Every check
+was static.** Not one attested that the family *actually resolved at render time*. Voice
+shipped a pilot in the wrong typeface with a clean audit trail. Compounding it: 27
+call-sites used `.font(.system(size: NockerlFontSize.x))` (right size, **hand-mirrored**
+family) and zero used `NockerlType`. The path of least resistance lost the family
+exactly where the doctrine predicts drift: hand-mirroring.
+</Aside>
+
+The fix is **L1 value-parity attestation**: an audit must record, for each component,
+the *rendered* value, *where it came from*, and whether it matches canon, not just that
+the right component name appears.
+
+## L1 value-parity attestation table
+
+Fill one row per audited dimension, per component. **`Source` is the load-bearing
+column.** A `match: yes` whose source is *hand-mirrored* is a latent drift site, not a
+pass. Attest the **rendered** value (measured/resolved at runtime), never the value you
+*intended*.
+
+| Dimension | Canon value | Rendered value | Source | Match |
+|---|---|---|---|---|
+| **Font family resolves** | `Outfit` (all roles) | *(resolved family at runtime)* | consumed `NockerlType` / hand-mirrored `.system` / kept-custom | **y / n** |
+| Font size | e.g. `size-14` (14) | *(measured pt/px)* | consumed / hand-mirrored / kept-custom | y / n |
+| Control height | e.g. `space-11` (44) | *(measured)* | consumed / hand-mirrored / kept-custom | y / n |
+| Density tier | comfortable / compact | *(rendered footprint)* | consumed / hand-mirrored / kept-custom | y / n |
+| Radius | e.g. `radius-control` (12) | *(measured)* | consumed / hand-mirrored / kept-custom | y / n |
+| Key spacing (pad/gap) | e.g. `space-4` (16) | *(measured)* | consumed / hand-mirrored / kept-custom | y / n |
+
+Rules for filling it:
+
+1. **Font family gets its own row, always, first.** It is the value most often lost to
+   silent fallback and the hardest to notice by eye (SF and Outfit are both clean sans).
+   Attest that the family *resolves*, not that it's declared. This row alone would have
+   caught .
+2. **`Rendered value` is measured, not intended.** Read it back from the running app
+   (computed style, `CTFont`, a ruler on a screenshot), because the bug is always the
+   gap between intended and rendered.
+3. **`Source` decides the verdict, not `Match`.** A matching hand-mirrored value is
+   amber, not green: it will drift on the next canon change. Only *consumed* is durably
+   green. *Kept-custom* is out of scope. List it so it is not mistaken for a miss.
+4. **Add rows for whatever the component asserts.** Control heights, densities, radii,
+   and key spacings are the recurring value-parity offenders (they read "close enough"
+   by eye and fail measurement). Extend per component.
+
+<Aside type="tip" title="Reference canon values">
+Pull the canon column from the source of truth, never from memory:
+[Typography](/foundations/typography/) (sizes/roles), [Spacing](/foundations/spacing/),
+[Radius](/foundations/radius/), [Density](/foundations/density/) (tiers + footprints),
+and each component's page (control heights). On macOS, snap real text-style sizes via
+the [Platform gotchas](/foundations/platform-gotchas/#macos) table first.
+</Aside>
+
+## The attestation is per-release
+
+Value parity is a *point-in-time* fact: a font that resolves today can regress when a
+resource is dropped, a density can drift when a padding is retuned. Re-run L1 attestation
+**each time you re-pin the package**, and record it with the audit. A stale "green"
+against an old version is a hand-mirror of the audit itself.
+
+## See also
+
+[Platform gotchas](/foundations/platform-gotchas/) (the trap catalog, read alongside) ·
+[Density](/foundations/density/) · [Typography](/foundations/typography/) ·
+[Design laws](/foundations/design-laws/) (what the values *mean*)

@@ -1,0 +1,94 @@
+---
+title: Spawn cards
+description: The agent-spawn block + child cards, tool-card-family siblings with the lifecycle chip.
+status: review
+platforms: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/spawncards-block-children.png';
+
+<StatusBadge status="review" />
+
+<img src={goldenDark.src} alt="Spawn block card with three children across the lifecycle ladder, plus a completed standalone block" style="border-radius: 12px;" />
+
+The spawn surfaces are **tool-card-family siblings** (WS1 #2652a): the agent-family
+**tile** leads (the spawn glyph knocked out of a filled `family.agent` square; color
+rides a filled tile, never bare), the **lifecycle chip** trails (dot + label + elapsed, so
+color never stands alone), and spawned children stack inside at the card rhythm.
+
+The lifecycle ladder is shared with the [Agent widget](/components/agent-widget/):
+`RUNNING` (info-cyan, pulsing dot), `SUCCESS`, `ERROR`. Pass `animate = false` to freeze
+the pulse (reduced motion, deterministic snapshots).
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="Kotlin">
+
+```kotlin
+NockerlSpawnBlockCard(
+    title = "Research sweep",
+    subtitle = "3 agents · large-2",
+    status = NockerlSpawnStatus.RUNNING,
+    elapsed = "1m 12s",
+) {
+    NockerlSpawnChildCard(
+        name = "docs-reader",
+        status = NockerlSpawnStatus.SUCCESS,
+        model = "small",
+        elapsed = "24s",
+    )
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+NockerlSpawnBlockCard(
+    title: "Research sweep",
+    status: .running,
+    subtitle: "3 agents · large-2",
+    elapsed: "1m 12s"
+) {
+    NockerlSpawnChildCard(
+        name: "docs-reader",
+        status: .success,
+        model: "small",
+        elapsed: "24s"
+    )
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Props
+
+### NockerlSpawnBlockCard
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `String` | n/a | The spawn block's name. |
+| `status` | `NockerlSpawnStatus` | n/a | `RUNNING` / `SUCCESS` / `ERROR`, drives the chip. |
+| `subtitle` | `String?` | `null` | Supporting line (model, task id). |
+| `elapsed` | `String?` | `null` | Elapsed label in the chip. |
+| `animate` | `Boolean` | `true` | `false` freezes the RUNNING pulse. |
+| `children` | slot | none | Spawned-children slot (stack child cards). |
+
+### NockerlSpawnChildCard
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `name` | `String` | n/a | The child agent's name. |
+| `status` | `NockerlSpawnStatus` | n/a | The child's lifecycle state. |
+| `model` | `String?` | `null` | Mono model badge text. |
+| `elapsed` | `String?` | `null` | Trailing muted elapsed label. |
+| `animate` | `Boolean` | `true` | `false` freezes the RUNNING pulse. |
+
+<Aside type="note" title="Web">
+  The react half rides the adoption lane: the dashboard's spawn UI adopts these as the
+  canon shape (dashboard implementation was research input only).
+</Aside>

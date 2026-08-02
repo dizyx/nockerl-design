@@ -1,0 +1,137 @@
+---
+title: Iconography
+description: The stroke-icon system, built on one primitive, a 12-24 sizing ramp, a 2px stroke, and the brand-illustration vs platform-glyph split.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Icons are **stroke-first, monochrome, and token-colored**. There is one home for the SVG shell
+(the `NockerlIcon` primitive), so every glyph shares the same viewBox, stroke, caps, and
+`currentColor` inheritance, and a system-wide change is one edit, not a sweep through hand-rolled
+`<svg>` tags. An icon is a **shape**, never a halo: it carries meaning through silhouette and
+(where paired) a status color, never through a glow or a colored shadow (see [Design
+laws](/foundations/design-laws/) §1).
+
+## The set
+
+The utility set is **[Lucide](https://lucide.dev) geometry**, an even-stroke, rounded,
+open-source line set drawn on a **24-unit grid** (`viewBox="0 0 24 24"`). It is a deliberate
+choice: Lucide's weight and corner treatment match the thin-forward brand (geometric, unfussy,
+no filled blobs), and its glyphs line up 1:1 with Material Symbols (Android) and SF Symbols
+(Swift), so the same concept resolves to a near-identical silhouette on every platform.
+
+`NockerlIcon` ships a small **registry** of the glyphs that were being re-typed across the app
+(chevrons, `check`, `x`, `plus`, `minus`) behind a `name` prop; any other glyph is passed as SVG
+path children on the same 24-grid. The registry is intentionally tiny: it is a convenience for
+the handful of universal control glyphs, **not** a bundled icon font. Product surfaces bring
+their own glyphs; the framework owns the *shell and the rules*, not an exhaustive library.
+
+| Concern | Rule |
+| --- | --- |
+| Grid | `viewBox="0 0 24 24"` (every glyph is drawn to the same 24-unit box) |
+| Geometry | Lucide line set (rounded, even-weight); custom glyphs match its construction |
+| Fill | `fill: none`, outline by default (see [Outline vs filled](#outline-vs-filled)) |
+| Color | `stroke: currentColor`. The icon inherits its host's text color; never a hardcoded hue |
+| Registry | `NockerlIcon name="…"` for the universal control glyphs; path children for the rest |
+
+## Sizing scale
+
+Icon sizes are **tokens**, not literals: a six-step ramp from 12 to 24, mirrored in code as
+`ICON_SIZE` and in CSS as `--icon-*`. Omit the size and the surrounding CSS sizes the glyph (the
+dominant pattern, so an icon tracks its text); pass a scale key when a glyph needs a fixed box.
+
+| Token | Value | Typical use |
+| --- | --- | --- |
+| `--icon-xs` | 12px | Dense inline marks, tiny meta rows, delta glyphs |
+| `--icon-sm` | 14px | Chip / badge glyphs, compact captions, inline note checks |
+| `--icon-md` | 16px | The **default** control glyph: buttons, fields, menu rows |
+| `--icon-lg` | 18px | List-row leading marks, tool-call tiles, section affordances |
+| `--icon-xl` | 20px | Icon-buttons, toolbar actions, dialog header coins |
+| `--icon-2xl` | 24px | Empty-state and hero glyphs, the largest inline icon |
+
+The ramp is **even and small on purpose**: icons support text, they do not shout. Anything larger
+than 24 is an *illustration*, not an icon (see below).
+
+## Stroke &amp; drawing rules
+
+Every glyph obeys the same drawing contract, encoded once in the primitive:
+
+- **Stroke weight `2`** on the 24-grid (`stroke-width: 2`), scaling with the box. A heavier
+  `2.4` is used only for a few emphasis marks (a bold check); nothing goes thinner than the type
+  it sits beside would imply.
+- **Round caps and joins** (`stroke-linecap: round`, `stroke-linejoin: round`), the soft
+  terminal that matches Outfit's geometry and the pill/soft-corner language.
+- **`currentColor` stroke, `none` fill:** the icon is a silhouette that takes its host's ink.
+  Status color, when an icon carries it, comes from a semantic token on the host, never a literal.
+- **No glow, ever.** Depth and attention come from shape, weight, and (for status) a filled
+  disc, never a blurred or colored shadow behind the glyph (Design laws §1 / §6).
+
+## Outline vs filled
+
+The **default is outline** (stroke on transparent). A glyph goes *filled* in exactly one
+situation: as a **knockout**, a solid shape cut out of a colored surface. That is the alert
+family's grammar (Design laws §6): severity and categorical family ride in a **filled status /
+family disc or tile**, with the glyph knocked out to the canvas ink. So the same `check` is an
+outline stroke inline, and a knockout inside a success disc. One geometry, two treatments,
+chosen by the surface, not by a separate "filled" icon set. We do **not** ship a parallel filled
+icon library; filled is a compositing decision, not a glyph variant.
+
+## Illustrations vs utility glyphs
+
+<Aside type="note" title="Ratified split (adjudication 2026-07-02 · B17)">
+There are **two** classes of mark, and they source differently:
+
+- **Illustrations:** the larger, brand-expressive art in **empty states** (an empty inbox, a
+  no-results panel, a first-run canvas). These are **our stroke-SVG brand set on every platform**.
+  Web, Android, and Swift render the *same* Nockerl-drawn illustration so an empty state reads
+  as unmistakably ours, not as a stock OS graphic.
+- **Utility glyphs:** the small functional icons on controls (a chevron, a close, a search, a
+  trash). These **stay platform-native**: Material Symbols on Android, SF Symbols on Swift, the
+  Lucide-geometry `NockerlIcon` on web. They match the OS the user already knows, and the
+  cross-platform geometry is close enough that the brand still reads as one system.
+
+The line is **size and role**, not taste: a functional control glyph is native; a brand
+illustration is ours. Iconography never forks the brand on the small stuff and never cedes the
+brand on the big stuff.
+</Aside>
+
+## Interactivity reads from treatment
+
+Ratified canon (Design laws → *Ratified component canon*): **an icon's treatment tells you whether
+it is interactive**, before any hover or focus.
+
+- **Interactive:** a **flat / plain glyph** (a control's own icon) or a **filled-circle-with-height**
+  (an icon button / FAB coin). Both sit *up* and read as pressable.
+- **Informational:** the **inset** (recessed-well) icon treatment, e.g. the EmptyState glyph. It
+  sits *down* and is **never interactive**: an inset element carries **no click handler**. If a spot
+  needs to be pressable, it uses a pressable treatment, never an inset that also clicks.
+
+This pairs with the fields-sink / lift laws (§2): pressable things lift, informational insets sink,
+so pressability is legible from depth alone (never color or hover alone; see §13).
+
+## Per-platform
+
+Icons follow the standing posture of *unify brand expression, honor platform behavior* (Design
+laws §12):
+
+- **Web:** `NockerlIcon` renders the SVG shell (Lucide geometry, `currentColor`, the `--icon-*`
+  ramp). Utility glyphs and illustrations are both SVG here.
+- **Android:** utility glyphs are **Material Symbols** (outlined, weight matched to the ramp);
+  empty-state **illustrations** are the shared Nockerl stroke-SVG set (imported as vectors).
+- **Swift:** utility glyphs are **SF Symbols** (matched to the ramp via `.imageScale` /
+  point size); empty-state **illustrations** are the shared Nockerl stroke-SVG set.
+
+The **stroke, sizing intent, and `currentColor` behavior are the unified part**; the concrete
+glyph source for utility icons is the honored platform delta.
+
+## Tokens
+
+The sizing ramp is published in `@dizyx/nockerl-tokens` as `--icon-xs … --icon-2xl` (authored in
+`tokens/core/dimension.json`), and mirrored in `@dizyx/nockerl-react` as the `ICON_SIZE` scale on
+the `NockerlIcon` primitive. Consume the tokens. An icon size, like every other value, is never
+hardcoded in a client or a demo.

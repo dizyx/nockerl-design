@@ -1,0 +1,187 @@
+---
+title: Skeleton loader
+description: Content-shaped placeholder blocks with a token-driven shimmer, shown while content loads so the layout never jumps.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import SkeletonDemo from '../../../components/demos/SkeletonDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SkeletonDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+// Mimic the FOOTPRINT of what is loading, so nothing shifts when data lands.
+// A skeleton is NOT a spinner and NOT a progress bar; it has the content's shape.
+function SessionList({ loading, sessions }: Props) {
+  if (loading) {
+    return (
+      <div aria-busy aria-live="polite">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <SessionRowSkeleton key={i} />   // avatar + two lines + trailing value
+        ))}
+      </div>
+    );
+  }
+  return <>{sessions.map((s) => <SessionRow key={s.id} {...s} />)}</>;
+}
+
+// Primitive shapes compose any skeleton. `motion="pulse"` swaps the sweep for a
+// calm opacity pulse; both freeze under prefers-reduced-motion.
+<Skeleton shape="avatar" size={28} />
+<Skeleton shape="thumb" radius="card" />
+<SkeletonText lines={3} />            {/* the last line renders shorter */}
+<Skeleton shape="button" motion="pulse" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). NO skeleton ships today: loading regions use a
+// centered CircularProgressIndicator (files/ui/FileViewer.kt, chat/ui/MessageList.kt).
+// This is the INTENDED core/ui skeleton, designed from the laws. The shimmer is a
+// Modifier that draws a travelling token highlight over a recessed placeholder.
+import com.nockerl.app.core.ui.skeleton
+
+@Composable
+fun SessionRowSkeleton(modifier: Modifier = Modifier) {
+    val colors = LocalNockerlColors.current
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(Modifier.size(28.dp).clip(CircleShape).skeleton())          // avatar
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.fillMaxWidth(0.7f).height(12.dp).clip(NockerlProgressTrackShape).skeleton())
+            Box(Modifier.fillMaxWidth(0.44f).height(12.dp).clip(NockerlProgressTrackShape).skeleton())  // shorter
+        }
+        Box(Modifier.width(32.dp).height(12.dp).clip(NockerlProgressTrackShape).skeleton())  // trailing
+    }
+}
+
+// Modifier.skeleton() = recessed surface + the travelling shimmer; honors the
+// motion accessibility setting (freezes to a static placeholder).
+fun Modifier.skeleton(motion: SkeletonMotion = SkeletonMotion.Shimmer): Modifier
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. Voice ships NO custom skeleton (loading = a small ProgressView
+// "Transcribing…", UI/RecordingHUD.swift). The NATIVE primitive is the system
+// .redacted(reason: .placeholder), which greeks real views into placeholder bars
+// at the EXACT footprint, the SwiftUI-honest skeleton. Drive it with the load state.
+struct SessionRow: View {
+    let session: Session
+    var body: some View {
+        HStack(spacing: 12) {
+            Circle().fill(NockerlTheme.cardSurface3).frame(width: 28, height: 28)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(session.title).font(.system(size: 14, weight: .medium))
+                Text(session.subtitle).font(.system(size: 12)).foregroundStyle(NockerlTheme.onSurfaceMuted)
+            }
+            Spacer()
+            Text(session.age).font(.system(size: 12)).foregroundStyle(NockerlTheme.onSurfaceMuted)
+        }
+    }
+}
+
+// Same row, greeked while loading: the layout is identical, so nothing jumps.
+SessionRow(session: placeholder)
+    .redacted(reason: .placeholder)
+    .accessibilityLabel("Loading session")
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'shape', type: "'line' | 'avatar' | 'thumb' | 'button' | 'chip'", default: "'line'", description: "The placeholder silhouette. Its radius matches the real thing it replaces: <code>avatar</code>/<code>chip</code> pill, <code>thumb</code> card radius, <code>button</code> control radius, <code>line</code> the track radius." },
+    { name: 'motion', type: "'shimmer' | 'pulse'", default: "'shimmer'", description: "Animation style. <code>shimmer</code> sweeps a token highlight across the block (transform only); <code>pulse</code> animates opacity. Both freeze under <code>prefers-reduced-motion</code>." },
+    { name: 'width', type: 'number | string', description: "Block width (px or any CSS length). Lines accept percentages; the last line of a <code>SkeletonText</code> is rendered shorter automatically." },
+    { name: 'size', type: 'number', description: "Convenience for square shapes (<code>avatar</code>): sets both width and height." },
+    { name: 'radius', type: "'track' | 'control' | 'card' | 'pill'", description: "Override the shape's default radius token when composing a custom footprint." },
+    { name: 'lines', type: 'number', default: '1', description: "On <code>SkeletonText</code>: how many stacked lines to render, with a consistent gap and a shorter final line." },
+  ]}
+/>
+
+The skeletons are presentational (<code>aria-hidden</code>). Wrap the loading region in one element with <code>aria-busy</code> + <code>aria-live="polite"</code> so assistive tech hears a single "Loading" status, not every empty box.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'Modifier.skeleton', type: 'Modifier', description: "The placeholder treatment: fills the modified box with a recessed surface (<code>cardSurface1</code> mixed toward the canvas) and draws the travelling shimmer over it. Apply after <code>.clip(shape)</code> so the silhouette matches." },
+    { name: 'motion', type: 'SkeletonMotion', default: 'Shimmer', description: "<code>Shimmer</code> (travelling highlight, animated via <code>rememberInfiniteTransition</code> on a translation) or <code>Pulse</code> (animated alpha). Resolves to a static placeholder when <code>Settings.Global.ANIMATOR_DURATION_SCALE</code> is 0." },
+    { name: 'shape', type: 'Shape', default: 'NockerlProgressTrackShape', description: "Clip applied to the box before <code>.skeleton()</code>, e.g. <code>CircleShape</code> for an avatar, <code>NockerlCardShape</code> for a thumb, the 2.dp track shape for text lines." },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: "Standard sizing/layout modifier on the composed row skeleton (e.g. <code>heightIn(min = 56.dp)</code> to clear the 48dp target)." },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI uses the **system** redaction API; there is no custom Nockerl type. Apply
+`.redacted(reason: .placeholder)` to the *real* view while data is loading; SwiftUI
+greeks it into placeholder bars at the same footprint.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.redacted(reason:)', type: 'ViewModifier', description: "Renders the view as placeholder content. Pass <code>.placeholder</code> for the skeleton treatment; the view keeps its exact size so the layout doesn't shift." },
+    { name: '.unredacted()', type: 'ViewModifier', description: "Opts a child view out of an ancestor's redaction (e.g. keep a leading icon visible while text is greeked)." },
+    { name: 'redactionReasons', type: 'EnvironmentValues', description: "Read in <code>@Environment(\\.redactionReasons)</code> to branch behaviour while redacted, e.g. skip a network image or supply placeholder text." },
+    { name: '.accessibilityLabel', type: 'ViewModifier', description: "Give the redacted region a single label (\"Loading…\") so VoiceOver announces the loading state rather than greeked content." },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Skeleton is the **content-shaped** loader, distinct from its three feedback
+siblings: the **spinner** (an indeterminate circular loader with no footprint), the
+**progress-bar** (determinate/indeterminate progress against a known total), and the
+**empty-state** (a *resolved* zero-data result). Reach for a skeleton only when you
+know the shape of what's arriving and want the layout to stay put.
+
+- **No shipped skeleton on either app.** Android loads regions with a centered
+  `CircularProgressIndicator` (`files/ui/FileViewer.kt`, `files/ui/FilesSheet.kt`,
+  `chat/ui/MessageList.kt`); Voice shows a small `ProgressView()`
+  (`UI/RecordingHUD.swift`). The system above is designed **originally** from the
+  laws and should be promoted to a real `core/ui` `Modifier.skeleton()`.
+- **The Swift primitive is system redaction.** `.redacted(reason: .placeholder)`
+  greeks the real view, so the footprint is automatically exact, but it does **not**
+  shimmer. Android/web add the travelling highlight; Swift's placeholder is static
+  unless a custom overlay is added. One shimmer expression needs to win.
+- **Block radius.** Web/Compose match each block's radius to the component it
+  replaces (avatar pill, thumb card, line track); Swift's redaction inherits the
+  view's own shape. Behaviour converges; the source differs.
+</Aside>

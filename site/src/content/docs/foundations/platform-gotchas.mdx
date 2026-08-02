@@ -1,0 +1,120 @@
+---
+title: Platform gotchas
+description: Migration traps found in real adoptions, with per-platform snap tables, idiom mappings, and the rules that keep every app converging on the same ramp.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+**Traps found in real migrations, written down so they bite once.** Every entry here
+came out of an actual adoption pass (Voice's macOS conformance was the first); each is
+operational (*symptom → rule → snap*), not a law restatement. Migrating an app?
+Read your platform's section before you start, and the cross-platform section always.
+
+Proving your app *matches* canon (not just avoids traps) is the
+[Conformance](/foundations/conformance/) spec. Run its L1 value-parity attestation
+as you adopt.
+
+<Aside type="tip" title="Found a new one?">
+This page is the extensible home for per-platform traps. Hit something that cost you an
+hour? File it (`nockerl report -p nockerl-design`) with the symptom and the fix. It
+becomes an entry here, and the next app inherits the hour.
+</Aside>
+
+## macOS
+
+### The text-style → token snap trap
+
+**The trap (Voice hit it twice):** Apple reuses text-style *names* across iOS and
+macOS with **different point sizes**. Code or specs written against iOS sizes silently
+import the wrong scale on macOS: `title2` is **17pt on macOS, not 22**; `headline`
+is **13pt semibold, not 17**; `caption2` is **10pt**. Two migrations re-imported iOS
+sizes before this table existed.
+
+**The rule:** never carry a text-style size across platforms. On macOS, snap the
+*real macOS size* to the Nockerl ramp via this table, so every app converges on the
+identical ramp step instead of each re-deriving its own:
+
+| macOS text style | Real macOS size | Snap to |
+|---|---|---|
+| `title2` | 17pt *(iOS: 22)* | `size-18` |
+| `headline` | 13pt semibold *(iOS: 17)* | `size-14` + `weight-semibold` |
+| `body` | 13pt *(iOS: 17)* | `size-14` |
+| `caption` / `caption2` | 10 to 11pt | `size-10` |
+
+Validated against Voice's shipped views. Note how the "ramp holes" people
+report at 17pt and 22pt mostly dissolve once the *real macOS sizes* are used. The
+holes were iOS sizes that never belonged on this platform.
+
+<Aside type="caution" title="11pt / 13pt intermediates: under adjudication">
+Whether the ramp gains intermediate steps for the two *true* macOS residuals (11pt
+badge-scale, 13pt mono field-scale) is **pending a the design lead ruling** (ramp granularity
+is a canon change, queued in the next adjudication packet). **Interim, per the
+table's own logic:** snap **11 → `size-10`** and **13 → `size-14`** (or the mono ramp
+for mono fields). Do not mint local intermediates while the question is open.
+</Aside>
+
+Also ratified for macOS migrators: mouse-driven **sidebar rows disable the focus
+ring** (`focusable(false)` + `focusEffectDisabled`, gated 14+), platform-idiomatic,
+already packaged in [`NockerlNavRow`](/components/sidebar/); don't re-add rings there.
+
+## Android
+
+### There is no hover, so don't port hover washes
+
+Web components voice intent with a hover wash; **Android has no hover state**. The
+press feedback there is the **ripple** (+ long-press and haptics where wired). That's
+the law-§9 interaction mapping, and it means: when porting a web component, hover-only
+affordances must have a resting or press equivalent, never a dead style. The mapping
+per state:
+
+| Web | Android | macOS |
+|---|---|---|
+| hover wash | n/a (ripple on press) | pointer hover |
+| `:focus-visible` ring | focus indicator | focus ring *(except mouse-driven sidebars, above)* |
+| click | tap ripple + optional haptic | click |
+| n/a | long-press | right-click / long-press |
+
+### 48dp targets survive dense layouts
+
+Android's touch floor is **48dp** even inside compact surfaces: a 32px dense row keeps
+its visual footprint and exposes the 48dp hit area via **expanded touch bounds**, the
+mechanism the [density tiers](/foundations/density/) ratify. Don't shrink the target to
+match the visual; extend the bounds invisibly.
+
+## Cross-platform
+
+### Hit-target floors (law §14, the numbers)
+
+| Platform | Floor | In compact tiers |
+|---|---|---|
+| Android | **48dp** | visual 32, bounds extended to 48 |
+| macOS | **~44pt** | visual 32, `contentShape` inset extends to 44 |
+| Web | **≥24px** | unaffected (pointer-first) |
+
+Space compact neighbors ≥12 so the extended hit zones never overlap.
+
+### The `enabled` / `disabled` idiom mapping
+
+One semantic (*the control is inert, dimmed presentation*), three platform casings
+(the  contract; law §9 applies to API idioms too):
+
+| Platform | Prop / modifier | Default |
+|---|---|---|
+| React | `disabled` | `false` |
+| Compose | `enabled` | `true` |
+| SwiftUI | `.disabled(_:)` | not disabled |
+
+Migrating between platforms, translate the **polarity**, never copy the name: a
+compose `enabled = false` is a react `disabled`, and vice versa. Every react
+interactive surface uses `disabled`; every compose one uses `enabled`. A mixed
+codebase (Capacitor wrappers, shared view-models) should map at the boundary, once.
+
+## See also
+
+[Typography](/foundations/typography/) · [Density](/foundations/density/) ·
+[Design laws](/foundations/design-laws/) §9 (honor the platform) · §13 and §14 (targets)

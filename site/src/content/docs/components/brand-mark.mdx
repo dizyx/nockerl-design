@@ -1,0 +1,170 @@
+---
+title: Brand mark / logo
+description: The monochrome three-peaks Nockerl mark, plus its wordmark lockups.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import BrandMarkDemo from '../../../components/demos/BrandMarkDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <BrandMarkDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// The mark is a single-ink SVG silhouette. It inherits currentColor and recolors per
+// theme. MONOCHROME everywhere (the cyan prism was rejected in adjudication B19); cyan
+// lives only in the product word of the lockup.
+
+export function TopBar() {
+  return (
+    <header className="topbar">
+      {/* Home link: accessible name + focus-visible ring */}
+      <BrandMark lockup="horizontal" tone="mono" size={28} title="Nockerl home" asLink href="/" />
+    </header>
+  );
+}
+
+// Mark only (favicon / chip), and a knockout sitting ON a cyan fill:
+<BrandMark lockup="mark" tone="mono" size={20} title="Nockerl" />
+<div className="cta cta--cyan"><BrandMark lockup="stacked" tone="knockout" size={40} /></div>
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The mark ships as vector drawables
+// (res/drawable/ic_nockerl_logo_{light,dark}.xml, the three-peaks geometry),
+// rendered as an Icon. There is no NockerlBrandMark composable yet; the
+// GlobalTopBar (core/ui/GlobalTopBar.kt) picks the variant by the ACTIVE app
+// palette's luminance so the mark never washes out, and tints Unspecified so the
+// drawable's own fills win.
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.res.painterResource
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+val colors = LocalNockerlColors.current
+val logoRes =
+    if (colors.canvas.luminance() > 0.5f) R.drawable.ic_nockerl_logo_light
+    else R.drawable.ic_nockerl_logo_dark
+
+Icon(
+    painter = painterResource(id = logoRes),
+    contentDescription = "Nockerl",
+    modifier = Modifier.size(28.dp),
+    tint = Color.Unspecified, // use the drawable's own three-peak fills
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS / iOS: SwiftUI, from the NockerlDesign package (the packaged canon;
+// Voice's local NockerlLogo.swift retires on adoption). Three overlapping peaks
+// in three DISTINCT grayscale shades, theme-aware by default, or force an ink
+// ladder with `tone`.
+import NockerlDesign
+
+// In a lockup (mark + wordmark in the brand font):
+HStack(spacing: 8) {
+    NockerlLogo(size: 28, accessibilityLabel: nil)  // decorative: the wordmark names it
+    Text("Nockerl")
+        .font(.system(size: 18, weight: .bold))
+}
+
+// Force an ink ladder (e.g. on a fixed-dark chrome surface):
+NockerlLogo(size: 20, tone: .onDark)
+
+// Menu-bar status item, a template NSImage the system tints; the mark's
+// depth ladder survives as per-peak alpha:
+MenuBarExtra { /* … */ } label: { Image(nsImage: NockerlLogo.statusItemImage()) }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'lockup', type: "'mark' | 'horizontal' | 'stacked'", default: "'mark'", description: 'Mark only · mark + wordmark in a row (wordmark baseline-aligned) · mark over wordmark.' },
+    { name: 'tone', type: "'mono' | 'knockout'", default: "'mono'", description: 'Single-ink silhouette that inherits <code>currentColor</code> (matches the apps, MONOCHROME per adjudication B19; the faceted cyan prism is retired) · <code>knockout</code> = one flat <code>--color-on-accent</code> for sitting ON a cyan / photo fill.' },
+    { name: 'size', type: 'number', default: '40', description: 'Rendered mark <strong>height</strong> in px; the wordmark scales from it. The one geometry knob.' },
+    { name: 'title', type: 'string', default: "'Nockerl'", description: 'Accessible name (and the link text / aria-label when <code>asLink</code>).' },
+    { name: 'asLink', type: 'boolean', default: 'false', description: 'Render as a real <code>&lt;a&gt;</code> home link: focus-visible cyan ring, keyboard-operable, gentle press. Otherwise decorative (<code>aria-hidden</code>).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+There is no `NockerlBrandMark` composable yet. The mark is the
+`ic_nockerl_logo_{light,dark}` vector drawables rendered via `Icon`. These are
+the relevant inputs.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'painter', type: 'Painter', required: true, description: '<code>painterResource(R.drawable.ic_nockerl_logo_light | _dark)</code>: the three-peaks vector, variant picked by the active palette luminance.' },
+    { name: 'contentDescription', type: 'String?', required: true, description: '"Nockerl" for an informative mark; <code>null</code> when purely decorative beside a label.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Sizing. The top bar uses <code>Modifier.size(28.dp)</code>.' },
+    { name: 'tint', type: 'Color', default: 'Color.Unspecified', description: '<code>Unspecified</code> keeps the drawable\'s own three-peak fills; a real color makes it a single-ink silhouette.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlLogo` is a SwiftUI `View` on the native 8:7 mark ratio (`16 20 64 56`
+viewBox). `size` is the mark HEIGHT. `NockerlLogo.statusItemImage(size:)` is the
+menu-bar template image (macOS).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'size', type: 'CGFloat', default: '24', description: 'The mark <strong>height</strong>; the width keeps the native 8:7 ratio.' },
+    { name: 'tone', type: 'NockerlLogoTone?', default: 'nil', description: 'Force an ink ladder with <code>.onDark</code> (light ink) / <code>.onLight</code> (dark ink); <code>nil</code> resolves from the color scheme.' },
+    { name: 'accessibilityLabel', type: 'String?', default: '"Nockerl"', description: 'The a11y name; pass <code>nil</code> when a sibling wordmark names the lockup (the mark turns decorative).' },
+    { name: 'statusItemImage(size:)', type: 'static → NSImage', default: 'size: 16', description: 'macOS <strong>template</strong> image for <code>MenuBarExtra</code> / <code>NSStatusItem</code>, system-tinted; the depth ladder survives as per-peak alpha.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The geometry is unified: the same three-peaks mark on `viewBox="16 20 64 56"` (peaks
+at apex y = 36 / 24 / 32) ships on Android, Voice, and web. The divergences:
+
+- **Color** *(resolved in [adjudication 2026-07-02 · B19])*: the brand mark is **MONOCHROME
+  everywhere**, a single-ink silhouette that adapts to context (light ink on dark, dark ink on
+  light, luminance-picked). The **cyan prism direction is rejected**; cyan lives only in the
+  lockup's product word (Law 11), never the mark itself. All three shipped platforms already
+  render the mono mark.
+- **No vector wordmark:** "Nockerl" is set typographically in the brand font (the sans token,
+  bold). There is no exported wordmark glyph. The lockups above are mark + type.
+- **No shared mark component:** web would expose `<BrandMark>` (`@dizyx/nockerl-react`, not
+  yet shipped); Voice has `NockerlLogo`; Android has only the drawables + `Icon`. One named
+  component should win.
+</Aside>

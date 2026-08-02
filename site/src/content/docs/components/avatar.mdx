@@ -1,0 +1,153 @@
+---
+title: Avatar
+description: A person or session's identity, with image, initials fallback, presence, and stacks.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import AvatarDemo from '../../../components/demos/AvatarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <AvatarDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlAvatar, NockerlAvatarStack } from '@dizyx/nockerl-react';
+
+export function SessionHeader() {
+  return (
+    <>
+      {/* image → initials → icon, in that order */}
+      <NockerlAvatar src={user.photoUrl} name="Ada Lovelace" size="md" presence="active" onClick={openSettings} />
+      <NockerlAvatar name="Alex Rivera" size="md" />          {/* initials fallback */}
+      <NockerlAvatar size="md" />                              {/* icon fallback (no name) */}
+
+      {/* overlapping group with a "+N" overflow chip */}
+      <NockerlAvatarStack people={members} max={4} size="sm" />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlAvatar
+// (com.dizyx.nockerl.design on GitHub Packages Maven). A clipped disc with a strict
+// fallback ladder: pass a painter, or fall back to initials(name) on the soft accent
+// wash. presence is an optional palette-dot color, notched into the host surface.
+import com.dizyx.nockerl.design.components.NockerlAvatar
+import com.dizyx.nockerl.design.components.NockerlAvatarSize
+
+NockerlAvatar(
+    name = "Ada Lovelace",
+    painter = painterResource(R.drawable.avatar_user),  // null → initials("AM")
+    size = NockerlAvatarSize.MD,
+    presence = LocalNockerlColors.current.dotActive,        // palette dot; fold state into a11y
+    presenceRing = LocalNockerlColors.current.cardSurface1, // match the host surface
+    contentDescription = "Ada Lovelace, active",                 // never color alone (law §13)
+)
+
+NockerlAvatar(name = "Alex Rivera", size = NockerlAvatarSize.MD)  // initials fallback ("AR")
+NockerlAvatar(name = "", size = NockerlAvatarSize.SM)             // blank → "?" placeholder
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical look). Nockerl Voice ships NO avatar component yet;
+// the disc + presence dot follow the app's own vocabulary (a clipped Circle, and
+// PulsingDot from UI/RecordingHUD.swift for the streaming state).
+NockerlAvatar(name: "Ada Lovelace", image: user.photo)   // image → initials → icon
+    .avatarSize(.md)
+    .presence(.active)
+
+NockerlAvatar(name: "Alex Rivera").avatarSize(.md)             // initials fallback
+
+NockerlAvatarStack(people: members, max: 4).avatarSize(.sm)    // overlap + "+N"
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlAvatar" />
+
+`AvatarStack` takes `people: { name; src? }[]`, `max` (default `4`), and `size`. It overlaps the first `max` avatars and appends a `+N` overflow chip.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'name', type: 'String', required: true, description: 'The person/session name. Drives the initials ("Ada Lovelace" → "AL") and the default accessible name. A blank name renders the <code>"?"</code> placeholder glyph.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier (placement, extra sizing).' },
+    { name: 'painter', type: 'Painter?', default: 'null', description: 'Optional avatar image, drawn cropped to the silhouette. <code>null</code> → initials(<code>name</code>) on the soft accent wash. Takes a <code>Painter</code> (e.g. <code>painterResource(…)</code> or a Coil painter), with no image-loader dependency.' },
+    { name: 'size', type: 'NockerlAvatarSize', default: 'SM', description: 'Diameter ramp <code>XS · SM · MD · LG · XL</code> (24 / 32 / 40 / 48 / 64 dp).' },
+    { name: 'shape', type: 'Shape', default: 'CircleShape', description: 'Silhouette. <code>CircleShape</code> (shipped); the rounded-square variant is a proposed alternative.' },
+    { name: 'presence', type: 'Color?', default: 'null', description: 'Optional presence-dot color (a <code>dot*</code> palette token), bottom-right, notched into the host surface. Decorative: fold the state into <code>contentDescription</code>, never color alone (law §13).' },
+    { name: 'presenceRing', type: 'Color', default: 'cardSurface1', description: 'The notch-ring color. Match the HOST surface the avatar sits on so the dot reads anchored, not floating.' },
+    { name: 'contentDescription', type: 'String?', default: 'null', description: 'Accessible name; defaults to <code>name</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the avatar as a `View` plus chained modifiers; presence and size
+come from the view modifiers rather than a flat parameter list.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'NockerlAvatar(name:image:)', type: 'View', description: 'The disc. Resolves <code>image</code> → initials(<code>name</code>) → person icon, clipped to a Circle with a top catch-light + hairline ring.' },
+    { name: '.avatarSize(_:)', type: 'AvatarSize', description: 'Diameter ramp <code>.xs .sm .md .lg .xl</code> (24 / 32 / 40 / 48 / 64 pt).' },
+    { name: '.avatarShape(_:)', type: 'AvatarShape', description: '<code>.circle</code> (default) or <code>.rounded</code> (control radius).' },
+    { name: '.presence(_:)', type: 'Presence', description: 'Bottom-right status dot in a surface-colored notch; <code>.streaming</code> reuses <code>PulsingDot</code>. Status colors only.' },
+    { name: 'NockerlAvatarStack(people:max:)', type: 'View', description: 'Overlapping group; appends a <code>+N</code> overflow chip past <code>max</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The look is approved off the shipped Android avatar; the rest is designed here and
+awaits sign-off:
+
+- **Component vs. inline:** Android now **ships** `NockerlAvatar`
+  (`com.dizyx.nockerl.design.components`), the published wrapper that folds the raw
+  `Image().clip(CircleShape)` pattern (`GlobalTopBar` + `AvatarSettingsSheet`) into one
+  disc with the ratified size ramp + `image → initials` ladder. Voice ships none; the
+  Swift API above is intended.
+- **Fallbacks:** the published Kotlin avatar covers **image → initials** (a blank name
+  renders the `"?"` placeholder). A dedicated **person-icon** fallback is not yet
+  shipped; it's still a proposed rung across all platforms.
+- **Presence & stacks:** the published Kotlin avatar takes an optional bottom-right
+  presence dot (a palette-dot color, notched into the host surface). The overlapping
+  `+N` **stack** is still designed-only: there is **no `NockerlAvatarStack`** on any
+  platform yet.
+- **Shape:** only `circle` is shipped (the published Kotlin default). `rounded` is
+  proposed.
+</Aside>

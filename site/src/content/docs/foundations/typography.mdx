@@ -1,0 +1,172 @@
+---
+title: Typography
+description: The Nockerl type system. Outfit, thin-forward, hierarchy from size, 500 as the bold cap, and emphasis by contrast.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import TypeSpecimen from '../../../components/TypeSpecimen.tsx';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Aside type="tip" title="Migrating a macOS app?">
+Apple reuses text-style names across iOS and macOS at **different sizes**. Read the
+[macOS text-style → token snap table](/foundations/platform-gotchas/#macos) before
+mapping any `title2` / `headline` / `body` to this ramp.
+</Aside>
+
+The Nockerl typeface is **Outfit** (a clean geometric sans) for all UI text, and
+**Space Mono** for code, ticket IDs, and technical metadata. The system is **thin-forward**:
+hierarchy comes from *size*, not weight; the heaviest weight we ever set is **500**; and
+emphasis is made by *contrast*, never by piling on bold. The typeface and every weight are
+**tokens** (`type.*` → `font.*`). A type remodel is one edit and every surface follows.
+
+<Example caption="Live · web · token-reactive, follows the theme toggle">
+  <TypeSpecimen client:visible />
+</Example>
+
+## Hierarchy from size, not weight
+
+A display is the **thinnest** thing on the page, not the boldest. Big type carries the eye
+on its own; loading it with weight as well makes a screen shout. So the scale runs *lighter*
+as it gets *larger*:
+
+- **Display** is weight **100** (thin). Hero scale.
+- **H1 / H2** (headline large / medium) are weight **200** (extralight). They share a weight
+  and differ only by size.
+- **H3** (headline small) is weight **500**. The one deliberately heavy heading, used where a
+  subsection needs to assert itself against dense content.
+- **Body** is weight **300** (light). The everyday reading weight.
+- **Labels** (incl. buttons) are weight **300**.
+
+## 500 is the bold cap
+
+Nockerl type is **never set heavier than 500** (medium). The legacy `semibold` and `bold`
+weights are aliases that resolve to **500**, so any older reference auto-caps. There is no
+600 / 700 anywhere. "Bold," in Nockerl, means 500.
+
+## Emphasis by contrast, never additive bold
+
+Emphasis jumps to the **far weight pole**, never to "a bit bolder." There are two poles:
+**thin 100** and **medium 500**.
+
+- From a **light** baseline (body 300, H1/H2 200), emphasis steps **up** to 500.
+- From a **heavy** baseline (an H3 at 500), emphasis **inverts down to thin 100**: the eye
+  snaps to the lightest word, not the heaviest.
+
+Thin-inversion is **heading-only**; body always steps up (thin-100 body is too faint to read
+as emphasis at small sizes). You never stack a semibold with a heavier bold. That path is
+closed by the 500 cap.
+
+## Uppercase is reserved for buttons
+
+**Buttons are the only uppercase in the system**, never headings, never body. The button
+label is **uppercase, light (300), tracked −0.03em**. Default-tracked uppercase reads as
+stretched, so the negative tracking is part of the rule. (Tiny overline / eyebrow labels are
+the one small exception, and use their own legibility tracking.)
+
+## The brand lockup
+
+The lockup is the mark + **Nockerl** (weight **200**) + an optional product word (weight
+**400**, in cyan). It is **sentence case**, set tight (−0.03em) with a tight gap. One lockup on
+every surface: `Nockerl Voice`, `Nockerl CtxMS`, `Nockerl Security`. See
+[Brand mark](/components/brand-mark/) for the mark itself and clearspace.
+
+## Letter-spacing (tracking)
+
+Tracking is a **token**, never an inline literal, and the system has one firm rule: **we tighten,
+we never spread.** The textbook tracks uppercase *out* for legibility, but spread out, caps read
+gappy and off-brand to us, so every uppercase label is pulled *in* instead. Three steps, with no
+positive value anywhere:
+
+| Token | Value | Where |
+| --- | --- | --- |
+| `font.tracking.tight` | -0.03em | **all uppercase** - buttons, the brand lockup, eyebrows, labels, badges, breadcrumbs, section heads |
+| `font.tracking.snug` | -0.02em | large lowercase display + headings (a whisper of optical tightening) |
+| `font.tracking.normal` | 0 | body, prose, mono - the default, and the loosest caps ever go |
+
+<Aside type="note" title="Decided and shipped">
+This replaced ~197 inline `letter-spacing` literals: **167** swept to the three tokens, every
+uppercase label pulled in from a wide spread (`.1em` / `.08em`) to `-0.03em`.
+</Aside>
+
+## The ramp
+
+A single role-named ramp covers every text need from a 36px display down to a 10px label.
+Each role bundles a family, weight, size, and line-height so they move together.
+
+| Role | Size / line-height | Weight | Use |
+| --- | --- | --- | --- |
+| `display.large` | 36 / 44 | 100 | Hero scale |
+| `display.medium` | 32 / 40 | 100 | Page hero |
+| `display.small` | 28 / 36 | 100 | Section hero |
+| `headline.large` (H1) | 28 / 36 | 200 | Top of a view |
+| `headline.medium` (H2) | 24 / 32 | 200 | Major section |
+| `headline.small` (H3) | 20 / 28 | 500 | Subsection, the one heavy heading |
+| `title.large` | 18 / 26 | 500 | Card / dialog title |
+| `title.medium` | 16 / 24 | 500 | Group title |
+| `title.small` | 14 / 20 | 500 | Dense title |
+| `body.large` | 16 / 24 | 300 | Primary reading text |
+| `body.medium` | 14 / 20 | 300 | Default UI body |
+| `body.small` | 12 / 16 | 300 | Secondary text |
+| `label.large` | 14 / 20 | 300 | Button / control label |
+| `label.medium` | 12 / 16 | 300 | Chip / tag |
+| `label.small` | 10 / 14 | 300 | Overline / caption |
+
+## Line-height theory
+
+Line-height is **tuned per tier**, not a single global multiplier. The right leading depends
+on how the text is read.
+
+- **Display & headline (≈ 1.2 to 1.3×).** Large type sits tighter; at thin weights it needs even
+  less air, so the glyphs read as one shape. 36px pairs with 44px (≈ 1.22), 28px with 36px
+  (≈ 1.29).
+- **Body (≈ 1.4 to 1.5×).** Reading text needs room between lines so the eye tracks and returns
+  cleanly. 16px body pairs with 24px (1.5), 14px with 20px (≈ 1.43).
+- **Labels (≈ 1.3 to 1.4×).** Short, single-line labels get just enough leading to clear
+  ascenders / descenders without wasting space in dense controls.
+
+All line-heights are **quantized to the 4px grid** (14, 16, 20, 24, 26, 28, 32, 36, 40, 44)
+so text rhythm stays aligned with the spacing system.
+
+<Aside type="tip">
+Bind to a <em>role</em> (<code>type.body.large</code>), not a raw size. The role carries the
+matched family + weight + size + line-height as one unit, so a tier-wide change stays
+internally consistent, and the thin-forward weights flow with it.
+</Aside>
+
+## A note on italic
+
+Outfit ships **no true italic**, so italic renders as a faux-oblique (a slant). It is used
+sparingly; the system leans on **weight and color** for emphasis rather than slant.
+
+## Tokens
+
+Published as `--font-family-*`, `--font-weight-*` (thin 100 · extralight 200 · light 300 ·
+regular 400 · medium 500, with `semibold` / `bold` capped to 500), `--font-size-*`,
+`--font-line-height-*`, and the composite `--type-*-{font-family,font-weight,font-size,line-height}`
+sets in `@dizyx/nockerl-tokens`. Outfit and Space Mono load as web fonts; on Android the
+same families are bundled with the app.
+
+**Swift:** the `NockerlDesign` package now **bundles** the real faces (Outfit at the
+§11 ramp weights 100/200/300/400/500 + Space Mono, OFL-1.1) as SwiftPM resources and
+**registers** them with CoreText at first use, with zero app-side setup. Resolve a role with the
+factory or the modifier; both map the role's token `(family, size, weight)` to the exact
+bundled face by PostScript name (never a weight trait, so a weight can't be mis-picked):
+
+```swift
+import NockerlDesign
+
+Text("Nockerl").nockerlType(.headlineMedium)   // Outfit ExtraLight 24
+Text("").nockerlType(.mono)               // Space Mono 12
+Text("Body").font(.nockerl(.bodyMedium))       // the Font factory, for raw call sites
+```
+
+Before this, `NockerlType` declared the families but shipped no font file or resolver, so
+every Swift client silently fell back to SF. Adoption is a one-line swap of a raw
+`.font(.system(size:weight:))` onto `.nockerlType(role)`. Same size + weight, now real
+Outfit. The modifier is font-only (no imposed line box) so a swap causes no layout shift;
+callers needing the ramp line-height read `NockerlTypeRole.lineHeight`.

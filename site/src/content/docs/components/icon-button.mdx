@@ -1,0 +1,168 @@
+---
+title: Icon button
+description: The Nockerl icon button, a compact, glyph-only control.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import IconButtonDemo from '../../../components/demos/IconButtonDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <IconButtonDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; there is
+// no shipped icon button yet, so this is the intended @dizyx/nockerl-react API, mirroring
+// the canonical Compose shape.)
+import { NockerlIconButton } from '@dizyx/nockerl-react';
+import { MoreVertical, Plus, Send, Square } from 'lucide-react';
+
+export function SessionToolbar() {
+  return (
+    <div className="toolbar">
+      <NockerlIconButton icon={<MoreVertical />} label="More options" onClick={openMenu} />
+      <NockerlIconButton icon={<Plus />} label="Add session" onClick={createSession} />
+
+      {/* The send / stop slot, the only filled-circle idiom */}
+      <NockerlIconButton icon={<Send />} label="Send message" variant="filled-circle" onClick={send} />
+      <NockerlIconButton icon={<Square />} label="Stop generating" variant="filled-circle" accent="error" onClick={stop} />
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
+import com.dizyx.nockerl.design.components.NockerlIconButton
+import com.dizyx.nockerl.design.components.NockerlIconButtonStyle
+
+NockerlIconButton(
+    icon = Icons.Filled.MoreVert,
+    contentDescription = "More options",
+    onClick = ::openMenu,
+)
+NockerlIconButton(Icons.Filled.Add, contentDescription = "Add session", onClick = ::createSession)
+
+// The send / stop slot, the only FILLED_CIRCLE idiom
+NockerlIconButton(
+    icon = Icons.AutoMirrored.Filled.Send,
+    contentDescription = "Send message",
+    onClick = ::send,
+    style = NockerlIconButtonStyle.FILLED_CIRCLE,
+    size = 48.dp,
+)
+NockerlIconButton(
+    icon = Icons.Filled.Stop,
+    contentDescription = "Stop generating",
+    onClick = ::stop,
+    style = NockerlIconButtonStyle.FILLED_CIRCLE,
+    accent = LocalNockerlColors.current.statusError,
+    size = 48.dp,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// SwiftUI: the published NockerlDesign SwiftPM package. A self-contained View that takes
+// an Image + a REQUIRED, non-empty accessible name. Both idioms ship (.plain / .filledCircle).
+import NockerlDesign
+
+NockerlIconButton(Image(systemName: "ellipsis"), label: "More options") { openMenu() }
+NockerlIconButton(Image(systemName: "plus"), label: "Add session") { createSession() }
+
+// The send / stop slot, the only .filledCircle idiom (the one true circle in the system)
+NockerlIconButton(Image(systemName: "paperplane.fill"), label: "Send message", style: .filledCircle) { send() }
+NockerlIconButton(Image(systemName: "stop.fill"), label: "Stop generating", style: .filledCircle) { stop() }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlIconButton" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'icon', type: 'ImageVector', required: true, description: 'The glyph to render.' },
+    { name: 'contentDescription', type: 'String?', required: true, description: '<strong>Accessible name.</strong> Use <code>null</code> only when a sibling label already names the action.' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'Invoked on tap. No-op while <code>enabled = false</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier (placement, weight).' },
+    { name: 'style', type: 'NockerlIconButtonStyle', default: 'PLAIN', description: 'Idiom: <code>PLAIN</code> (transparent, control radius) · <code>FILLED_CIRCLE</code> (solid accent circle for send/stop).' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the button is dimmed (alpha 0.38) and non-interactive.' },
+    { name: 'accent', type: 'Color', default: 'engineCloud', description: 'Circle fill for <code>FILLED_CIRCLE</code> (defaults to the engine-cloud cyan); ignored for <code>PLAIN</code>.' },
+    { name: 'tint', type: 'Color', default: 'onCanvas', description: 'Glyph color for <code>PLAIN</code>; ignored for the circle (which contrast-picks against <code>accent</code>).' },
+    { name: 'size', type: 'Dp', default: '40.dp', description: 'Touch-target dimension. Use <code>48.dp</code> for the send/stop circle.' },
+    { name: 'iconSize', type: 'Dp', default: '20.dp', description: 'Rendered glyph size.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The published `NockerlIconButton` is a self-contained `View` that takes an `Image` + a
+REQUIRED accessible name. Both idioms ship (`.plain` / `.filledCircle`). State (`isEnabled`,
+pressed) flows from the SwiftUI environment; honor `.disabled(_:)` for the dimmed state.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'image', type: 'Image', required: true, description: 'The glyph (the leading unlabeled argument), e.g. <code>Image(systemName: "paperplane.fill")</code>. Rendered in a 40pt visual box inside a ≥44pt hit frame.' },
+    { name: 'label', type: 'String', required: true, description: '<strong>Required, non-empty accessible name</strong>. An icon-only control has no visible text. Whitespace is trimmed; a blank value asserts in debug builds.' },
+    { name: 'style', type: 'NockerlIconButtonStyle', default: '.plain', description: 'Idiom: <code>.plain</code> (transparent, <code>NockerlRadius.control</code>) · <code>.filledCircle</code> (solid <code>accentPrimary</code> circle for the send/stop slot).' },
+    { name: 'density', type: 'NockerlControlDensity', default: '.comfortable', description: 'The rhythm tier (, foundations/density): <code>.comfortable</code> = 40pt visual in a ≥44pt layout frame · <code>.compact</code> = a <strong>32pt</strong> visual that IS the layout footprint (dense rows keep their height) while the 44pt hit target extends invisibly via expanded touch bounds (law §13 preserved). Space compact neighbors ≥12pt apart so hit zones don&rsquo;t overlap.' },
+    { name: 'tint', type: 'NockerlIconButtonTint', default: '.neutral', description: 'The <code>.plain</code> glyph tint: <code>.neutral</code> (on-card) · <code>.destructive</code> (status-red; delete/remove reads via <strong>color + glyph</strong>, never a screaming fill) · <code>.custom(Color)</code>. <code>.filledCircle</code> ignores it (accent-locked send/stop slot).' },
+    { name: 'init(systemName:label:…)', type: 'convenience', description: 'SF Symbol shorthand: <code>NockerlIconButton(systemName: "trash", label: "Delete", tint: .destructive) { … }</code>.' },
+    { name: 'action', type: '() -> Void', required: true, description: 'The trailing closure, invoked on tap.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Cross-platform parity (published packages)">
+The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
+(`NockerlDesign`) packages now share both idioms and the a11y contract. The earlier drift
+is resolved:
+
+- **Both idioms ship.** Swift has `.plain` **and** `.filledCircle` (the send/stop slot),
+  matching Compose/web, no longer plain-only.
+- **Control radius is tokenized.** The `.plain` idiom consumes `NockerlRadius.control`
+  (**12pt**); `.filledCircle` uses the pill radius. The hardcoded 10pt is gone.
+- **Hit target meets the minimum.** Swift renders a **40pt visual inside a ≥44pt hit frame**
+  (Apple HIG), matching Compose's 40dp default. The old 24×22pt frame is gone.
+- **Accessible name is required.** Swift's `label` is now a required, non-empty argument that
+  asserts in debug, matching Compose's `contentDescription` / web's `label`. No more unnamed
+  default.
+
+Remaining, minor differences:
+
+- **Sizing knob:** Compose/web expose an explicit `size` (and Compose `iconSize`); Swift's
+  visual is fixed at 40pt (the shared control height). Disabled state is honored via
+  `.disabled(_:)` on Swift rather than an `enabled` parameter.
+</Aside>

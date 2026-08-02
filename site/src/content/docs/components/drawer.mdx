@@ -1,0 +1,195 @@
+---
+title: Drawer / side panel
+description: The edge-anchored side panel, either a navigation drawer (left) or an inspector / detail drawer (right) that slides in over a scrim or pushes content aside.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import DrawerDemo from '../../../components/demos/DrawerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DrawerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// NockerlDrawer + NockerlNavSurface are the SAME component ( · D5): the ONE edge-anchored
+// nav / panel surface. OVERLAY mode composes the shipped NockerlOverlay primitive (scrim +
+// focus-trap + Esc); INLINE omits it (no scrim; shift the app aside so it stays live) for
+// the persistent nav-rail / sidebar role. Nav rows are the real NockerlNavItem primitive.
+import { NockerlDrawer, NockerlNavItem, NockerlButton } from '@dizyx/nockerl-react';
+
+export function Workspace({ stage }: { stage: HTMLElement | null }) {
+  const [nav, setNav] = useState(false);
+  const [inspect, setInspect] = useState(false);
+  return (
+    <>
+      {/* LEFT: an overlay navigation drawer (mobile nav over a scrim) */}
+      <NockerlDrawer open={nav} onDismiss={() => setNav(false)} stage={stage} edge="left" mode="overlay" title="Nockerl" subtitle="dizyx workspace">
+        <nav aria-label="Primary">
+          <NockerlNavItem icon={<ChatIcon />} label="Chat" status="streaming" active onSelect={goChat} />
+          <NockerlNavItem icon={<TasksIcon />} label="Tasks" count={{ value: 3 }} onSelect={goTasks} />
+          <NockerlNavItem icon={<FilesIcon />} label="Files" onSelect={goFiles} />
+        </nav>
+      </NockerlDrawer>
+
+      {/* RIGHT: an inline/push inspector drawer (desktop detail pane) */}
+      <NockerlDrawer
+        open={inspect}
+        onDismiss={() => setInspect(false)}
+        stage={stage}
+        edge="right"
+        mode="inline"
+        title="Session details"
+        footer={<NockerlButton text="Open session" variant="primary" onClick={open} />}
+      >
+        <SessionInspector session={active} />
+      </NockerlDrawer>
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose Material 3 (canonical drawer primitives).
+// LEFT navigation drawer: ModalNavigationDrawer over a scrim.
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.DrawerValue
+
+val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+ModalNavigationDrawer(
+    drawerState = drawerState,
+    drawerContent = {
+        ModalDrawerSheet {
+            Text("Nockerl", Modifier.padding(16.dp))
+            NavigationDrawerItem(
+                label = { Text("Chat") },
+                icon = { Icon(Icons.Outlined.Chat, contentDescription = null) },
+                selected = section == Section.Chat,
+                onClick = { scope.launch { drawerState.close() }; goChat() },
+            )
+            NavigationDrawerItem(
+                label = { Text("Tasks") },
+                badge = { Text("3") },
+                selected = section == Section.Tasks,
+                onClick = { goTasks() },
+            )
+        }
+    },
+) {
+    // Main content. A DismissibleNavigationDrawer is the inline/push variant
+    // (no scrim); a PermanentNavigationDrawer is the always-open rail.
+    ChatScreen()
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical drawer primitives).
+// LEFT navigation drawer: NavigationSplitView (collapsible sidebar + detail).
+NavigationSplitView(columnVisibility: $columns) {
+    List(selection: $section) {
+        Label("Chat", systemImage: "bubble.left.and.bubble.right")
+        Label("Tasks", systemImage: "checklist")
+        Label("Files", systemImage: "folder")
+    }
+    .navigationTitle("Nockerl")
+} detail: {
+    ChatView()
+        // RIGHT inspector / detail drawer: the .inspector modifier (macOS 14+).
+        .inspector(isPresented: $showInspector) {
+            SessionInspectorView(session: active)
+                .inspectorColumnWidth(min: 240, ideal: 280, max: 360)
+        }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlDrawer" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'drawerState', type: 'DrawerState', default: 'rememberDrawerState(Closed)', description: 'Open/closed state. <code>DrawerValue.Open</code> / <code>Closed</code>; animate via <code>drawerState.open()</code> / <code>close()</code>.' },
+    { name: 'drawerContent', type: '@Composable ColumnScope.() -> Unit', required: true, description: 'The sheet content, typically a <code>ModalDrawerSheet</code> wrapping <code>NavigationDrawerItem</code>s.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier applied to the whole drawer container.' },
+    { name: 'gesturesEnabled', type: 'Boolean', default: 'true', description: 'Whether the edge swipe + scrim drag can open/close the drawer.' },
+    { name: 'scrimColor', type: 'Color', default: 'DrawerDefaults.scrimColor', description: 'The modal scrim tint over the content. (Resolve to <code>color.scrim</code>.)' },
+    { name: 'content', type: '@Composable -> Unit', required: true, description: 'The main screen behind/beside the drawer (the trailing lambda).' },
+    { name: 'selected', type: 'Boolean', required: true, description: '<code>NavigationDrawerItem</code>: the selected row gets the cyan container + indicator.' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: '<code>NavigationDrawerItem</code>: row activation (usually navigates, then closes the drawer).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI has no single "Drawer" view; the edge-anchored panel is built from two
+standard primitives: `NavigationSplitView` (the collapsible left sidebar) and the
+`.inspector` modifier (the right detail drawer, macOS 14+). State comes from the
+bindings below.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'NavigationSplitView', type: 'View', description: 'The left navigation drawer: a sidebar column + a detail column. The sidebar collapses to an overlay on compact widths.' },
+    { name: 'columnVisibility', type: 'Binding<NavigationSplitViewVisibility>', description: 'Drives the sidebar: <code>.all</code> (open) / <code>.detailOnly</code> (collapsed) / <code>.automatic</code>.' },
+    { name: '.inspector(isPresented:)', type: 'ViewModifier', description: 'The right inspector / detail drawer (macOS 14+). <code>isPresented</code> is a <code>Binding&lt;Bool&gt;</code> that slides it in from the trailing edge.' },
+    { name: '.inspectorColumnWidth', type: 'ViewModifier', description: 'Sets the inspector’s <code>min</code> / <code>ideal</code> / <code>max</code> width.' },
+    { name: '.navigationTitle', type: 'ViewModifier', description: 'The drawer/region accessible name, shown at the top of the sidebar.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Distinct from its catalog siblings: **bottom-sheet** rises from the bottom edge,
+**dialog** is a centered card, and **app-shell / sidebar** are the *permanent* rail.
+A drawer is the *overlay* (or push panel) anchored to a vertical edge. The shipped
+apps don't yet use a true overlay drawer. These are the real divergences:
+
+- **Android** ships on Material 3 (the `ModalNavigationDrawer` API above is
+  available), but currently presents navigation as a **bottom sheet**
+  (`AvatarSettingsSheet`, raised from the avatar), **not** a left nav drawer. The
+  Compose code is the intended drawer; the live app is a sheet.
+- **Voice** deliberately **hand-rolls** its left sidebar (a translucent floating
+  panel over the facet background) rather than using `NavigationSplitView`, because
+  the native split view paints an opaque material the in-app background can't show
+  through. It has **no right inspector** yet. The Swift code documents the standard
+  primitives; Voice's sidebar is a custom view.
+- **Selection treatment:** Voice's selected row is `accent @ 16%` fill + `accent @
+  45%` border (mirrored in the web demo). Compose's `NavigationDrawerItem` uses
+  Material's own selected container. One selection expression needs to win.
+</Aside>

@@ -1,0 +1,206 @@
+---
+title: Sidebar / nav rail
+description: The persistent, in-layout Nockerl navigation column, with sections, nav items, active state, collapsible rail, nested sub-items, and a pinned footer.
+status: review
+platforms: [web, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import SidebarDemo from '../../../components/demos/SidebarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SidebarDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function Shell() {
+  const [section, setSection] = useState('chat');
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <div className="layout">
+      <Sidebar
+        collapsed={collapsed}                 // expanded ↔ icon-only rail
+        onToggleCollapse={() => setCollapsed((c) => !c)}
+        selected={section}
+        onSelect={setSection}
+        sections={[
+          { label: 'Workspace', items: [
+            { id: 'home', label: 'Home', icon: <HomeIcon /> },
+            { id: 'chat', label: 'Chat', icon: <ChatIcon />, dot: 'streaming' },
+            { id: 'tasks', label: 'Tasks', icon: <TasksIcon />, badge: { count: 3, tone: 'attention' },
+              children: [{ id: 'tasks-mine', label: 'Assigned to me' }, { id: 'tasks-review', label: 'In review' }] },
+            { id: 'files', label: 'Files', icon: <FilesIcon />, badge: { count: 12 } },
+          ] },
+        ]}
+        footer={<ProfileMenu name="Ada Lovelace" onSettings={openSettings} />}
+      />
+      <main>{/* the content region; the sidebar stays beside it, never over it */}</main>
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). There is NO side rail on Android: the persistent nav
+// lives as TOP CHROME inside com.nockerl.app.core.ui.MainScaffold (project + session
+// rows that collapse under the title bar), not a vertical sidebar. The honest
+// equivalent of the sidebar's section + selected-row vocabulary is that chrome:
+import com.nockerl.app.core.ui.ProjectRow
+import com.nockerl.app.core.ui.TopChromeBoundary
+import com.nockerl.app.chat.ui.SessionChipsBar
+
+// Inside MainScaffold's stacked top chrome:
+ProjectRow(
+    projectName = state.projectName,
+    isWorkspaceScoped = state.isWorkspaceScoped,
+    onOpenPicker = viewModel::openProjectPicker,   // the "sections" entry point
+    onOpenFiles = viewModel::openFiles,
+    onOpenTasks = viewModel::openTasks,
+)
+SessionChipsBar(/* horizontally-scrollable destinations; selected = cyan chip */)
+TopChromeBoundary(                                 // 1.5dp cyan line + grab handle
+    collapsed = headerCollapsed,
+    onCollapsedChange = { headerCollapsed = it },  // collapse, but UP, not to a rail
+)
+// A vertical NavigationRail / PermanentNavigationDrawer is not used today; see drift.
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI. The ROW is now the packaged `NockerlNavRow` (, to the
+// NockerlNavItem canon; Voice's hand-rolled SidebarRow retires on adoption);
+// the sidebar SHELL (fixed 216pt translucent panel, brand top, Settings cog
+// pinned bottom) stays app-side until the Swift nav-surface ships.
+import NockerlDesign
+
+private let sidebarWidth: CGFloat = 216
+
+private var sidebar: some View {
+    VStack(alignment: .leading, spacing: 3) {
+        HStack(spacing: 9) { NockerlLogo(size: 19); Text("Nockerl Voice") }
+            .padding(.horizontal, 16).padding(.top, 50).padding(.bottom, 16)
+
+        ForEach(DashboardSection.navItems) { section in
+            NockerlNavRow(section.title, selected: router.section == section) {
+                router.section = section
+            } icon: {
+                Image(systemName: section.icon)
+            }
+        }
+        Spacer(minLength: 0)
+        NockerlNavRow("Settings", selected: router.section == .settings) {
+            router.section = .settings
+        } icon: { Image(systemName: "gearshape") }
+            .padding(.bottom, 14)                       // the footer cog, pinned
+    }
+    .padding(.horizontal, 8)
+    .frame(width: sidebarWidth)
+    .background(NockerlTheme.canvas.opacity(0.3))       // translucent: facet field reads through
+    .overlay(alignment: .trailing) { Rectangle().fill(NockerlTheme.hairline).frame(width: 1) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'sections', type: 'NavSection[]', required: true, description: 'Grouped nav: <code>{ label, items }</code>. Each item is <code>{ id, label, icon, badge?, dot?, children? }</code> and renders as one focusable button.' },
+    { name: 'selected', type: 'string', required: true, description: 'Active destination <code>id</code> (a leaf, meaning a child id when a sub-item is active). Drives the cyan indicator + which content shows.' },
+    { name: 'onSelect', type: '(id: string) => void', required: true, description: 'Fired when a (leaf) item is activated: click / Enter / Space.' },
+    { name: 'collapsed', type: 'boolean', default: 'false', description: 'Collapses the sidebar to the icon-only <strong>rail</strong>; labels + counts hide and each item exposes its label via tooltip / <code>aria-label</code>.' },
+    { name: 'onToggleCollapse', type: '() => void', description: 'Toggles <code>collapsed</code> from the rail button.' },
+    { name: 'badge', type: "{ count: number; tone?: 'neutral' | 'attention' }", description: 'Per-item trailing count. <code>neutral</code> = mono chip; <code>attention</code> = warm count (status signal). Right-aligned; collapses to a corner dot on the rail.' },
+    { name: 'children', type: 'NavSubItem[]', description: 'Nested sub-items on an item, which turn its row into an expandable disclosure (<code>aria-expanded</code>), indented under the parent.' },
+    { name: 'footer', type: 'ReactNode', description: 'Pinned to the bottom: profile (avatar + name) + a settings cog (its own focusable target).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+There is no Android sidebar component. The persistent nav is **top chrome** composed
+inside `MainScaffold`; these are the real load-bearing parameters of that chrome (the
+honest equivalent of the sidebar's sections + selected-row + collapse).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'ProjectRow.projectName', type: 'String', required: true, description: 'The active project, the chrome counterpart of the sidebar brand / section header.' },
+    { name: 'ProjectRow.onOpenPicker', type: '() -> Unit', required: true, description: 'Opens the project picker sheet, the entry point to switch the nav scope.' },
+    { name: 'ProjectRow.onOpenFiles / onOpenTasks', type: '() -> Unit', required: true, description: 'Destination buttons (Files / Tasks) → their bottom sheets (the nav items).' },
+    { name: 'SessionChipsBar', type: '@Composable', description: 'Horizontally-scrollable session destinations; the selected chip reads cyan (the selected-row equivalent).' },
+    { name: 'TopChromeBoundary.collapsed', type: 'Boolean', required: true, description: 'Whether the project + session rows collapse UP under the title bar, not into a vertical rail.' },
+    { name: 'TopChromeBoundary.onCollapsedChange', type: '(Boolean) -> Unit', required: true, description: 'Drag / tap the 1.5dp cyan boundary handle to collapse / expand the chrome.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The ROW ships as `NockerlNavRow`. The sidebar SHELL stays app-side (a
+fixed translucent panel reading the app's router). Canon deltas vs Voice's retired
+`SidebarRow`: hover wash reads `onChrome @ 6%` (not `onSurface`), resting ink is
+`onChromeMuted` at weight <strong>medium</strong> (hover raises it), the selected wash is the
+`accentPrimarySoft` <strong>token</strong> (~16%, theme-governed), rows gain the 0.985 press
+scale and the 22% selected-hover deepen, and the row metrics are the canon's
+(min-height 40, padding 12/8/8, radius `control`).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'label', type: 'String', required: true, description: 'The destination name, also the row&rsquo;s accessible name.' },
+    { name: 'selected', type: 'Bool', default: 'false', description: 'Active destination (law §6): <code>accentPrimarySoft</code> wash + accent <code>@0.45</code> thin border + accent ink + semibold; the icon <strong>stays</strong> (never a check swap), never a left rail.' },
+    { name: 'action', type: '() -> Void', required: true, description: 'Whole-row tap: the row is ONE button with one accessible name.' },
+    { name: 'icon', type: '@ViewBuilder', description: 'Leading glyph slot (an SF Symbol <code>Image</code> or any view) in the canonical 20pt slot, tinted with the row&rsquo;s ink. Omit for a label-only row (no phantom slot).' },
+    { name: 'focus (macOS)', type: 'behavior', description: 'Rows leave the focus chain (<code>focusable(false)</code> + <code>focusEffectDisabled</code>, 14+), the ratified stance for mouse-driven sidebars; other platforms keep native behavior.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The **sidebar** is the persistent, in-layout nav column, the **`inline` role of the ONE
+nav-surface** ( · D5): `NockerlNavSurface` (= `NockerlDrawer`) is a single edge-anchored
+surface with `mode: inline | overlay`. `inline` is this persistent rail; `overlay` is the
+[drawer](/components/drawer/) (a scrim panel that opens / closes). [App shell](/components/app-shell/)
+composes ONE nav-surface, not two. The sidebar never floats over content and never dims it. Its
+praised rail chrome (grouped sections, collapse-to-rail, footer) is preserved as the reference
+`inline` nav content; the shell-level convergence lands with AppShell .
+
+- **Android has no side rail.** Voice + web use a vertical sidebar; Android's persistent
+  nav is **top chrome** (project + session rows that collapse *up* under the title bar).
+  A `NavigationRail` / `PermanentNavigationDrawer` is not used today.
+- **Collapse:** web collapses to an **icon-only rail** (with tooltips); Voice's panel is
+  a **fixed 216pt** with no rail; Android collapses the chrome **upward**, not sideways.
+- **Sub-items + counts:** the **nested expandable sub-items** and **trailing count/badge**
+  are framework-original; Voice's shipped sidebar is a flat list with neither.
+- **Selected treatment is unified**: a left cyan indicator + cyan-soft wash + cyan
+  icon/label (Voice's accent <code>@0.16</code> fill + <code>@0.45</code> border),
+  never a full cyan fill or a glow.
+</Aside>

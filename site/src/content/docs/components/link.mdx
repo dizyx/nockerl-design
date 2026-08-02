@@ -1,0 +1,153 @@
+---
+title: Link
+description: The Nockerl hyperlink, a navigational text link, inline or standalone.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import LinkDemo from '../../../components/demos/LinkDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <LinkDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// A link is a true <a>: text emphasis (cyan accent + underline), inline or standalone.
+import { NockerlLink } from '@dizyx/nockerl-react';
+
+export function Footnotes() {
+  return (
+    <p>
+      Start in the <NockerlLink href="/sessions">session console</NockerlLink>, then open the{' '}
+      <NockerlLink href="https://github.com/dizyx/nockerl-design" external>design tokens</NockerlLink>.
+      {/* external → target="_blank" rel="noopener noreferrer" + ↗ glyph + a11y hint */}
+      <NockerlLink href="/docs" variant="muted">Subtle inline reference</NockerlLink>
+      <NockerlLink href="/app.apk" leadingIcon={<DownloadIcon />}>Download the APK</NockerlLink>
+      <NockerlLink href="/upgrade" onAccent>Upgrade your plan</NockerlLink>   {/* on a cyan surface */}
+    </p>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). There is no bespoke NockerlLink composable
+// yet: chat/ui/MarkdownContent.kt renders links through the markdown renderer, which
+// styles them via Compose's TextLinkStyles + LinkAnnotation + UriHandler. This is that
+// underlying primitive, bound to the single cyan brand accent + an underline.
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
+
+val accent = NockerlTheme.colors.accentPrimary   // brand cyan, the only link color
+val linkStyles = TextLinkStyles(
+    style = SpanStyle(color = accent, textDecoration = TextDecoration.Underline),
+)
+
+Text(
+    buildAnnotatedString {
+        append("Open the ")
+        withLink(LinkAnnotation.Url(url = "https://nockerl.dizyx.com", styles = linkStyles)) {
+            append("docs site")   // UriHandler from the environment opens the URL
+        }
+    },
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (intended). Nockerl Voice ships no link component today (it opens
+// system URLs via NSWorkspace and tints with NockerlTheme.accent); this is the
+// intended link treatment: SwiftUI Link / markdown Text, the accent as tint.
+import SwiftUI
+
+// Standalone link.
+Link("Open the docs site", destination: URL(string: "https://nockerl.dizyx.com")!)
+    .tint(NockerlTheme.accent)            // brand cyan, the only link color
+    .underline()
+
+// Inline links inside prose come free from markdown; the tint sets the link color.
+Text("Start in the [session console](nockerl://sessions) or read the [tokens](https://github.com/dizyx).")
+    .tint(NockerlTheme.accent)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlLink" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'LinkAnnotation.Url(url)', type: 'String', required: true, description: 'The destination, attached over a span via <code>withLink</code> inside <code>buildAnnotatedString</code>.' },
+    { name: 'styles', type: 'TextLinkStyles', description: 'Per-state link styling. Nockerl uses <code>SpanStyle(color = accentPrimary, textDecoration = Underline)</code>, the cyan brand accent + an underline.' },
+    { name: 'TextLinkStyles.style', type: 'SpanStyle?', description: 'Rest style. <code>color = NockerlTheme.colors.accentPrimary</code>; <code>textDecoration = TextDecoration.Underline</code>.' },
+    { name: 'TextLinkStyles.hoveredStyle', type: 'SpanStyle?', default: 'null', description: 'Pointer-hover style (desktop / Chromebook). Android touch has no hover; press is the feedback.' },
+    { name: 'TextLinkStyles.focusedStyle', type: 'SpanStyle?', default: 'null', description: 'Focus style for D-pad / keyboard traversal.' },
+    { name: 'UriHandler', type: 'LocalUriHandler', description: 'Ambient handler that opens the tapped URL; supplied by the Compose environment.' },
+    { name: 'LinkInteractionListener', type: '(LinkAnnotation) -> Unit', default: 'null', description: 'Optional override for click handling instead of the default <code>UriHandler</code> open.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI renders links with the standard `Link` view or markdown inside `Text`; the
+link color comes from the environment `tint`. There is no shipped Nockerl link
+component. These are the intended bindings.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Link(_:destination:)', type: 'View', description: 'Standalone link to a <code>URL</code>. Activates via click and full keyboard focus.' },
+    { name: '.tint(_:)', type: 'Color', description: 'The link color. Bound to <code>NockerlTheme.accent</code> (brand cyan), the only link color.' },
+    { name: '.underline()', type: 'Text', description: 'The underline affordance on standalone links (markdown links carry it automatically).' },
+    { name: 'Text("[label](url)")', type: 'View', description: 'Inline links inside prose via markdown; the inherited <code>tint</code> colors them.' },
+    { name: 'environment(\\.openURL)', type: 'OpenURLAction', description: 'Optional override of how a tapped link opens (custom routing instead of the system handler).' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The treatment is unified (cyan accent + underline); the implementations differ:
+
+- **No shared link component yet.** Web documents the intended `@dizyx/nockerl-react`
+  `Link`; **Android** has no `NockerlLink`, so links are markdown-rendered via
+  `TextLinkStyles` / `LinkAnnotation`; **Swift/Voice** ships no link at all (it opens
+  system URLs via `NSWorkspace`). All three should converge on one link spec.
+- **Underline default.** Web + Swift underline at rest; the renderer's `TextLinkStyles`
+  on Android should pin `TextDecoration.Underline` so links never read as plain accent text.
+- **Link color token.** Bind every platform to the single accent (`accent.primary`), with no
+  per-platform link hue.
+</Aside>

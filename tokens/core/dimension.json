@@ -1,0 +1,27 @@
+{
+  "$description": "CORE / GLOBAL dimension scales: the 4px-base spacing grid plus the icon-size scale, shared by every platform. Radius and elevation are platform-divergent (dp vs px) and live in semantic/ + platform/, not here.",
+  "space": {
+    "0": { "$type": "dimension", "$value": "0px" },
+    "px": { "$type": "dimension", "$value": "1px" },
+    "0-5": { "$type": "dimension", "$value": "2px" },
+    "1": { "$type": "dimension", "$value": "4px" },
+    "2": { "$type": "dimension", "$value": "8px" },
+    "3": { "$type": "dimension", "$value": "12px" },
+    "4": { "$type": "dimension", "$value": "16px" },
+    "5": { "$type": "dimension", "$value": "20px" },
+    "6": { "$type": "dimension", "$value": "24px" },
+    "8": { "$type": "dimension", "$value": "32px" },
+    "10": { "$type": "dimension", "$value": "40px" },
+    "12": { "$type": "dimension", "$value": "48px" },
+    "16": { "$type": "dimension", "$value": "64px" }
+  },
+  "icon": {
+    "$description": "Icon-size scale (px): the home for the 12-24 stroke-icon sizes the demos hand-rolled. Bind via var(--icon-*); the Icon primitive mirrors it as ICON_SIZE.",
+    "xs": { "$type": "dimension", "$value": "12px" },
+    "sm": { "$type": "dimension", "$value": "14px" },
+    "md": { "$type": "dimension", "$value": "16px" },
+    "lg": { "$type": "dimension", "$value": "18px" },
+    "xl": { "$type": "dimension", "$value": "20px" },
+    "2xl": { "$type": "dimension", "$value": "24px" }
+  }
+}

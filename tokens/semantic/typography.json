@@ -1,0 +1,21 @@
+{
+  "$description": "SEMANTIC type ramp: composite typography tokens (Material 3 role names, shared with web) plus the Nockerl-specific `eyebrow` overline role. Each references core font primitives so family/sizes are single-sourced. NOCKERL TYPE SYSTEM (Outfit): hierarchy from SIZE, weights stay thin, 500 is the bold cap. Display 100 · headline L/M (H1/H2) 200 · headline S (H3) 500 · title (small headings) 500 · body 300 · label (UI/buttons) 300 · eyebrow (section overline) 500. Uppercase is reserved for buttons + eyebrows (applied at the component level). Emphasis is by contrast (thin 100 <-> medium 500), never additive bold.",
+  "type": {
+    "displayLarge": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.thin}", "fontSize": "{font.size.36}", "lineHeight": "{font.lineHeight.44}" } },
+    "displayMedium": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.thin}", "fontSize": "{font.size.32}", "lineHeight": "{font.lineHeight.40}" } },
+    "displaySmall": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.thin}", "fontSize": "{font.size.28}", "lineHeight": "{font.lineHeight.36}" } },
+    "headlineLarge": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.extralight}", "fontSize": "{font.size.28}", "lineHeight": "{font.lineHeight.36}" } },
+    "headlineMedium": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.extralight}", "fontSize": "{font.size.24}", "lineHeight": "{font.lineHeight.32}" } },
+    "headlineSmall": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.medium}", "fontSize": "{font.size.20}", "lineHeight": "{font.lineHeight.28}" } },
+    "titleLarge": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.medium}", "fontSize": "{font.size.18}", "lineHeight": "{font.lineHeight.26}" } },
+    "titleMedium": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.medium}", "fontSize": "{font.size.16}", "lineHeight": "{font.lineHeight.24}" } },
+    "titleSmall": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.medium}", "fontSize": "{font.size.14}", "lineHeight": "{font.lineHeight.20}" } },
+    "bodyLarge": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.light}", "fontSize": "{font.size.16}", "lineHeight": "{font.lineHeight.24}" } },
+    "bodyMedium": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.light}", "fontSize": "{font.size.14}", "lineHeight": "{font.lineHeight.20}" } },
+    "bodySmall": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.light}", "fontSize": "{font.size.12}", "lineHeight": "{font.lineHeight.16}" } },
+    "labelLarge": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.light}", "fontSize": "{font.size.14}", "lineHeight": "{font.lineHeight.20}" } },
+    "labelMedium": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.light}", "fontSize": "{font.size.12}", "lineHeight": "{font.lineHeight.16}" } },
+    "labelSmall": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.light}", "fontSize": "{font.size.10}", "lineHeight": "{font.lineHeight.14}" } },
+    "eyebrow": { "$type": "typography", "$value": { "fontFamily": "{font.family.sans}", "fontWeight": "{font.weight.medium}", "fontSize": "{font.size.12}", "lineHeight": "{font.lineHeight.16}" }, "$description": "The section EYEBROW (v1.18.0), the ONE shared uppercase-overline role for section headers. `labelMedium`'s metrics (Outfit / 12pt / 16px line) at the 500 bold cap (NOT labelMedium's 300, which stays thin for its other consumers). Unifies the section-header treatment across NockerlGroupHeader / NockerlFormSection / NockerlStatCard on Swift + Compose + web. Uppercase + ink are applied by the consumer; the caps tracking is font.tracking.eyebrow." }
+  }
+}

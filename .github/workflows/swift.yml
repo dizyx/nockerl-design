@@ -1,0 +1,26 @@
+name: Swift
+
+# The verification rail for the SwiftUI side of the design system. There is no Swift
+# toolchain on the authoring box, so macos-latest CI IS the compiler: `swift build` +
+# `swift test` on every PR, every push to main, and every release tag. Components
+# (Sources/NockerlDesign/Components/) are authored as reviewed code and verified here.
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift toolchain
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Test
+        run: swift test

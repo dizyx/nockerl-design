@@ -1,0 +1,144 @@
+---
+title: Switch / toggle
+description: The Nockerl switch, an instant on/off control for a single setting.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import SwitchDemo from '../../../components/demos/SwitchDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SwitchDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.
+// NockerlSwitch ships in the package; see the drift note for the per-platform status.)
+import { NockerlSwitch } from '@dizyx/nockerl-react';
+
+export function SettingsRows() {
+  const [push, setPush] = useState(true);
+  const [haptics, setHaptics] = useState(false);
+  return (
+    <>
+      <NockerlSwitch label="Push notifications" checked={push} onChange={setPush} />
+      <NockerlSwitch label="Haptic feedback" checked={haptics} onChange={setHaptics} />
+      <NockerlSwitch label="Parallel tool calls" checked={false} loading />
+      <NockerlSwitch label="Enable thinking" checked disabled />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). Material3 Switch, brand-tinted ON via
+// SwitchDefaults.colors(checkedTrackColor = accentPrimary). Pair with
+// NockerlSettingsRow as the row's trailingContent. (core/ui/AvatarSettingsSheet.kt)
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+Switch(
+    checked = pushEnabled,
+    onCheckedChange = viewModel::setPushEnabled,
+    enabled = true,
+    colors = SwitchDefaults.colors(
+        checkedTrackColor = LocalNockerlColors.current.accentPrimary,
+    ),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS / iOS SwiftUI, from the NockerlDesign package: the ratified
+// switch drawn to the web canon. Recessed-well OFF track, static cyan gradient
+// ON layer that CROSS-FADES in by opacity, a lifted thumb that slides and
+// squashes on press. Interpolatable props only; jumps under reduced motion.
+import NockerlDesign
+
+// The native Toggle keeps its label/keyboard/a11y; the style draws the control:
+Toggle("Launch at login", isOn: $launchAtLogin)
+    .toggleStyle(.nockerl)
+
+// Bare control (a SettingsCard row already carries the text):
+NockerlToggle(isOn: $launchAtLogin, accessibilityLabel: "Launch at login")
+
+// Dense rows:
+Toggle("Notifications", isOn: $notify)
+    .toggleStyle(.nockerl(size: .sm))
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlSwitch" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'checked', type: 'Boolean', required: true, description: 'Whether the switch is on.' },
+    { name: 'onCheckedChange', type: '((Boolean) -> Unit)?', required: true, description: 'Invoked with the new value. Pass <code>null</code> to render a read-only switch.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. The switch is usually the <code>trailingContent</code> of a <code>NockerlSettingsRow</code>.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the switch dims (alpha) and stops responding.' },
+    { name: 'colors', type: 'SwitchColors', default: 'SwitchDefaults.colors()', description: 'Brand override: <code>checkedTrackColor = accentPrimary</code> so the ON track is the cyan anchor.' },
+    { name: 'thumbContent', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional glyph inside the thumb (e.g. a check when on).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlToggleStyle` draws the ratified switch on the native `Toggle`
+(which keeps the switch role, value, and keyboard toggling). `NockerlToggle` is
+the convenience wrapper. Loading is web-only for now (async settings confirm has
+no native case yet).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: '.toggleStyle(.nockerl)', type: 'ToggleStyle', description: 'The ratified switch: recessed-well OFF track, static cyan gradient ON layer (opacity cross-fade, so the fill never hard-cuts), lifted sliding thumb, press squash.' },
+    { name: 'size', type: 'NockerlToggleSize', default: '.md', description: '<code>.md</code> 44×26 / 20pt thumb (the system scale) · <code>.sm</code> 36×22 / 16pt, via <code>.nockerl(size: .sm)</code>.' },
+    { name: 'NockerlToggle(_:isOn:size:accessibilityLabel:)', type: 'View', description: 'Wrapper: labeled row, or the BARE control when the label is <code>nil</code> (<code>labelsHidden</code> + your <code>accessibilityLabel</code>; the host row carries the text).' },
+    { name: '.disabled(_:)', type: 'modifier', description: 'OFF dims the whole control to 55% (clearly seen, never invisible); ON halves the cyan layer and drops the thumb lift; those are the canon&rsquo;s two disabled reads.' },
+    { name: 'reduced motion', type: 'behavior', description: 'Slide + cross-fade jump straight to the end state under <code>accessibilityReduceMotion</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **No shipped web component.** The TypeScript API above is the intended
+  `@dizyx/nockerl-react` surface; today only the design-site island exists.
+- **Track shape:** the web island draws a **recessed well** that lifts to a static
+  cyan gradient; Compose + SwiftUI use the **stock platform track** (only the ON
+  color is themed). The catch-light / inset-well treatment should flow into a
+  custom Compose track when web's API ships.
+- **Loading:** only web models a `loading` state (async settings write). Compose
+  and SwiftUI gate this at the call site (no in-thumb spinner).
+</Aside>

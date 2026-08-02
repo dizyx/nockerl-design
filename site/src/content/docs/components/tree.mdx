@@ -1,0 +1,199 @@
+---
+title: Tree / file tree
+description: A recursive, expandable hierarchy (file tree or task subtree) with indentation, guide lines, disclosure chevrons, and selection.
+status: review
+platforms: [web, android, swift]
+nativePublished: [swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import TreeDemo from '../../../components/demos/TreeDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TreeDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. NockerlTree ships from
+// @dizyx/nockerl-react: the recursive rows, depth indent + guide-line rails,
+// disclosure chevrons, single-select cyan wash OR multi-select tri-state
+// checkboxes (parent↔child propagation), and the full WAI-ARIA tree keyboard
+// pattern are all in the package.
+import { useState } from 'react';
+import { NockerlTree, type NockerlTreeNode } from '@dizyx/nockerl-react';
+
+const files: NockerlTreeNode[] = [
+  {
+    id: 'src', name: 'src', kind: 'folder', children: [
+      { id: 'src/components', name: 'components', kind: 'folder', children: [
+        { id: 'src/components/Tree.tsx', name: 'Tree.tsx', kind: 'file', fileType: 'typescript' },
+      ] },
+      { id: 'src/styles', name: 'styles', kind: 'folder', count: 3, children: [/* … */] },
+    ],
+  },
+  { id: 'package.json', name: 'package.json', kind: 'file', fileType: 'json' },
+];
+
+export function FileTree() {
+  const [expanded, setExpanded] = useState(new Set(['src', 'src/components']));
+  const [selected, setSelected] = useState<string | null>(null);
+  return (
+    <NockerlTree
+      nodes={files}
+      selectable="single"            // or "multi" for tri-state checkboxes
+      ariaLabel="Project files"
+      expandedIds={expanded}
+      onToggleExpand={setExpanded}
+      selectedId={selected}
+      onSelect={setSelected}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The recursive FileTreeNode is flattened
+// depth-first (respecting expand/collapse) into FlatFileNode rows in a LazyColumn;
+// FileTreeRow draws the depth*20 indent, the chevron, and the file-type icon.
+// com.nockerl.app.files.*: FileTreeNode / FlatFileNode / FileTreeRow / FileTreeViewModel
+import com.nockerl.app.files.domain.FlatFileNode
+import com.nockerl.app.files.ui.FileTreeRow
+
+@Composable
+fun FileTree(
+    nodes: List<FlatFileNode>,           // viewModel.uiState.flatNodes
+    onToggleFolder: (String) -> Unit,    // viewModel::toggleFolder (path)
+    onOpenFile: (String) -> Unit,        // viewModel::openFile (path)
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(nodes, key = { it.id }) { node ->
+            FileTreeRow(
+                node = node,             // carries depth, isFolder, isExpanded, gitStatus, modifiedChildCount
+                onClick = { if (node.isFolder) onToggleFolder(node.id) else onOpenFile(node.id) },
+            )
+        }
+    }
+}
+
+// A task subtree reuses the same idea with EpicListRow + ChildListRow
+// (chevron is its own hit area; a "done/total" subtask badge rides the accent).
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlTree` rides the
+// native hierarchical `List(children:)` (platform disclosure chevrons, indentation,
+// and keyboard/VoiceOver come from the system) and brands each row: folder/file
+// glyph + single-select with the soft-accent wash + cyan ink.
+import NockerlDesign
+
+// The recursive model: `nil` children = a leaf (no chevron); `[]` = an empty,
+// expandable folder. `kind` defaults from children when omitted.
+let roots: [NockerlTreeNode] = [
+    NockerlTreeNode(id: "src", name: "src", children: [
+        NockerlTreeNode(id: "src/components", name: "components", children: [
+            NockerlTreeNode(id: "src/components/Tree.swift", name: "Tree.swift"),
+        ]),
+    ]),
+    NockerlTreeNode(id: "Package.swift", name: "Package.swift"),
+]
+
+struct FileTree: View {
+    @State private var selected: String?
+
+    var body: some View {
+        NockerlTree(nodes: roots, selected: selected, label: "Project files") { node in
+            // Called for folders AND files. The caller decides whether a folder tap
+            // navigates or only discloses.
+            if node.kind == .file { selected = node.id }
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+`NockerlTree` takes the recursive `nodes` forest + controlled expand/select state. Auto-expand
+root folders on first load to match the canonical behaviour. A `NockerlTreeNode` is
+`{ id, name, kind: 'folder' | 'file', fileType?, children?, count?, loading?, disabled? }`.
+
+<PropsTable nameLabel="Prop" component="NockerlTree" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'node', type: 'FlatFileNode', required: true, description: 'One flattened row: <code>id</code>, <code>name</code>, <code>isFolder</code>, <code>depth</code> (indent = <code>depth * 20</code>), <code>isExpanded</code>, <code>hasChildren</code>, <code>gitStatus</code>, <code>modifiedChildCount</code>.' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'Row tap: toggle the folder (<code>FileTreeViewModel.toggleFolder</code>) or open the file (<code>openFile</code>).' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier applied to the row.' },
+    { name: 'horizontalScrollState', type: 'ScrollState?', default: 'null', description: 'When set, the row sizes to its content and pans with one shared state (the Files sheet 2D scroll) so deep nesting / long names overflow instead of truncating.' },
+    { name: 'minRowWidth', type: 'Dp', default: '0.dp', description: 'Minimum content width in scrollable mode, sized to the viewport so short rows stay fully tappable.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlTree` rides the native hierarchical `List(children:)` over a recursive
+`NockerlTreeNode` model and brands the rows. Single-select via `selected` +
+`onSelect` (multi-select tri-state is a follow-up). Disclosure chevrons, indentation,
+and hairline guides come from the platform list.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'nodes', type: '[NockerlTreeNode]', required: true, description: 'The root nodes. Each is <code>{ id, name, kind: .folder | .file, children? }</code>; <code>kind</code> defaults from <code>children</code>.' },
+    { name: 'selected', type: 'String?', default: 'nil', description: 'The selected node id. Draws the soft-accent wash + cyan ink on that row.' },
+    { name: 'label', type: 'String', required: true, description: 'The REQUIRED accessible name for the whole tree ("Project files"). Empty is a runtime assert (law §13).' },
+    { name: 'onSelect', type: '(NockerlTreeNode) -> Void', required: true, description: 'Invoked with the tapped node (folders AND files). The caller decides whether a folder tap navigates or only discloses.' },
+  ]}
+/>
+
+`NockerlTreeNode.children` is `nil` for a leaf (no chevron) and `[]` for an empty,
+expandable folder.
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **The recursive tree ships on all three platforms.** Web **publishes** `NockerlTree`
+  (`@dizyx/nockerl-react`) with **both** single-select and multi-select tri-state checkboxes.
+  Swift **publishes** `NockerlTree` (NockerlDesign), riding the native `List(children:)` over
+  `NockerlTreeNode`. Compose ships its own real hierarchy (`FileTreeRow` + `FileTreeViewModel`
+  flattening `FileTreeNode` → `FlatFileNode`, plus the `EpicListRow`/`ChildListRow` task
+  subtree). The **native** Swift + Android trees are **single-select** today. Multi-select
+  tri-state checkboxes (plus git-status badges and async-loading folders) are on web now and a
+  follow-up for Swift/Android. Voice's older flat `VocabRow` / `HistoryRow` (`expandedID`) rows
+  are the **accordion** idiom, not this hierarchy.
+- **Tree vs list vs accordion.** A **list** is flat sectioned rows; an **accordion** is a
+  few stacked collapsible sections; a **tree** is a recursive, multi-level hierarchy with
+  per-node expand/collapse, depth indentation + guide lines, and the full WAI-ARIA tree
+  keyboard pattern. Reach for tree only when nesting is genuinely recursive (a file tree, a
+  task subtree).
+- **Indent step:** Compose uses **20dp** per level for files (`depth * 20`) and **28dp** for
+  the two-tier task subtree; the shipped web `NockerlTree` mirrors the 20px file-tree step. One
+  indent token should win across platforms.
+</Aside>

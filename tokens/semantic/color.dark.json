@@ -1,0 +1,287 @@
+{
+  "$description": "SEMANTIC color roles (DARK theme). Intent tokens that reference core primitives (accents/status) or carry the exact surface tones that encode the depth model. RULE: the ground is the darkest layer; content cards sit a clear step above it; lift comes from the gap + catch-light (surfaceHighlight) + tinted shadow. Surface tones are the canonical post-tonal-fix ladder. alpha colors are #RRGGBBAA.",
+  "color": {
+    "canvas": {
+      "$type": "color",
+      "$value": "#0a0b0d",
+      "$description": "Page background: the deepest ground."
+    },
+    "canvasAlt": {
+      "$type": "color",
+      "$value": "#111317",
+      "$description": "Inset wells; bottom-sheet gradient bottom."
+    },
+    "chatBg": {
+      "$type": "color",
+      "$value": "#181b20",
+      "$description": "Faceted chat field, a dark ground below the cards so they lift."
+    },
+    "canvasEdge": {
+      "$type": "color",
+      "$value": "#2a2d33"
+    },
+    "onCanvas": {
+      "$type": "color",
+      "$value": "#e8e8e8"
+    },
+    "onCanvasMuted": {
+      "$type": "color",
+      "$value": "#a0a0a0"
+    },
+    "cardSurface1": {
+      "$type": "color",
+      "$value": "#2c313a",
+      "$description": "Base content card: mid-dark, lifts off the ground."
+    },
+    "cardSurface2": {
+      "$type": "color",
+      "$value": "#333942"
+    },
+    "cardSurface3": {
+      "$type": "color",
+      "$value": "#3a414a"
+    },
+    "onCard": {
+      "$type": "color",
+      "$value": "#e8e8e8"
+    },
+    "onCardMuted": {
+      "$type": "color",
+      "$value": "#a0a0a0"
+    },
+    "cardHairline": {
+      "$type": "color",
+      "$value": "#ffffff14",
+      "$description": "White ~8%."
+    },
+    "chromeSurface": {
+      "$type": "color",
+      "$value": "#15171a",
+      "$description": "Workspace pill / input bar / tab track."
+    },
+    "chromeActive": {
+      "$type": "color",
+      "$value": "#1d2024"
+    },
+    "onChrome": {
+      "$type": "color",
+      "$value": "#e8e8e8"
+    },
+    "onChromeMuted": {
+      "$type": "color",
+      "$value": "#a0a0a0"
+    },
+    "chromeHairline": {
+      "$type": "color",
+      "$value": "#ffffff14"
+    },
+    "surfaceTranslucencySidebar": {
+      "$type": "color",
+      "$value": "#15171a8c",
+      "$description": "The sidebar / nav-rail's one translucent surface: chromeSurface at a FIXED translucency (~0.55, not a slider) so the faceted background clearly shows through. Readability holds (chrome dominates, dark ground). This is the sole sanctioned translucency surface; one-translucent-layer-max still holds."
+    },
+    "sessionChipActive": {
+      "$type": "color",
+      "$value": "{color.core.cyan.500}",
+      "$description": "Bold brand cyan, breaks the neutral-chrome convention."
+    },
+    "onSessionChip": {
+      "$type": "color",
+      "$value": "#0a0b0d"
+    },
+    "sessionChipInactive": {
+      "$type": "color",
+      "$value": "{color.core.cyan.600}"
+    },
+    "sessionChipNew": {
+      "$type": "color",
+      "$value": "#4b5563",
+      "$description": "Neutral slate: the +New action, deliberately NOT cyan."
+    },
+    "cardAlt": {
+      "$type": "color",
+      "$value": "#2c313a",
+      "$description": "Alternate plane (assistant bubble + bottom-sheet base)."
+    },
+    "cardAlt2": {
+      "$type": "color",
+      "$value": "#363c45",
+      "$description": "Raised tier on the alt plane: notification cards."
+    },
+    "onCardAlt": {
+      "$type": "color",
+      "$value": "#e8e8e8"
+    },
+    "onCardAltMuted": {
+      "$type": "color",
+      "$value": "#a0a0a0"
+    },
+    "altHairline": {
+      "$type": "color",
+      "$value": "#ffffff10",
+      "$description": "White ~6%."
+    },
+    "userCard": {
+      "$type": "color",
+      "$value": "#0c2a31",
+      "$description": "User bubble, deep-cyan jewel (gradient end)."
+    },
+    "userCard2": {
+      "$type": "color",
+      "$value": "#123c46",
+      "$description": "User bubble gradient start (diagonal 150deg)."
+    },
+    "onUserCard": {
+      "$type": "color",
+      "$value": "#eaf7fa"
+    },
+    "accentPrimary": {
+      "$type": "color",
+      "$value": "{color.core.cyan.500}"
+    },
+    "accentWarm": {
+      "$type": "color",
+      "$value": "{color.core.orange.400}",
+      "$description": "SECONDARY brand accent: the RARE warm one (outlines, special notices, the occasional second action). Pairs with cyan; never decorative-everywhere. Distinct from statusWarning amber."
+    },
+    "accentSecondary": {
+      "$type": "color",
+      "$value": "{color.core.categorical.sky400}"
+    },
+    "accentTertiary": {
+      "$type": "color",
+      "$value": "{color.core.categorical.teal400}"
+    },
+    "accentQuaternary": {
+      "$type": "color",
+      "$value": "{color.core.categorical.indigo400}"
+    },
+    "accentPrimarySoft": {
+      "$type": "color",
+      "$value": "#0cc0df29",
+      "$description": "Brand cyan at 16%."
+    },
+    "accentWarmSoft": {
+      "$type": "color",
+      "$value": "#fb923c29",
+      "$description": "Warm accent at 16%, for outline/notice tint fills."
+    },
+    "accentPrimaryHi": {
+      "$type": "color",
+      "$value": "#2ec9e4",
+      "$description": "Lighter cyan, the lit-from-above TOP of a primary fill gradient (catch-light)."
+    },
+    "onAccent": {
+      "$type": "color",
+      "$value": "#062a31",
+      "$description": "Content/text/icon ON a cyan fill. Dark teal reads on the BRIGHT dark-theme cyan."
+    },
+    "accentSecondarySoft": {
+      "$type": "color",
+      "$value": "#38bdf829"
+    },
+    "accentTertiarySoft": {
+      "$type": "color",
+      "$value": "#2dd4bf29"
+    },
+    "accentQuaternarySoft": {
+      "$type": "color",
+      "$value": "#818cf829"
+    },
+    "engineCloud": {
+      "$type": "color",
+      "$value": "{color.core.cyan.500}",
+      "$description": "Engine harness accent."
+    },
+    "engineNockerl": {
+      "$type": "color",
+      "$value": "{color.core.categorical.teal400}",
+      "$description": "Local Engine harness accent."
+    },
+    "engineCloudSoft": {
+      "$type": "color",
+      "$value": "#0cc0df29",
+      "$description": "Engine wash (base at the canon 16%) for engine-tinted chips/tiles."
+    },
+    "engineNockerlSoft": {
+      "$type": "color",
+      "$value": "#2dd4bf29",
+      "$description": "Local Engine engine wash (base at the canon 16%) for engine-tinted chips/tiles."
+    },
+    "statusSuccess": {
+      "$type": "color",
+      "$value": "{color.core.status.success}"
+    },
+    "statusWarning": {
+      "$type": "color",
+      "$value": "{color.core.status.warning}"
+    },
+    "statusError": {
+      "$type": "color",
+      "$value": "{color.core.status.error}"
+    },
+    "statusInfo": {
+      "$type": "color",
+      "$value": "{color.core.cyan.500}"
+    },
+    "dotStreaming": {
+      "$type": "color",
+      "$value": "{color.core.cyan.500}"
+    },
+    "dotAttention": {
+      "$type": "color",
+      "$value": "{color.core.status.warning}"
+    },
+    "dotUnread": {
+      "$type": "color",
+      "$value": "{color.core.categorical.sky400}"
+    },
+    "dotIdle": {
+      "$type": "color",
+      "$value": "#6b6b6b"
+    },
+    "dotActive": {
+      "$type": "color",
+      "$value": "{color.core.categorical.emerald400}"
+    },
+    "divider": {
+      "$type": "color",
+      "$value": "#ffffff1f",
+      "$description": "White 12%."
+    },
+    "outlineSubtle": {
+      "$type": "color",
+      "$value": "#2e2e2e"
+    },
+    "shadowTint": {
+      "$type": "color",
+      "$value": "#000000",
+      "$description": "Drop-shadow tint (near-black on dark)."
+    },
+    "surfaceHighlight": {
+      "$type": "color",
+      "$value": "#ffffff0f",
+      "$description": "Lit-from-above top catch-light. White ~6%."
+    },
+    "scrim": {
+      "$type": "color",
+      "$value": "#000000b3",
+      "$description": "Modal scrim: black 70%."
+    },
+    "bezel": {
+      "$type": "color",
+      "$value": "#050608",
+      "$description": "Deepest frame, cluster-sheet gradient bottom."
+    },
+    "accentPrimaryDark": {
+      "$type": "color",
+      "$value": "{color.core.cyan.600}",
+      "$description": "Deeper primary cyan, the dark end of a fill gradient / pressed accent (the Hi token's dark sibling). Task 2684."
+    },
+    "surfaceFacetBase": {
+      "$type": "color",
+      "$value": "#181b20",
+      "$description": "The FacetedBackground's GROUND tone: the named intent the facet primitive reads (was implicitly bound to chatBg; same value, now its own token so native clients adopt it directly). Task 2684."
+    }
+  }
+}

@@ -1,0 +1,177 @@
+---
+title: Date picker / calendar
+description: A calendar date picker with month grid, navigation, and single or range selection.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import DatePickerDemo from '../../../components/demos/DatePickerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DatePickerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the intended API, not yet exported from @dizyx/nockerl-react (promotion tracked).
+// Neither app ships a custom calendar, so the web demo is designed from the laws.)
+
+export function ScheduleForm() {
+  const [due, setDue] = useState<Date | null>(null);
+  const [span, setSpan] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null });
+
+  return (
+    <>
+      {/* Field + popover, single date, no past dates. */}
+      <DatePicker label="Due date" value={due} onChange={setDue} min={new Date()} />
+
+      {/* Always-open inline calendar. */}
+      <DatePicker label="Run on" value={due} onChange={setDue} inline />
+
+      {/* Range mode: two-endpoint range with in-range tint (absorbs the former DateRangePicker). */}
+      <DatePicker range label="Window" value={span} onChange={setSpan} />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose, Material 3 (BOM 2026.02.01). The app has no custom
+// calendar: tasks/domain/Task.kt stores `dueDate` as an ISO String and only
+// FORMATS it (DateTimeFormatter "MMM d, yyyy h:mm a"). Use the stock picker,
+// themed by NockerlTheme (cyan accent, 12dp control radius).
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.rememberDatePickerState
+
+val state = rememberDatePickerState(
+    initialSelectedDateMillis = task.dueDateMillis,
+    selectableDates = NoPastDates,   // SelectableDates: gate min/max + per-day
+)
+
+DatePickerDialog(
+    onDismissRequest = onDismiss,
+    confirmButton = {
+        NockerlButton("Set", onClick = { onPick(state.selectedDateMillis) })
+    },
+) {
+    DatePicker(state = state, title = null)
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. Nockerl Voice has no custom calendar; it formats dates with
+// `.dateTime` / `Calendar.current` (HistoryView, HomeSection). Use the stock
+// graphical DatePicker, tinted to the brand cyan from NockerlTheme.
+import SwiftUI
+
+struct ScheduleForm: View {
+    @State private var due = Date()
+
+    var body: some View {
+        DatePicker(
+            "Due date",
+            selection: $due,
+            in: Date()...,                    // min bound; use a ClosedRange for min…max
+            displayedComponents: .date
+        )
+        .datePickerStyle(.graphical)          // the month-grid calendar
+        .tint(NockerlTheme.accent)            // cyan selection fill
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Persistent field label above the trigger (never placeholder-as-label).' },
+    { name: 'value', type: 'Date | null', required: true, description: 'Selected date (controlled). <code>null</code> renders the empty <code>Pick a date</code> prompt.' },
+    { name: 'onChange', type: '(date: Date) => void', required: true, description: 'Fires when a day is picked (click, or <kbd>Enter</kbd>/<kbd>Space</kbd> on the focused day).' },
+    { name: 'inline', type: 'boolean', default: 'false', description: 'When <code>true</code>, the calendar is always open (no field trigger / popover).' },
+    { name: 'min', type: 'Date', description: 'Inclusive earliest selectable day. Earlier days render disabled but legible.' },
+    { name: 'max', type: 'Date', description: 'Inclusive latest selectable day. Later days render disabled but legible.' },
+    { name: 'weekStartsOn', type: '0 | 1', default: '1', description: 'First column weekday: <code>1</code> = Monday (Nockerl default), <code>0</code> = Sunday.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert and clearly seen (never faded to invisible). The trigger is non-interactive.' },
+  ]}
+/>
+
+**Range mode** (`range`) swaps `value`/`onChange` for `value: { start: Date | null; end: Date | null }`
+and a matching `onChange`; the two endpoints get the accent fill and the days between get the
+in-range tint. (The former standalone `DateRangePicker` was merged into this range mode;
+recover its preset-rail / dual-month demo from git history at `7cbf645` if that richer surface is revived.)
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'state', type: 'DatePickerState', required: true, description: 'From <code>rememberDatePickerState(...)</code>. Holds <code>selectedDateMillis</code> + the displayed month.' },
+    { name: 'initialSelectedDateMillis', type: 'Long?', default: 'null', description: 'Pre-selected day (UTC midnight millis). Passed to <code>rememberDatePickerState</code>.' },
+    { name: 'selectableDates', type: 'SelectableDates', default: 'all dates', description: 'Gates min/max and per-day enablement (<code>isSelectableDate</code> / <code>isSelectableYear</code>).' },
+    { name: 'title', type: '(@Composable -> Unit)?', default: 'default', description: 'Header slot above the grid. Pass <code>null</code> to drop the supporting headline.' },
+    { name: 'headline', type: '(@Composable -> Unit)?', default: 'default', description: 'The large selected-date readout under the title.' },
+    { name: 'showModeToggle', type: 'Boolean', default: 'true', description: 'Shows the calendar/text-input toggle in the header.' },
+    { name: 'colors', type: 'DatePickerColors', default: 'NockerlTheme', description: 'Selection fill, today marker, and headers, bound to the cyan accent tokens.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the calendar as the standard `DatePicker` with the `.graphical`
+style. State is the bound `selection`; bounds come from the `in:` range. There is
+no separate range component; model a range as two `DatePicker`s.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'selection', type: 'Binding<Date>', required: true, description: 'Two-way bound selected date. <code>Binding&lt;Date?&gt;</code> via the optional initializer for an empty state.' },
+    { name: 'in', type: 'ClosedRange / PartialRangeFrom<Date>', description: 'Selectable bounds, e.g. <code>Date()...</code> (no past) or <code>start...end</code> (min…max).' },
+    { name: 'displayedComponents', type: 'DatePickerComponents', default: '.date', description: 'Use <code>.date</code> for the calendar grid (omit <code>.hourAndMinute</code>, which is the time picker).' },
+    { name: '.datePickerStyle', type: 'DatePickerStyle', default: '.automatic', description: 'Set to <code>.graphical</code> for the month-grid calendar shown here.' },
+    { name: '.tint', type: 'Color', default: 'accentColor', description: 'Selection-fill color. Set to <code>NockerlTheme.accent</code> (brand cyan).' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **No shipped custom calendar.** Neither Android nor Voice draws its own month grid.
+  Android stores `dueDate` as an ISO string and only *formats* it; Voice formats a chart
+  axis. Kotlin/Swift above document the **stock** Material 3 / SwiftUI pickers; the web
+  island is designed originally from the laws (recessed field-trigger, lifted calendar card,
+  cyan selected fill, today ring, in-range tint).
+- **Range:** web ships range as a **mode of `DatePicker`** (the standalone `DateRangePicker` was
+  merged in, ); SwiftUI has no range picker (model it as two `DatePicker`s); Material 3 has
+  `DateRangePicker` but the apps don't use it yet.
+- **Week start** *(resolved in [adjudication 2026-07-02 · B7])*: `weekStartsOn` **defaults to the
+  device locale**, with an explicit prop override. The Nockerl web demo (Monday-first) and the
+  stock pickers converge on that shared default + prop.
+</Aside>

@@ -1,0 +1,58 @@
+---
+title: Inputs & forms
+description: Controls that capture input, with recessed wells, persistent labels, and honest validation.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="review" />
+
+Controls that **capture input**. Where cards lift, **fields sink**.
+
+### Fields sink
+
+A field is the inverse of a card: a **recessed well**, darker surface + inner shadow,
+lit from above (see [Elevation &amp; depth](/foundations/elevation-and-depth/)). Never a
+lifted box; never a glow on focus.
+
+### Rules that don't bend
+
+- **Persistent labels**, never placeholder-as-label. The placeholder is a hint, not the
+  name of the field.
+- **Validation is never color alone**: error = **color + icon + text**, so it survives
+  color blindness and grayscale (see [Design laws](/foundations/design-laws/)).
+- **Focus = cyan outline**, not a glow or colored shadow. One brand anchor; the outline
+  reads on every state.
+- Full keyboard operability; targets meet per-platform minimums (web ≥24px, Android 48dp,
+  macOS ~44pt).
+
+### Radius
+
+Controls use the **12px control radius**. The one exception: the **search / input pill**,
+one of the only two places the full pill is allowed (the other is chips).
+
+## Components
+
+| Component | Status |
+| --- | --- |
+| [Text field](/components/text-field/) | ⚠ in review |
+| [Text area](/components/text-area/) | ⚠ in review |
+| [Search field](/components/search-field/) | ▢ queued |
+| [Select / dropdown](/components/select/) | ▢ queued |
+| [Combobox / autocomplete](/components/combobox/) | ▢ queued |
+| [Multi-select](/components/multi-select/) | ▢ queued |
+| [Checkbox](/components/checkbox/) | ▢ queued |
+| [Radio group](/components/radio-group/) | ▢ queued |
+| [Switch / toggle](/components/switch/) | ▢ queued |
+| [Slider / range](/components/slider/) | ▢ queued |
+| [Stepper: step progress](/components/stepper/) (not a numeric input) | ⚠ in review |
+| Number input, the numeric **+/− stepper field** (a different control; no page yet) | ▢ queued |
+| [Date picker / calendar](/components/date-picker/) | ▢ queued |
+| [Time picker](/components/time-picker/) | ▢ queued |
+| Date range picker | ⊘ merged into [Date picker](/components/date-picker/) range mode |
+| [File upload / dropzone](/components/file-upload/) | ▢ queued |
+| [OTP / PIN input](/components/otp-input/) | ▢ queued |
+| [Field validation](/components/field-validation/) | ▢ queued |
+| [Form layout](/components/form-layout/) | ▢ queued |

@@ -1,0 +1,61 @@
+# Version catalog: the subset of android-native's matrix that the design-system
+# library modules need. Kept in lockstep with android-native/gradle/libs.versions.toml
+# so extracted components compile unchanged. NO hilt/room/ktor/icons-extended here:
+# Bucket-A design code is DI-free and takes icons as ImageVector params (inventory §4).
+[versions]
+agp = "9.1.0"
+kotlin = "2.3.20"
+compose-bom = "2026.02.01"
+core-ktx = "1.16.0"
+ktlint-plugin = "14.1.0"
+detekt = "1.23.8"
+# Gallery / screenshot rail (mirrors android-native's matrix so entries render the same).
+ksp = "2.3.6"
+showkase = "1.0.5"
+roborazzi = "1.64.0"
+robolectric = "4.14.1"
+junit4 = "4.13.2"
+activity-compose = "1.10.1"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+
+# Compose BOM manages all Compose library versions.
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+# icons-CORE (the slim common set) is allowed in the published components module for
+# self-contained defaults (SearchField magnifier/clear). icons-EXTENDED stays banned
+# there. Bespoke glyphs keep arriving as ImageVector params.
+compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
+
+# ─── Gallery module ONLY (:nockerl-design-gallery, never published) ─────────
+# icons-extended stays OUT of the published components module (icons arrive as
+# ImageVector params there); the unpublished gallery may use the fat artifact.
+compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+# Showkase: annotation (compiled in), runtime (registry types), KSP processor (code-gen).
+showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
+showkase-annotation = { module = "com.airbnb.android:showkase-annotation", version.ref = "showkase" }
+showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }
+# Roborazzi (headless Compose capture) on Robolectric; the screenshot test is JUnit4
+# (Roborazzi's canonical Compose path). This module has no JUnit5 suite, so no vintage.
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+junit4 = { module = "junit:junit", version.ref = "junit4" }
+
+[plugins]
+# AGP 9 ships built-in Kotlin support: kotlin-android is intentionally NOT applied
+# (AGP errors if it is). Only the compose compiler plugin is added on top.
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+# Gallery module only: KSP2 (Showkase processor) + the Roborazzi record/verify tasks.
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

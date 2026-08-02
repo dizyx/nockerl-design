@@ -1,0 +1,159 @@
+---
+title: Chip
+description: A fully-rounded pill for filtering, selection, and removable tokens.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ChipDemo from '../../../components/demos/ChipDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ChipDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the
+// canonical API the published @dizyx/nockerl-react package is intended to expose. It
+// unifies both shipped idioms: `selected` for filtering, `onRemove` for removable tokens.)
+import { NockerlChip } from '@dizyx/nockerl-react';
+
+export function FilterStrip() {
+  const [active, setActive] = useState('sessions');
+  return (
+    <div className="chip-row">
+      {/* filter idiom: selected gets the cyan fill */}
+      <NockerlChip text="Sessions" selected={active === 'sessions'} onClick={() => setActive('sessions')} />
+      <NockerlChip text="Agents" selected={active === 'agents'} onClick={() => setActive('agents')} />
+
+      {/* input idiom, a removable token */}
+      <NockerlChip text="typescript" selected onRemove={() => removeTag('typescript')} />
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
+// Ships the SELECTABLE (filter) idiom: a pill that toggles selected/unselected.
+import com.dizyx.nockerl.design.components.NockerlChip
+import com.dizyx.nockerl.design.components.NockerlStatusDot
+import com.dizyx.nockerl.design.components.NockerlStatusDotStatus
+
+NockerlChip(
+    text = "Sessions",
+    onClick = { active = "sessions" },
+    selected = active == "sessions",
+)
+NockerlChip("Agents", onClick = { active = "agents" }, selected = active == "agents")
+
+// optional leading content (e.g. a status dot)
+NockerlChip(
+    text = "Online",
+    onClick = ::toggleOnline,
+    selected = true,
+    leadingContent = { NockerlStatusDot(status = NockerlStatusDotStatus.SUCCESS) },
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// SwiftUI: the published NockerlDesign SwiftPM package. `NockerlChip` ships the SELECTABLE
+// (filter) idiom, matching Compose: a keycap pill that toggles the accent selection wash.
+import NockerlDesign
+
+NockerlChip("Sessions", selected: active == .sessions) { active = .sessions }
+NockerlChip("Agents", selected: active == .agents) { active = .agents }
+
+// A resting (unselected) chip: omit `selected` (defaults to false).
+NockerlChip("local") { pickFilter(.local) }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlChip" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'String', required: true, description: 'The chip label. Rendered with <code>NockerlControlTextStyle</code>.' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'Invoked on tap. No-op while <code>enabled = false</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier (size, weight, alignment).' },
+    { name: 'selected', type: 'Boolean', default: 'false', description: 'Whether this chip is the active selection: <code>true</code> → solid <code>accentPrimary</code> fill + contrast label; <code>false</code> → <code>accentPrimarySoft</code> tint + cyan label.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the chip is dimmed (alpha) and non-interactive.' },
+    { name: 'contentPadding', type: 'PaddingValues', default: 'horizontal 14.dp, vertical 8.dp', description: 'Inner padding, a compact keycap padding by default.' },
+    { name: 'leadingContent', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional content (e.g. a status dot) before the label.' },
+  ]}
+/>
+
+<Aside type="note" title="Selectable only, no removable variant">
+The published `NockerlChip` is **selectable only** on both native platforms. There is no
+trailing-✕ / `onRemove` parameter. A removable/tag chip is a web-only capability today; on
+Android or Swift it would be a custom composition. Tracked in the drift note.
+</Aside>
+
+</TabItem>
+<TabItem label="Swift">
+
+The published `NockerlChip` is a `View` in the **selectable (filter)** idiom, matching
+Compose. `selected` toggles the accent wash (`accentPrimarySoft` fill + cyan label when on).
+It has no leading slot and no `onRemove`; honor `.disabled(_:)` for the dimmed state.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'String', required: true, description: 'The chip label (the leading unlabeled argument). Rendered at 12pt medium.' },
+    { name: 'selected', type: 'Bool', default: 'false', description: 'Whether this chip is the active selection: <code>true</code> → <code>accentPrimarySoft</code> fill + cyan label; <code>false</code> → <code>cardSurface1</code> fill + on-card label.' },
+    { name: 'action', type: '() -> Void', required: true, description: 'The trailing closure, invoked on tap.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Cross-platform parity (published packages)">
+The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
+(`NockerlDesign`) `NockerlChip` now share the selectable idiom and the pill token, and the
+earlier drift is resolved:
+
+- **Same idiom.** Both native platforms ship the **selectable** chip (`selected`, no ✕).
+  Swift's old removable-only `Chip` is retired. The removable/tag chip is now a web-only
+  capability.
+- **Pill radius is tokenized.** Swift consumes `NockerlRadius.pill`; Compose uses
+  `NockerlPillShape`. Same fully-rounded silhouette from a shared token, no bare `Capsule()`.
+- **Disabled is honored.** Swift dims via `.disabled(_:)` (environment); Compose via the
+  explicit `enabled` + 0.38 alpha.
+
+Remaining, intentional differences:
+
+- **Selected fill treatment.** Compose's selected chip is a **solid** `accentPrimary` +
+  contrast label; Swift's selected chip is the soft `accentPrimarySoft` wash + cyan label.
+  Both are token-driven static fills, a deliberate per-platform read of the selection wash.
+- **Leading content.** Compose exposes a `leadingContent` slot (e.g. a status dot); web has
+  `leadingIcon`; the published Swift `NockerlChip` has no leading slot yet.
+</Aside>

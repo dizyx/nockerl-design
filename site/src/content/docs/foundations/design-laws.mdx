@@ -1,0 +1,150 @@
+---
+title: Design laws
+description: The non-negotiable rules every component, token, and platform obeys.
+status: approved
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="approved" />
+
+The non-negotiable rules every component, token, and platform obeys. Established through
+the component reviews; this is the durable record so no session or platform re-litigates or
+violates them. (Identity and north-star live in [Principles](/getting-started/principles/);
+this is the hard ruleset.)
+
+## Visual / material
+
+1. **Depth = shadow + catch-light, never light.** Depth comes only from a **neutral (or
+   tinted-black) drop shadow** plus a subtle **top catch-light** (lit-from-above). **No
+   glows, no colored shadows, no emission / neon.** A colored `box-shadow` or blurred halo
+   is a defect. (Focus rings use `outline`, not a colored shadow.)
+2. **Cards lift, fields sink.** Content cards rise off a darker ground (lighter + drop
+   shadow + catch-light). Inputs are **recessed wells** (darker + inner shadow), the
+   inverse. One consistent light source. **Form sections** group as **lifted section cards**
+   (this law applied to forms), never a divider + header on a flat surface; the required
+   `*` / optional markers ride the shared contract on every platform.
+   **Floating-over-content signature border.** Any element that is **fixed and floats over a
+   scrollable / other-content area** carries the signature **thick cyan border on its floating
+   PARENT container**. This trains the eye that *a thick cyan border = a layer hovering above
+   content* (reference weight: the native Kotlin chat-input pill, `ChatInputBar`). The border
+   rides the floating **container only, never every child**: pills/controls *inside* it keep
+   their own treatment (a small cyan border, or none). Scope: the floating chat-input pill
+   container, the scroll-down affordance, and FABs / floating action buttons. (The framework
+   defines this signature; the clients adopt it.)
+3. **Ground is the darkest layer.** Canvas / field / sheet-base are darkest; cards are a
+   clear step above. Lift comes from the luminance gap + catch-light + shadow, never by
+   making a card light-grey.
+4. **Pill is reserved.** Full-stadium (`pill`) is for chips + the input bar only. Every
+   other control uses the **12px control radius** (a rounded rectangle, never a "broken
+   pill"). Cards = 16.
+5. **Solid-first; transparency is for material, not state or surface identity.** Resting surfaces are
+   **solid + dimensional** (depth from shadow + catch-light). Transparency is reserved for the
+   **one sanctioned material layer** (the sidebar / facet ground), never the resting look of a
+   surface, and (ratified 2026-07-13) **never an interactive-state wash**: interactive STATE
+   (hover, selected, active, pressed) reads by **outline (border + ink + indicator), not a fill**
+   (see §6). **One translucent layer max** (never stack translucent on translucent → muddy).
+   Tints come from accent / status tokens at fixed alphas. We deliberately avoid the
+   everywhere-frosted-glass cliché: **depth is our signature, not glass.**
+   **The one sanctioned translucency SURFACE** is the sidebar / nav-rail floated over the
+   faceted background: a SINGLE fixed translucency (the ratified `surface.translucency.sidebar`
+   token, **never a user slider**) so the facet whispers through. One-translucent-layer-max still
+   holds: the facet is the ground, the sidebar is the one translucent layer, nothing stacks on it.
+   Filled accent controls (button primary, chip selected, FAB) are **solid accent + top
+   catch-light**; gradient fills and flat-tonal fills for top-emphasis actions have no place.
+   **Emphasis budget on lifted surfaces.** An elevated surface spends its emphasis once:
+   **at most one primary-fill action per lifted surface**; secondary actions on the same
+   surface use outline or ghost. (A second fill competes with the surface's own lift and
+   flattens the depth hierarchy; see laws 1 to 3.)
+6. **Status lives in a filled icon disc, never a left rail.** The tinted-background +
+   solid-left-border / stripe pattern is **banned** (too common). Normal alerts (banner,
+   toast, standard callout / note) carry severity in a **filled status-color icon disc** at
+   the leading edge. The color is in the disc, on a solid surface. The persistent inline
+   **banner** may sink that disc into a **recessed inset well**: the intent color rides the
+   glyph + a soft wash + a whisper border (still a disc, still status, now informational +
+   non-interactive per the icon-interactivity canon); the raised filled coin stays the default
+   for toast / callout / transcript. Important / special
+   callouts use **nested hairline frames** (concentric borders stepping inward with falling
+   opacity, a dimensional box-in-a-box). Status color never becomes a vertical stripe.
+   **Selection reads by outline, not fill (ratified 2026-07-13, 'state by outline, not fill').**
+   Selected rows / items = **accent border + accent ink + the explicit indicator (trailing check /
+   dot)**, with **no wash** and never a stripe; the leading mark in lists is an **icon** (shape + color
+   dual-coding), never a bare colored dot. **One rule, two outcomes:** a fill survives only when
+   it IS the meaning: **identity** (the chip is a filled keycap; avatar / family tiles), the
+   **one primary CTA**, **send / stop**, **semantic status** (badge / disc / dot: the color is
+   the info), and **material** (the facet). Every fill that merely marks a STATE converts to
+   outline (the segmented control's selected segment → border + ink: which peer is active =
+   state). The contrast case is the **chip**, which **KEEPS** its fill: there the fill IS the
+   **identity**, not a state marker. **Same rule, opposite results.**
+   **The one carve-out:** the cyan inset rail marking a **highlighted line inside a code
+   surface** is sanctioned as editorial emphasis in code's own grammar, always paired with a
+   wash. It is never status, never selection, and never leaves code surfaces.
+
+## Motion / interaction
+
+7. **Feedback animates interpolatable properties only**: brightness, scale, elevation,
+   opacity, transform. **Never tween between two fills / gradients** (CSS can't, Compose
+   `Brush` can't: it hard-cuts and flashes). Keep the fill static; animate brightness +
+   transform + shadow.
+   Selection indicators **slide**: the segmented control's **selected-segment border**
+   (post-2026-07-13 reduce-fills; formerly a filled cyan pill) and the tabs
+   indicator animate transform + width wherever the component is ours;
+   system-owned controls keep their native cut (Law 9). A **disclosure chevron rotates**
+   (reduced-motion-safe interpolation), never swaps icons, and seats **trailing**: leading
+   is content's seat, trailing is the affordance's; an accordion opens **one panel by
+   default**, multiple is opt-in.
+8. **Physical, springy, choreographed motion**, never pulsing or glowing as decoration.
+   The one sanctioned attention beat, the status dot, pulses at **800 ms**
+   (`motion.duration.pulse`), a single expanding opacity / scale beat; the ping ring is
+   dropped, so attention has one expression everywhere.
+9. **Honor the platform.** Brand expression is unified; *interaction* is platform-native:
+   web hover + focus-visible ring + pointer; **Android** ripple + long-press + haptics,
+   **no hover**; macOS pointer + focus ring. Document all three per component.
+
+## Color / type / tokens
+
+10. **Mono + cyan, plus one rare warm accent.** Cyan `#0CC0DF` is THE brand anchor (primary
+    *and* secondary). The lone sanctioned non-cyan hue is a single **warm accent: orange
+    `#FB923C`** (`accent.warm`, → `#EA580C` on light), used **rarely** (outlines, special
+    notices, an occasional second action). All other warm tones (amber `#FFC107`, red) stay
+    **status signals only**.
+11. **Typography: the thin system, always tokenized.** One face, **Outfit** (geometric
+    sans); **Space Mono** for code / metadata. Bound to the role tokens (`type.*` → `font.*`)
+    so face, weights, and ramp change in one place. Never a hardcoded family, size, or weight
+    (and no hardcoded hexes / radii either; consume the tokens). The system is *thin-forward*:
+    **hierarchy from size, not weight** (display 100 · H1/H2 200 · H3 500 · body 300 · labels
+    300); **500 is the bold cap** (`semibold` / `bold` resolve to 500); **emphasis is by
+    contrast, never additive bold** (two poles, thin 100 ↔ medium 500: light baselines step
+    up, heavy headings invert down to thin); **uppercase is reserved for buttons** (negative
+    -0.03em tracking); the **brand lockup** is `[mark] Nockerl` (200) + product (400, cyan),
+    sentence case, tight, -0.03em. The **mark itself is monochrome** on every surface
+    (ink on light contexts, inverse on dark), cyan living only in the product word, never the
+    mark.
+12. **Unify brand expression, override only real platform deltas** (e.g. web's sharp
+    container radius). Default a value to the most-shared layer; push to a platform only
+    when genuinely needed.
+
+## Accessibility (table stakes)
+
+13. **Contrast** ≥ 4.5:1 text / ≥ 3:1 non-text, on *every* state incl. disabled / loading,
+    dark + light. **Never color alone** (errors = color + icon + text).
+14. **Targets:** web ≥ 24px, Android 48dp, macOS ~44pt. **Focus visible & not obscured.**
+    Persistent labels (never placeholder-as-label). Full keyboard operability.
+
+## Originality
+
+15. **The human is the design decision-maker.** The framework supplies rigor (states, a11y,
+    per-device, options, reference shelf, provocations); **The design lead supplies the spark.**
+    Avoid the trained-mean default: bring raw material + provocations, not a single safe
+    finished design.
+
+## Ratified component canon
+
+Cross-component rules ratified in the reviews: binding like the laws above, scoped to how
+components compose rather than to material / motion / type.
+
+- **Icon interactivity is legible from treatment.** An icon is **interactive** only as a
+  flat / plain glyph or a filled-circle-with-height (both read as pressable). The **inset**
+  icon treatment signals **informational** and is **never interactive**: no inset element
+  carries a click handler.

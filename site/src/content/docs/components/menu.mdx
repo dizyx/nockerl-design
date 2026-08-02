@@ -1,0 +1,226 @@
+---
+title: Menu
+description: The click-triggered dropdown menu, with actions anchored to a trigger.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import MenuDemo from '../../../components/demos/MenuDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <MenuDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+import { NockerlMenu, MenuItem } from '@dizyx/nockerl-react';
+
+export function SessionOverflow() {
+  const [wrap, setWrap] = useState(true);
+  return (
+    <NockerlMenu trigger={<NockerlIconButton icon="kebab" label="Session actions" />} align="end">
+      <MenuItem icon="rename" shortcut="⌘R" onSelect={rename}>Rename</MenuItem>
+      <MenuItem icon="settings" onSelect={editModel}>Edit provider / model</MenuItem>
+      <MenuItem icon="fork" onSelect={fork}>Fork</MenuItem>
+
+      <MenuSection label="View" />
+      <MenuItem icon="wrap" checked={wrap} onSelect={() => setWrap((v) => !v)}>Wrap lines</MenuItem>
+
+      <MenuSub icon="export" label="Export as">
+        <MenuItem onSelect={() => exportAs('md')}>Markdown (.md)</MenuItem>
+        <MenuItem onSelect={() => exportAs('json')}>JSON (.json)</MenuItem>
+      </MenuSub>
+
+      <MenuSeparator />
+      <MenuItem icon="trash" tone="danger" onSelect={confirmDelete}>Delete</MenuItem>
+    </NockerlMenu>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The session-overflow menu from
+// chat/ui/SessionChipsBar.kt: a DropdownMenu of DropdownMenuItem rows, each with
+// a leadingIcon + label; Delete is the destructive tail. (Material 3 has no
+// checkbox/radio menu item, so a checked row shows a trailing Check icon.)
+var expanded by remember { mutableStateOf(false) }
+
+Box {
+    NockerlIconButton(
+        icon = Icons.Filled.MoreVert,
+        contentDescription = "Session actions",
+        onClick = { expanded = true },
+    )
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+            text = { Text("Rename") },
+            leadingIcon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
+            onClick = { expanded = false; onRename() },
+        )
+        DropdownMenuItem(
+            text = { Text("Edit provider / model") },
+            leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
+            onClick = { expanded = false; onEdit() },
+        )
+        DropdownMenuItem(
+            text = { Text("Fork") },
+            leadingIcon = { Icon(Icons.AutoMirrored.Filled.CallSplit, contentDescription = null) },
+            onClick = { expanded = false; onFork() },
+        )
+        HorizontalDivider()
+        // Checked row → trailing Check; toggling keeps the menu open.
+        DropdownMenuItem(
+            text = { Text("Wrap lines") },
+            leadingIcon = { Icon(Icons.Outlined.WrapText, contentDescription = null) },
+            trailingIcon = { if (wrapLines) Icon(Icons.Outlined.Check, contentDescription = "On") },
+            onClick = { onToggleWrap() },
+        )
+        HorizontalDivider()
+        DropdownMenuItem(
+            text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
+            leadingIcon = {
+                Icon(Icons.Outlined.Delete, contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error)
+            },
+            onClick = { expanded = false; onDelete() },
+        )
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). UI/AppSettingsView.swift + MenuBarContent.swift:
+// a Menu whose label is the trigger; Section groups + Divider() separate; a
+// checked row shows a leading checkmark via Label(_, systemImage: "checkmark");
+// Button(role: .destructive) is the destructive item; a nested Menu is a submenu.
+Menu {
+    Button { rename() } label: { Label("Rename", systemImage: "pencil") }
+        .keyboardShortcut("r", modifiers: .command)
+    Button { editModel() } label: { Label("Edit provider / model", systemImage: "gearshape") }
+    Button { fork() } label: { Label("Fork", systemImage: "arrow.triangle.branch") }
+
+    Section("View") {
+        // A checked row = a leading checkmark; unchecked = plain text.
+        Button { wrapLines.toggle() } label: {
+            if wrapLines { Label("Wrap lines", systemImage: "checkmark") }
+            else { Text("Wrap lines") }
+        }
+    }
+
+    Menu("Export as") {                       // nested Menu = a submenu
+        Button("Markdown (.md)") { exportAs(.md) }
+        Button("JSON (.json)")  { exportAs(.json) }
+    }
+
+    Divider()
+    Button(role: .destructive) { confirmDelete() } label: {
+        Label("Delete", systemImage: "trash")
+    }
+} label: {
+    Image(systemName: "ellipsis")
+}
+.menuStyle(.borderlessButton)
+.menuIndicator(.hidden)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'trigger', type: 'ReactNode', required: true, description: 'The control that opens the menu on click / <code>Enter</code> / <code>Space</code> / <code>↓</code>. Gets <code>aria-haspopup</code> + <code>aria-expanded</code>.' },
+    { name: 'align', type: "'start' | 'end'", default: "'start'", description: 'Which trigger edge the menu aligns to. The menu flips up + clamps horizontally to stay on-screen.' },
+    { name: 'children', type: 'MenuItem | MenuSeparator | MenuSection | MenuSub', required: true, description: 'The menu contents: item rows, full-width separators, section labels, and nested submenus.' },
+    { name: 'MenuItem.icon', type: 'string', description: 'Optional leading glyph. The icon column is reserved menu-wide so every label aligns.' },
+    { name: 'MenuItem.shortcut', type: 'string', description: 'Trailing keyboard-shortcut hint (e.g. <code>⌘R</code>), rendered in the mono font, muted.' },
+    { name: 'MenuItem.checked', type: 'boolean', description: 'Renders the row as <code>menuitemcheckbox</code> (a leading cyan check). Toggling keeps the menu open.' },
+    { name: 'MenuItem.tone', type: "'default' | 'danger'", default: "'default'", description: 'A <code>danger</code> item uses the error token and is divider-separated as the tail.' },
+    { name: 'MenuItem.onSelect', type: '() => void', description: 'Activation handler. Action items close the menu; checkable items toggle in place.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'expanded', type: 'Boolean', required: true, description: 'Whether the menu is open. Set <code>true</code> from the trigger\'s <code>onClick</code>.' },
+    { name: 'onDismissRequest', type: '() -> Unit', required: true, description: 'Called when the menu should close (outside tap, back, Esc).' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier on the menu surface (e.g. <code>fillMaxWidth(0.85f)</code> for an anchored exposed dropdown).' },
+    { name: 'item.text', type: '@Composable -> Unit', required: true, description: 'The row label, usually <code>Text("…")</code>. Use <code>color = colorScheme.error</code> for the destructive item.' },
+    { name: 'item.leadingIcon', type: '@Composable (() -> Unit)?', default: 'null', description: 'Optional icon before the label.' },
+    { name: 'item.trailingIcon', type: '@Composable (() -> Unit)?', default: 'null', description: 'Trailing slot. Render a <code>Check</code> for a selected row (M3 has no native checkable item).' },
+    { name: 'item.enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the row is dimmed and non-interactive.' },
+    { name: 'item.onClick', type: '() -> Unit', required: true, description: 'Row activation. Typically sets <code>expanded = false</code> then runs the action.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the menu as `Menu { content } label: { trigger }`. There are no
+explicit state parameters. `Menu` owns open/close. Rows are standard `Button`s;
+structure comes from `Section`, `Divider`, nested `Menu`, and `Button(role:)`.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Menu(content:label:)', type: 'View', description: 'The dropdown. <code>label</code> is the trigger; <code>content</code> is the item list. Owns its own open/dismiss + keyboard.' },
+    { name: 'Button(action:label:)', type: 'View', description: 'One item row. A leading <code>Label(_, systemImage: "checkmark")</code> marks a checked row; plain <code>Text</code> when unchecked.' },
+    { name: 'Section(_:)', type: 'View', description: 'A titled group: the section label + implicit grouping (the wayfinding caption).' },
+    { name: 'Divider()', type: 'View', description: 'A full-width separator between groups of items.' },
+    { name: 'Menu(_:content:)', type: 'View', description: 'A nested menu = a submenu, opened to the side on hover / focus.' },
+    { name: 'Button(role: .destructive)', type: 'View', description: 'The destructive item, system-tinted red (maps to the error token).' },
+    { name: '.keyboardShortcut(_:modifiers:)', type: 'modifier', description: 'Binds a key + modifier (e.g. <code>"r", .command</code>) and surfaces the ⌘-hint on the row.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Menu vs. long-press-pop vs. command-palette">
+Three sibling surfaces, three triggers. Don't mix them:
+- **Menu** (this page) is **click-triggered** and **anchored to a control** (a kebab ⋯ or actions button). Non-modal, no dim, positioned under/beside its trigger.
+- **[Long-press pop](/components/long-press-pop/)** is **press-and-hold ON content** (a bubble, a row): it dims the ground, lifts the target, and pops the same item vocabulary beside it.
+- **[Command palette](/components/command-palette/)** is the **modal ⌘K** centered overlay with **type-to-search**, a global launcher, not a per-control action list. (The [combobox](/components/combobox/) is the type-to-filter *select*, not a menu.)
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The item grammar is shared; the real divergences between the shipped platforms:
+
+- **Surface ownership:** web draws the menu surface itself (the canon overlay card: surface +
+  hairline + top catch-light + a neutral shadow). Android's `DropdownMenu` and Voice's SwiftUI
+  `Menu` (NSMenu-backed) use **system-owned surfaces**. Per Law 9 (honor the platform) they keep
+  native elevation, motion, and dismissal, so the web card recipe deliberately does not port 1:1.
+- **Item vocabulary:** web ships `menuitemcheckbox` / `menuitemradio` rows, section labels,
+  nested submenus, and mono shortcut hints. Android's shipped usage is plain action rows
+  (`DropdownMenuItem`); Voice gets submenus + destructive roles from SwiftUI but has no
+  checkbox/radio item variant in use. Adopting the richer row kinds natively is the open item.
+- **Point anchoring:** web's `openAt(x, y)` (context-menu positioning) has no shipped native
+  counterpart yet; Android/Voice menus anchor to their trigger control only.
+</Aside>

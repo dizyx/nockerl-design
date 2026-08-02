@@ -1,0 +1,178 @@
+---
+title: Text field
+description: The Nockerl single-line text field, a recessed input well.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import TextFieldDemo from '../../../components/demos/TextFieldDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TextFieldDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is
+// the canonical API the published @dizyx/nockerl-react package exposes. The shipped
+// shadcn input.tsx is being conformed to it; see the drift note below.)
+import { NockerlTextField } from '@dizyx/nockerl-react';
+
+export function SessionForm() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  return (
+    <>
+      <NockerlTextField
+        label="Session name"
+        value={name}
+        onChange={setName}
+        placeholder="e.g. Refactor auth flow"
+        helperText="Shown in the session list."
+      />
+      <NockerlTextField
+        label="Notify email"
+        type="email"
+        leadingIcon="@"
+        value={email}
+        onChange={setEmail}
+        errorText={emailError}
+      />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlTextField
+// (com.dizyx.nockerl.design on GitHub Packages Maven). One recessed `canvasAlt` well on
+// the 12dp control radius with a hairline resting border; focus swaps the border to the
+// accent, `errorText` (non-null) puts it in the error state and replaces `helperText`
+// on the supporting line. Label + error are BUNDLED (persistent label, never
+// placeholder-as-label, law §14). The 12dp shape + field colors are baked in.
+import com.dizyx.nockerl.design.components.NockerlTextField
+
+NockerlTextField(
+    value = email,
+    onValueChange = { email = it; viewModel.clearError() },
+    label = "Email",
+    placeholder = "you@example.com",
+    errorText = emailError,                                    // non-null → error state
+    leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
+    modifier = Modifier.fillMaxWidth(),
+    enabled = !isLoading,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift exposes the
+// recessed chrome as a .nockerlFieldBackground() modifier applied to a plain TextField.
+// The label is a sibling Text/Card title (there is no bundled label slot yet).
+TextField("https://your-server:port", text: $localEndpoint)
+    .textFieldStyle(.plain)
+    .foregroundStyle(NockerlTheme.onSurface)
+    .nockerlFieldBackground()   // canvasAlt inset surface + hairline, rounded rect
+
+// A masked variant for secrets uses SecureField with the same modifier:
+SecureField("Deepgram API key", text: $keyInput)
+    .textFieldStyle(.plain)
+    .nockerlFieldBackground()
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlTextField" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`NockerlTextField` is the published recessed-well field. The 12dp control shape and the
+`canvasAlt` well / hairline-border / accent-focus / status-error color mapping are baked
+in, so the call site only supplies content. Label + error are **bundled**: a non-null
+`errorText` puts the field in the error state and replaces `helperText` on the supporting
+line (error is text, never color alone, per law §14).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'value', type: 'String', required: true, description: 'Current text value.' },
+    { name: 'onValueChange', type: '(String) -> Unit', required: true, description: 'Invoked on every edit.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. Fields are typically <code>fillMaxWidth()</code>.' },
+    { name: 'label', type: 'String?', default: 'null', description: 'Persistent floating label, the canonical persistent-label pattern (never placeholder-as-label).' },
+    { name: 'placeholder', type: 'String?', default: 'null', description: 'Hint shown while empty: an <strong>addition</strong> to the label, never a replacement.' },
+    { name: 'helperText', type: 'String?', default: 'null', description: 'Persistent supporting line under the field.' },
+    { name: 'errorText', type: 'String?', default: 'null', description: 'When non-null: error state + this text on the supporting line (replaces <code>helperText</code>).' },
+    { name: 'leadingIcon / trailingIcon', type: '(@Composable -> Unit)?', default: 'null', description: 'Glyph slots inside the field (e.g. a lock, a show-password toggle).' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the field is dimmed and non-interactive.' },
+    { name: 'singleLine', type: 'Boolean', default: 'true', description: 'Single-line entry (the default); set <code>false</code> for a short text area.' },
+    { name: 'maxLines', type: 'Int', default: 'if (singleLine) 1 else 5', description: 'Line cap for multi-line fields.' },
+    { name: 'visualTransformation', type: 'VisualTransformation', default: 'None', description: 'e.g. <code>PasswordVisualTransformation()</code> for masked secrets.' },
+    { name: 'keyboardOptions / keyboardActions', type: 'KeyboardOptions / KeyboardActions', default: 'Default', description: 'IME type/action configuration and the matching action callbacks.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI applies the field chrome as a **`.nockerlFieldBackground()` view modifier** on a
+plain `TextField` / `SecureField`. State (focus, editing) comes from the SwiftUI
+environment. There are no explicit state parameters, and there is no bundled label or
+error slot yet (the title is a sibling view; errors are shown as a sibling `Text`).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.nockerlFieldBackground()', type: 'ViewModifier', description: 'The recessed input chrome: <code>NockerlTheme.canvasAlt</code> inset surface + a hairline stroke, in a rounded rectangle. Wrap a <code>.textFieldStyle(.plain)</code> field with it.' },
+    { name: '.textFieldStyle(.plain)', type: 'TextFieldStyle', description: 'Strips the native bezel so the Nockerl well chrome is the only container.' },
+    { name: '.foregroundStyle(NockerlTheme.onSurface)', type: 'modifier', description: 'Binds the typed-text color to the on-surface token.' },
+    { name: 'TextField / SecureField', type: 'View', description: 'The host control. <code>SecureField</code> is the masked variant for secrets; both take the same modifier.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The recessed-well spec is the target; these are the real divergences between the shipped
+platforms, tracked in the [Review queue](/review-queue/):
+
+- **Shared component:** Android now **ships** `NockerlTextField`
+  (`com.dizyx.nockerl.design.components`), the extracted recessed-well field. Voice has a
+  reusable field modifier (`.nockerlFieldBackground()`) but no bundled component; web still
+  ships the shadcn `input.tsx`. An extracted field is now owed on **web + Voice**, and the
+  app screens that still recolor `OutlinedTextField` inline should migrate to the published
+  component.
+- **Recessed vs outlined:** Voice + the published Kotlin `NockerlTextField` + the spec are
+  **recessed wells**; the app's older inline `OutlinedTextField` call-sites are still
+  **outlined boxes** (no inset) until they adopt the shipped component.
+- **Control radius:** Voice hardcodes **8pt**; Android uses the **12dp** token; web's
+  shadcn input is a **full pill** (`rounded-full`). The well must be the **12px** control
+  radius everywhere (the pill is reserved for chips + the input bar).
+- **Focus treatment:** web shadcn uses a 1px `ring` (a shadow); the law wants a 2px
+  `outline`. Voice/Android rely on a border-color change.
+- **Label + error slots:** web + Compose bundle label / error / helper; Voice does not
+  (siblings). One bundled API should win.
+</Aside>

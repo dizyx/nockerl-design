@@ -1,0 +1,57 @@
+{
+  "$description": "CORE / GLOBAL typography primitives. Outfit (geometric sans) is the Nockerl UI face on every platform (self-hosted on web, bundled on Android); Space Mono is the monospace. Thin-forward system: headlines run thin (100-200), body 300, 500 is the bold cap (never heavier). Sizes/line-heights are the canonical ramp; on Android 1sp maps 1:1 to these px at default density.",
+  "font": {
+    "family": {
+      "sans": {
+        "$type": "fontFamily",
+        "$value": ["Outfit", "system-ui", "sans-serif"],
+        "$description": "Primary UI typeface, everywhere. Outfit (geometric sans). Headlines run thin (100-200); body 300; max weight 500 (we never go heavier)."
+      },
+      "mono": {
+        "$type": "fontFamily",
+        "$value": ["Space Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+        "$description": "Monospace: ticket numbers, code, technical metadata."
+      }
+    },
+    "weight": {
+      "thin": { "$type": "fontWeight", "$value": 100, "$description": "Display + the THIN pole of emphasis-by-contrast." },
+      "extralight": { "$type": "fontWeight", "$value": 200, "$description": "H1 / H2 / the lockup 'Nockerl' word." },
+      "light": { "$type": "fontWeight", "$value": 300, "$description": "Body, chat, labels, buttons (the everyday weight)." },
+      "regular": { "$type": "fontWeight", "$value": 400, "$description": "Lockup product word; slightly stronger body where needed." },
+      "medium": { "$type": "fontWeight", "$value": 500, "$description": "Our BOLD cap + the bold pole of emphasis. Nockerl never exceeds 500." },
+      "semibold": { "$type": "fontWeight", "$value": 500, "$description": "Capped at 500, never heavier (legacy alias -> medium)." },
+      "bold": { "$type": "fontWeight", "$value": 500, "$description": "Capped at 500: emphasis is by CONTRAST, never additive heaviness (legacy alias -> medium)." }
+    },
+    "size": {
+      "10": { "$type": "dimension", "$value": "10px" },
+      "12": { "$type": "dimension", "$value": "12px" },
+      "14": { "$type": "dimension", "$value": "14px" },
+      "16": { "$type": "dimension", "$value": "16px" },
+      "18": { "$type": "dimension", "$value": "18px" },
+      "20": { "$type": "dimension", "$value": "20px" },
+      "24": { "$type": "dimension", "$value": "24px" },
+      "28": { "$type": "dimension", "$value": "28px" },
+      "32": { "$type": "dimension", "$value": "32px" },
+      "36": { "$type": "dimension", "$value": "36px" }
+    },
+    "lineHeight": {
+      "14": { "$type": "dimension", "$value": "14px" },
+      "16": { "$type": "dimension", "$value": "16px" },
+      "20": { "$type": "dimension", "$value": "20px" },
+      "24": { "$type": "dimension", "$value": "24px" },
+      "26": { "$type": "dimension", "$value": "26px" },
+      "28": { "$type": "dimension", "$value": "28px" },
+      "32": { "$type": "dimension", "$value": "32px" },
+      "36": { "$type": "dimension", "$value": "36px" },
+      "40": { "$type": "dimension", "$value": "40px" },
+      "44": { "$type": "dimension", "$value": "44px" }
+    },
+    "tracking": {
+      "$description": "Letter-spacing scale (em). The system NEVER spreads. Uppercase is TIGHTENED, never tracked out (positive tracking reads gappy and off-brand). Three steps only: tight, snug, normal.",
+      "tight": { "$type": "dimension", "$value": "-0.03em", "$description": "Uppercase buttons, the brand lockup, and larger uppercase labels / badges / breadcrumbs. The tightened-caps look." },
+      "eyebrow": { "$type": "dimension", "$value": "0em", "$description": "Small uppercase overline / eyebrow labels (10px caps). The tiniest caps want a touch more air than buttons. 0 = the caps ceiling; tunable on its own without touching body." },
+      "snug": { "$type": "dimension", "$value": "-0.02em", "$description": "Large lowercase display + headings: a whisper of optical tightening so big type does not feel loose." },
+      "normal": { "$type": "dimension", "$value": "0em", "$description": "Body, prose, mono, and the loosest any uppercase ever goes. The default, usually no declaration at all." }
+    }
+  }
+}

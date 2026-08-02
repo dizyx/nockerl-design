@@ -1,0 +1,32 @@
+---
+/**
+ * SiteTitle: the docs site's brand lockup in the top-left nav.
+ *
+ * Replaces Starlight's default text title (which rendered heavy + accent-colored)
+ * with the canonical Nockerl lockup: the three-peaks mark + "Nockerl" (weight 200)
+ * + the product word "Design" (weight 400, cyan), sentence case, -0.03em, exactly
+ * per design-laws §11. Reuses the shared <NockerlLockup> ("one lockup, all
+ * surfaces"); static SSR, no hydration. The anchor carries the accessible name so
+ * the two wordmark spans read as one link.
+ */
+import NockerlLockup from './NockerlLockup';
+
+const { siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="site-title sl-flex" aria-label="Nockerl Design" translate="no">
+  <NockerlLockup size={24} product="Design" />
+</a>
+
+<style>
+  .site-title {
+    align-items: center;
+    text-decoration: none;
+    white-space: nowrap;
+    min-width: 0;
+    /* The "Nockerl" word uses currentColor, so set it to the strong on-surface ink
+       (theme.css remaps --sl-color-white to #f5f5f5 dark / #1a1a1a light). The
+       product word "Design" carries its own cyan accent token. */
+    color: var(--sl-color-white);
+  }
+</style>

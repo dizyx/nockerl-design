@@ -1,0 +1,187 @@
+---
+title: Info block / callout
+description: A persistent, in-content emphasis aside (note / tip / important / warning / caution / quote) embedded in the prose.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CalloutDemo from '../../../components/demos/CalloutDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <CalloutDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. No Callout ships yet on ANY
+// platform; this is the proposed @dizyx/nockerl-react API, derived from the
+// shipped emphasis vocabulary (the agent ThinkingSegment + ToolSegment inset +
+// the SettingsCard eyebrow + the markdown body styling). A callout is STATIC
+// editorial prose, with no dismiss and no actions (that is the Banner).
+
+export function InstallNotes() {
+  return (
+    <>
+      <Callout tone="note">
+        Bind to <code>--color-accent-primary</code> rather than a literal. See the{' '}
+        <a href="/foundations/tokens/">token contract</a>.
+      </Callout>
+
+      <Callout tone="tip" title="Pro tip">
+        Press <code>⌘K</code> to jump to any session.
+      </Callout>
+
+      <Callout tone="important">Cyan is the one editorial-emphasis tone.</Callout>
+
+      <Callout tone="warning">
+        <code>nockerl git push</code> squashes local commits into one.
+      </Callout>
+
+      <Callout tone="caution">Destructive actions cannot be undone.</Callout>
+
+      <Callout tone="quote">Bounded autonomy: autonomy calibrated by task risk.</Callout>
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. No NockerlCallout ships yet; this is the proposed
+// com.nockerl.app.core.ui.NockerlCallout. It is a RECESSED content aside (a
+// tonal wash over canvasAlt + a tone hairline + a FILLED tone icon disc at the
+// leading edge, never a left rail, Law 6), generalising the shipped ToolSegment
+// inset + ThinkingSegment prose. It is NOT a lifted NockerlSurface (that is the Banner).
+// Body is markdown.
+import com.nockerl.app.core.ui.NockerlCallout
+import com.nockerl.app.core.ui.NockerlCalloutTone
+
+NockerlCallout(tone = NockerlCalloutTone.NOTE) {
+    MarkdownBody("Bind to `--color-accent-primary` rather than a literal.")
+}
+
+NockerlCallout("Press ⌘K to jump to any session.", tone = NockerlCalloutTone.TIP, title = "Pro tip")
+NockerlCallout("Cyan is the one editorial-emphasis tone.", tone = NockerlCalloutTone.IMPORTANT)
+NockerlCallout("`nockerl git push` squashes commits into one.", tone = NockerlCalloutTone.WARNING)
+NockerlCallout("Destructive actions cannot be undone.", tone = NockerlCalloutTone.CAUTION)
+NockerlCallout("Bounded autonomy: autonomy calibrated by task risk.", tone = NockerlCalloutTone.QUOTE)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Voice). No callout ships; the closest shipped patterns are the
+// SettingsCard eyebrow (uppercase tracked label) + the InfoTip popover. This is
+// the proposed NockerlCallout view: a recessed, tone-tinted rounded-rect with a
+// filled leading tone disc (an SF Symbol knockout) + eyebrow + rich Text body,
+// never a left rail (Law 6). Persistent, with no dismiss.
+NockerlCallout(tone: .note) {
+    Text("Bind to ") + Text("--color-accent-primary").monospaced() + Text(" rather than a literal.")
+}
+
+NockerlCallout("Press ⌘K to jump to any session.", tone: .tip, title: "Pro tip")
+NockerlCallout("Cyan is the one editorial-emphasis tone.", tone: .important)
+NockerlCallout("`nockerl git push` squashes commits into one.", tone: .warning)
+NockerlCallout("Destructive actions cannot be undone.", tone: .caution)
+NockerlCallout("Bounded autonomy: autonomy calibrated by task risk.", tone: .quote)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'children', type: 'ReactNode', required: true, description: 'The rich body: prose, links, and inline <code>code</code>. Bound to the <code>body.medium</code> role; this is what makes a callout read as embedded content rather than an alert.' },
+    { name: 'tone', type: "'note' | 'tip' | 'important' | 'warning' | 'caution' | 'quote'", default: "'note'", description: 'Editorial tone. Drives the disc / frame color, the default eyebrow, and the icon. <strong>Cyan is used only for <code>important</code></strong> (the one editorial-emphasis tone); <code>tip/warning/caution</code> are warm status tokens; <code>note/quote</code> use on-card, never cyan.' },
+    { name: 'title', type: 'string', default: 'per tone', description: 'The uppercase eyebrow label above the body. Defaults to the tone name (Note / Tip / …). <strong>Never color alone</strong>, because the tone is carried by the disc + icon + label + text.' },
+    { name: 'icon', type: 'boolean', default: 'true', description: 'Show the leading tone icon, top-aligned to the first text line. <code>quote</code> ignores this and shows a quote glyph instead.' },
+  ]}
+/>
+
+There is no `dismissible` / `onDismiss` / `action`. A callout is **persistent**
+editorial content. For a dismissible, action-bearing, app-state alert, use the
+[Banner](/components/banner/).
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`NockerlCallout` is the proposed Compose component: a recessed `Box` (panel
+radius) with a tonal wash over `canvasAlt`, a tone hairline, an inner top shadow
+(the recessed-well depth), and a **filled leading tone disc** (nested hairline
+frames for the `important` tone), never a left rail (Law 6). It is deliberately
+**not** a `NockerlSurface`/`NockerlCard` (those lift); a callout sinks into the
+page like body content. The body is markdown via the shared `MarkdownBody`.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'String', description: 'Convenience body (markdown), rendered with <code>bodyMedium</code>. Mutually exclusive with the <code>content</code> slot.' },
+    { name: 'content', type: '(@Composable ColumnScope.() -> Unit)?', default: 'null', description: 'Rich body slot for when plain markdown is not enough (links, inline code, nested composables).' },
+    { name: 'tone', type: 'NockerlCalloutTone', default: 'NOTE', description: 'Tone: <code>NOTE · TIP · IMPORTANT · WARNING · CAUTION · QUOTE</code>. <code>IMPORTANT</code> is the only cyan; <code>NOTE/QUOTE</code> use <code>onCard</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. Pass <code>Modifier.fillMaxWidth()</code> for a full-width block in a column.' },
+    { name: 'title', type: 'String?', default: 'null', description: 'Uppercase eyebrow label; defaults to the tone name. Paired with the disc + icon + text, so color is never the only cue.' },
+    { name: 'showIcon', type: 'Boolean', default: 'true', description: 'Show the leading tone icon (top-aligned). <code>QUOTE</code> renders a quote glyph regardless.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlCallout` is the proposed SwiftUI view: a recessed `RoundedRectangle`
+(panel radius) tinted by the tone, with a **filled leading tone disc** (an SF Symbol
+knockout) + an uppercase eyebrow (the `SettingsCard` lead style) + a rich `Text`
+body, never a left rail (Law 6). It echoes
+the shipped `SettingsCard` eyebrow and `InfoTip` palette, reframed as a
+persistent in-content aside (no dismiss, no `nockerlElevation()` lift).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'init(_:tone:title:)', type: 'View', description: 'The body string + tone (<code>.note</code> / <code>.tip</code> / <code>.important</code> / <code>.warning</code> / <code>.caution</code> / <code>.quote</code>). <code>.important</code> uses <code>NockerlTheme.accent</code> (cyan); <code>.note/.quote</code> use <code>onSurface</code>.' },
+    { name: 'init(tone:title:content:)', type: 'View', description: 'Rich-body initializer taking a <code>@ViewBuilder</code> for links + monospaced inline code + emphasis.' },
+    { name: 'title:', type: 'String?', description: 'Uppercase eyebrow; defaults to the tone name (<code>nil</code> → tone name).' },
+    { name: 'showIcon:', type: 'Bool', description: 'Leading SF Symbol in the tone color, top-aligned. <code>.quote</code> shows a quotation glyph. Defaults to <code>true</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+**No callout ships on any platform yet**. This spec is designed originally from the
+laws + the shipped emphasis vocabulary, and is deliberately **distinct from the
+[Banner](/components/banner/)**: a banner is a *lifted, transient inline alert*
+(drop shadow + catch-light + status wash + an X + an action, reacting to app
+state); a callout is a *recessed, persistent editorial aside* (an inset tonal well
++ a filled tone disc + prose, part of the document flow, no dismiss). The
+divergences to reconcile when it lands, tracked in the [Review queue](/review-queue/):
+
+- **Source patterns differ:** Android has the inline `ThinkingSegment` (italic + muted
+  prose) and the `ToolSegment` (a tonal inset + hairline), but neither is a reusable aside.
+  Voice has the `SettingsCard` eyebrow + the `InfoTip` popover, but no in-content note.
+  This page proposes the shared one.
+- **`important` tone color:** this is the **one** place cyan is used editorially (brand
+  emphasis, not status). The warm tones map to status tokens; one cyan-vs-status mapping
+  should be canonized so callout and banner stay legibly different.
+- **Quote treatment:** the `quote` tone reuses Android's italic + muted reasoning style;
+  Voice/web would need a matching italic prose style + a quote glyph token.
+</Aside>

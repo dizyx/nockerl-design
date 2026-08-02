@@ -1,0 +1,199 @@
+---
+title: Stat / metric card
+description: The single-KPI tile, with a big number, a label, an optional delta and inline sparkline.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import StatCardDemo from '../../../components/demos/StatCardDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <StatCardDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// The number is a mono figure; the label is muted; a delta is a WARM status color
+// + a direction glyph (never color alone). Featured fills with cyan. All tokens.
+
+export function DashboardCluster() {
+  return (
+    <div className="stat-grid">
+      <StatCard label="Tokens" value={formatCount(1_240_000)} icon={<TokenIcon />}
+        delta={{ value: '12%', trend: 'up' }} spark={tokenTrend} onClick={openTokens} />
+      <StatCard label="Sessions" value="42" icon={<SessionIcon />}
+        delta={{ value: '6', trend: 'up' }} />
+      {/* up isn't always good, so cost/latency flip the color, not the glyph */}
+      <StatCard label="Cost · 7d" value="$184" icon={<CostIcon />}
+        delta={{ value: '14%', trend: 'up', goodWhenDown: true }} />
+      <StatCard label="p95 latency" value="640ms" icon={<LatencyIcon />}
+        delta={{ value: '8%', trend: 'down', goodWhenDown: true }} />
+      <StatCard label="Tokens · all time" value="1.2M" tone="featured" />
+      <StatCard label="Errors · 24h" value="-" />   {/* empty, not a zero */}
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The shipped tile is `StatTile`
+// (chat/ui/ClusterSheet.kt): a compact surface with a small leading icon + muted
+// label, then a MONOSPACE value and an optional trailing Sparkline. Counts use
+// `formatTokenCount` (1M / 42K). Delta/trend is not yet on the native tile.
+import com.nockerl.app.chat.ui.formatTokenCount
+
+@Composable
+private fun StatTile(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    iconTint: Color? = null,
+    trailing: (@Composable -> Unit)? = null,
+) {
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(6.dp))
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, null, tint = iconTint ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(11.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(label, style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(value, style = MaterialTheme.typography.labelSmall,
+                fontFamily = FontFamily.Monospace, modifier = Modifier.weight(1f))
+            if (trailing != null) trailing()   // e.g. a Sparkline(...)
+        }
+    }
+}
+
+// Usage, the GPU/board row from the cluster sheet:
+StatTile(icon = Icons.Outlined.Bolt, iconTint = colors.modelType.gpu,
+    label = "Tokens", value = formatTokenCount(1_240_000), modifier = Modifier.weight(1f))
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS / iOS: SwiftUI, from the NockerlDesign package (the package
+// canon, to the D6 ruling 70a5f6a): the leading glyph sits MUTED in a NEUTRAL
+// HAIRLINE PLATE (never an accent fill: "we rarely fill", "cyan is earned"),
+// the label is the uppercase muted line, the value is the big mono figure, and
+// the delta is a WARM status color + a direction glyph (never color alone).
+// Voice's hand-rolled HomeSection StatCard (accent chip + gradient card)
+// normalizes to this on adoption. Sparkline is not yet on the native tile.
+import NockerlDesign
+
+// The Home overview grid:
+NockerlStatCard(label: "Transcriptions", value: "\(records.count)") {
+    Image(systemName: "waveform")
+}
+NockerlStatCard(
+    label: "Tokens",
+    value: formatTokenCount(tokens),
+    delta: NockerlStatDelta(value: "12%", trend: .up)
+) {
+    Image(systemName: "bolt")
+}
+// up isn't always good, so cost/latency flip the COLOR, not the glyph:
+NockerlStatCard(
+    label: "Cost · 7d",
+    value: "$184",
+    delta: NockerlStatDelta(value: "14%", trend: .up, goodWhenDown: true)
+)
+// Empty state: a clearly-seen dash (it mutes), never a misleading 0.
+NockerlStatCard(label: "Latency", value: "-")
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Short metric name. Bound to the muted <code>label.small</code> role.' },
+    { name: 'value', type: 'string', required: true, description: 'Headline figure, pre-formatted (e.g. <code>1.2M</code>, <code>$184</code>). Pass a dash for the empty state, never a misleading <code>0</code>.' },
+    { name: 'delta', type: '{ value: string; trend: "up" | "down"; goodWhenDown?: boolean }', description: 'Trend chip: a <strong>warm status color</strong> + a direction glyph (▲/▼) + a sign. <strong>Never color alone</strong>. <code>goodWhenDown</code> flips the color for cost/latency (the glyph stays).' },
+    { name: 'icon', type: 'ReactNode', description: 'Optional leading glyph, rendered on the ratified D6 <strong>neutral hairline plate</strong> (muted glyph, transparent fill) by default. Opt into a hue with <code>tint</code>.' },
+    { name: 'spark', type: 'number[]', description: 'Optional inline sparkline, normalized to its own min/max with a filled "now" dot. Brand cyan (on-accent when featured).' },
+    { name: 'tone', type: "'default' | 'featured'", default: "'default'", description: '<code>featured</code> fills the tile with the cyan gradient (one per cluster); labels use <code>on-accent</code>.' },
+    { name: 'tint', type: "'accent' | 'success' | 'warning' | 'danger'", description: '<strong>Opt-in</strong> icon-plate tint that colors the glyph + plate a soft hue (soft wash + hue border + hue glyph, the Badge-soft recipe). Omit for the neutral D6 plate (<strong>default renders byte-identical</strong>). Ignored on <code>featured</code> tiles.' },
+    { name: 'gradient', type: 'boolean', default: 'false', description: '<strong>EXPERIMENTAL</strong> (task 2763, not ratified canon): a subtle THEME-FOLLOWING surface gradient (a gentle neutral diagonal, not the <code>featured</code> cyan). Default renders the flat surface, byte-identical. Ignored on <code>featured</code>.' },
+    { name: 'size', type: "'comfortable' | 'compact'", default: "'comfortable'", description: 'Density. <code>compact</code> is the dense ClusterSheet tile; <code>comfortable</code> the Voice card.' },
+    { name: 'loading', type: 'boolean', default: 'false', description: 'Skeleton shimmer instead of content; holds the tile height and sets <code>aria-busy</code>.' },
+    { name: 'onClick', type: '() => void', description: 'When set, the whole tile becomes one <code>button</code> (hover lift, focus-visible ring, single accessible name).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'icon', type: 'ImageVector', required: true, description: 'Leading glyph (11.dp), tinted by <code>iconTint</code>.' },
+    { name: 'label', type: 'String', required: true, description: 'Metric name, rendered in <code>labelSmall</code> on <code>onSurfaceVariant</code> (muted).' },
+    { name: 'value', type: 'String', required: true, description: 'Headline figure in <code>FontFamily.Monospace</code>. Format counts with <code>formatTokenCount</code> (<code>1M</code> / <code>42K</code>).' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. Pass <code>Modifier.weight(1f)</code> to tile equal-width across a row.' },
+    { name: 'iconTint', type: 'Color?', default: 'null', description: 'Icon color; falls back to <code>onSurfaceVariant</code>. The cluster sheet uses model-type tints.' },
+    { name: 'trailing', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional trailing slot: the shipped tile drops a <code>Sparkline</code> here.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlStatCard` is the packaged tile, with `NockerlCard` chrome (surface1 +
+catch-light + hairline + the L2 neutral shadow; Voice's gradient fill retires).
+The head band reserves the 40pt plate height even icon-less, so headline numbers
+share one offset across a tile row. Not `NockerlControlMetrics`. That is the
+control-layer metric <em>constants</em> (the 44pt touch floor), not a component.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'label', type: 'String', required: true, description: 'Metric name: uppercase, 12pt medium, <code>onCardMuted</code>.' },
+    { name: 'value', type: 'String', required: true, description: 'Headline figure, pre-formatted in the MONO family at the display-small size (28pt bold, tabular). Pass a dash for the empty state (it mutes), never a misleading <code>0</code>.' },
+    { name: 'delta', type: 'NockerlStatDelta?', default: 'nil', description: '<code>(value, trend: .up/.down, goodWhenDown)</code>. A <strong>warm status color</strong> + ▲/▼, never color alone; <code>goodWhenDown</code> flips the color for cost/latency (the glyph stays).' },
+    { name: 'icon', type: '@ViewBuilder', description: 'Leading glyph (SF Symbol <code>Image</code> or any view), muted, inside the ratified D6 <strong>neutral hairline plate</strong> by default (40pt, radius <code>control</code>, transparent + <code>cardHairline</code>). Opt into a hue with <code>tint</code>.' },
+    { name: 'tint', type: 'NockerlStatTint?', default: 'nil', description: '<strong>Opt-in</strong> icon-plate tint. <code>.accent / .success / .warning / .danger</code> color the glyph + plate a soft hue (soft wash 14% + hue border 28% + hue glyph, the Badge-soft recipe). Omit for the neutral D6 plate (<strong>default renders byte-identical</strong>). Warm hues stay status-meaningful; <code>.accent</code> is the earned-cyan case.' },
+    { name: 'density', type: 'NockerlControlDensity', default: '.comfortable', description: 'The rhythm tier (the shared <code>NockerlControlDensity</code>, one density story, not a bespoke knob): <code>.comfortable</code> is the unchanged 40pt-plate / 28pt-value tile; <code>.compact</code> mirrors the web compact tier with <strong>32pt plate, <code>space3</code> padding, <code>space2</code> gap, a 20pt value</strong> (≈88→ a ~26% shorter tile) for dense dashboards and small windows. Legibility + the neutral-plate anatomy hold.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Stat card vs. chart vs. context-gauge, and cross-platform drift">
+- **Pick the right component.** **Stat card** is the *single-KPI tile* (one number + label + optional delta/sparkline). For a full plot (line/area/bar, multi-series, axes, a usage donut) use [Chart / sparkline](/components/chart/). For the live token-budget meter use [Context gauge](/components/context-gauge/). The tile *borrows* the chart's sparkline + `formatTokenCount` vocabulary, but it is not a chart.
+- **Delta / trend is web-only.** Neither shipped app renders a delta (up/down %). It is designed here from the laws (**warm status color + a direction glyph, never color alone**) and is the intended `@dizyx/nockerl-react` API, not yet on Android `StatTile` or Voice `StatCard`.
+- **Same idea, two builds.** Voice `StatCard` = an **accent icon chip + big bold mono number + muted label** (the comfortable tile here). Android `StatTile` = a **compact** mono tile (small inline icon + label, value + trailing sparkline). The web tile unifies both as `size`.
+- **Radius drift.** Voice hardcodes **10pt**, Android **6dp**; the tile here uses `radius.card` (**16**). The native tiles should consume `radius.card`.
+- **Count format.** Android `formatTokenCount` is integer (`1M` / `42K`); Voice's header uses one decimal (`8.4k`). One compact-number policy needs to win.
+</Aside>

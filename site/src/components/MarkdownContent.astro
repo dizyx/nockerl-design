@@ -1,0 +1,71 @@
+---
+/**
+ * MarkdownContent override: appends an HONEST per-platform authenticity note to every
+ * component page that declares an android/swift platform, driven by two frontmatter fields:
+ *   platforms:        which platforms the page covers.
+ *   nativePublished:  the native platforms whose Kotlin/Swift tab shows the REAL PUBLISHED
+ *                     package (com.dizyx.nockerl.design on Maven / the NockerlDesign SwiftPM
+ *                     package), not the canonical-app reference.
+ *
+ * A native platform in `platforms` but NOT in `nativePublished` still shows canonical-app
+ * reference (mirrors the shipped Android/Voice app, not compiled here) -> the caveat note.
+ * A native platform in `nativePublished` shows the real published API -> a positive note.
+ * The published sets differ per platform, so this is computed per-platform, not per-page.
+ */
+import Default from '@astrojs/starlight/components/MarkdownContent.astro';
+
+const route = Astro.locals.starlightRoute;
+const platforms = (route?.entry?.data?.platforms ?? []) as readonly string[];
+const nativePublished = (route?.entry?.data?.nativePublished ?? []) as readonly string[];
+const id = String(route?.id ?? route?.entry?.id ?? '');
+const isComponentPage = id.startsWith('components/');
+
+const NATIVE = ['android', 'swift'] as const;
+const tabLabel = (p: string) => (p === 'android' ? 'Kotlin' : 'Swift');
+const pkgLabel = (p: string) =>
+  p === 'android' ? 'com.dizyx.nockerl.design (GitHub Packages Maven)' : 'the NockerlDesign SwiftPM package';
+const joinLabels = (ps: readonly string[]) => ps.map(tabLabel).join(' and ');
+
+const nativeCovered = isComponentPage ? NATIVE.filter((p) => platforms.includes(p)) : [];
+const published = nativeCovered.filter((p) => nativePublished.includes(p));
+const appRef = nativeCovered.filter((p) => !nativePublished.includes(p));
+
+const pubTabs = `${joinLabels(published)} ${published.length > 1 ? 'tabs' : 'tab'}`;
+const pubPkgs = published.map(pkgLabel).join(' / ');
+const refTabs = `${joinLabels(appRef)} ${appRef.length > 1 ? 'tabs' : 'tab'}`;
+---
+
+{/* Notes render AFTER the content (a footer, not stacked above the "in review" badge). */}
+<Default><slot /></Default>
+{
+  published.length > 0 && (
+    <aside aria-label="Note" class="starlight-aside starlight-aside--tip nk-native-ref">
+      <p class="starlight-aside__title" aria-hidden="true">{pubTabs} = the published package API</p>
+      <div class="starlight-aside__content">
+        <p>
+          The <strong>{pubTabs}</strong> on this page {published.length > 1 ? 'show' : 'shows'} the{' '}
+          <strong>real published package</strong> API ({pubPkgs}) - not canonical-app reference. The
+          design <strong>tokens</strong> are generated and real, and the{' '}
+          <strong>Web (TypeScript)</strong> example runs live on this page.
+        </p>
+      </div>
+    </aside>
+  )
+}
+{
+  appRef.length > 0 && (
+    <aside aria-label="Note" class="starlight-aside starlight-aside--note nk-native-ref">
+      <p class="starlight-aside__title" aria-hidden="true">{refTabs} = canonical-app API reference</p>
+      <div class="starlight-aside__content">
+        <p>
+          The <strong>{refTabs}</strong> on this page {appRef.length > 1 ? 'are' : 'is'}{' '}
+          <strong>canonical-app API reference</strong>: they mirror (or, where the page says so,
+          propose) the shipped Android and Nockerl Voice app code, and are{' '}
+          <strong>not compiled or verified in this repo</strong>. The design{' '}
+          <strong>tokens</strong> ARE generated and real; the <strong>Web (TypeScript)</strong>{' '}
+          example runs live on this page.
+        </p>
+      </div>
+    </aside>
+  )
+}

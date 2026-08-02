@@ -1,0 +1,61 @@
+---
+title: File explorer
+description: The dev-console explorer shell, an eyebrow header + actions over the shipped Tree, with a built-in empty state.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import FileExplorerDemo from '../../../components/demos/FileExplorerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FileExplorerDemo client:visible />
+</Example>
+
+The web console's **file explorer** is, per the de-phantom verdict, a deliberately THIN
+SHELL that invents nothing: the forest is the shipped [`Tree`](/components/tree/)
+(file-type tints, full WAI-ARIA keyboard semantics, controlled expand/select), the
+header is an eyebrow title plus an **open `actions` slot** (drop
+[`IconButton`](/components/icon-button/)s or a [`Menu`](/components/menu/) trigger in;
+the shell owns no controls), and an empty forest renders the packaged recessed Well
+with your message + optional action.
+
+<Aside type="note" title="Scope notes">
+**Web-first chrome over a cross-platform core:** Compose + Swift already ship
+`NockerlTree`; only this shell is console-specific. **Per-node context menus** stay with
+the host for now: wiring `Menu` per row needs a Tree anchor extension (tracked on the
+epic), not shell scope.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlFileExplorer } from '@dizyx/nockerl-react';
+
+<NockerlFileExplorer
+  title="nockerl-design"
+  nodes={forest}                       // NockerlTreeNode[], the shipped Tree's shape
+  expandedIds={expanded}
+  onToggleExpand={setExpanded}
+  selectedId={activePath}
+  onSelect={openFile}
+  actions={<NockerlIconButton icon={collapseIcon} label="Collapse all" variant="plain" size={24} onClick={collapseAll} />}
+  emptyTitle="No files open"
+  emptyAction={<NockerlButton text="Load the repo" size="sm" variant="secondary" onClick={load} />}
+/>
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<PropsTable nameLabel="Prop" component="NockerlFileExplorer" />

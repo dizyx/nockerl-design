@@ -1,0 +1,184 @@
+---
+title: Top bar / app bar
+description: The global app header chrome (brand, page title / breadcrumb, and the trailing account cluster), closed by the signature cyan boundary line.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import TopBarDemo from '../../../components/demos/TopBarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TopBarDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+import { NockerlIconButton, NockerlAvatar } from '@dizyx/nockerl-react';
+
+export function AppHeader() {
+  const [searchOpen, setSearchOpen] = useState(false);
+  return (
+    <TopBar
+      brand={{ mark: 'nockerl', product: 'Nockerl' }}   // mark + optional product label
+      title="Chat"                                       // page title (centered on Android)
+      align="center"                                     // 'lead' | 'center'
+      actions={
+        <>
+          <NockerlIconButton icon="search" label="Search" pressed={searchOpen} onClick={() => setSearchOpen((v) => !v)} />
+          <ClusterStatus online={3} total={4} onClick={openCluster} />
+          <InboxButton count={3} onClick={openInbox} />   {/* count → "99+" → unseen dot */}
+          <NockerlAvatar src={user.photo} name={user.name} presence="streaming" onClick={openSettings} />
+        </>
+      }
+    />
+  );
+}
+
+// A sub-screen header: a leading back button + title instead of the brand.
+<TopBar leading={<NockerlIconButton icon="back" label="Back" onClick={goBack} />} title="Session settings" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). com.nockerl.app.core.ui.GlobalTopBar +
+// TopChromeBoundary (the 1.5dp cyan line). GlobalTopBar is a Box so the three-peaks
+// mark stays centered to the SCREEN regardless of the trailing controls: avatar at
+// the start, the logo dead center, the cluster Hub + the notification bell (a
+// BadgedBox: unread count -> "99+" -> an 8dp unseen dot in the orange agent accent)
+// at the end. The cyan boundary closes the header chrome below it.
+import com.nockerl.app.core.ui.GlobalTopBar
+import com.nockerl.app.core.ui.TopChromeBoundary
+
+Column {
+    GlobalTopBar(
+        onAvatarClick = { showSettingsSheet = true },   // start: profile photo -> settings
+        onInboxClick = { showInboxSheet = true },        // end: bell + BadgedBox
+        onClusterClick = { showClusterSheet = true },    // end: Hub (cluster) icon
+        unreadCount = unreadCount,                        // count badge (agent-orange)
+        hasUnseen = hasUnseen,                            // falls back to an 8dp dot
+    )
+    HorizontalDivider(thickness = 1.dp, color = colors.divider)   // hairline under the title bar
+    // ... project / session rows (the collapsible header chrome) ...
+    TopChromeBoundary(                                    // the full-width 1.5dp cyan line
+        collapsed = headerCollapsed,                      // + a grab handle: drag / tap to
+        onCollapsedChange = { headerCollapsed = it },     // collapse / expand the chrome
+    )
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. Voice is a MENU-BAR app with no title bar
+// (.windowStyle(.hiddenTitleBar)): the brand instead anchors the sidebar header and
+// the floating command pill (RecordingHUD), built from a NockerlLogo, a Rectangle(divider)
+// separator, and morphing content on chromeSurface, in a capsule with a 1.5pt accent
+// border. This pill is the closest analogue to the global top bar; see the drift note.
+HStack(spacing: 11) {
+    NockerlLogo()                                   // the brand anchor, fixed on the left
+        .frame(width: 18, height: 16)
+    Rectangle()
+        .fill(NockerlTheme.divider)                 // a full-height separator
+        .frame(width: 1, height: 22)
+    content                                          // status / page content (cross-fades)
+        .transition(.opacity)
+}
+.padding(.horizontal, 14)
+.padding(.vertical, 9)
+.background(NockerlTheme.chromeSurface, in: Capsule())
+.overlay(Capsule().strokeBorder(NockerlTheme.accent, lineWidth: 1.5))   // the cyan boundary
+.shadow(color: .black.opacity(0.4), radius: 14, y: 5)
+
+// The dashboard sidebar header (brand lockup, pushed clear of the traffic lights):
+HStack(spacing: 9) {
+    NockerlLogo().frame(width: 22, height: 19)
+    Text("Nockerl Voice").font(.system(size: 14, weight: .semibold))
+    Spacer(minLength: 0)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'brand', type: '{ mark: BrandMark; product?: string }', description: 'Leading identity: the three-peaks mark and an optional product label. Omit when <code>leading</code> is set (a sub-screen).' },
+    { name: 'leading', type: 'ReactNode', description: 'Replaces the brand on a sub-screen, typically a back <code>IconButton</code>. Mutually exclusive with <code>brand</code>.' },
+    { name: 'title', type: 'string', description: 'Page title. Bound to the <code>title.medium</code> type role.' },
+    { name: 'align', type: "'lead' | 'center'", default: "'lead'", description: 'Title placement. <code>center</code> is the Android idiom, absolutely centered to the bar so the action cluster never shifts it.' },
+    { name: 'breadcrumb', type: 'Crumb[]', description: 'Wayfinding trail (<code>{ label, href }[]</code>) shown in place of the title; the last crumb is <code>aria-current="page"</code>.' },
+    { name: 'actions', type: 'ReactNode', description: 'Trailing account cluster, right-aligned and evenly gapped: search · <code>ClusterStatus</code> · <code>InboxButton</code> · <code>Avatar</code>.' },
+    { name: 'condensed', type: 'boolean', default: 'false', description: 'Scrolled state: the bar shrinks its height. Animates (height); freezes under <code>prefers-reduced-motion</code>.' },
+    { name: 'selection', type: '{ count: number; actions: ReactNode }', description: 'Contextual mode. Replaces the chrome with a cyan-tinted "N selected" bar + bulk actions and a clear button.' },
+    { name: 'InboxButton.count', type: 'number', default: '0', description: 'Inbox badge count (agent-orange keycap); clamps to <code>99+</code>, falls back to an unseen dot at 0.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`GlobalTopBar` is the title-bar row; `TopChromeBoundary` is the 1.5dp cyan line that
+closes the header chrome. Both are composed by `MainScaffold`.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'GlobalTopBar.onAvatarClick', type: '() -> Unit', default: '{}', description: 'Start: the circular profile photo (32dp image in a 40dp target) → the settings drawer.' },
+    { name: 'GlobalTopBar.onInboxClick', type: '() -> Unit', default: '{}', description: 'End: the notification bell (a <code>BadgedBox</code>) → the inbox sheet.' },
+    { name: 'GlobalTopBar.onClusterClick', type: '() -> Unit', default: '{}', description: 'End: the cluster <code>Hub</code> icon → the Nockerl Laboratory sheet.' },
+    { name: 'GlobalTopBar.unreadCount', type: 'Int', default: '0', description: 'Inbox badge count: <code>family.agent</code> orange fill, <code>pickOnAccent</code> label, <code>99+</code> overflow.' },
+    { name: 'GlobalTopBar.hasUnseen', type: 'Boolean', default: 'false', description: 'When the count is 0 but there is unseen activity, shows a bare 8dp dot instead of a number.' },
+    { name: 'GlobalTopBar.modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. The bar fills width and sits on <code>colors.canvas</code> (a <code>Box</code>, so the logo stays screen-centered).' },
+    { name: 'TopChromeBoundary.collapsed', type: 'Boolean', required: true, description: 'Whether the project + session rows are collapsed up under the title bar. The pill looks identical in both states.' },
+    { name: 'TopChromeBoundary.onCollapsedChange', type: '(Boolean) -> Unit', required: true, description: 'Drag (up = collapse, down = expand) past the threshold, or tap the grab-handle pill, to toggle.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Voice is a menu-bar utility with **no title bar**, so there is no `TopBar` view at all.
+Its analogue is the floating **command pill**; that surface (the brand anchor, the divider,
+the capsule + cyan outline, and its phase morphing) is documented in full on the
+[Recording HUD](/components/recording-hud/) page and is not duplicated here.
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Top-bar vs. app-shell vs. toolbar:** the top bar is the *global header row* (brand
+  + title / breadcrumb + account cluster). [app-shell](/components/app-shell/) is the
+  *whole layout* that hosts it (header + nav region + content over the facet field);
+  [toolbar](/components/toolbar/) is a *contextual action strip* (editor / formatting /
+  selection actions). They share the chrome look but solve different jobs. Don't use
+  one for another.
+- **Title placement:** Android **centers** the mark to the screen (a `Box`) with the
+  account cluster around it; web defaults to a **lead-aligned** title and offers
+  `align="center"`. Voice has **no title bar** at all.
+- **Boundary:** Android draws the **1.5dp cyan line + a drag handle** that collapses
+  the header chrome; web mirrors the 1.5px line (no collapse handle yet); Voice carries
+  the 1.5pt cyan boundary as the **command-pill outline**, not a full-width line.
+- **No single web component yet:** `@dizyx/nockerl-react`'s `TopBar` API above is the
+  **intended** shape, not yet published.
+</Aside>

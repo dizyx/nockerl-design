@@ -1,0 +1,76 @@
+{
+  "$description": "SEMANTIC component-size intents: the load-bearing container / min dimensions that live inside components (min-width / max-width / min-height), named by INTENT rather than raw px. Distinct from the core 4px `space` scale (padding/gap/margin) and the `icon` glyph scale: these are off-grid, component-specific footprints (a menu's comfortable width, a chart tooltip's minimum, the a11y touch target). Stored in px; the Compose build emits dp, Swift emits pt, the same platform-unit treatment as radius/space. Bind via var(--size-*).",
+  "size": {
+    "minTouch": {
+      "$type": "dimension",
+      "$value": "44px",
+      "$description": "Minimum interactive touch-target dimension (a11y). The single-line field / control min-height."
+    },
+    "dividerSignature": {
+      "$type": "dimension",
+      "$value": "1.5px",
+      "$description": "Thickness of the SIGNATURE divider, the accentPrimary line both apps drew at a hardcoded 1.5 (S6). Pairs with color.accentPrimary; the plain neutral divider stays 1px hairline."
+    },
+    "chartMin": {
+      "$type": "dimension",
+      "$value": "92px",
+      "$description": "Minimum width of an in-chart readout (line-chart hover tooltip) so short values don't collapse."
+    },
+    "panelMin": {
+      "$type": "dimension",
+      "$value": "132px",
+      "$description": "Minimum height of a content panel (tab panel) so an empty/short panel keeps a stable footprint."
+    },
+    "selectMaxHeight": {
+      "$type": "dimension",
+      "$value": "400px",
+      "$description": "Max height of the NockerlSelect popover list before it caps + scrolls; grows to fit short lists (Voice's provider picker clipped one row at the old 300)."
+    },
+    "container": {
+      "$description": "Comfortable container widths for self-clamped overlays / narrow layout columns: the menu / tooltip / popover / stepper footprints. Off the 4px grid on purpose (ergonomic reading widths, not spacing).",
+      "xs": {
+        "$type": "dimension",
+        "$value": "216px",
+        "$description": "Extra-small container: menu min-width."
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "220px",
+        "$description": "Small container, tooltip default max-width."
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "264px",
+        "$description": "Medium container: popover width / menu max-width."
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "360px",
+        "$description": "Large container, vertical stepper max-width."
+      }
+    },
+    "chat": {
+      "$description": "CHAT-SURFACE width caps (r5.2 task 2676, the adaptive/max-width pass). The proven message-column geometry, shared by web + Compose so folded (360dp) / unfolded (840dp) / tablet / wide web all clamp identically: content NEVER stretches edge-to-edge on wide chat surfaces.",
+      "bubbleMax": {
+        "$type": "dimension",
+        "$value": "460px",
+        "$description": "Max width of a chat bubble AND the chat-input pill (the input aligns with the message column, centered on wide). Web formula stays min(82%, bubbleMax)."
+      },
+      "toolCardMax": {
+        "$type": "dimension",
+        "$value": "560px",
+        "$description": "Max width of a standalone tool-call card (inside a bubble it fills the bubble's content width instead)."
+      },
+      "bannerMax": {
+        "$type": "dimension",
+        "$value": "540px",
+        "$description": "Max width of an inline banner alert on wide surfaces (Android fillMaxWidth adopts this cap)."
+      },
+      "columnMax": {
+        "$type": "dimension",
+        "$value": "1040px",
+        "$description": "The whole chat COLUMN's cap on very wide surfaces. Tokenizes Android's proven TABLET_LANDSCAPE_COLUMN_CAP_DP (1040)."
+      }
+    }
+  }
+}

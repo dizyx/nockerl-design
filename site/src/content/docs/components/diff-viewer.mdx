@@ -1,0 +1,150 @@
+---
+title: Diff viewer
+description: The dedicated diff surface, with a per-file header carrying +N/-M stats, @@ hunk headers, added/removed/context tints, line-number gutters, and unified + split views.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import DiffViewerDemo from '../../../components/demos/DiffViewerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DiffViewerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function ReviewDiff({ before, after }: { before: string; after: string }) {
+  return (
+    <DiffViewer
+      path="app/src/main/java/com/nockerl/app/net/Backoff.kt"
+      language="kotlin"
+      prev={before}
+      next={after}
+      view="unified"        // 'unified' | 'split' (old left / new right)
+      collapseContext={3}   // fold runs of unchanged lines behind an Expand control
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The diff surface lives in chat/ui as
+// DiffView, fed by the LCS computeLineDiff in chat/domain. It renders the file
+// header, +/- gutter, and warm added/removed washes; split view is web-only.
+import com.nockerl.app.chat.domain.DiffLine
+import com.nockerl.app.chat.domain.DiffLineType
+import com.nockerl.app.chat.domain.computeLineDiff
+
+// computeLineDiff(old, new) → List<DiffLine>, each ADDED / REMOVED / UNCHANGED
+// with a 1-based lineNumber. Pass old = "" for a new file (all-green additions).
+val diffLines: List<DiffLine> = computeLineDiff(old = before, new = after)
+
+// DiffView is internal to ToolCallCard.kt. It takes the path (for the header),
+// the computed lines, and the resulting content (the copy button writes it):
+DiffView(
+    filePath = "app/.../net/Backoff.kt",
+    diffLines = diffLines,
+    newContent = after,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Nockerl Voice). No diff viewer ships yet; Voice has no
+// Edit/Write tool surface to render. The intended API mirrors the web component,
+// rendered in the mono well (see the Code block page) once Voice gains tool cards:
+//
+//   DiffViewer(path: "Backoff.kt", language: .kotlin,
+//              prev: before, next: after, view: .unified)
+//
+// Today, a before/after is shown as two raw .monospaced Text blocks, ad hoc.
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'path', type: 'string', required: true, description: 'File path in the header: the directory is muted, the basename emphasized.' },
+    { name: 'prev', type: 'string', required: true, description: 'Pre-change source. Diffed against <code>next</code> via the LCS <code>computeLineDiff</code>.' },
+    { name: 'next', type: 'string', required: true, description: 'Post-change source. Pass <code>prev=""</code> for a new file (all-added).' },
+    { name: 'language', type: "'typescript' | 'kotlin' | 'swift'", description: 'Drives the cyan-soft language pill in the header.' },
+    { name: 'view', type: "'unified' | 'split'", default: "'unified'", description: 'Unified (one column, <code>+/-</code> gutter) or split (old left / new right, equal columns).' },
+    { name: 'collapseContext', type: 'number', default: '0', description: 'Fold unchanged runs longer than this behind an <strong>Expand</strong> control. <code>0</code> = never fold. Unified only.' },
+  ]}
+/>
+
+The header shows a `+N / -M` add/remove stat (warm status), each hunk gets an
+`@@ -a,b +c,d @@` band, and a removed→added pair gets an **intra-line word
+highlight** on the changed span. Added = `status.success` wash, removed =
+`status.error` wash, context = muted, never the brand cyan, never color-alone.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'filePath', type: 'String', required: true, description: '<code>DiffView</code> header path; the basename is shown beside the <code>EditNote</code> icon.' },
+    { name: 'diffLines', type: 'List&lt;DiffLine&gt;', required: true, description: 'From <code>computeLineDiff(old, new)</code>. Each <code>DiffLine(type, text, lineNumber)</code> is ADDED / REMOVED / UNCHANGED.' },
+    { name: 'newContent', type: 'String', required: true, description: 'The resulting content the header copy button writes to the clipboard.' },
+    { name: 'old / new', type: 'String', description: '<code>computeLineDiff(old, new)</code> inputs. <code>old = ""</code> → all-green new file; returns <code>emptyList()</code> past 500 combined lines (raw fallback).' },
+    { name: 'DiffLineType', type: 'enum', description: '<code>ADDED · REMOVED · UNCHANGED</code>. Drives the wash (success / error / transparent) + the <code>+ / - / space</code> prefix.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI ships **no diff viewer**. Voice has no Edit/Write tool surface yet, so there
+is nothing to diff; a before/after would be two raw `.monospaced` `Text` blocks.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.font(.system(design: .monospaced))', type: 'View modifier', description: 'The only mono affordance today: no file header, gutter, +/- glyph, washes, hunks, or split. Queued behind the Code block surface.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Sourced from the shipped Android `DiffView` + `computeLineDiff`; these are the real divergences:
+
+- **Split view, hunk `@@` headers, `+N/-M` stats, intra-line word highlight, and
+  collapse/expand** *(resolved in [adjudication 2026-07-02 · B11])*: these are **web-only
+  (documented)**. Android's `DiffView` stays a single unified column (one gutter, `+/-` prefix,
+  warm washes); the richer affordances are the dedicated web viewer's, not a drift to reconcile.
+- **Swift has no component.** Voice ships no diff (no tool-call surface). The web/Compose
+  API is the target; Swift is queued.
+- **Line numbers** *(resolved in [adjudication 2026-07-02 · B11])*: line numbering **unifies on
+  the dual `oldNo` / `newNo` shape** everywhere. Android (today one `DiffLine.lineNumber`) adopts
+  the dual-number model the web `computeLineDiff` already carries.
+- **Language pill:** there is no `file-type` token for **Swift**, so its pill falls back
+  to a categorical violet. Add `file-type.swift` when Voice gains a real surface.
+</Aside>

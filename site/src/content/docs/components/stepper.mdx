@@ -1,0 +1,194 @@
+---
+title: Stepper
+description: The step-progress indicator, built from discs + connectors that track status through a multi-step flow.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import StepperDemo from '../../../components/demos/StepperDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <StepperDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// The NockerlStepper shows STATUS only. The wizard owns step content + next/back.
+import { NockerlStepper } from '@dizyx/nockerl-react';
+
+export function SetupTracker({ step, onJump }: { step: number; onJump: (i: number) => void }) {
+  return (
+    <NockerlStepper
+      current={step}
+      orientation="horizontal"
+      onStepClick={onJump}            // completed discs become clickable
+      steps={[
+        { label: 'Workspace' },
+        { label: 'Provider' },
+        { label: 'Model' },
+        { label: 'Review' },
+      ]}
+    />
+  );
+}
+
+// Vertical, with descriptions and an error stop (color + icon + text, never color alone):
+<NockerlStepper
+  current={2}
+  errorAt={2}
+  orientation="vertical"
+  steps={[
+    { label: 'Credentials', description: 'Credential scope confirmed' },
+    { label: 'Allowlist scope', description: 'github-token-dizyx' },
+    { label: 'Push to remote' },
+    { label: 'Verify CI' },
+  ]}
+/>
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. INTENDED API (com.nockerl.app.core.ui.NockerlStepper):
+// no formal stepper ships yet. Modeled on NockerlSegmented (muted track, one active
+// stop in cyan) + the depth helpers; the wizard container drives `current`.
+import com.nockerl.app.core.ui.NockerlStep
+import com.nockerl.app.core.ui.NockerlStepper
+import com.nockerl.app.core.ui.NockerlStepperOrientation
+
+NockerlStepper(
+    steps = listOf(
+        NockerlStep("Workspace"),
+        NockerlStep("Provider"),
+        NockerlStep("Model"),
+        NockerlStep("Review"),
+    ),
+    current = step,
+    orientation = NockerlStepperOrientation.HORIZONTAL,
+    onStepClick = viewModel::jumpToStep,   // only completed stops invoke this
+    modifier = Modifier.fillMaxWidth(),
+)
+
+// Vertical, with descriptions + an error stop:
+NockerlStepper(
+    steps = listOf(
+        NockerlStep("Credentials", description = "Credential scope confirmed"),
+        NockerlStep("Allowlist scope", description = "github-token-dizyx"),
+        NockerlStep("Push to remote"),
+        NockerlStep("Verify CI"),
+    ),
+    current = 2,
+    errorStep = 2,
+    orientation = NockerlStepperOrientation.VERTICAL,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. INTENDED API (NockerlVoice/UI/NockerlStepper.swift): no formal
+// stepper ships yet. The closest precedent is OnboardingView's status checklist
+// (checkmark/x/circle + title + detail); this generalizes it into a tracker.
+NockerlStepper(
+    current: step,
+    orientation: .horizontal,
+    onStepTap: jumpToStep,            // only completed stops fire
+    steps: [
+        .init(label: "Workspace"),
+        .init(label: "Provider"),
+        .init(label: "Model"),
+        .init(label: "Review"),
+    ]
+)
+
+// Vertical, with descriptions + an error stop (icon + text carry it, not color alone):
+NockerlStepper(
+    current: 2,
+    errorStep: 2,
+    orientation: .vertical,
+    steps: [
+        .init(label: "Credentials", description: "Credential scope confirmed"),
+        .init(label: "Allowlist scope", description: "github-token-dizyx"),
+        .init(label: "Push to remote"),
+        .init(label: "Verify CI"),
+    ]
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlStepper" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'steps', type: 'List<NockerlStep>', required: true, description: '<code>NockerlStep(label, description = null, icon = null)</code>. <code>description</code> renders in the vertical rail; <code>icon</code> is a leading <code>@Composable</code> slot shown until the stop is done/error.' },
+    { name: 'current', type: 'Int', required: true, description: 'Zero-based active stop. Drives the done / current / upcoming split and the connector fill.' },
+    { name: 'orientation', type: 'NockerlStepperOrientation', default: 'HORIZONTAL', description: 'Layout axis: <code>HORIZONTAL · VERTICAL</code>.' },
+    { name: 'errorStep', type: 'Int?', default: 'null', description: 'Stop to render in the error state (status error color + alert icon + state semantics). Honored when it equals <code>current</code>.' },
+    { name: 'onStepClick', type: '((Int) -> Unit)?', default: 'null', description: 'When non-null, completed stops are clickable (ripple + role = button). Null = a passive indicator.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. Pass <code>Modifier.fillMaxWidth()</code> for a full-width horizontal tracker.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the tracker as a `NockerlStepper` view; status comes from `current`
+(+ optional `errorStep`), not per-stop flags. State styling reads from
+`NockerlTheme` (accent, success, error, surface highlight).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'steps', type: '[NockerlStep]', required: true, description: '<code>NockerlStep(label:description:systemImage:)</code>. <code>description</code> shows in the vertical rail; <code>systemImage</code> is an optional SF Symbol shown until the stop is done/error.' },
+    { name: 'current', type: 'Int', required: true, description: 'Zero-based active stop. Earlier = done (success checkmark), later = upcoming (recessed, muted).' },
+    { name: 'orientation', type: 'Axis', default: '.horizontal', description: '<code>.horizontal</code> (discs + connectors + labels under) or <code>.vertical</code> (rail + labels + descriptions).' },
+    { name: 'errorStep', type: 'Int?', default: 'nil', description: 'Stop rendered with the error tint + <code>exclamationmark</code> symbol + accessibility state. Applied when it equals <code>current</code>.' },
+    { name: 'onStepTap', type: '((Int) -> Void)?', default: 'nil', description: 'When provided, completed stops become tappable buttons; otherwise the tracker is presentational.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The Stepper is the step *indicator* primitive, not a flow and not a bar:
+
+- **Stepper vs [Wizard](/components/wizard/):** the Wizard is the full guided
+  container (renders each step's content + next/back); the Stepper is only the
+  discs + connectors it shows at the top. A Wizard *uses* a Stepper.
+- **Stepper vs [progress bar](/components/progress-bar/):** the bar is one
+  continuous fill for indeterminate / percentage progress; the Stepper is
+  discrete, *named* stops with per-step status.
+- **Web ships it; the native platforms don't yet.** `Stepper` is exported from
+  `@dizyx/nockerl-react` (the TypeScript signature above). No formal stepper ships
+  on Android or Swift, so those looks are designed from the laws + the real precedents
+  (Android `NockerlSegmented`'s muted-track / one-cyan-stop treatment; Voice
+  `OnboardingView`'s checkmark / x / circle status checklist), so the Kotlin + Swift
+  signatures above are **intended** APIs pending implementation. A separate numeric
+  **+/- stepper input** is a different control, queued under [Inputs](/components/inputs/).
+</Aside>

@@ -1,0 +1,200 @@
+---
+title: Tabs
+description: A tablist of tabs, each controlling an associated tabpanel, for switching between sections of related content.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import TabsDemo from '../../../components/demos/TabsDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TabsDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlTabs } from '@dizyx/nockerl-react';
+
+export function SessionPanel() {
+  const [tab, setTab] = useState('overview');
+  return (
+    <NockerlTabs
+      label="Session sections"
+      value={tab}
+      onChange={setTab}
+      tabs={[
+        { value: 'overview', label: 'Overview', icon: 'overview' },
+        { value: 'activity', label: 'Activity', icon: 'activity' },
+        { value: 'files', label: 'Files', icon: 'files', count: 12 },
+        { value: 'settings', label: 'Settings', icon: 'settings', disabled: true },
+      ]}
+      renderPanel={(v) => <SectionBody section={v} />}
+    />
+  );
+}
+
+// Enclosed variant (the same cyan underline, inside a recessed well). Pass variant="enclosed".
+<NockerlTabs label="Panel sections" variant="enclosed" value={tab} onChange={setTab} tabs={tabs} renderPanel={renderPanel} />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). Material 3 SecondaryTabRow: a MUTED
+// underline tab row (NOT the all-cyan PrimaryTabRow, which Nockerl retired;
+// inactive tabs stay muted, the active tab gets the cyan label + the cyan
+// indicator). Pair with a HorizontalPager so each tab owns its panel.
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+
+val tabs = listOf("Overview", "Activity", "Files", "Settings")
+val pagerState = rememberPagerState { tabs.size }
+val scope = rememberCoroutineScope()
+val colors = LocalNockerlColors.current
+
+SecondaryTabRow(
+    selectedTabIndex = pagerState.currentPage,
+    containerColor = colors.cardAlt,
+    indicator = {
+        TabRowDefaults.SecondaryIndicator(
+            Modifier.tabIndicatorOffset(pagerState.currentPage),
+            color = colors.accentPrimary,   // the cyan signature line
+        )
+    },
+) {
+    tabs.forEachIndexed { i, title ->
+        Tab(
+            selected = pagerState.currentPage == i,
+            onClick = { scope.launch { pagerState.animateScrollToPage(i) } },
+            text = { Text(title) },
+            selectedContentColor = colors.accentPrimary,
+            unselectedContentColor = colors.onCardAltMuted,
+        )
+    }
+}
+HorizontalPager(state = pagerState) { page -> SectionBody(tabs[page]) }
+
+// Many tabs → ScrollableTabRow for a horizontally-scrolling, edge-fading row.
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). The bespoke first-class NockerlTabs (v1.15.0): a controlled
+// tablist + a CONTAINED content panel, the container the native TabView lacked (B12 amended
+// 2026-07-17). The panel is panelStyle-driven (v1.16.0): .well (default) is a recessed
+// NockerlWell(.container) GROUND that cards LIFT OFF (matches StylesView); .card is a lifted
+// surface for plain content. a11y-first: roving Arrow/Home/End, typeahead, Delete-to-close,
+// VoiceOver selected state.
+NockerlTabs(
+    tabs: [
+        NockerlTabItem(value: "overview", label: "Overview",
+                       icon: AnyView(Image(systemName: "square.grid.2x2"))),
+        NockerlTabItem(value: "activity", label: "Activity",
+                       icon: AnyView(Image(systemName: "waveform.path.ecg")),
+                       statusDot: .success),   // optional per-tab marker (active-engine), != selection
+        NockerlTabItem(value: "files", label: "Files",
+                       icon: AnyView(Image(systemName: "folder")), count: 12),
+    ],
+    selection: $section,          // controlled, exactly one selected
+    label: "Project sections"
+) { value in
+    panel(for: value)             // the active tab's body, in the content panel (a recessed well by default)
+}
+// variant: .underline (default) | .enclosed · size: .sm | .md
+// panelStyle: .well (default, recessed ground cards lift off) | .card (lifted surface for plain content)
+// onClose: for closable tabs
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlTabs" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'selectedTabIndex', type: 'Int', required: true, description: 'Index of the active tab. Drives the indicator position (usually <code>pagerState.currentPage</code>).' },
+    { name: 'indicator', type: '@Composable -> Unit', default: 'SecondaryIndicator', description: 'The moving indicator. Use <code>TabRowDefaults.SecondaryIndicator</code> tinted <code>accentPrimary</code> with <code>tabIndicatorOffset(...)</code>, the cyan signature line.' },
+    { name: 'containerColor', type: 'Color', default: 'surface', description: 'Tab-row background. Bind to a Nockerl surface (e.g. <code>cardAlt</code>), never the all-cyan default.' },
+    { name: 'selected', type: 'Boolean', required: true, description: 'On <code>Tab</code>: whether this tab is active. Drives the <code>selectedContentColor</code> (cyan) vs <code>unselectedContentColor</code> (muted).' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'On <code>Tab</code>: invoked when tapped, typically <code>pagerState.animateScrollToPage(i)</code>.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'On <code>Tab</code>: when <code>false</code>, the tab is dimmed and non-interactive.' },
+    { name: 'HorizontalPager', type: 'Composable', description: 'The swipeable panel host. Each page is one tab’s tabpanel; <code>pagerState</code> keeps the row + pager in sync.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The bespoke first-class `NockerlTabs` (v1.15.0): a CONTROLLED tablist + a contained
+content panel, a11y-first, ported 1:1 from the web/Compose `NockerlTabs`. (The system
+`TabView` was retired for Nockerl surfaces; see B12-amend 2026-07-17.)
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'tabs', type: '[NockerlTabItem]', required: true, description: 'The tabs left-to-right. Each item carries value / label / optional icon (any view) / count / disabled / dirty / statusDot.' },
+    { name: 'selection', type: 'Binding<String>', required: true, description: 'The active tab <code>value</code>: controlled, exactly one selected.' },
+    { name: 'label', type: 'String', required: true, description: 'Accessible name for the whole tablist.' },
+    { name: 'variant', type: 'NockerlTabsVariant', default: '.underline', description: '<code>.underline</code> (a sliding cyan line on a baseline hairline) or <code>.enclosed</code> (the same underline seated in a recessed well).' },
+    { name: 'size', type: 'NockerlTabsSize', default: '.md', description: 'Tab height + padding + type role: <code>.sm</code> or <code>.md</code>.' },
+    { name: 'panelStyle', type: 'NockerlTabsPanelStyle', default: '.well', description: 'How the content panel reads (v1.16.0): <code>.well</code> is a recessed FLAT ground (<code>NockerlWell(.container)</code>) that liftable cards sit ON. This is the default, so a panel holding cards reads with depth, not a card-on-card blend. <code>.card</code> is a lifted surface for plain content.' },
+    { name: 'onClose', type: '((String) -> Void)?', default: 'nil', description: 'When set, tabs grow a close affordance and Delete closes the selected tab (reports the value; the host removes it + moves selection).' },
+    { name: 'panel', type: '(String) -> View', required: true, description: 'The body for a tab <code>value</code>. The active tab body renders in the content panel.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Tabs are the **sectioned-content switcher**: each tab owns a `tabpanel`
+(`role="tablist"`), distinct from a [segmented control](/components/segmented-control/),
+which flips mutually-exclusive **views/modes** with **no panels**
+(`role="radiogroup"`, one sliding pill on a connected track). Reach for tabs when
+each choice reveals **its own body of content**; reach for the segmented control
+for a compact **view/mode toggle**.
+
+Real divergences between the shipped platforms:
+
+- **A shipped component (all three platforms).** Web, Android, AND Voice/Swift now expose the
+  bespoke `NockerlTabs`-with-panels. Android uses Material 3 `SecondaryTabRow` + `Tab` +
+  `HorizontalPager` (the all-cyan `PrimaryTabRow` was deliberately **retired**: muted inactive,
+  cyan active + underline; see `InboxSheet.kt`). **Voice/Swift ships the first-class `NockerlTabs`**
+  (v1.15.0). The native `TabView` was **retired for Nockerl surfaces** after it failed the
+  contained-panel bar on a real Voice surface (`[adjudication 2026-07-17 · B12-amend]`).
+- **The slide** *(resolved in [adjudication 2026-07-02 · B12], amended 2026-07-17)*: the indicator
+  **slides** (transform + width, never the fill) on all three: web + Compose (its
+  `SecondaryIndicator` animates via `tabIndicatorOffset`) + Swift (`matchedGeometryEffect`,
+  teleporting under Reduce Motion). No raw system `TabView` remains on a Nockerl surface (Law 9
+  honored in spirit, since `NockerlTabs` is built to feel native).
+- **Enclosed variant** *(resolved in [adjudication 2026-07-02 · B12]; option (b) shipped, )*:
+  the enclosed variant is the **same sliding cyan underline seated inside a recessed well**, never
+  a filled pill (a fill would ape the segmented control). Web, Compose, **and Swift** ship it
+  (`NockerlTabsVariant.enclosed` seats the underline row inside a recessed `NockerlWell`).
+</Aside>

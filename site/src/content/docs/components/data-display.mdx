@@ -1,0 +1,57 @@
+---
+title: Data display & lists
+description: Components that present data, including the row grammar, tables, trees, and display primitives.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="review" />
+
+Components that **present data**. The scrollable list and its row grammar are the backbone;
+everything else hangs off the same rules.
+
+### One row grammar
+
+Every row reads in the same four zones, left to right:
+
+- **Leading:** avatar, icon, status dot, or checkbox.
+- **Primary:** the title / main label.
+- **Supporting:** secondary text under or beside the primary.
+- **Trailing:** value, timestamp, chevron, or action.
+
+Consistency across [list item](/components/list-item/), table, and tree is what makes the
+data scannable.
+
+### Density & depth
+
+- Pick a **density** (comfortable / compact) per surface and hold it: don't mix row
+  heights in one list.
+- **Rows are flat.** Depth comes from the container they sit in, not from lifting each row
+  (see [Elevation &amp; depth](/foundations/elevation-and-depth/)).
+
+### Color
+
+- **Categorical data** (file types, model types, families) uses the dedicated
+  **categorical token ramp**, never brand cyan, so cyan stays the single brand anchor.
+- [Chips / tags](/components/chip/) are the other place the full pill radius is allowed.
+
+## Components
+
+| Component | Status |
+| --- | --- |
+| [List item](/components/list-item/) | ⚠ in review |
+| [Chip](/components/chip/) | ⚠ in review |
+| [List / virtualized list](/components/list/) | ▢ queued |
+| [Table / data grid](/components/table/) | ▢ queued |
+| [Tree / file tree](/components/tree/) | ▢ queued |
+| [Avatar](/components/avatar/) | ▢ queued |
+| [Badge / tag](/components/badge/) | ▢ queued |
+| [Stat / metric card](/components/stat-card/) | ▢ queued |
+| [Chart / sparkline](/components/chart/) | ▢ queued |
+| [Key-value / description list](/components/key-value/) | ▢ queued |
+| [Code block](/components/code-block/) | ▢ queued |
+| [Diff viewer](/components/diff-viewer/) | ▢ queued |
+| [Markdown content](/components/markdown-content/) | ▢ queued |
+| [Timeline / activity feed](/components/timeline/) | ▢ queued |

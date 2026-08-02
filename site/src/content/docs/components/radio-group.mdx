@@ -1,0 +1,179 @@
+---
+title: Radio group
+description: Single-choice selection from a set, rendered as a circle with a centered dot, one per group.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import RadioGroupDemo from '../../../components/demos/RadioGroupDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <RadioGroupDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlRadioGroup } from '@dizyx/nockerl-react';
+
+export function EngineChoice() {
+  const [engine, setEngine] = useState('api-server');
+  return (
+    <NockerlRadioGroup
+      label="Session engine"
+      value={engine}
+      onChange={setEngine}
+      options={[
+        { value: 'cloud-agent', label: 'Cloud Agent', description: 'SDK manages context in JSONL' },
+        { value: 'api-server', label: 'Local Engine', description: 'Our lossless context management' },
+      ]}
+    />
+  );
+}
+
+// Radio cards: same control, variant="card" + orientation="horizontal".
+<NockerlRadioGroup label="Default model" variant="card" orientation="horizontal"
+  value={model} onChange={setModel} options={MODELS} />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). Material3 RadioButton, brand-themed.
+// The M3 radio-row idiom: the PARENT Row owns the click via Modifier.selectable
+// with Role.RadioButton, so the whole label is one a11y unit; the child
+// RadioButton takes onClick = null. (chat/ui/SessionEngineSupport.kt)
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
+
+Column(Modifier.selectableGroup()) {
+    engines.forEach { engine ->
+        val selected = engine == selectedEngine
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .selectable(
+                    selected = selected,
+                    onClick = { onEngineChange(engine) },
+                    role = Role.RadioButton,
+                ),
+        ) {
+            RadioButton(
+                selected = selected,
+                onClick = null,
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = LocalNockerlColors.current.accentPrimary,
+                ),
+            )
+            Text(engine.label, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). There is NO radio control on macOS. Single
+// choice ships as the custom SegmentedSelector (the active option is a cyan
+// OUTLINE, not a fill). NockerlVoice/UI/SettingsComponents.swift +
+// AppSettingsView.swift. The platform Picker(.inline / .segmented) is the
+// system stand-in. See the drift note below.
+SegmentedSelector(
+    options: SessionEngine.allCases,
+    selection: $engine
+) { $0.label }
+
+// Native alternative for long lists, an inline Picker (chosen row = checkmark):
+Picker("Session engine", selection: $engine) {
+    ForEach(SessionEngine.allCases) { engine in
+        Text(engine.label).tag(engine)
+    }
+}
+.pickerStyle(.inline)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlRadioGroup" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'selected', type: 'Boolean', required: true, description: 'Whether <strong>this</strong> option is the chosen one. Drives the centered dot.' },
+    { name: 'onClick', type: '(() -> Unit)?', default: 'null', description: 'Pass <code>null</code> on the <code>RadioButton</code>. The parent <code>Modifier.selectable</code> owns the click so the whole row is one a11y unit.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the option is dimmed (alpha) and non-interactive.' },
+    { name: 'colors', type: 'RadioButtonColors', default: 'RadioButtonDefaults.colors()', description: 'Brand override: <code>selectedColor = accentPrimary</code>, matching Switch/Checkbox.' },
+    { name: 'Modifier.selectable', type: 'selected, onClick, role', description: 'On the parent row: <code>role = Role.RadioButton</code> + the group wrapped in <code>Modifier.selectableGroup()</code> for roving focus + single-choice semantics.' },
+    { name: 'interactionSource', type: 'MutableInteractionSource', default: 'remembered', description: 'Source for the ripple/press interactions (Android ripple, not hover).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+macOS has no radio control; single choice is the custom `SegmentedSelector`
+(or a system `Picker`). State is two-way bound. There are no per-option state
+parameters.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'options', type: '[Option]', description: 'The choices (<code>Hashable & Identifiable</code>), rendered left-to-right as equal-width segments.' },
+    { name: 'selection', type: 'Binding<Option>', description: 'Two-way bound chosen option. The active segment gets a cyan <strong>outline</strong> (1.5pt), not a fill.' },
+    { name: 'label', type: '(Option) -> String', description: 'Maps an option to its visible text (e.g. <code>{ $0.label }</code>).' },
+    { name: '.pickerStyle', type: 'PickerStyle', description: 'System stand-in for long lists: <code>.inline</code> (chosen row = checkmark) or <code>.segmented</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Radio group is the **mutually-exclusive single choice**, distinct from its
+selection-control siblings: a [checkbox](/components/checkbox/) is **multi-select**
+(box + tick, with a tri-state *mixed*), a [switch](/components/switch/) is an
+instant **on/off setting** (track + thumb), and a
+[segmented control](/components/segmented-control/) is single choice for a **small,
+flat set** of peers (no per-option description). Reach for a radio group when
+options need labels **and** descriptions, or for 4+ choices.
+
+Real divergences between the shipped platforms:
+
+- **No radio on macOS.** Voice/SwiftUI has no radio control; single choice is the
+  custom `SegmentedSelector` (cyan outline) or a `Menu`/`Picker` with a checkmark.
+  Compose + web render a true circle-and-dot radio. The web demo’s **radio cards**
+  and the **error/required** group ship on neither app yet (designed here first).
+- **Selection treatment.** Compose/web: a circle with a centered cyan **dot**.
+  Swift: a cyan **outline** on the chosen segment. One single-choice expression
+  per platform: unified, but the marks differ by platform idiom.
+- **Roving focus.** Web uses roving `tabindex` (one tab stop, Arrow keys move +
+  select); Compose gets this free from `Modifier.selectableGroup()`; Swift’s
+  segmented buttons are individually focusable.
+</Aside>

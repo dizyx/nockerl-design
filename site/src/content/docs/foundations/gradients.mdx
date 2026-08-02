@@ -1,0 +1,156 @@
+---
+title: Gradients
+description: Where gradients are allowed (the accent fill, the elevated-surface sheen, the ground top-light, and the faceted field) and the static-fill law they all obey.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Gradients in Nockerl are **purposeful, not decorative**. They appear in a few specific,
+codified places and never as a generic background wash. Every one is a **static fill**,
+never a colored glow, never tweened between two fills. All stops are
+[color tokens](/foundations/color/), so a gradient re-themes light/dark by construction and
+carries no hardcoded hex.
+
+## Where gradients are allowed
+
+There are exactly four sanctioned gradients. Each is a fixed recipe (angle + token stops),
+mirrored across web, Android, and Swift.
+
+### 1. The accent fill: a two-stop vertical cyan
+
+The primary fill that runs the whole accent ladder. A top-down (`180deg`) cyan gradient
+whose lighter top stop reads as a **catch-light**, exactly like a surface lit from above:
+
+```css
+background: linear-gradient(180deg, var(--color-accent-primary-hi), var(--color-accent-primary));
+```
+
+| Stop | Token | Dark | Light |
+| --- | --- | --- | --- |
+| top (catch-light) | `--color-accent-primary-hi` | `#2EC9E4` | `#2BA0BD` |
+| bottom (brand) | `--color-accent-primary` | `#0CC0DF` (cyan-500) | `#0891B2` (cyan-700) |
+
+The bottom stop is the brand anchor; `-hi` is a lighter cyan defined solely as *"the
+lit-from-above top of a primary fill gradient."* This one recipe is shared verbatim by the
+primary [Button](/components/button/), and the filled/ON states of
+[Switch](/components/switch/), [Checkbox](/components/checkbox/),
+[RadioGroup](/components/radio-group/), [SegmentedControl](/components/segmented-control/),
+[Stepper](/components/stepper/), and the [ProgressTrack](/components/progress-bar/) bar.
+One fill, one place to change it. It always ships with a top `surface-highlight` inset and a
+neutral drop shadow (see the [elevation](/foundations/elevation-and-depth/) law), never a
+colored glow.
+
+### 2. The elevated-surface sheen: surface2 → surface1
+
+**Floating** surfaces (menus, popovers, and other lifted panels) fill with a subtle top-down
+lightening from the next surface tone down to the card tone, which reads as a gentle sheen on
+a raised panel:
+
+```css
+background: linear-gradient(180deg, var(--color-card-surface2), var(--color-card-surface1));
+```
+
+| Stop | Token | Dark |
+| --- | --- | --- |
+| top | `--color-card-surface2` | `#333942` |
+| bottom | `--color-card-surface1` | `#2C313A` |
+
+<Aside type="note" title="The base card is a flat fill, not a gradient">
+A resting [Surface / Card](/components/card/) fills with a **flat** `--color-card-surface1`:
+lift comes from the shadow + top catch-light, not a gradient. The `surface2 → surface1`
+gradient is reserved for **floating** surfaces ([Menu](/components/menu/),
+[Popover](/components/popover/)), where it out-specifies the flat `.nk-surface` fill to give a
+raised panel its extra sheen.
+</Aside>
+
+### 3. The ground top-light: a dark-only radial wash
+
+The dark app ground is lit from above by a single large, off-center radial that fades to the
+near-black canvas. It is a page-level *light*, not a brand color:
+
+```css
+background:
+  radial-gradient(1100px 600px at 82% -8%, #12161b, transparent 60%),
+  #0a0b0d; /* --color-canvas */
+```
+
+Applied to `body` in the dark theme only; the light theme is a flat neutral ground
+(`#f3f4f6`). The wash is a barely-lighter neutral (`#12161b` over canvas `#0A0B0D`), again a
+catch-light read, not an emission.
+
+### 4. The faceted field: the Nockerl signature backdrop
+
+The low-poly **faceted field** is the Nockerl signature surface: a jittered triangle mesh
+(the Nockerl mark is a triangle) whose facet luminance drifts in a slow diagonal tone-wave so
+the field is "active, not busy." It is **not a CSS gradient**. It is a token-colored `<canvas>`
+that paints a flat ground, then re-tints each facet per frame. It has **one codified look**:
+no intensity / density / speed knobs and no variants.
+
+It lives in **one** primitive, [`FacetedBackground`](/components/faceted-background/)
+(`site/src/components/primitives/FacetedBackground.tsx`), which is the web mirror of the two
+shipped native implementations, the canonical truth being Android:
+
+- **Android (canonical):** `chat/ui/ChatFeedBackground.kt` (Compose Canvas)
+- **Voice (Swift port):** `UI/FacetBackground.swift` (SwiftUI Canvas)
+
+Every visual parameter is a **frozen constant** pulled 1:1 from those native sources. Editing
+the look means editing these in lock-step everywhere. There is deliberately no runtime
+control, so the field looks identical on every platform by construction:
+
+| Constant | Value | Native name | Role |
+| --- | --- | --- | --- |
+| `CELL_PX` | `128` | `FACET_CELL_SIZE` (`128.dp`; Swift port `130`) | mesh cell size |
+| `JITTER_FRACTION` | `0.34` | n/a | point stray as a fraction of the cell |
+| `STATIC_JITTER` | `0.022` | `STATIC_FACET_JITTER` | baked per-facet tonal grain |
+| `AMPLITUDE` | `0.05` | `WAVE_AMPLITUDE` | peak tone-wave luminance swing |
+| `PERIOD_MS` | `18000` | `WAVE_PERIOD_MILLIS` | one full diagonal wave cycle (~18s) |
+| `EDGE_WIDTH` | `0.75` | n/a | facet hairline width (device px) |
+| `EDGE_ALPHA` | `0.05` | `EDGE_ALPHA` | barely-there facet hairline |
+
+Color is **token-only**: the canvas reads the live computed `--color-chat-bg` (facet base,
+`#181B20` dark) and `--color-canvas-edge` (hairline, `#2A2D33` dark) via `getComputedStyle`,
+so a token edit re-tints the whole field and it themes light/dark. The mesh is built from a
+deterministic hash (`jitter01`) so it never re-rolls or shimmers, and each cell's diagonal
+alternates by `(col+row)` parity so the field never looks like a striped lattice.
+
+**How it animates without breaking the static-fill law:** the fill is never tweened. Each
+frame the canvas re-tints existing facets by a cheap per-channel *luminance add*
+(`AMPLITUDE · sin(phase + facet.diagonalPos · 2π)` plus the facet's baked `staticDelta`),
+which is hue-preserving, so facets stay neutral. This is the same trick as Compose `drawPath` /
+SwiftUI Canvas: paint, don't interpolate a `Brush`.
+
+## The static-fill law
+
+All four gradients obey [design law 7](/foundations/design-laws/) (motion):
+
+- **Gradients are static fills.** Feedback **never tweens between two gradients**: a gradient
+  swap can't interpolate in CSS or Compose `Brush`; it hard-cuts and flashes. State feedback
+  rides on **brightness, transform, and shadow** over the top. (The primary Button, for
+  example, keeps its fill fixed and animates `filter: brightness()` + `translateY` + a neutral
+  shadow on hover/active.)
+- **A gradient is never a colored glow.** Depth stays a **neutral shadow + top catch-light**,
+  never a colored gradient standing in for emission. The accent fill's lighter top stop and
+  the surfaces' `surface-highlight` inset are catch-lights, not neon.
+- **The faceted field re-tints, it does not tween.** Its motion is a per-frame luminance shift
+  on fixed geometry, a static field that breathes, not an animated gradient.
+
+<Aside type="caution">
+A colored glow or neon emission is **not** how Nockerl signals state or depth. See
+[Design laws](/foundations/design-laws/) and [Elevation &amp; depth](/foundations/elevation-and-depth/).
+</Aside>
+
+## Not gradients
+
+For contrast, these are **not** part of the gradient system and should not be reached for as
+one:
+
+- **Resting cards / panels** are flat `--color-card-surface1`; lift is shadow + catch-light.
+- **Soft accent fills** (secondary/toggle-pressed buttons, selection washes) use a single
+  translucent `--color-accent-primary-soft` (cyan at ~16%), a flat tint, not a gradient.
+- **Edge fades** (e.g. scroll-overflow masks on [Tabs](/components/tabs/)) are a
+  color-to-transparent fade used purely to hint clipped content, not a decorative wash.

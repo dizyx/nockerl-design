@@ -1,0 +1,59 @@
+---
+title: Review queue
+description: Every documentation page tagged by review status (draft, in review, or approved) so the design lead can sign off one slice at a time.
+status: approved
+---
+
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getCollection } from 'astro:content';
+
+export const all = (await getCollection('docs'))
+  .filter((e) => e.id !== 'review-queue')
+  .map((e) => ({
+    id: e.id,
+    title: e.data.title,
+    status: e.data.status ?? 'draft',
+    platforms: e.data.platforms ?? [],
+  }))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+export const order = { approved: 0, review: 1, draft: 2 };
+export const sorted = [...all].sort((a, b) => order[a.status] - order[b.status] || a.id.localeCompare(b.id));
+export const count = (s) => all.filter((p) => p.status === s).length;
+
+<StatusBadge status="approved" />
+
+Every page declares a review **status** (`draft` → `review` → `approved`) and the
+**platforms** it covers in its frontmatter. The left-nav and this queue read those fields,
+so the work is visible and the design lead can sign off **one slice at a time**. Pages still in
+`draft` or `review` carry a ⚠ marker.
+
+**Tally:** <StatusBadge status="approved" noMark /> {count('approved')} · <StatusBadge status="review" noMark /> {count('review')} · <StatusBadge status="draft" noMark /> {count('draft')}
+
+## All pages by status
+
+<table>
+  <thead>
+    <tr><th>Page</th><th>Status</th><th>Platforms</th></tr>
+  </thead>
+  <tbody>
+    {sorted.map((p) => (
+      <tr>
+        <td><a href={`/${p.id}/`}>{p.title}</a> <code>{p.id}</code></td>
+        <td><StatusBadge status={p.status} /></td>
+        <td>{p.platforms.length ? p.platforms.join(', ') : <span aria-hidden="true">-</span>}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+## How sign-off works
+
+1. A slice is researched and built into a page here with full rigor: states across all
+   platforms, accessibility, the [laws](/foundations/design-laws/), props, and live
+   examples.
+2. The page lands as **`review`** (⚠ in the nav).
+3. **sign-off lands**. He is the design decision-maker; the framework supplies the
+   rigor and the provocations, he supplies the spark.
+4. The page flips to **`approved`**, the values resolve to tokens, and the component ships
+   to the per-platform packages.

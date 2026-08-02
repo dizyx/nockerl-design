@@ -1,0 +1,135 @@
+---
+title: Faceted background
+description: The Nockerl signature surface, an animated low-poly triangle field.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import FacetedBackgroundDemo from '../../../components/demos/FacetedBackgroundDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FacetedBackgroundDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.
+// It re-implements the native field on a token-colored <canvas>.)
+import { NockerlFacetedBackground } from '@dizyx/nockerl-react';
+
+export function SessionStage() {
+  return (
+    <NockerlFacetedBackground>
+      <h1>Faceted background</h1>
+      <p>Content renders on the field and stays fully legible.</p>
+    </NockerlFacetedBackground>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (CANONICAL source). com.nockerl.app.chat.ui.ChatFeedBackground
+// Internal composable: fills its parent and draws the faceted field behind content.
+// Geometry (cell 128.dp, 18s wave, ±0.05 amplitude) is private to the file; it reads
+// chatBg + canvasEdge from LocalNockerlColors, so it tracks the active palette.
+import com.nockerl.app.chat.ui.ChatFeedBackground
+
+Box {
+    ChatFeedBackground(modifier = Modifier.matchParentSize())
+    ChatFeed(/* messages render on the field */)
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical port). NockerlVoice/UI/FacetBackground.swift
+// A TimelineView(.animation) + Canvas. Takes NO parameters: it reads the window
+// colorScheme and uses the same static field constants as the Compose original.
+ZStack {
+    FacetBackground()          // fills behind content
+    DashboardContent()         // renders on the field
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlFacetedBackground" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`ChatFeedBackground` takes only a layout `modifier`; the field is configured by
+file-private constants and reads its colors from `LocalNockerlColors`. The pure
+geometry / tone helpers (`buildFacetField`, `facetLuminanceDelta`, `shiftLuminance`)
+are `internal` for testing, not a public API.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Layout modifier, typically <code>Modifier.matchParentSize()</code> so the field fills the content behind it.' },
+    { name: 'FACET_CELL_SIZE', type: 'Dp (const)', default: '128.dp', description: 'Nominal facet cell edge, kept large so the mesh reads as a few big facets.' },
+    { name: 'WAVE_PERIOD_MILLIS', type: 'Int (const)', default: '18_000', description: 'One full diagonal tone-wave cycle. <code>LinearEasing</code> + <code>RepeatMode.Restart</code> (a full sine wraps seamlessly).' },
+    { name: 'WAVE_AMPLITUDE', type: 'Float (const)', default: '0.05f', description: 'Peak luminance swing the wave adds to a facet. Small by design (low-contrast, calm).' },
+    { name: 'STATIC_FACET_JITTER', type: 'Float (const)', default: '0.022f', description: 'Baked per-facet luminance grain (± this fraction), deterministic so the field never shimmers.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`FacetBackground` is a parameterless `View`. It reads `@Environment(\.colorScheme)`
+and uses the same static field constants as the Compose original; the base tone comes
+from `NockerlTheme.facetBaseDark` / `facetBaseLight`.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'cell', type: 'CGFloat (static)', default: '130', description: 'Nominal facet cell edge (Compose uses 128.dp).' },
+    { name: 'jitterFraction', type: 'CGFloat (static)', default: '0.34', description: 'How far an interior grid point may stray from its lattice slot. Edge points are not jittered, so the field meets the bounds cleanly.' },
+    { name: 'amplitude', type: 'Double (static)', default: '0.05', description: 'Peak tone-wave luminance swing, matching the Compose <code>WAVE_AMPLITUDE</code>.' },
+    { name: 'staticJitter', type: 'Double (static)', default: '0.022', description: 'Baked per-facet tonal grain.' },
+    { name: 'periodSeconds', type: 'Double (static)', default: '18.0', description: 'One full diagonal wave cycle, driven by <code>TimelineView(.animation)</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (this surface lives natively in Voice + Android)">
+The faceted field is **canonical on Android** (`ChatFeedBackground.kt`, behind the
+chat feed) and a faithful **Swift port** in Voice (`FacetBackground.swift`). Web is
+**derived**: the demo re-implements the exact same mesh on a token-colored `<canvas>`.
+Honest divergences:
+
+- **Configurability:** all three surfaces are intentionally **fixed**. The field is a
+  single **codified standard, not user-configurable** (no `intensity` / `density` / `speed` /
+  `tint` knobs and no surface variants on any platform). Geometry is private; only Compose
+  exposes a `modifier` for placement.
+- **Cell size:** Compose **128.dp** vs Swift **130**, a small unreconciled constant.
+- **Edge hairline:** Compose `canvasEdge @ 0.05`, Swift `white @ 0.06`. Both should resolve
+  to one `canvas-edge` token at one alpha.
+- **Base tone:** both read the **`chat-bg`** token (`#181B20` dark); the per-facet
+  shift is a neutral per-channel luminance add (no hue, no glow) on all three.
+</Aside>

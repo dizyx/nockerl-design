@@ -1,0 +1,144 @@
+---
+title: Color
+description: The cyan brand system, semantic surface and text roles, status hues, and the AA-contrast rules every state must meet.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Nockerl color is **monochrome surfaces plus one cyan anchor**. The brand is carried by a
+single hue (cyan `#0CC0DF`) over a dark-first neutral ramp. Warm tones are reserved for
+status. Every color is a token; nothing downstream is hardcoded.
+
+## The cyan system
+
+One brand anchor, expressed as a small ladder of tints and shades so fills, hovers, and
+borders all derive from the same hue.
+
+{/* Swatches are static HTML (dozens of them, with no React island cost) but styled with the
+    REAL Card surface recipe: .nk-swatch composes the same tokens as the Surface/Card
+    primitive (--color-card-surface1 fill, --color-card-hairline border, --radius-card,
+    neutral shadow-tint drop shadow + top surface-highlight catch-light, no glow). Static
+    HTML for perf, system tokens for fidelity. Recipe lives in styles/theme.css (.nk-swatch). */}
+<div class="nk-swatches">
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#5ed4e8"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">cyan-300</div><div class="nk-swatch__val">#5ED4E8 · light</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#22d3ee"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">cyan-400</div><div class="nk-swatch__val">#22D3EE</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#0cc0df"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">cyan-500 · brand</div><div class="nk-swatch__val">#0CC0DF · accent.primary</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#0a9bb5"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">cyan-600</div><div class="nk-swatch__val">#0A9BB5</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#0891b2"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">cyan-700</div><div class="nk-swatch__val">#0891B2 · light accent</div></div></div>
+</div>
+
+`cyan-500` (`#0CC0DF`) is **the** brand accent, `--color-accent-primary` in dark theme.
+The light theme steps the accent down to `cyan-700` (`#0891B2`) so it still clears AA on a
+light surface.
+
+## The secondary accent: warm, and rare
+
+A second brand hue: a **warm orange** that pairs with the cool cyan. Used *rarely* (even
+more sparingly than cyan) for **outlines, special notices, and the occasional second
+action**. Never a decorative wash, never on every screen. Sourced from the Android app's
+agent orange.
+
+<div class="nk-swatches">
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#fb923c"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">orange-400 · brand</div><div class="nk-swatch__val">#FB923C · accent.warm (dark)</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#ea580c"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">orange-600</div><div class="nk-swatch__val">#EA580C · accent.warm (light)</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#fb923c29"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">warm-soft</div><div class="nk-swatch__val">16% · outline / notice fill</div></div></div>
+</div>
+
+`--color-accent-warm` is **orange-400** (`#FB923C`) on dark, stepping to **orange-600**
+(`#EA580C`) on light to hold AA on white, exactly as cyan steps `#0CC0DF` → `#0891B2`. The
+per-theme value lives in **one** token (`accentWarm` in `color.{dark,light}.json`); making
+the two themes identical later is a one-line change. (Named `accent.warm`, not
+`accent.secondary`, because that token name is already taken by a cool categorical accent.)
+
+<Aside type="caution" title="Not the warning amber">
+The warm accent is **not** a status color. Warning amber (`#FFC107`) stays a *functional*
+signal; the orange is a *brand* accent for emphasis. They are deliberately different colors
+and must not be conflated.
+</Aside>
+
+**Restraint is the whole point. Cyan stays forward.** The orange is a *seasoning, not an
+ingredient*: aim for **at most one** orange element in view, and reach for it as a **line or
+border** before anything else. If a screen reads as "an orange UI," it is wrong.
+
+- **Do**: a hairline **border / outline** (a special-notice frame, a featured row's edge), a
+  single small status-**disc** on a special notice, the occasional **outlined** second action.
+- **Don't**: filled orange buttons, orange icons or text as general accents, orange chips,
+  or orange anywhere it competes with cyan for attention.
+
+## Semantic surface roles (dark theme)
+
+Surfaces follow one law: **ground is the darkest layer; cards lift off it.** The canvas is
+darkest, cards are a clear step above (lighter + shadow + catch-light), and chrome
+(nav / sidebar) sits between.
+
+<div class="nk-swatches">
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#0a0b0d;border-bottom:1px solid rgba(255,255,255,.08)"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">canvas</div><div class="nk-swatch__val">#0A0B0D · ground</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#15171a"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">chrome-surface</div><div class="nk-swatch__val">#15171A · nav / sidebar</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#181b20"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">chat-bg / field</div><div class="nk-swatch__val">#181B20 · recessed</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#2c313a"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">card-surface1</div><div class="nk-swatch__val">#2C313A · lifted</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#333942"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">card-surface2</div><div class="nk-swatch__val">#333942</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#3a414a"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">card-surface3</div><div class="nk-swatch__val">#3A414A</div></div></div>
+</div>
+
+## Text-on-surface roles
+
+Text binds to an `on-*` role rather than a raw grey, so contrast is guaranteed against its
+intended surface.
+
+| Token | Value (dark) | On | Contrast |
+| --- | --- | --- | --- |
+| `--color-on-canvas` | `#E8E8E8` | canvas `#0A0B0D` | ~14.8:1, AAA |
+| `--color-on-canvas-muted` | `#A0A0A0` | canvas `#0A0B0D` | ~6.9:1, AA |
+| `--color-on-card` | `#E8E8E8` | card `#2C313A` | ~9.4:1, AAA |
+| `--color-on-card-muted` | `#A0A0A0` | card `#2C313A` | ~4.4:1, AA (large / non-body) |
+
+## Status hues as functional signals
+
+Status colors are **functional** (success, warning, error, info), paired with an icon and
+text (**never color alone**) so they stay legible to color-blind users. The **warning amber**
+here is a *status* signal, deliberately distinct from the warm brand accent (orange)
+introduced above for emphasis.
+
+<div class="nk-swatches">
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#4caf50"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">success</div><div class="nk-swatch__val">#4CAF50</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#ffc107"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">warning</div><div class="nk-swatch__val">#FFC107</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#ef5350"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">error</div><div class="nk-swatch__val">#EF5350</div></div></div>
+  <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#0cc0df"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">info</div><div class="nk-swatch__val">#0CC0DF · cyan</div></div></div>
+</div>
+
+<Aside type="note" title="Future: brand-flexed status (exploration, deferred)">
+We may revisit the default red / amber / green status trio to feel more *us*, leaning on
+**grayscale + cyan + (possibly) the warm orange** as a smaller, more theme-native signal set,
+without sacrificing comprehension (status stays color **+ icon + text**). Open question,
+intentionally deferred. Captured here so it isn't lost, not yet decided.
+</Aside>
+
+## The AA contrast rule
+
+Contrast is checked on **every state (including disabled and loading) in both dark and
+light themes**:
+
+- **Text** ≥ 4.5:1 (≥ 3:1 for large text).
+- **Non-text** (borders, icons, focus indicators) ≥ 3:1.
+- **Disabled is still visible.** Fading a control below 3:1 until it vanishes is a defect:
+  disabled must read as *clearly inert*, not invisible.
+- **Never color alone.** Errors are color + icon + text; status dots pair with a label.
+
+<Aside type="caution">
+A colored glow or neon emission is **not** how Nockerl signals state or depth. Status is
+hue + icon + text on a static surface; depth is a neutral shadow + catch-light. See
+[Design laws](/foundations/design-laws/) and [Elevation &amp; depth](/foundations/elevation-and-depth/).
+</Aside>
+
+## Tokens
+
+The full color token set is published in `@dizyx/nockerl-tokens` as CSS custom properties
+(`--color-*`) under `:root` (light) and `.dark` (dark). Core primitives (the cyan ramp,
+neutral ramp, status hues) live in the core layer; the surface, text, accent, and status
+*roles* live in the semantic layer and reference the primitives. See the
+[Token hierarchy](/getting-started/installation/) for how the layers compose.

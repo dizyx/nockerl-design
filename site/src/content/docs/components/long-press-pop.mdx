@@ -1,0 +1,172 @@
+---
+title: Long-press pop menu
+description: Press-and-hold a content element to pop a contextual action menu over a dimmed backdrop.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import LongPressPopDemo from '../../../components/demos/LongPressPopDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <LongPressPopDemo client:visible />
+</Example>
+
+## Gestures
+
+The pop is **the same contextual action menu** whichever gesture opens it. One menu, several triggers:
+
+| Gesture | Where | Opens |
+| --- | --- | --- |
+| **Long-press** (press-and-hold) | Android (primary), touch web | the pop menu |
+| **Hover → the ⋯ affordance, click** | desktop / mouse web | the same pop menu (the ⋯ is the DESKTOP entry point) |
+| **Right-click / Ctrl-click** | web, macOS (`.contextMenu`) | the same pop menu |
+| **Keyboard** (focus ⋯, or Shift+F10 → Enter) | web a11y | the same pop menu |
+
+The hover **⋯** is therefore not an odd extra affordance; it is simply how a **mouse / keyboard** user reaches the long-press menu (long-press is a touch gesture, so the desktop needs a visible entry point to the *same* menu).
+
+**Tap-to-select is a different gesture.** Tapping a [chat bubble](/components/chat-bubble/) (its `onSelect`) **selects** the item (a toggle + soft cyan wash); it does not open the action menu. Reach for the **pop menu** when an element needs a *menu of actions*; reach for **tap-to-select** when it needs *selection*. The two compose: a bubble can be both selectable and long-press-poppable.
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function MessageBubble({ message }: { message: Message }) {
+  return (
+    <LongPressPop
+      actions={[
+        { id: 'copy', label: 'Copy', icon: <CopyIcon />, onSelect: => copy(message) },
+        { id: 'select', label: 'Select', icon: <CheckIcon />, onSelect: => select(message) },
+        { id: 'share', label: 'Share', icon: <ShareIcon />, onSelect: => share(message) },
+        { id: 'delete', label: 'Delete', icon: <TrashIcon />, tone: 'danger', onSelect: => remove(message) },
+      ]}
+    >
+      <ChatBubble role="agent">{message.text}</ChatBubble>
+    </LongPressPop>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). PUBLISHED: the shared press-feedback modifier
+// com.dizyx.nockerl.design.components.longPressPop (com.dizyx.nockerl.design on GitHub
+// Packages Maven) dips the target + plays a haptic + an accent ripple from the touch
+// point, then opens an anchored DropdownMenu of actions.
+import com.dizyx.nockerl.design.components.longPressPop
+
+var menuOpen by remember { mutableStateOf(false) }
+
+Box {
+    NockerlCard(
+        modifier = Modifier.longPressPop(
+            onLongPress = { menuOpen = true },   // pop fires the haptic + ripple, then this
+            onTap = { /* primary action */ },
+        ),
+    ) { MessageBody(message) }
+
+    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+        DropdownMenuItem(text = { Text("Copy") }, leadingIcon = { Icon(Icons.Default.ContentCopy, null) }, onClick = { copy(message); menuOpen = false })
+        DropdownMenuItem(text = { Text("Select") }, leadingIcon = { Icon(Icons.Default.Check, null) }, onClick = { select(message); menuOpen = false })
+        DropdownMenuItem(text = { Text("Share") }, leadingIcon = { Icon(Icons.Default.Share, null) }, onClick = { share(message); menuOpen = false })
+        HorizontalDivider()
+        DropdownMenuItem(
+            text = { Text("Delete", color = LocalNockerlColors.current.statusError) },
+            leadingIcon = { Icon(Icons.Default.Delete, null, tint = LocalNockerlColors.current.statusError) },
+            onClick = { delete(message); menuOpen = false },
+        )
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). NockerlVoice/UI/HistoryView.swift uses the system
+// .contextMenu, which lifts the row over the system dim and shows the actions.
+// role: .destructive renders Delete in the platform danger style.
+TranscriptionRow(record: record)
+    .contextMenu {
+        Button { copy(record) } label: { Label("Copy", systemImage: "doc.on.doc") }
+        Button { select(record) } label: { Label("Select", systemImage: "checkmark") }
+        Button { share(record) } label: { Label("Share", systemImage: "square.and.arrow.up") }
+        Divider()
+        Button(role: .destructive) { delete(record) } label: { Label("Delete", systemImage: "trash") }
+    }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'children', type: 'ReactNode', required: true, description: 'The content element the pop is triggered <strong>on</strong>. It keeps its own surface and lifts above the scrim when popped.' },
+    { name: 'actions', type: 'PopAction[]', required: true, description: 'Action rows: <code>{ id, label, icon, tone?, onSelect }</code>. A <code>tone: \'danger\'</code> row renders in the error token and is divider-separated at the end.' },
+    { name: 'holdMs', type: 'number', default: '500', description: 'Press-hold threshold before the menu pops. A live scale dip tracks the timer.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'When set, no gesture is detected and no feedback plays (the target stays interactive for its own tap).' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Notified when the menu opens / closes (e.g. to pause a list, fire a haptic).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`Modifier.longPressPop` is the shared press-feedback primitive (published in `com.dizyx.nockerl.design.components`); it owns the dip + ripple + haptic and calls `onLongPress`. The anchored list is a standard `DropdownMenu` opened from that callback.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'onLongPress', type: '() -> Unit', required: true, description: 'Invoked once the long-press is recognized, firing the pop (ripple + dip) and whatever the caller opens (e.g. the <code>DropdownMenu</code>).' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, no gestures are detected and no feedback plays.' },
+    { name: 'onTap', type: '(() -> Unit)?', default: 'null', description: 'Invoked on a normal tap (the element\'s primary action); the press-down still drives the scale dip.' },
+    { name: 'rippleColor', type: 'Color?', default: 'null', description: 'Tint of the radial bloom from the touch point. Defaults to <code>accentPrimary</code> (the brand cyan).' },
+    { name: 'haptic', type: 'Boolean', default: 'true', description: 'Fire a <code>HapticFeedbackType.LongPress</code> pulse when the long-press is recognized.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the pattern as the system `.contextMenu { … }` modifier on a view. There are no explicit parameters: it takes a `@ViewBuilder` of `Button`s; the system supplies the lift, the dim, and the long-press / right-click / Control-click triggers.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.contextMenu', type: 'ViewModifier', description: 'Attaches the contextual menu. The system lifts the view over a dim and reveals the actions on long-press / right-click / Control-click.' },
+    { name: 'Button { … }', type: 'View', description: 'One action row. <code>Label(title, systemImage:)</code> gives it an icon + text.' },
+    { name: 'role: .destructive', type: 'ButtonRole', description: 'Renders the action (Delete) in the platform danger style.' },
+    { name: 'Divider()', type: 'View', description: 'Separates the destructive action from the rest, matching the other platforms.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The trigger and treatment are unified; the real divergences between shipped platforms:
+
+- **Composition:** Android ships the **reusable `Modifier.longPressPop`** (dip + accent ripple + haptic) and pairs it with a `DropdownMenu`; Swift uses the **system `.contextMenu`** (its own lift + dim, no custom ripple); web composes scrim + lifted target + anchored menu in one `LongPressPop` island.
+- **Today's bubble action:** the Android chat `MessageBubble` long-press currently **copies directly** (`combinedClickable(onLongClick)` + haptic) rather than opening the multi-action menu. The menu is the target state this spec documents.
+- **Backdrop:** web + Android dim with the `--color-scrim` token; Swift inherits the **system** context-menu dim.
+- **Haptics:** Android fires `HapticFeedbackType.LongPress`; web has no haptic channel; macOS relies on the system menu feedback.
+</Aside>

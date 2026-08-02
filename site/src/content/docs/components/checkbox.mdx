@@ -1,0 +1,179 @@
+---
+title: Checkbox
+description: The Nockerl checkbox, a multi-selection control with a square box, a check fill, an indeterminate state, and tri-state groups.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import CheckboxDemo from '../../../components/demos/CheckboxDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <CheckboxDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.
+// NockerlCheckbox ships in the package, tri-state included (CheckedState covers 'mixed').
+// See the drift note for the per-platform status.)
+import { NockerlCheckbox } from '@dizyx/nockerl-react';
+
+export function ScopePicker() {
+  const [scopes, setScopes] = useState({ repos: true, issues: false, prs: false });
+  const all = Object.values(scopes).every(Boolean);
+  const none = Object.values(scopes).every((v) => !v);
+
+  return (
+    <fieldset>
+      <NockerlCheckbox
+        label="Grant repository access"
+        checked={all ? true : none ? false : 'mixed'}
+        onChange={(on) => setScopes({ repos: on, issues: on, prs: on })}
+      />
+      <NockerlCheckbox label="Repos" checked={scopes.repos} onChange={(v) => setScopes({ ...scopes, repos: v })} />
+      <NockerlCheckbox label="Issues" checked={scopes.issues} onChange={(v) => setScopes({ ...scopes, issues: v })} />
+      <NockerlCheckbox label="Pull requests" checked={scopes.prs} onChange={(v) => setScopes({ ...scopes, prs: v })} />
+      <NockerlCheckbox label="I am over 18" checked={false} invalid />
+    </fieldset>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). Material3 Checkbox, brand-tinted via
+// CheckboxDefaults.colors(checkedColor = accentPrimary). The parent Row owns the
+// click (toggleable), so the Checkbox passes onCheckedChange = null, exactly the
+// multi-select pattern in chat/ui/AskUserQuestionSheet.kt. Tri-state parents use
+// TriStateCheckbox(ToggleableState). (See the drift note: tri-state not shipped yet.)
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.TriStateCheckbox
+import androidx.compose.ui.state.ToggleableState
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+val accent = LocalNockerlColors.current.accentPrimary
+
+// Multi-select option row: the Row is toggleable, the box is decorative.
+Row(Modifier.toggleable(value = checked, role = Role.Checkbox, onValueChange = onChange)) {
+    Checkbox(
+        checked = checked,
+        onCheckedChange = null,
+        colors = CheckboxDefaults.colors(checkedColor = accent),
+    )
+    Text(option.label)
+}
+
+// Tri-state parent, reflecting all / none / some of its children.
+TriStateCheckbox(
+    state = parentState,                 // On / Off / Indeterminate
+    onClick = { onToggleAll(parentState != ToggleableState.On) },
+    colors = CheckboxDefaults.colors(checkedColor = accent),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). The native checkbox is Toggle + .toggleStyle(.checkbox),
+// accent-tinted by the app tint. No multi-select / tri-state list ships in Nockerl
+// Voice yet; today selection reads as Image(systemName: "checkmark") tinted
+// NockerlTheme.accent (NockerlVoice/UI/AppSettingsView.swift). See the drift note.
+Toggle("Accept the terms of service", isOn: $acceptedTerms)
+    .toggleStyle(.checkbox)
+    .tint(NockerlTheme.accent)
+
+// Indeterminate is not a built-in toggle state on macOS; model it as an explicit
+// mixed flag and render the dash glyph, mirroring the web tri-state parent.
+Toggle(isOn: parentBinding) { Text("Grant repository access") }
+    .toggleStyle(.checkbox)
+    .tint(NockerlTheme.accent)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlCheckbox" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'checked', type: 'Boolean', required: true, description: 'Whether the box is ticked. (Two-state <code>Checkbox</code>.)' },
+    { name: 'onCheckedChange', type: '((Boolean) -> Unit)?', required: true, description: 'Invoked with the new value. Pass <code>null</code> when the parent <code>Row</code> is <code>toggleable</code> and owns the click.' },
+    { name: 'state', type: 'ToggleableState', required: true, description: '<code>TriStateCheckbox</code> only: <code>On</code> / <code>Off</code> / <code>Indeterminate</code>, the parent box for a child group.' },
+    { name: 'onClick', type: '(() -> Unit)?', required: true, description: '<code>TriStateCheckbox</code> only: invoked on click. Pass <code>null</code> for a read-only parent.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. The clickable target is usually the surrounding <code>toggleable</code> row.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the box dims (alpha) and stops responding.' },
+    { name: 'colors', type: 'CheckboxColors', default: 'CheckboxDefaults.colors()', description: 'Brand override: <code>checkedColor = accentPrimary</code> so the filled square box is the cyan anchor (the box is a square, distinct from the radio circle).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI renders the checkbox via the standard `Toggle` with `.toggleStyle(.checkbox)`:
+a **square box** with a checkmark, tinted by the app accent (never the radio circle).
+State is the `isOn` binding; `isEnabled` comes from the environment. There is no
+built-in indeterminate or invalid parameter. Model `mixed` as an explicit flag and
+gate `disabled` at the binding / view level.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'isOn', type: 'Binding<Bool>', required: true, description: 'Two-way binding for the checked state.' },
+    { name: 'titleKey', type: 'LocalizedStringKey', description: 'The label. Use <code>""</code> + <code>.labelsHidden()</code> when the row already shows it.' },
+    { name: '.toggleStyle(.checkbox)', type: 'ToggleStyle', description: 'The native macOS checkbox (box + tick). The on tick is tinted by the app accent.' },
+    { name: '.tint(_:)', type: 'modifier', description: 'Sets the checked tint to <code>NockerlTheme.accent</code> (the cyan anchor).' },
+    { name: '.disabled(_:)', type: 'modifier', description: 'Sets the environment <code>isEnabled</code>; the checkbox dims and stops responding.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The checkbox is the **multi-selection** control, a **square box** with a check fill,
+deliberately distinct from its selection-control siblings: a
+[radio](/components/radio-group/) is a **circle** with a centered dot for
+**mutually-exclusive single choice**, and a [switch](/components/switch/) is a
+**track + thumb** for an instant on/off setting. The square (barely-softened
+`radius.track` corners) is the shape that says *multi-select*, never the radio circle.
+
+- **Web ships it.** `Checkbox` is exported from `@dizyx/nockerl-react` (the
+  TypeScript API above), tri-state included: `CheckedState` covers `'mixed'`.
+- **Tri-state / indeterminate** is shipped **only on web** so far. Android has the
+  two-state `Checkbox` (multi-select via a `MutableSet` in `AskUserQuestionSheet.kt`)
+  and `TriStateCheckbox` is available but unused; Voice has no checkbox at all. The
+  parent/child `mixed` behaviour here is designed originally. Wire it into a real
+  Compose `TriStateCheckbox` and a Swift mixed-flag when those screens need it.
+- **Box treatment:** the web island draws a **square recessed well** (1:1, subtly
+  softened `radius.track` corners) that lifts to a static cyan gradient with a
+  stroke-drawn tick (sibling to the Switch track, distinct from the radio circle).
+  Compose + SwiftUI use the **stock platform box** (also square) themed only on the
+  checked color. The inset-well + catch-light treatment should flow into a custom
+  Compose box when web's API ships.
+- **Invalid state:** only web models an `invalid` checkbox (warm border + `!` +
+  message). Compose and SwiftUI surface validation at the form level today.
+</Aside>

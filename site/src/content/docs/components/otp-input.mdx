@@ -1,0 +1,194 @@
+---
+title: OTP / PIN input
+description: The Nockerl one-time-passcode input, a row of single-character cells with auto-advance, paste-to-fill, and validation.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import OtpInputDemo from '../../../components/demos/OtpInputDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <OtpInputDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+import { useState } from 'react';
+
+export function VerifyStep({ onVerified }: { onVerified: (code: string) => void }) {
+  const [code, setCode] = useState('');
+  const [status, setStatus] = useState<'idle' | 'validating' | 'error' | 'success'>('idle');
+
+  return (
+    <OtpInput
+      groupLabel="Verification code"
+      length={6}
+      value={code}
+      onValueChange={setCode}
+      onComplete={async (entered) => {
+        setStatus('validating');
+        const ok = await verifyCode(entered); // server-side check
+        setStatus(ok ? 'success' : 'error');
+        if (ok) onVerified(entered);
+      }}
+      status={status}
+      message={status === 'error' ? 'That code is incorrect.' : 'Enter the 6-digit code we sent you.'}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. NO formal OTP component ships yet; this is the real
+// building-block idiom (the LoginScreen auto-advance pattern), pending a packaged
+// NockerlOtpInput. Each cell is an OutlinedTextField(maxLength 1) at the shared
+// NockerlControlShape; KeyboardOptions(imeAction = Next) + focusManager.moveFocus
+// drive auto-advance, exactly as the email -> password step does today.
+val focusManager = LocalFocusManager.current
+var code by remember { mutableStateOf("") }
+
+Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    repeat(6) { i ->
+        OutlinedTextField(
+            value = code.getOrNull(i)?.toString() ?: "",
+            onValueChange = { raw ->
+                val digit = raw.filter(Char::isDigit).take(1)
+                code = code.toMutableList().also { while (it.size <= i) it.add(' '); it[i] = digit.firstOrNull() ?: ' ' }.joinToString("").trim()
+                if (digit.isNotEmpty()) focusManager.moveFocus(FocusDirection.Next) // auto-advance
+            },
+            singleLine = true,
+            shape = NockerlControlShape, // the shared 12dp control radius
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.NumberPassword,
+                imeAction = if (i == 5) ImeAction.Done else ImeAction.Next,
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+            ),
+            modifier = Modifier.width(48.dp),
+        )
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI. NOT IMPLEMENTED in Nockerl Voice: no verification-code or
+// device-pairing UI ships today. This is the intended NockerlOtpInput API,
+// designed from the field + validation vocabulary; treat it as a proposal until
+// the Voice package ships it. (See the drift note below.)
+NockerlOtpInput(
+    code: $code,
+    length: 6,
+    groupLabel: "Verification code",
+    status: status,                                   // .idle / .validating / .error / .success
+    message: status == .error ? "That code is incorrect."
+                              : "Enter the 6-digit code we sent you.",
+    onComplete: { entered in
+        Task { status = await verifyCode(entered) ? .success : .error }
+    }
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'value', type: 'string', required: true, description: 'The code so far (controlled). Shorter than <code>length</code> = partially filled.' },
+    { name: 'groupLabel', type: 'string', required: true, description: 'Accessible name for the whole row. Each cell derives <code>digit N of M</code> from it.' },
+    { name: 'onValueChange', type: '(value: string) => void', description: 'Fires on every keystroke / paste with the full string so far.' },
+    { name: 'onComplete', type: '(value: string) => void', description: 'Fires once the final cell is filled, the hook for server-side verification.' },
+    { name: 'length', type: 'number', default: '6', description: 'Number of single-character cells (e.g. <code>4</code> or <code>6</code>).' },
+    { name: 'status', type: "'idle' | 'validating' | 'error' | 'success'", default: "'idle'", description: 'Drives the cell border, the trailing glyph, and the message tone. <code>error</code> shakes (reduced-motion freezes it).' },
+    { name: 'message', type: 'string', description: 'The single line under the row (helper / error / success). Wired via <code>aria-describedby</code>; live region.' },
+    { name: 'groupAfter', type: 'number', description: 'Insert a centered separator after this many cells (e.g. <code>3</code> → a 3·3 grouped code).' },
+    { name: 'mask', type: 'boolean', default: 'false', description: 'Render each filled cell as a dot (a password-style passcode).' },
+    { name: 'numeric', type: 'boolean', default: 'true', description: 'Restrict to digits: sets <code>inputMode="numeric"</code> and strips non-digits.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert and <strong>clearly seen</strong> (never faded to invisible).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+No packaged `NockerlOtpInput` ships yet. These are the parameters of the real
+building block (`OutlinedTextField` per cell) that the idiom above composes, plus the
+state a future component would own.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'value', type: 'String', required: true, description: 'The single character for this cell (<code>code.getOrNull(i)</code>).' },
+    { name: 'onValueChange', type: '(String) -> Unit', required: true, description: 'Per-cell change; filter to one digit and <code>focusManager.moveFocus(Next)</code> to auto-advance.' },
+    { name: 'shape', type: 'Shape', default: 'NockerlControlShape', description: 'The shared 12dp control radius. Read the token, never a raw <code>RoundedCornerShape(n)</code>.' },
+    { name: 'keyboardOptions', type: 'KeyboardOptions', default: 'NumberPassword + Next', description: 'Numeric keypad; <code>imeAction = Next</code> on all but the last cell (<code>Done</code>).' },
+    { name: 'isError', type: 'Boolean', default: 'false', description: 'Recolors the border via <code>colorScheme.error</code> + drives the supporting caption.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the cell is dimmed (alpha) and non-interactive.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier.width(48.dp)', description: 'Per-cell width so the row stays evenly spaced.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Not implemented in Nockerl Voice. This is the **proposed** `NockerlOtpInput` API,
+designed from the field + validation vocabulary, not a shipped signature.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'code', type: 'Binding<String>', required: true, description: 'Two-way binding to the entered code (controlled).' },
+    { name: 'length', type: 'Int', default: '6', description: 'Number of cells.' },
+    { name: 'groupLabel', type: 'String', required: true, description: 'Accessibility label for the group; each cell exposes its index.' },
+    { name: 'status', type: 'OtpStatus', default: '.idle', description: 'Enum: <code>.idle / .validating / .error / .success</code>. Drives cell tint, glyph, message tone.' },
+    { name: 'message', type: 'String?', default: 'nil', description: 'The line under the row; announced on change.' },
+    { name: 'onComplete', type: '(String) -> Void', default: '{ }', description: 'Called when the final cell fills, the verification hook.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The web demo is the reference; this component is **designed originally** from the
+recessed-well field + the validation message vocabulary, because neither shipped app
+has a formal OTP / segmented-code input yet:
+
+- **Android:** no `NockerlOtpInput`; the closest real code entry is `LoginScreen`'s
+  `OutlinedTextField` with `imeAction = Next` + `focusManager.moveFocus` (the
+  auto-advance idiom the Kotlin sample reuses). The only "pairing" is `FlicPairingFlow`
+  (BLE button, no digit entry).
+- **Swift / Voice:** **not implemented at all**: no verification-code or
+  device-pairing UI ships. The Swift API above is a proposal, not a shipped signature.
+- **Mono digit:** the cell glyph uses `font.family.mono` so a code reads as code. The
+  apps don't yet expose a mono **type role** (Android `Type.kt` is all one sans family).
+  Promote one when a platform implements this.
+- **One implementation needs to win:** when Android/Voice build this, the segmented
+  layout, paste-to-fill, and backspace-to-previous model defined here should be the
+  shared contract rather than a per-platform re-derivation.
+</Aside>

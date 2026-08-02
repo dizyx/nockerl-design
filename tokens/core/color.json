@@ -1,0 +1,198 @@
+{
+  "$description": "CORE / GLOBAL color primitives: the brand's raw color truth, shared by ALL platforms. Semantic tokens reference these; nothing downstream should hardcode a hex. Extracted from the canonical apps (Android NockerlPalettes.kt + web index.css), 2026-06.",
+  "color": {
+    "core": {
+      "white": {
+        "$type": "color",
+        "$value": "#ffffff"
+      },
+      "black": {
+        "$type": "color",
+        "$value": "#000000"
+      },
+      "cyan": {
+        "$description": "Brand cyan ramp. 500 is THE Nockerl brand color (#0CC0DF).",
+        "300": {
+          "$type": "color",
+          "$value": "#5ed4e8",
+          "$description": "Light cyan: soft fills / secondary cool accent."
+        },
+        "400": {
+          "$type": "color",
+          "$value": "#22d3ee",
+          "$description": "cyan-400 for tool-family (shell/fs) + categorical."
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#0cc0df",
+          "$description": "BRAND cyan. The single Nockerl accent."
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#0a9bb5",
+          "$description": "Darker cyan: pressed / container tones."
+        },
+        "700": {
+          "$type": "color",
+          "$value": "#0891b2",
+          "$description": "Deep cyan, tuned for white surfaces (holds AA contrast on light)."
+        },
+        "800": {
+          "$type": "color",
+          "$value": "#0e7490",
+          "$description": "Deep cyan (pressed / container tones on light)."
+        },
+        "900": {
+          "$type": "color",
+          "$value": "#155e75",
+          "$description": "Deepest cyan, the dark end of a primary fill on light (accentPrimaryDark): a FULL ramp step below the light accentPrimary (700), so light gradients actually grade (800 was one step and read flat)."
+        }
+      },
+      "orange": {
+        "$description": "Brand WARM-accent ramp: the rare warm counterpart to cyan (sourced from Android's agent orange #FB923C). The ONE sanctioned warm DECORATIVE accent; used sparingly (outlines, special notices, the occasional second action). 400 reads on dark; 600 holds AA on white.",
+        "400": {
+          "$type": "color",
+          "$value": "#fb923c",
+          "$description": "Warm accent for dark surfaces (orange-400)."
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#f97316",
+          "$description": "orange-500, mid / pressed."
+        },
+        "600": {
+          "$type": "color",
+          "$value": "#ea580c",
+          "$description": "Deep orange, tuned for white surfaces, holds AA on light (orange-600)."
+        }
+      },
+      "status": {
+        "$description": "Semantic STATUS hues (functional signals). Amber/red survive as genuine status ONLY. The lone sanctioned decorative warm accent is the brand `orange` ramp above (accentWarm), which is separate from statusWarning.",
+        "success": {
+          "$type": "color",
+          "$value": "#4caf50"
+        },
+        "successDeep": {
+          "$type": "color",
+          "$value": "#2e7d32",
+          "$description": "Deeper success for contrast on light surfaces."
+        },
+        "warning": {
+          "$type": "color",
+          "$value": "#ffc107",
+          "$description": "Amber. The lone warm signal, for warnings and attention only."
+        },
+        "warningDeep": {
+          "$type": "color",
+          "$value": "#b7791f",
+          "$description": "Deeper amber for light surfaces."
+        },
+        "error": {
+          "$type": "color",
+          "$value": "#ef5350"
+        },
+        "errorDeep": {
+          "$type": "color",
+          "$value": "#d32f2f",
+          "$description": "Deeper error for light surfaces."
+        }
+      },
+      "categorical": {
+        "$description": "The tailwind-400 family used for tool families, model types, file types, task/notif/model-badge sets. A cohesive cool-leaning hue space with cyan at its center (plus orange as the warm 'agent' accent).",
+        "cyan400": {
+          "$type": "color",
+          "$value": "#22d3ee"
+        },
+        "orange400": {
+          "$type": "color",
+          "$value": "#fb923c",
+          "$description": "Agent / warm accent."
+        },
+        "indigo400": {
+          "$type": "color",
+          "$value": "#818cf8"
+        },
+        "sky400": {
+          "$type": "color",
+          "$value": "#38bdf8"
+        },
+        "fuchsia400": {
+          "$type": "color",
+          "$value": "#e879f9"
+        },
+        "violet400": {
+          "$type": "color",
+          "$value": "#a78bfa"
+        },
+        "pink400": {
+          "$type": "color",
+          "$value": "#f472b6"
+        },
+        "emerald400": {
+          "$type": "color",
+          "$value": "#34d399"
+        },
+        "teal400": {
+          "$type": "color",
+          "$value": "#2dd4bf"
+        },
+        "purple400": {
+          "$type": "color",
+          "$value": "#c084fc"
+        },
+        "green400": {
+          "$type": "color",
+          "$value": "#4ade80"
+        },
+        "sky600": {
+          "$type": "color",
+          "$value": "#0284c7",
+          "$description": "Light-mode secondary accent."
+        },
+        "teal600": {
+          "$type": "color",
+          "$value": "#0d9488",
+          "$description": "Light-mode tertiary / local engine."
+        },
+        "indigo600": {
+          "$type": "color",
+          "$value": "#4f46e5",
+          "$description": "Light-mode quaternary accent."
+        }
+      },
+      "logo": {
+        "$description": "The BRAND MARK's monochrome ink system (task 2684 · law §11 CANON: the mark is MONOCHROME on every surface, and cyan lives ONLY in the lockup's product word). SURFACE-driven, not theme-driven: a host picks the ink set for the surface it sits on (ink = dark ink for light surfaces; inverse = light ink for dark surfaces). Three shades per set = the mark's layered facet ladder [base=left facet, hi=center strongest, lo=right softest]; a single flat fill is WRONG. Core layer: one identity, no new hues.",
+        "ink": {
+          "$type": "color",
+          "$value": "#555555",
+          "$description": "Dark ink, left facet (on LIGHT surfaces)."
+        },
+        "inkHi": {
+          "$type": "color",
+          "$value": "#222222",
+          "$description": "Dark ink, center facet (strongest)."
+        },
+        "inkLo": {
+          "$type": "color",
+          "$value": "#777777",
+          "$description": "Dark ink, right facet (softest)."
+        },
+        "inverse": {
+          "$type": "color",
+          "$value": "#e5e5e5",
+          "$description": "Light ink, left facet (on DARK surfaces)."
+        },
+        "inverseHi": {
+          "$type": "color",
+          "$value": "#ffffff",
+          "$description": "Light ink, center facet (strongest)."
+        },
+        "inverseLo": {
+          "$type": "color",
+          "$value": "#cccccc",
+          "$description": "Light ink, right facet (softest)."
+        }
+      }
+    }
+  }
+}

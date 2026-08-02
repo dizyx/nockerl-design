@@ -1,0 +1,161 @@
+---
+title: Pagination
+description: Numeric page navigation with prev/next, numbered pages, page size, and a results summary.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import PaginationDemo from '../../../components/demos/PaginationDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <PaginationDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+// NockerlPagination owns ONLY the control row (prev + windowed cells + next). The rows-per-page
+// selector and the "showing X to Y of Z" summary stay with the consumer. They speak the
+// limit/offset/total vocabulary the apps' list endpoints already return.
+import { NockerlPagination } from '@dizyx/nockerl-react';
+
+export function TaskListFooter({ total }: { total: number }) {
+  const [page, setPage] = useState(1);
+  const pageSize = 25;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const from = (page - 1) * pageSize + 1;
+  const to = Math.min(page * pageSize, total);
+
+  return (
+    <div className="task-list-footer">
+      <span>Showing {from} to {to} of {total}</span>
+      <NockerlPagination page={page} pageCount={pageCount} onChange={setPage} siblings={1} />
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The native lists DON'T use numbered
+// pages: NockerlApiTasks.fetchTasks pages with limit/offset and returns a total
+// (TaskListResponse), and the UI appends pages as you scroll. This is the real
+// "load more" idiom. Numbered pagination is a web/dashboard pattern (see drift).
+suspend fun NockerlApiClient.fetchTasks(
+    workspaceSlug: String? = null,
+    projectSlug: String? = null,
+    status: String? = null,
+    limit: Int = 500,   // page size (server cap)
+    offset: Int = 0,    // (page - 1) * limit
+    sortBy: String = "updatedAt",
+    sortOrder: String = "desc",
+): ApiResult<TaskListResponse>            // -> data: List<…>, total: Int
+
+// Append-on-demand ("load more") in the list ViewModel:
+fun loadMore() {
+    val next = uiState.value.items.size            // current offset
+    if (next >= uiState.value.total) return        // reached the end
+    viewModelScope.launch {
+        val res = taskRepository.fetchTasks(offset = next, limit = PAGE)
+        if (res is ApiResult.Success) _uiState.update {
+            it.copy(items = it.items + res.data, total = res.total)
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Nockerl Voice, canonical). History is an in-memory SwiftData
+// @Query rendered in a LazyVStack: rows materialize on scroll, so there are no
+// page numbers, no prev/next, and no "of N" cursor. This is the honest paging
+// the app ships; numbered pagination is a web/dashboard pattern (see drift).
+struct HistorySection: View {
+    @Query(sort: \TranscriptionRecord.createdAt, order: .reverse)
+    private var records: [TranscriptionRecord]
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(spacing: 0) {          // lazily paged by the scroller
+                ForEach(records) { row($0) }
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlPagination" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+Compose ships **offset paging + load-more**, not a numbered control. These are the
+real `fetchTasks` paging parameters; a numbered bar would be new work (see drift).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'limit', type: 'Int', default: '500', description: 'Page size. The number of rows fetched per request (server cap is 500).' },
+    { name: 'offset', type: 'Int', default: '0', description: 'Rows to skip: <code>(page - 1) * limit</code> for an equivalent page cursor.' },
+    { name: 'status', type: 'String?', default: 'null', description: 'Server-side filter (single or comma-separated) so paging never drops active rows behind the cap.' },
+    { name: 'sortBy', type: 'String', default: '"updatedAt"', description: 'Sort key applied before paging, so page boundaries are stable.' },
+    { name: 'sortOrder', type: 'String', default: '"desc"', description: 'Sort direction (<code>asc</code> / <code>desc</code>).' },
+    { name: 'TaskListResponse.data', type: 'List&lt;…&gt;', description: 'The page of rows. Appended to the list on "load more".' },
+    { name: 'TaskListResponse.total', type: 'Int', description: 'Total matching rows. Compared against the loaded count to know when the end is reached.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI (Voice) has **no pagination control**: a `@Query` + `LazyVStack` pages
+lazily on scroll. These are the knobs that exist, listed honestly (see drift).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '@Query(sort:order:)', type: 'property wrapper', description: 'Backs the list with a sorted SwiftData fetch. The whole result set is bound; no page cursor.' },
+    { name: 'LazyVStack', type: 'View', description: 'Materializes rows only as they scroll into view: the lazy "paging" the app actually does.' },
+    { name: 'filtered', type: '[TranscriptionRecord]', description: 'Optional client-side search predicate applied over the query results before rendering.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Numbered pagination is a **web/dashboard pattern**. Neither shipped app has it,
+so the numbered control is designed originally here from the laws + the button
+vocabulary (current page = the button-primary cyan selected fill).
+
+- **Android:** offset paging (`limit` / `offset` + `total`) with **load-more /
+  append-on-scroll**: no page numbers, no prev/next, no "of N" jump.
+- **Swift (Voice):** an in-memory `@Query` in a `LazyVStack`. **Lazy scroll
+  only**, no `limit`/`offset`, no total cursor.
+- The web `total` / `pageSize` map cleanly onto the apps' `total` / `limit`; only
+  the **numbered + page-size UI** is web-specific. A shared "load more" control is
+  the closest cross-platform primitive.
+</Aside>

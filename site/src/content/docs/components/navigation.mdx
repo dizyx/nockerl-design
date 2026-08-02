@@ -1,0 +1,47 @@
+---
+title: Navigation
+description: Components that move the user between views, wayfinding with an always-visible current state.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="draft" />
+
+Components that **move the user between views**. Good navigation answers two questions at a
+glance: *where am I* and *where can I go*.
+
+### Always-visible current state
+
+The active destination is **always marked**: selected tab, highlighted rail item, current
+crumb. Wayfinding fails the moment the user can't tell where they are.
+
+### Honor the platform
+
+Brand is unified; the *pattern* is native to each surface:
+
+- **Web**: persistent sidebar / nav rail; top app bar for global chrome.
+- **Android**: bottom nav for top-level destinations; top app bar for screen context.
+- **macOS**: source-list sidebar; menu bar.
+
+### Back-navigation
+
+- Provide a clear, predictable way **back**, whether system back on Android, breadcrumbs /
+  back on web, or nested-sheet dismissal where sheets stack.
+- Use links + semantic landmarks for view changes, not buttons; focus order and full
+  keyboard operability are first-class (see [Design laws](/foundations/design-laws/)).
+
+## Components
+
+| Component | Status |
+| --- | --- |
+| [Top bar / app bar](/components/top-bar/) | ▢ queued |
+| Bottom navigation | ⊘ deprecated, dropped with compact mode (#2596c); demo + docs in git history at `5275327` |
+| [Tabs](/components/tabs/) | ▢ queued |
+| [Breadcrumbs](/components/breadcrumbs/) | ▢ queued |
+| [Sidebar / nav rail](/components/sidebar/) | ▢ queued |
+| [Menu / context menu](/components/menu/) | ▢ queued |
+| [Pagination](/components/pagination/) | ▢ queued |
+| [Wizard / process steps](/components/wizard/) | ▢ queued |
+| [Command palette](/components/command-palette/) | ▢ queued |

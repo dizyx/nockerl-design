@@ -1,0 +1,168 @@
+---
+title: Elevation & depth
+description: How Nockerl creates depth, with a neutral shadow plus a top catch-light, never a glow.
+status: review
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Depth in Nockerl is **lit from above**: a neutral (or tinted-black) drop shadow plus a
+subtle top catch-light. **No glows, no colored shadows, no emission.** This is the most
+load-bearing of the [design laws](/foundations/design-laws/).
+
+## The model
+
+- **Cards lift, fields sink.** A card rises off the ground: lighter surface + drop shadow +
+  a 1px top catch-light. An input is the inverse, a recessed well: darker + inner shadow.
+- **Ground is the darkest layer.** The canvas is darkest; cards are a clear luminance step
+  above. Lift comes from the gap + shadow + catch-light, never from making a card light-grey.
+- **One light source.** Everything is lit from the top, so highlights sit on top edges and
+  shadows fall below. A consistent source is what makes the depth read as real.
+- **The fill is static; the shadow grows.** Moving a card up a tier deepens the shadow. It
+  never lightens the surface. `--color-card-surface1` is the resting fill at every rung.
+
+<Aside type="caution" title="The law">
+Depth = a **neutral (or tinted-black) drop shadow** + a **1px top catch-light**, and
+nothing else. A colored `box-shadow`, a blurred halo, or any glow/neon is a **defect**.
+Focus is an `outline` (or an inset ring), never a colored shadow. See
+[Design laws](/foundations/design-laws/) rules 1 to 3.
+</Aside>
+
+## The two tints
+
+Two neutral tokens carry all depth, the same pair on both cards and wells:
+
+| Token | Value (dark) | Value (light) | Role |
+| --- | --- | --- | --- |
+| `--color-shadow-tint` | `#000000` | `#1A2733` | The drop / inner shadow color (mixed with transparent per rung) |
+| `--color-surface-highlight` | `#FFFFFF0F` (~6% white) | `#FFFFFF14` (~8% white) | The 1px top catch-light |
+
+Neither is an accent hue: depth stays monochrome by construction.
+
+## The lift tiers
+
+Cards lift off the ground on a four-rung neutral ladder. The `--elevation-level*` tokens are
+the **blur radius**; the vertical offset and the shadow-tint alpha both climb with the tier,
+so a higher card casts a softer, deeper, slightly stronger shadow. The per-rung opacity is
+its own token ladder, `--elevation-shadow-tint-alpha-*` (`shadowTintAlpha`, a unitless
+0 to 1 number, `× 100%` in the web `color-mix`).
+
+| Blur token | Blur radius | Offset · alpha token | Use |
+| --- | --- | --- | --- |
+| `elevation-level1` | 2px | `0 2px … -3px` · `shadow-tint-alpha-level1` @28% | Resting cards, chips, inline rows |
+| `elevation-level2` | 5px | `0 4px … -6px` · `shadow-tint-alpha-level2` @30% | Standard cards, message bubbles, menus |
+| `elevation-level3` | 9px | `0 8px … -8px` · `shadow-tint-alpha-level3` @33% | Input bar, status pills, popovers, dialogs |
+| `elevation-sheet` | 14px | `0 16px … -10px` · `shadow-tint-alpha-sheet` @35% | Bottom sheets, modals |
+
+### The lifted-card recipe
+
+This is the exact recipe the [`Surface`](/components/) / `Card` primitive encodes (every
+value is a token, so a depth change is one edit). The offset and blur come from `--space-*`
+and `--elevation-*`; the negative spread keeps the shadow tight under the card:
+
+```css
+.nk-surface {
+  background: var(--color-card-surface1);
+  border-radius: var(--radius-card);           /* 16px card / 12px panel */
+  border: var(--space-px) solid var(--color-card-hairline);
+  /* the top catch-light, reused by hover/press rules */
+  --nk-surface-sheen: inset 0 var(--space-px) 0 var(--color-surface-highlight);
+}
+
+/* resting rung (L1) */
+.nk-surface--l1 { box-shadow:
+  0 var(--space-0-5) var(--elevation-level1) -3px
+    color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level1) * 100%), transparent),  /* neutral drop */
+  var(--nk-surface-sheen); }                                        /* top catch-light */
+
+/* standard card (L2) */
+.nk-surface--l2 { box-shadow:
+  0 var(--space-1) var(--elevation-level2) -6px
+    color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level2) * 100%), transparent),
+  var(--nk-surface-sheen); }
+
+/* raised (L3) */
+.nk-surface--l3 { box-shadow:
+  0 var(--space-2) var(--elevation-level3) -8px
+    color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level3) * 100%), transparent),
+  var(--nk-surface-sheen); }
+
+/* sheet (L4) */
+.nk-surface--l4 { box-shadow:
+  0 var(--space-4) var(--elevation-sheet) -10px
+    color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-sheet) * 100%), transparent),
+  var(--nk-surface-sheen); }
+```
+
+Resolving the tokens, the four rungs are (alpha from the `shadowTintAlpha` ladder):
+
+```css
+/* L1 */ box-shadow: 0 2px  2px -3px  color-mix(in srgb, var(--color-shadow-tint) 28%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L2 */ box-shadow: 0 4px  5px -6px  color-mix(in srgb, var(--color-shadow-tint) 30%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L3 */ box-shadow: 0 8px  9px -8px  color-mix(in srgb, var(--color-shadow-tint) 33%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L4 */ box-shadow: 0 16px 14px -10px color-mix(in srgb, var(--color-shadow-tint) 35%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+```
+
+## The recessed-well recipe
+
+Fields are the **inverse** of a card: instead of lifting off the ground they sink into it.
+The [`Well`](/components/) primitive (the shared home for `TextField` / `TextArea`) fills
+with the darker `--color-canvas-alt`, then presses in with an **inner** shadow plus the same
+1px top catch-light. Nothing here lifts and nothing glows:
+
+```css
+.nk-well {
+  background: var(--color-canvas-alt);                 /* darker than the card ground */
+  border: var(--space-px) solid var(--color-outline-subtle);
+  border-radius: var(--radius-control);                /* 12px, a rounded rect, never a pill */
+  box-shadow:
+    inset 0 var(--space-0-5) var(--space-1)
+      color-mix(in srgb, var(--color-shadow-tint) 45%, transparent),  /* inner sink shadow */
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);          /* 1px top catch-light */
+}
+```
+
+Resolved, the resting well is:
+
+```css
+box-shadow:
+  inset 0 2px 4px color-mix(in srgb, var(--color-shadow-tint) 45%, transparent),
+  inset 0 1px 0 var(--color-surface-highlight);
+```
+
+Focus keeps the well recessed and adds a **cyan outline ring**, a second `box-shadow`
+layer, not a glow, and not colored depth. The inner sink shadow stays; the ring hugs the
+control radius:
+
+```css
+.nk-well.is-focus {
+  border-color: var(--color-accent-primary);
+  box-shadow:
+    inset 0 var(--space-0-5) var(--space-1)
+      color-mix(in srgb, var(--color-shadow-tint) 45%, transparent),   /* still sunk */
+    0 0 0 var(--space-0-5)
+      color-mix(in srgb, var(--color-accent-primary) 45%, transparent); /* cyan outline ring */
+}
+```
+
+Error / warning / success swap the **border** color (never the only signal, always paired
+with an icon + helper text); disabled and read-only flatten the inner shadow but stay
+visible at ≥ 3:1. The sink shadow is present in every state: a field never lifts.
+
+<Aside type="note" title="Focus rings, not colored shadows">
+The cyan ring above is an `outline`-shaped `box-shadow` at a fixed alpha that hugs the
+control. It is a *ring*, not a blurred halo. Depth stays neutral; the only color a shadow
+ever carries is a focus/validation ring, and even that is an outline, not a drop shadow.
+</Aside>
+
+## Per-platform
+
+Web resolves the ladder to the `box-shadow` recipes above. The `--elevation-*` tokens are
+stored in px and the Compose build emits them as **dp drop-shadow levels**, paired with the
+same `shadowTint` + `surfaceHighlight` to reproduce the lit-from-above material; SwiftUI
+follows the same levels. The token layer is shared; only the shadow *syntax* is
+platform-native. The exact Compose / SwiftUI shadow-emission mapping is documented alongside
+each platform's `Surface` implementation as those slices are conformed.

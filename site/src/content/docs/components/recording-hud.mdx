@@ -1,0 +1,173 @@
+---
+title: Recording HUD
+description: The Nockerl Voice live-recording heads-up display with meter, timer, status, and controls.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import RecordingHudDemo from '../../../components/demos/RecordingHudDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <RecordingHudDemo client:visible />
+</Example>
+
+On **Voice** (macOS) this floating command pill *is* the top-of-window surface. Voice is a
+menu-bar utility with **no title bar**, so the pill (not a [`TopBar`](/components/top-bar/)) is
+its brand-anchored header: the mark, a divider, and the morphing status content in a capsule
+with the 1.5pt cyan outline. Android and web carry a real top bar; Voice uses this pill.
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="Swift">
+
+```swift
+// macOS / iOS: SwiftUI, from the NockerlDesign package (the packaged pill
+// aligned VALUE-EXACT to the web canon: logo → gray divider → the ONLY warm dot →
+// theme-ink mono timer → cyan meter, cyan pill). Driven by `phase`; the app's
+// NSPanel still owns window presentation, this is the pill it hosts.
+import NockerlDesign
+
+NockerlRecordingHUD(phase: .recording, elapsedLabel: "0:07", levels: levels)  // pulsing dot + mono timer + live cyan meter
+NockerlRecordingHUD(phase: .paused, elapsedLabel: "0:41", levels: frozen)     // dimmed dot + muted timer/meter + "Paused"
+NockerlRecordingHUD(phase: .transcribing)                                     // indeterminate spinner + "Transcribing…"
+NockerlRecordingHUD(phase: .error, errorMessage: "Mic unavailable")           // warn triangle + text; border → statusWarning
+
+// showBrand:false drops the logo+divider (embedded chrome); animate:false freezes
+// the pulse for snapshots; animateBars opts into the ~80ms per-bar ease.
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose, from the NockerlDesign package (the packaged
+// pill aligned VALUE-EXACT to the web canon; same anatomy + color split). Driven
+// by `phase`.
+import com.dizyx.nockerl.design.components.NockerlRecordingHud
+import com.dizyx.nockerl.design.components.NockerlRecordingHudPhase
+
+NockerlRecordingHud(
+    phase = NockerlRecordingHudPhase.RECORDING,
+    elapsedLabel = voice.elapsedLabel,
+    amplitudes = voice.amplitudes,         // 5 levels, ln(raw+1)/ln(32768)
+)
+// …or PAUSED (frozen muted meter + "Paused") / TRANSCRIBING (spinner) / ERROR (warn row).
+```
+
+</TabItem>
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this
+// is the intended @dizyx/nockerl-react API, a single controlled overlay component.
+// The level meter geometry/math matches the native apps exactly.)
+
+export function DictationOverlay({ rec }: { rec: RecorderState }) {
+  return (
+    <RecordingHud
+      phase={rec.phase}            // 'recording' | 'paused' | 'transcribing' | 'result' | 'error'
+      levels={rec.levels}          // number[] (0…1), one per meter bar
+      elapsed={rec.elapsedSeconds} // drives the m:ss mono timer
+      pasted={rec.pasted}          // result phase: true → "Pasted", false → "Copied to clipboard"
+      error={rec.error}            // shown in the error row when phase === 'error'
+    />
+  );
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="Swift">
+
+`RecordingHUD` is an imperative `@MainActor` controller: you call phase methods, not
+pass props. The 5-bar `Equalizer` + `PulsingDot` are file-private views.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'showRecording()', type: 'func', description: 'Enters the recording phase: resets the 5-sample level ring + the elapsed clock, starts the 250ms ticker, and presents the panel.' },
+    { name: 'updateLevel(_:)', type: 'func (Float)', description: 'Pushes one audio level (0…1) into the ring buffer. Each bar maps via <code>ln(raw+1)/ln(32768)</code> (raw = level·32767), clamped to <code>[0.08, 1]</code>.' },
+    { name: 'showTranscribing()', type: 'func', description: 'Swaps the pill content to an indeterminate <code>ProgressView</code> + "Transcribing…"; stops the ticker.' },
+    { name: 'showResult(pasted:)', type: 'func (Bool)', description: 'Success row: <code>checkmark.circle.fill</code> "Pasted" or <code>doc.on.clipboard</code> "Copied to clipboard". Auto-hides after 1.8s.' },
+    { name: 'showError(_:)', type: 'func (String)', description: 'Error row: a warning triangle (warm) + the message (≤4 lines, ≤380pt). The pill border turns warning. Auto-hides after 8s.' },
+    { name: 'Equalizer', type: 'View (private)', description: '5 capsule bars, 3pt wide, 3pt gap, 20pt tall; bar height eases over 0.08s. The brand cyan accent fill.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+Two `internal @Composable` strips selected by recorder state. The HUD is uncontrolled
+beyond its inputs; depth comes from the `nockerlShadow` Level3 on the chrome pill.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'elapsedSeconds', type: 'Int', required: true, description: 'Elapsed recording time. Rendered <code>m:ss</code> in the error (warm) color, <code>bodySmall</code> medium.' },
+    { name: 'amplitudes', type: 'List<Float>', default: 'emptyList()', description: 'The live levels (0…1) for <code>LiveEqualizer</code>; held as a 5-slot ring in <code>VoiceRecorderState</code>, log-normalized like Swift.' },
+    { name: 'accent', type: 'Color', required: true, description: 'Engine accent for the pill border (1.5dp). Matches the input bar so the strip clearly belongs to it.' },
+    { name: 'onCancel', type: '() -> Unit', required: true, description: 'Discards the take. Rendered inline as a GHOST <code>NockerlButton</code> ("Cancel").' },
+    { name: 'onStop', type: '() -> Unit', required: true, description: 'Stops + sends to transcription. (Wired through; the strip currently surfaces only Cancel inline.)' },
+    { name: 'LiveEqualizer', type: '@Composable', description: 'A <code>Canvas</code> of rounded bars (3dp wide, 3dp gap, 20dp tall), each height tweened 80ms; min visible 0.08. Drawn in the error color.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'phase', type: "'recording' | 'paused' | 'transcribing' | 'result' | 'error'", required: true, description: 'Which surface the HUD shows. <code>recording</code> animates the meter; <code>paused</code> freezes it; <code>transcribing</code> shows the indeterminate spinner; <code>result</code> shows the success check + "Pasted"/"Copied to clipboard"; <code>error</code> shows the warning row.' },
+    { name: 'levels', type: 'number[]', required: true, description: 'Audio levels (0…1), one per meter bar (5 to match native). Mapped through the same <code>ln(raw+1)/ln(32768)</code> curve; only bar <em>height</em> animates.' },
+    { name: 'elapsed', type: 'number', required: true, description: 'Elapsed seconds, rendered <code>m:ss</code> in the <code>font.family.mono</code> token, tabular, in the warm record color.' },
+    { name: 'pasted', type: 'boolean', description: 'For <code>phase === "result"</code>: <code>true</code> → check + "Pasted"; <code>false</code> → clipboard + "Copied to clipboard"; omit → generic "Done". Mirrors Voice <code>result(pasted: Bool)</code>. The mark carries the earned brand cyan (not green), a genuine success beat.' },
+    { name: 'dismissing', type: 'boolean', description: 'Plays the result <strong>dismiss</strong>. After the ~1.8s success beat the pill shoots straight down and fades (constant height; width already shrunk to the check + word). Motion, eyeball-gated; VRT captures the resting still only.' },
+    { name: 'error', type: 'string', description: 'Message shown in the error row (color + icon + text, never color alone) when <code>phase === "error"</code>.' },
+  ]}
+/>
+
+Stop / pause / cancel are real, keyboard-operable icon buttons (each with an
+`aria-label`); the meter play/pause is a separate control. The surface carries
+`role="status"` with an off-screen live label so the phase + elapsed are announced
+without re-announcing on every meter frame.
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (this surface lives natively in Voice + Android)">
+The recording HUD is **canonical on both Voice** (`RecordingHUD.swift`) **and Android**
+(`VoiceRecordingUI.kt`); web is **derived**. The meter geometry + the
+`ln(raw+1)/ln(32768)` level math are identical across all three. Honest divergences:
+
+- **Controls:** neither native HUD ships an explicit **stop / pause / cancel** trio.
+  Voice's panel is non-interactive (`ignoresMouseEvents`, since it must never steal the
+  ⌘V paste); Android surfaces only an inline **Cancel** (its `onStop` is wired but not
+  drawn). The demo's icon-button controls (incl. **pause/resume**) are an
+  **original web affordance** built from the [icon-button](/components/icon-button/)
+  vocabulary, not yet a native API.
+- **Result phase** *(converged in task 2767)*: a **success** row now ships on web too:
+  a checkmark (pasted) / clipboard (copied) mark in the **earned brand cyan** + "Pasted" /
+  "Copied to clipboard", then a **shoot-down dismiss** after the ~1.8s beat (constant height,
+  width-only morph). Web `phase` gains `result`; the mark is cyan (not green) to keep the HUD
+  monochromatic-cyan. Voice's `result(pasted:)` is the value-exact source; Compose mirrors it.
+- **Hint pill:** Voice also has a transient `hint(message)` phase (a ⌘ glyph + message: the
+  launch "ready" / hotkey prompt, auto-hides 4.5s). It's **app-level guidance**, not a
+  recording-lifecycle state, so it stays Voice-side and is **not** part of the shared phase set.
+- **Container radius:** both apps use the full **stadium** (pill) for the floating HUD,
+  a deliberate exception to the 12px control radius (it reads as chrome, like the
+  input bar). The error border swaps to the warm **warning** token on both.
+- **Timer color:** the elapsed clock is the **warm record** color while recording
+  (error token), a status signal, not a decorative accent.
+</Aside>

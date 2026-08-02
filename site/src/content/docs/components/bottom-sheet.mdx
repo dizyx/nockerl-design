@@ -1,0 +1,144 @@
+---
+title: Bottom sheet
+description: A drag-handle panel that rises from the bottom edge for focused, modal tasks.
+status: review
+platforms: [web, android]
+nativePublished: [android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import BottomSheetDemo from '../../../components/demos/BottomSheetDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <BottomSheetDemo client:visible />
+</Example>
+
+<Aside type="tip" title="No X by default (Material canon)">
+A bottom sheet has **no close (X) button** by default. The canonical dismissal is the
+**drag handle** (the grabber at the top) plus a **scrim tap** plus <kbd>Esc</kbd>. The X is
+**opt-in** via `showClose`. Reserve it for the rare case that genuinely needs a persistent,
+always-visible dismiss affordance. Every platform follows the same rule (see the Kotlin /
+Compose guidance below).
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+//
+// No `showClose` → NO X (Material canon): the drag handle + a scrim tap + Esc dismiss it.
+// Actions compose the real NockerlListItem primitive (canonical rows); a form CTA composes NockerlButton
+// (light-300 / UPPERCASE / -0.03em ramp), never a hand-rolled <button>.
+// NockerlBottomSheet composes the shipped NockerlOverlay primitive (scrim + focus-trap + Esc); it
+// supplies the pull-up panel + its slide. NockerlListItem ships today.
+import { NockerlBottomSheet, NockerlListItem } from '@dizyx/nockerl-react';
+
+export function SessionOptions({ open, stage, onDismiss }: SheetProps) {
+  return (
+    <NockerlBottomSheet open={open} onDismiss={onDismiss} stage={stage} title="nockerl-design · docs" detent="half">
+      <NockerlListItem primary="Share session" leadingIcon={<ShareIcon />} onSelect={share} />
+      <NockerlListItem primary="Rename" leadingIcon={<RenameIcon />} onSelect={rename} />
+      <NockerlListItem primary="Delete session" leadingIcon={<TrashIcon />} danger onSelect={remove} />
+    </NockerlBottomSheet>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlBottomSheet
+// (com.dizyx.nockerl.design on GitHub Packages Maven) wraps Material3 ModalBottomSheet:
+// a cardAlt → canvasAlt gradient ground, a palette scrim, and NockerlSheetGrip (the drag
+// handle hosted inside the body, dragHandle = null).
+//
+// Material canon: NO close (X) button. The DRAG HANDLE + scrim tap + back/Esc ARE the
+// dismissal. Do NOT add an X in the header by default; expose one only opt-in (a rare
+// persistent-affordance case), mirroring the web `showClose` prop.
+import androidx.compose.material3.rememberModalBottomSheetState
+import com.dizyx.nockerl.design.components.NockerlBottomSheet
+
+val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+NockerlBottomSheet(
+    onDismissRequest = onDismiss,
+    sheetState = sheetState,
+) {
+    // content composes in the sheet's ColumnScope (grip + gradient are provided; no X)
+    Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 24.dp)) {
+        Text("nockerl-design · docs", style = MaterialTheme.typography.titleLarge)
+        NockerlButton("Share session", onClick = ::share, modifier = Modifier.fillMaxWidth())
+        NockerlButton("Delete session", onClick = ::delete, variant = NockerlButtonVariant.DESTRUCTIVE)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+macOS/Swift has no bottom-sheet idiom (use a popover / sheet there), so this component targets **web + Android only**.
+
+## Session-management views (configs, not components)
+
+Per the component-vs-view rule on the agent-console epic (task 2654), the session
+sheets are **pure configurations** of this sheet + shipped parts; none of them is a
+new component. Native cites them as `NockerlBottomSheet` call-sites already
+(`AvatarSettingsSheet`, `SamplingAdvancedSettings`); the settings form in the demo
+above is exactly this shape:
+
+| View | Sheet body composes | Notes |
+|------|--------------------|-------|
+| **Session create / edit** | [`TextField`](/components/text-field/) (name) + [`Select`](/components/select/) (harness/model) + [`Switch`](/components/switch/) rows + [`SegmentedControl`](/components/segmented-control/) | the demo's settings form, with a full-width confirm |
+| **Session switcher / picker** | [`ListItem`](/components/list-item/) rows (selection = the ratified wash + check, never a rail) | rename / delete / fork confirms hand off to [`Dialog`](/components/dialog/) |
+| **Override controls** | [Form layout](/components/form-layout/) sections over the same field primitives | per-session provider overrides |
+| **Streaming target** | [`RadioGroup`](/components/radio-group/) or `ListItem` selection | one target, wash + check |
+| **Sampling advanced** | [`Slider`](/components/slider/) + `RangeSlider` + [`Stepper`](/components/stepper/) + `Switch` | the native `SamplingAdvancedSettings` call-site |
+
+Approval moments inside a sheet use the [Approval content](/components/approval-content/)
+anatomy. Its CTA row pins in this sheet's `footer` slot.
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlBottomSheet" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'onDismissRequest', type: '() -> Unit', required: true, description: 'Invoked when the sheet is dismissed (scrim tap or swipe down).' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier forwarded to the underlying <code>ModalBottomSheet</code>.' },
+    { name: 'sheetState', type: 'SheetState', default: 'rememberModalBottomSheetState(skipPartiallyExpanded = true)', description: 'The sheet state. Pass <code>skipPartiallyExpanded = false</code> for a half / full partial detent.' },
+    { name: 'contentWindowInsets', type: '@Composable -> WindowInsets', default: 'BottomSheetDefaults.windowInsets', description: 'Insets applied to the content. Pass <code>WindowInsets(0)</code> for full-bleed.' },
+    { name: 'content', type: '@Composable ColumnScope.() -> Unit', required: true, description: 'Body laid out in the sheet\'s <code>ColumnScope</code>; the grip + gradient ground are provided by the wrapper.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **macOS / Swift is out of scope.** macOS has no native bottom-sheet idiom. Nockerl
+  Voice (a menu-bar macOS app) uses windows / popovers (`RecordingHUD`, `InfoTip`)
+  instead. Use a popover / sheet there. This component targets **web + Android only**.
+- **Detents** *(resolved in [adjudication 2026-07-02 · B16])*: the API name is **`detent`**,
+  chosen to avoid a collision with Compose's `SheetState`. Compose (today `SheetState` +
+  `skipPartiallyExpanded`) adopts the shared `detent` vocabulary.
+- **Grip (drag handle):** Compose hosts a custom `NockerlSheetGrip` inside the body
+  (`dragHandle = null`) so the gradient backs it; web renders the bar in CSS. It, not
+  an X, is the primary dismissal affordance on both platforms.
+</Aside>

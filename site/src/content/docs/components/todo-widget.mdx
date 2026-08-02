@@ -1,0 +1,63 @@
+---
+title: Todo widget
+description: The agent's plan as a live progress card showing done, running, blocked and pending steps with a count and a segment meter.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import TodoWidgetDemo from '../../../components/demos/TodoWidgetDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TodoWidgetDemo client:visible />
+</Example>
+
+**The agent's running plan as a report** (WS4, agent-console epic). The
+[`Stepper`](/components/stepper/) is the closest sibling, but a plan is not a wizard
+(steps don't navigate, they *report*), so this is a quiet read-only card:
+
+- **Header:** title + a mono tabular `done / total` count + a
+  [`ProgressSegments`](/components/progress-bar/) meter, one cell per step. The meter
+  fill is cyan: progress is progress, not a status.
+- **Steps** are shape + color dual-coded glyphs: success **check** = done · live
+  [`Spinner`](/components/spinner/) = running · warning **triangle** = blocked ·
+  empty muted **ring** = pending. Done rows dim their ink (the same seen-vs-unseen
+  rule as the [job row](/components/job-row/)); a blocked row voices its reason in a
+  warm detail line; the label itself stays neutral (never color alone).
+- State lives in the **glyph**, never a rail or a row wash (law §6).
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlTodoWidget } from '@dizyx/nockerl-react';
+
+<NockerlTodoWidget
+  title="Refactor retry logic"
+  items={[
+    { id: 'read', label: 'Read the failing test', state: 'done' },
+    { id: 'extract', label: 'Extract shared retry logic', state: 'running' },
+    { id: 'tests', label: 'Add unit tests', state: 'pending' },
+    { id: 'gates', label: 'Run the gates', state: 'blocked', detail: 'waiting on a ruling' },
+  ]}
+/>
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Android">
+The Compose mirror (the same plan card in the agent transcript) rides the compose lane
+of the agent-console epic.
+</Aside>
+
+## Parameters
+
+<PropsTable nameLabel="Prop" component="NockerlTodoWidget" />

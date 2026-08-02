@@ -1,0 +1,13 @@
+{
+  "$description": "SEMANTIC radius intents. Values are the canonical Nockerl (Android-lead) geometry; the WEB platform layer overrides `card` to its sharper container radius (the legit platform delta documented for ADR-0003). Stored in px; the Compose build emits dp. `pill` is the full-stadium idiom.",
+  "radius": {
+    "none": { "$type": "dimension", "$value": "0px" },
+    "track": { "$type": "dimension", "$value": "2px", "$description": "Progress tracks / hairline rails." },
+    "control": { "$type": "dimension", "$value": "12px", "$description": "The single button/control radius (NockerlButtonRadius)." },
+    "panel": { "$type": "dimension", "$value": "12px", "$description": "Nested panels / chips / tool cards." },
+    "card": { "$type": "dimension", "$value": "16px", "$description": "Standard lifted card: UNIFIED across platforms (ADR-0003). Clearly distinct from the full pill (chips/input) and a step above the 12px control radius." },
+    "bubble": { "$type": "dimension", "$value": "20px", "$description": "Message bubble corners." },
+    "bubbleTail": { "$type": "dimension", "$value": "6px", "$description": "Tightened 'tail' corner pointing at the speaker." },
+    "pill": { "$type": "dimension", "$value": "9999px", "$description": "Full stadium, chips + the input bar ONLY." }
+  }
+}

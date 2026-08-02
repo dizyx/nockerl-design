@@ -1,0 +1,72 @@
+---
+title: Cluster status grid
+description: The fleet wall, an auto-fill mosaic of node tiles composing StatusDot, Sparkline, ProgressTrack and Badge.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ClusterGridDemo from '../../../components/demos/ClusterGridDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ClusterGridDemo client:visible />
+</Example>
+
+**The fleet at a glance** (WS4, agent-console epic): `NockerlClusterGrid` is a pure
+layout shell (a responsive auto-fill mosaic), and `NockerlNodeCell` is the tile, a
+composition of shipped parts with **no new visual grammar**:
+
+- **Health lives in the [`StatusDot`](/components/status-dot/)**: success = online,
+  warning = degraded, error = down. The card surface stays neutral (law §6: never a
+  tinted card, never a rail).
+- **Metrics read mono + tabular** so a scanning wall doesn't jitter. Each row can
+  carry a [`Sparkline`](/components/chart/) trend or a
+  [`ProgressBar`](/components/progress-bar/) pressure bar **toned by the ratified
+  gauge band ladder**, the same thresholds as the
+  [context gauge](/components/context-gauge/) (cyan &lt; .60 → amber &lt; .85 → red).
+  `ProgressTrack` gained the `warning` tone for the amber step (additive).
+- **Roles and counts ride soft [`Badges`](/components/badge/)** in the header and the
+  open `footer` slot.
+
+<Aside type="note" title="Web-only by scope">
+The cluster wall is a web surface. Native
+consoles have no equivalent. Web-first on the shared tokens and laws.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlClusterGrid, NockerlNodeCell, NockerlBadge } from '@dizyx/nockerl-react';
+
+<NockerlClusterGrid ariaLabel="compute cluster">
+  <NockerlNodeCell
+    name="node-1 · GB10"
+    status="success"          // the shared StatusDot ladder, health in the dot
+    statusLabel="online"
+    badge="LLM · prod"
+    metrics={[
+      { label: 'Mem', value: '87 / 119 GB', ratio: 0.73 },  // pressure bar, gauge-band toned
+      { label: 'GPU', value: '77%', series: gpuTrend },      // sparkline trend
+    ]}
+    footer={<NockerlBadge label="3 models" tone="neutral" variant="soft" />}
+  />
+  {/* …one cell per node */}
+</NockerlClusterGrid>
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<PropsTable nameLabel="Prop" component="NockerlClusterGrid" />
+
+<PropsTable nameLabel="Prop" component="NockerlNodeCell" />

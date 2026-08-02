@@ -1,0 +1,306 @@
+name: Publish @dizyx packages (npm tokens + react, maven design-tokens)
+
+# Publishing is CI-only and needs NO PAT / no the credential store change: the Actions GITHUB_TOKEN
+# can publish packages owned by this repo's org with `packages: write`. Trigger via a
+# git tag `vX.Y.Z` (the authoritative path, where the version is derived from and checked against
+# the tag), a manual run, or a repository_dispatch (the agent-reachable path).
+#
+# ONE VERSION LINE: @dizyx/nockerl-tokens, @dizyx/nockerl-react (npm) and
+# com.dizyx.nockerl:design-tokens (Maven) ship in lockstep at the SAME version. A `vX.Y.Z`
+# tag fans out to all THREE publish jobs; each verifies its own manifest version.
+#
+# HARD GUARANTEES (a "green publish that shipped nothing" is now impossible):
+#   1. On a tag push, EACH package's package.json version MUST equal the tag; else that job fails.
+#   2. "version already published" is a FAILURE, not a tolerated no-op, unless a manual
+#      run explicitly sets allow_existing=true (for an intentional idempotent re-run).
+on:
+  workflow_dispatch:
+    inputs:
+      allow_existing:
+        description: "Treat 'version already published' as success (idempotent re-run only; default = fail)"
+        type: boolean
+        default: false
+  repository_dispatch:
+    types: [release]
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # ── STRUCTURAL GUARD (): the ONE version line, verified up front. ─────────────
+  # ADR-0006: every artifact ships in lockstep from a single vX.Y.Z. The audit-era failure
+  # mode was a "successful" release that shipped nothing (a stale manifest at an older
+  # version). The per-job checks below only guard the manifest of the job that runs, so this
+  # job checks ALL FIVE version-bearing manifests agree with each other AND (on a tag) with
+  # the tag, and every publish job `needs:` it, so a broken version line publishes NOTHING.
+  # (site/package.json is private/unpublished; Package.swift carries no version, since SPM
+  # versions from the git tag itself.)
+  verify-version-line:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: All 5 manifests on one version line (== the tag, when tagged)
+        run: |
+          set -u
+          ROOT="$(node -p "require('./package.json').version")"
+          TOKENS="$(node -p "require('./packages/tokens/package.json').version")"
+          REACT="$(node -p "require('./packages/react/package.json').version")"
+          GR_TOKENS="$(sed -n 's/^version = "\(.*\)"$/\1/p' packages/compose/nockerl-design-tokens/build.gradle.kts | head -1)"
+          GR_COMPONENTS="$(sed -n 's/^version = "\(.*\)"$/\1/p' packages/compose/nockerl-design-components/build.gradle.kts | head -1)"
+          echo "root=$ROOT tokens=$TOKENS react=$REACT gradle-tokens=$GR_TOKENS gradle-components=$GR_COMPONENTS"
+          FAIL=0
+          for pair in "packages/tokens/package.json=$TOKENS" "packages/react/package.json=$REACT" "compose tokens build.gradle.kts=$GR_TOKENS" "compose components build.gradle.kts=$GR_COMPONENTS"; do
+            NAME="${pair%%=*}"; VER="${pair#*=}"
+            if [ -z "$VER" ]; then echo "::error::could not READ a version from $NAME - the guard cannot pass what it cannot see."; FAIL=1;
+            elif [ "$VER" != "$ROOT" ]; then echo "::error::$NAME is $VER but the root package.json is $ROOT - the ONE version line is broken (ADR-0006)."; FAIL=1; fi
+          done
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$ROOT" ]; then
+              echo "::error::tag v$TAG_VERSION != the version line $ROOT - bump ALL FIVE manifests to the tag before releasing."; FAIL=1
+            fi
+          fi
+          [ "$FAIL" -eq 0 ] || exit 1
+          echo "::notice::version line OK - all 5 manifests at $ROOT${GITHUB_REF_NAME:+ (ref $GITHUB_REF_NAME)}"
+
+  publish-tokens:
+    needs: verify-version-line
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Build + verify + pack tokens
+        run: |
+          bun install
+          bun run build
+          bun run verify
+          bun run pack:tokens
+
+      - name: Resolve version (a tag MUST match packages/tokens/package.json)
+        id: ver
+        working-directory: packages/tokens
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+              echo "::error::tag v$TAG_VERSION != packages/tokens/package.json $PKG_VERSION - bump package.json to match the tag before releasing."
+              exit 1
+            fi
+            echo "::notice::releasing @dizyx/nockerl-tokens@$PKG_VERSION (from tag $GITHUB_REF_NAME)"
+          else
+            echo "::notice::releasing @dizyx/nockerl-tokens@$PKG_VERSION (from package.json; trigger=${{ github.event_name }})"
+          fi
+
+      - name: Confirm dist is freshly packed (never publish a stale dist)
+        working-directory: packages/tokens
+        run: |
+          if [ ! -s dist/tokens.css ]; then echo "::error::dist/tokens.css missing or empty after pack:tokens"; exit 1; fi
+          grep -q 'Outfit' dist/tokens.css || { echo "::error::dist/tokens.css looks stale (no Outfit font) - build did not regenerate current tokens"; exit 1; }
+
+      - name: Configure GitHub Packages auth (user-level - npm ignores a workspace child .npmrc)
+        run: |
+          {
+            echo "@dizyx:registry=https://npm.pkg.github.com"
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
+          } > "$HOME/.npmrc"
+
+      - name: Publish (a 'version exists' result FAILS unless allow_existing)
+        working-directory: packages/tokens
+        env:
+          ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
+        run: |
+          set -o pipefail
+          if npm publish 2>&1 | tee /tmp/pub.log; then
+            echo "::notice::PUBLISHED_NOW @dizyx/nockerl-tokens@${{ steps.ver.outputs.pkg }}"
+          elif grep -qiE "already exists|cannot publish over|EPUBLISHCONFLICT|409 Conflict" /tmp/pub.log; then
+            if [ "$ALLOW_EXISTING" = "true" ]; then
+              echo "::warning::ALREADY_PUBLISHED tolerated (allow_existing=true) - nothing shipped."
+            else
+              echo "::error::ALREADY_PUBLISHED @dizyx/nockerl-tokens@${{ steps.ver.outputs.pkg }} - a release that ships NOTHING is a failure. Bump packages/tokens/package.json (and the tag) to release a change, or re-run manually with allow_existing=true if this idempotency is intended."
+              exit 1
+            fi
+          else
+            echo "::error::PUBLISH FAILED (not a version-conflict)"; exit 1
+          fi
+
+  publish-react:
+    needs: verify-version-line
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install (workspace) + build @dizyx/nockerl-react (tsc -> dist)
+        run: |
+          bun install
+          cd packages/react
+          bun run build
+
+      - name: Resolve version (a tag MUST match packages/react/package.json)
+        id: ver
+        working-directory: packages/react
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+              echo "::error::tag v$TAG_VERSION != packages/react/package.json $PKG_VERSION - bump package.json to match the tag before releasing."
+              exit 1
+            fi
+            echo "::notice::releasing @dizyx/nockerl-react@$PKG_VERSION (from tag $GITHUB_REF_NAME)"
+          else
+            echo "::notice::releasing @dizyx/nockerl-react@$PKG_VERSION (from package.json; trigger=${{ github.event_name }})"
+          fi
+
+      - name: Confirm dist is freshly built (never publish a stale dist)
+        working-directory: packages/react
+        run: |
+          if [ ! -s dist/index.js ]; then echo "::error::dist/index.js missing or empty after build"; exit 1; fi
+          if [ ! -s dist/index.d.ts ]; then echo "::error::dist/index.d.ts missing or empty after build"; exit 1; fi
+
+      - name: Configure GitHub Packages auth (user-level - npm ignores a workspace child .npmrc)
+        run: |
+          {
+            echo "@dizyx:registry=https://npm.pkg.github.com"
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
+          } > "$HOME/.npmrc"
+
+      - name: Publish (a 'version exists' result FAILS unless allow_existing)
+        working-directory: packages/react
+        env:
+          ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
+        run: |
+          set -o pipefail
+          if npm publish 2>&1 | tee /tmp/pub.log; then
+            echo "::notice::PUBLISHED_NOW @dizyx/nockerl-react@${{ steps.ver.outputs.pkg }}"
+          elif grep -qiE "already exists|cannot publish over|EPUBLISHCONFLICT|409 Conflict" /tmp/pub.log; then
+            if [ "$ALLOW_EXISTING" = "true" ]; then
+              echo "::warning::ALREADY_PUBLISHED tolerated (allow_existing=true) - nothing shipped."
+            else
+              echo "::error::ALREADY_PUBLISHED @dizyx/nockerl-react@${{ steps.ver.outputs.pkg }} - a release that ships NOTHING is a failure. Bump packages/react/package.json (and the tag) to release a change, or re-run manually with allow_existing=true if this idempotency is intended."
+              exit 1
+            fi
+          else
+            echo "::error::PUBLISH FAILED (not a version-conflict)"; exit 1
+          fi
+
+  publish-compose:
+    needs: verify-version-line
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+
+      - name: Regenerate tokens + build the AAR (never publish a stale token layer)
+        run: |
+          bun install
+          bun run build   # regenerates + syncs packages/compose/.../NockerlTokens.kt from the DTCG source
+          cd packages/compose
+          ./gradlew :nockerl-design-tokens:assembleRelease --no-daemon --console=plain
+
+      - name: Resolve version (a tag MUST match the module's build.gradle.kts version)
+        id: ver
+        working-directory: packages/compose
+        run: |
+          PKG_VERSION="$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' nockerl-design-tokens/build.gradle.kts | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+              echo "::error::tag v$TAG_VERSION != nockerl-design-tokens/build.gradle.kts $PKG_VERSION - bump the module version to match the tag before releasing."
+              exit 1
+            fi
+            echo "::notice::releasing com.dizyx.nockerl:design-tokens:$PKG_VERSION (from tag $GITHUB_REF_NAME)"
+          else
+            echo "::notice::releasing com.dizyx.nockerl:design-tokens:$PKG_VERSION (from build.gradle.kts; trigger=${{ github.event_name }})"
+          fi
+
+      - name: Publish to GitHub Packages Maven (a 'version exists' result FAILS unless allow_existing)
+        working-directory: packages/compose
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
+        run: |
+          set -o pipefail
+          if ./gradlew :nockerl-design-tokens:publishReleasePublicationToGitHubPackagesRepository --no-daemon --no-configuration-cache --console=plain 2>&1 | tee /tmp/mvn.log; then
+            echo "::notice::PUBLISHED_NOW com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }}"
+          elif grep -qiE "status code 409|already exists|Conflict|CONFLICT" /tmp/mvn.log; then
+            if [ "$ALLOW_EXISTING" = "true" ]; then
+              echo "::warning::ALREADY_PUBLISHED tolerated (allow_existing=true) - nothing shipped."
+            else
+              echo "::error::ALREADY_PUBLISHED com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }} - a release that ships NOTHING is a failure. Bump the module version (and the tag), or re-run manually with allow_existing=true if intended."
+              exit 1
+            fi
+          else
+            echo "::error::MAVEN PUBLISH FAILED (not a version-conflict)"; exit 1
+          fi
+
+  publish-components:
+    needs: verify-version-line
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+
+      - name: Regenerate tokens + build the AAR (design-components depends on design-tokens)
+        run: |
+          bun install
+          bun run build
+          cd packages/compose
+          ./gradlew :nockerl-design-components:assembleRelease --no-daemon --console=plain
+
+      - name: Resolve version (a tag MUST match the module's build.gradle.kts version)
+        id: ver
+        working-directory: packages/compose
+        run: |
+          PKG_VERSION="$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' nockerl-design-components/build.gradle.kts | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+              echo "::error::tag v$TAG_VERSION != nockerl-design-components/build.gradle.kts $PKG_VERSION - bump the module version to match the tag before releasing."
+              exit 1
+            fi
+            echo "::notice::releasing com.dizyx.nockerl:design-components:$PKG_VERSION (from tag $GITHUB_REF_NAME)"
+          else
+            echo "::notice::releasing com.dizyx.nockerl:design-components:$PKG_VERSION (from build.gradle.kts; trigger=${{ github.event_name }})"
+          fi
+
+      - name: Publish to GitHub Packages Maven (a 'version exists' result FAILS unless allow_existing)
+        working-directory: packages/compose
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
+        run: |
+          set -o pipefail
+          if ./gradlew :nockerl-design-components:publishReleasePublicationToGitHubPackagesRepository --no-daemon --no-configuration-cache --console=plain 2>&1 | tee /tmp/mvn.log; then
+            echo "::notice::PUBLISHED_NOW com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }}"
+          elif grep -qiE "status code 409|already exists|Conflict|CONFLICT" /tmp/mvn.log; then
+            if [ "$ALLOW_EXISTING" = "true" ]; then
+              echo "::warning::ALREADY_PUBLISHED tolerated (allow_existing=true) - nothing shipped."
+            else
+              echo "::error::ALREADY_PUBLISHED com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }} - a release that ships NOTHING is a failure. Bump the module version (and the tag), or re-run manually with allow_existing=true if intended."
+              exit 1
+            fi
+          else
+            echo "::error::MAVEN PUBLISH FAILED (not a version-conflict)"; exit 1
+          fi

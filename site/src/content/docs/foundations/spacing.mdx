@@ -1,0 +1,90 @@
+---
+title: Spacing
+description: The 4px spacing grid that sets the rhythm of every layout, and the component insets derived from it.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Nockerl spacing is a **4px grid**. Every gap, padding, and margin is a multiple of 4 so
+layouts share one vertical and horizontal rhythm across platforms. The scale is a **core /
+global** token set (`tokens/core/dimension.json`), a single ladder shared by web, Android, and
+Swift; on Android each px maps 1:1 to dp at default density.
+
+## The scale
+
+Twelve steps plus a `px` hairline. `space-0-5` (2px) and `space-px` (1px) are the two
+sub-grid exceptions, reserved for hairline borders, focus-ring offsets, and inner-shadow
+insets, never for layout gaps.
+
+| Token | Value | Typical use |
+| --- | --- | --- |
+| `--space-0` | 0px | Zero a gap / reset a margin |
+| `--space-px` | 1px | Hairline borders, sheen line (`inset 0 1px 0`) |
+| `--space-0-5` | 2px | Focus-ring width + offset, inner-shadow inset |
+| `--space-1` | 4px | Tight gaps: label↔field, icon↔text in a help line |
+| `--space-2` | 8px | Icon↔label gap in a button, small stacks |
+| `--space-3` | 12px | Field horizontal inset, input vertical padding |
+| `--space-4` | 16px | Card content inset, standard block gap |
+| `--space-5` | 20px | Between-field spacing, comfortable section gap |
+| `--space-6` | 24px | Section spacing, area-to-area rhythm |
+| `--space-8` | 32px | Page / container padding, large section breaks |
+| `--space-10` | 40px | Major layout gaps |
+| `--space-12` | 48px | Large-control height, page-level rhythm |
+| `--space-16` | 64px | Hero / top-level layout spacing |
+
+Bind to `--space-*` tokens, never raw pixels. Line-heights in the
+[type ramp](/foundations/typography/) are quantized to this same grid so text and layout
+align. (The icon-size scale, `--icon-xs` 12px … `--icon-2xl` 24px, lives alongside these
+in the same core file.)
+
+## Component insets
+
+The primitives ground the scale; their padding is where the grid becomes visible. These
+are the real, shipped values; a component-spacing change is one token edit, not many.
+
+- **Button** (`.nk-btn`) padding is `vertical horizontal` from the size ladder, icon↔label
+  gap is `--space-2` (8px):
+  - `sm` → `--space-1` `--space-3` (4×12), height `--space-8` (32px)
+  - `md` → `--space-2` `--space-4` (8×16), height `--space-10` (40px)
+  - `lg` → `--space-3` `--space-5` (12×20), height `--space-12` (48px)
+- **Card** (Surface) content inset is `--space-4` (16px), unified across web / Android /
+  Compose / Swift (see the [Card](/components/card/) spec). Page and container wrappers step
+  up to `--space-8` (32px).
+- **Field** (Well): a single-line field is `0 --space-3` (0×12) with a **44px** min-height
+  touch target; a multi-line area is `--space-2 --space-3` (8×12). The field column (label →
+  well → help line) stacks on a `--space-1` (4px) gap, and successive fields are separated by
+  `--space-5` (20px).
+
+The 2px focus ring (`--space-0-5` width + `--space-0-5` offset) and the 1px sheen /
+hairline (`--space-px`) recur across every primitive. The sub-grid steps earn their place
+here rather than in layout.
+
+## Density
+
+A **denser variant** ships on [List](/components/list/) (`comfortable` /
+`dense`), Timeline, and Table, where density changes **spacing only** (row min-height +
+padding), never the fill or the type. It is a per-component behavior today, expressed with
+the same `--space-*` steps (a dense List row drops to `--space-1` top/bottom padding and a
+`--space-8` min-height).
+
+<Aside type="tip" title="Density tiers are now a foundation">
+Density is now its own foundation (spacing-only `comfortable` / `compact` tiers applied
+per-component): see the [Density](/foundations/density/) page. Built in .
+</Aside>
+
+<Aside type="tip" title="Layout grids are now a foundation">
+Column / layout grids (breakpoints, gutters, container widths) are now a foundation too:
+see the [Layout grids](/foundations/layout-grids/) page. Built in .
+</Aside>
+
+## Tokens
+
+The spacing scale is published in `@dizyx/nockerl-tokens` as CSS custom properties
+(`--space-*`) built from `tokens/core/dimension.json`. See the
+[Token hierarchy](/getting-started/installation/) for how the core, semantic, and platform
+layers compose.

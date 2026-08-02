@@ -1,0 +1,81 @@
+---
+title: Transcript panel
+description: The agent/chat feed shell (keyed virtualization, day markers, auto-follow, jump-to-latest).
+status: review
+platforms: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/transcriptpanel-shell.png';
+
+<StatusBadge status="review" />
+
+<img src={goldenDark.src} alt="Transcript shell: rows, a Saturday day marker, and the floating jump-to-latest circle over an overflowing feed" style="border-radius: 12px;" />
+
+The **composition shell** for agent and chat feeds (WS1 #2652c). Every row already
+ships: [chat bubble](/components/chat-bubble/), [agent message](/components/agent-message/),
+[tool-call card](/components/tool-call-card/), the failure grammar,
+[spawn cards](/components/spawn-cards/). The shell owns what the rows can't:
+
+- **Virtualization.** Rows are keyed on a stable id (never an index). On Compose the
+  `listState` parameter is the hook point (observe, restore, page); on Swift the
+  `ScrollViewReader` proxy plays that role.
+- **Day markers.** A hairline-flanked muted label wherever consecutive items cross a
+  UTC day boundary; `dayLabel` formats it.
+- **Auto-follow.** New items keep the panel pinned while the reader is AT the bottom;
+  scrolling away suspends following, and the floating **jump-to-latest** circle appears
+  (solid accent, the cyan floating-layer identity) to jump back and resume.
+
+Same-sender grouping stays in the rows (the bubble grammar) by design.
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="Kotlin">
+
+```kotlin
+NockerlAgentTranscriptPanel(
+    items = listOf(
+        NockerlTranscriptItem(key = "m1", epochMillis = t1) {
+            NockerlChatBubble(/* … */)
+        },
+        NockerlTranscriptItem(key = "m2", epochMillis = t2) {
+            NockerlSpawnChildCard(/* … */)
+        },
+    ),
+    listState = rememberLazyListState(),   // the virtualization hook
+    modifier = Modifier.fillMaxWidth().weight(1f),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+NockerlAgentTranscriptPanel(
+    items: [
+        NockerlTranscriptItem(id: "m1", epochMillis: t1) {
+            NockerlSpawnChildCard(name: "docs-reader", status: .success)
+        },
+    ]
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `List<NockerlTranscriptItem>` | n/a | The transcript, in order. `key`/`id` must be stable. |
+| `listState` | `LazyListState` (Compose) | remembered | The virtualization/scroll hook point. |
+| `autoFollow` | `Boolean` | `true` | Pin to newest while at the bottom. |
+| `dayLabel` | `(Long) -> String` | day index | Formats a day marker from that day's first millis. |
+| `contentPadding` | `PaddingValues` (Compose) | 12dp vertical | List padding. |
+
+<Aside type="note" title="Web">
+  The web feed currently hand-rolls per demo page; a react shell mirroring this API is
+  the flagged web-lane follow-up.
+</Aside>

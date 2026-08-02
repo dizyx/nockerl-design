@@ -1,0 +1,195 @@
+---
+title: Progress bar
+description: The Nockerl progress bar, the general determinate / indeterminate progress primitive (linear, buffer, segmented, and a determinate ring).
+status: review
+platforms: [web, android, swift]
+nativePublished: [swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import ProgressBarDemo from '../../../components/demos/ProgressBarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ProgressBarDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+// Determinate: a value 0 to 100 drives the cyan fill width. The bar is the GENERAL
+// progress primitive: plain cyan, NO threshold banding (that is the ContextGauge).
+<ProgressBar value={64} label="Exporting session…" size="thick" />
+
+// Indeterminate: omit `value` for work of unknown length (a sliding track).
+<ProgressBar label="Connecting to gateway…" indeterminate />
+
+// Buffer: a lighter secondary track behind the primary fill.
+<ProgressBar value={48} buffer={70} label="Streaming response" />
+
+// Segmented / stepped: discrete cells, `value` of `max`.
+<ProgressBar value={3} max={5} variant="segmented" label="Deploy pipeline" />
+
+// Completion + failure. Color is never the only signal (icon + text follow).
+<ProgressBar value={100} tone="success" label="Snapshot uploaded" />
+<ProgressBar value={80} tone="error" label="Build artifacts" />
+
+// Determinate ring with a center % (indeterminate circular = the NockerlSpinner).
+<ProgressBar value={64} variant="ring" label="Export" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The determinate linear bar is Material's
+// LinearProgressIndicator styled to the Nockerl track, as shipped in
+// com.nockerl.app.chat.ui.TodoWidget / AgentWidget / ClusterSheet. The value is
+// animated (animateFloatAsState) so it interpolates; the track is squared to
+// NockerlProgressTrackShape (= RoundedCornerShape(2.dp), NockerlShapes.kt).
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.animation.core.animateFloatAsState
+import com.nockerl.app.core.theme.NockerlProgressTrackShape
+
+val animatedProgress by animateFloatAsState(
+    targetValue = completedCount.toFloat() / totalCount,
+    label = "todoProgress",
+)
+LinearProgressIndicator(
+    progress = { animatedProgress },
+    modifier = Modifier
+        .fillMaxWidth()
+        .height(3.dp)
+        .clip(NockerlProgressTrackShape),
+    color = colors.accentPrimary,      // plain cyan accent, no threshold banding
+    trackColor = colors.cardHairline,  // the recessed track
+)
+
+// Indeterminate: drop the `progress` lambda (the streaming/unknown-length form).
+LinearProgressIndicator(
+    modifier = Modifier.fillMaxWidth().height(3.dp).clip(NockerlProgressTrackShape),
+    color = colors.accentPrimary,
+    trackColor = colors.cardHairline,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlProgressBar` is a
+// PLAIN cyan fill on a recessed hairline track, NO threshold banding (that is the
+// ContextGauge). The track is SQUARED (2pt `NockerlRadius.track`), never a pill.
+// A REQUIRED label is the accessible name; determinate exposes its percent as the
+// accessibility value.
+import NockerlDesign
+
+// Determinate: a 0…total value drives the fill (defaults to total 1).
+NockerlProgressBar(value: fraction, label: "Exporting session…", size: .thick)
+
+// Indeterminate: omit `value` (a segment slides edge to edge; frozen under Reduce Motion).
+NockerlProgressBar(label: "Connecting to gateway…")
+
+// Completion / failure tone. Pair with a text/icon signal (never color alone).
+NockerlProgressBar(value: 1, label: "Snapshot uploaded", tone: .success)
+NockerlProgressBar(value: 0.8, label: "Build artifacts", tone: .error)
+
+// Determinate ring with a center % readout (indeterminate circular = the Spinner).
+NockerlProgressRing(value: fraction, label: "Export")
+
+// Buffer + segmented forms are not in NockerlDesign yet (web/Android-first follow-ups).
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'value', type: 'number', description: 'Current progress (0 to <code>max</code>). Drives the cyan fill width / filled segments / ring sweep. Omit for <code>indeterminate</code>.' },
+    { name: 'max', type: 'number', default: '100', description: 'Upper bound. Use a small integer (e.g. <code>5</code>) with the <code>segmented</code> variant for stepped progress.' },
+    { name: 'label', type: 'string', required: true, description: 'Accessible name; rendered left of the % readout. Bound to the <code>body.small</code> type role.' },
+    { name: 'variant', type: "'linear' | 'segmented' | 'ring'", default: "'linear'", description: 'Continuous bar, discrete cells, or a determinate ring with a center %.' },
+    { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Unknown-length work: a sliding track. Omits <code>aria-valuenow</code>, sets <code>aria-busy</code>; the slide freezes under reduced-motion.' },
+    { name: 'buffer', type: 'number', description: 'Optional secondary progress (0 to <code>max</code>) shown as a lighter track behind the primary fill (e.g. received vs. played).' },
+    { name: 'size', type: "'thin' | 'thick'", default: "'thin'", description: 'Track height. <code>thin</code> matches the app (3 to 4dp); <code>thick</code> is the chunkier readout form.' },
+    { name: 'tone', type: "'accent' | 'success' | 'error'", default: "'accent'", description: 'Fill color. <code>accent</code> is the plain cyan (no banding); <code>success</code>/<code>error</code> pair with an icon + message (never color alone).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The bar is Material 3 `LinearProgressIndicator` styled to the Nockerl track. There
+is no bespoke `NockerlProgressBar` composable yet (segmented / buffer / ring are
+not shipped; see drift).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'progress', type: '() -> Float', description: 'Lambda returning the fraction (0f..1f). Feed it an <code>animateFloatAsState</code> value so it interpolates. <strong>Omit</strong> for the indeterminate overload.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Sizing + shape. Convention: <code>.fillMaxWidth().height(3.dp).clip(NockerlProgressTrackShape)</code> (the 2.dp squared track).' },
+    { name: 'color', type: 'Color', default: 'colors.accentPrimary', description: 'The fill color, the brand cyan accent. No threshold banding (that is the context gauge).' },
+    { name: 'trackColor', type: 'Color', default: 'colors.cardHairline', description: 'The recessed track behind the fill.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlProgressBar` is determinate when `value` is set, indeterminate when it is
+`nil`. `NockerlProgressRing` is determinate-only (indeterminate-circular is the
+[spinner](/components/spinner/)). Both require a `label`. `size` / `tone` are the
+package enums below.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'value', type: 'Double?', description: 'Progress in <code>0...total</code>. Omit / <code>nil</code> for the indeterminate slide (bar only; the ring takes a non-optional <code>Double</code>).' },
+    { name: 'total', type: 'Double', default: '1', description: 'The full extent of <code>value</code>.' },
+    { name: 'label', type: 'String', required: true, description: 'The REQUIRED accessible name. Determinate exposes the percent as the a11y value. Empty is a runtime assert (law §13).' },
+    { name: 'size', type: 'NockerlProgressSize', default: '.thin', description: 'Bar track height: <code>.thin</code> (3pt) or <code>.thick</code> (4pt). Bar only.' },
+    { name: 'tone', type: 'NockerlProgressTone', default: '.accent', description: '<code>.accent</code> (plain cyan, no banding), <code>.success</code>, or <code>.error</code>. Pair success/error with a text/icon signal.' },
+    { name: 'diameter', type: 'CGFloat', default: 'NockerlSpace.space12', description: 'Ring size (48pt default). Ring only.' },
+    { name: 'showsReadout', type: 'Bool', default: 'true', description: 'Render the centered percent text in the ring. Ring only.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Use the **progress bar** for general determinate/indeterminate progress with the
+plain cyan fill. It is **not** the [context gauge](/components/context-gauge/) (the
+threshold-banded cyan → amber → red token-budget meter) and **not** the
+[spinner](/components/spinner/) (the indeterminate *circular* loader), so the ring
+here is **determinate only**.
+
+- **Android shipped forms:** only the **determinate linear** bar is real
+  (`LinearProgressIndicator` in TodoWidget / AgentWidget / ClusterSheet). The
+  **indeterminate** linear, **buffer**, **segmented**, and **determinate ring**
+  forms are **not shipped on Android**; its `CircularProgressIndicator` is
+  indeterminate-only (the spinner). (The determinate ring + indeterminate linear now
+  ship on Swift via NockerlDesign; buffer + segmented remain design-only.)
+- **Swift:** NockerlDesign now **publishes** the determinate + indeterminate **linear**
+  bar (`NockerlProgressBar`) and the determinate **ring** (`NockerlProgressRing`). The
+  **buffer** and **segmented** forms are still Swift-unshipped (web/Android-first).
+- **Track radius:** both the real Android track and Swift's `NockerlProgressBar` are
+  **squared** (`radius-track` = 2dp/2pt), not a pill. The web demo matches this.
+- **Height:** Android uses **3 to 4dp**; web exposes `thin` / `thick` as a convenience.
+</Aside>

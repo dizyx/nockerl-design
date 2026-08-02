@@ -1,0 +1,189 @@
+---
+title: App shell / scaffold
+description: The top-level Nockerl layout scaffold, with a top bar, a nav region, and content over the animated facet field.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import AppShellDemo from '../../../components/demos/AppShellDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <AppShellDemo client:visible />
+</Example>
+
+<Aside type="tip" title="Brand placement + platform presets (ratified)">
+The app shell is a **pure composition of the corrected components** (the real brand
+[lockup](/components/brand-mark/), the nav items, and the facet field), so every top-bar /
+nav fix propagates here automatically. Two rules are ratified:
+
+- **The brand appears exactly once.** Never duplicate the logo / title between the top bar and
+  the left nav. The surface's **main nav owns the brand**: the left nav on **web** and
+  **Voice**, the top bar on **Android** (whose top bar is the primary chrome).
+- **Platform presets:** **Android** = a top bar (brand) + a compact nav rail · **Voice** = the
+  left nav ONLY, no title bar · **web** = the mix (top bar + expanded nav). Switch them live above.
+- **Bottom navigation is retired.** The shell has two nav layouts (expanded sidebar or icon
+  rail), never a bottom bar.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function App() {
+  const [section, setSection] = useState('chat');
+  return (
+    <AppShell
+      preset="web"                     // 'web' | 'android' | 'voice' (platform chrome preset)
+      title="Chat"
+      layout="expanded"                // 'expanded' | 'rail'; bottom nav retired (preset sets the default)
+      destinations={[
+        { id: 'chat', label: 'Chat', icon: <ChatIcon />, dot: 'streaming' },
+        { id: 'tasks', label: 'Tasks', icon: <TasksIcon />, dot: 'attention' },
+        { id: 'files', label: 'Files', icon: <FilesIcon /> },
+        { id: 'cluster', label: 'Cluster', icon: <ClusterIcon /> },
+      ]}
+      selected={section}
+      onSelect={setSection}
+      actions={<><ClusterButton /><InboxButton count={3} /><NockerlAvatar /></>}
+    >
+      <SectionContent section={section} />   {/* the content region, over the facet field */}
+    </AppShell>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). com.nockerl.app.core.ui.MainScaffold
+// The shell is a Box: a PINNED ChatFeedBackground at the base, a stacked top
+// chrome (GlobalTopBar -> ProjectRow -> SessionChipsBar -> TopChromeBoundary)
+// that casts one soft shadow, then the transparent content (ChatScreen).
+import com.nockerl.app.core.ui.MainScaffold
+
+// Hosted by the auth-gated NavHost once authenticated:
+NavHost(navController, startDestination = NockerlRoutes.MAIN) {
+    composable(NockerlRoutes.MAIN) { MainScaffold() }
+}
+
+// MainScaffold composes the regions itself:
+//   GlobalTopBar(onAvatarClick, onInboxClick, onClusterClick, unreadCount, hasUnseen)
+//   ProjectRow(projectName, isWorkspaceScoped, onOpenPicker, onOpenFiles, onOpenTasks)
+//   TopChromeBoundary(collapsed = headerCollapsed, onCollapsedChange = { … })  // cyan line + grab handle
+//   ChatScreen(modifier = Modifier.weight(1f))                                  // transparent content
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). NockerlVoice/UI/DashboardView.swift
+// A ZStack: one full-window FacetBackground under EVERYTHING, a translucent
+// floating sidebar, and the selected page full-bleed over the same field.
+// No title bar (.windowStyle(.hiddenTitleBar) on the scene).
+struct DashboardView: View {
+    @ObservedObject private var router = DashboardRouter.shared
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            FacetBackground().ignoresSafeArea()          // pinned geometric ground
+            HStack(spacing: 0) {
+                sidebar                                   // brand + nav items + settings
+                detail.frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .ignoresSafeArea(.container, edges: .top)     // flow under the traffic lights
+        }
+        .frame(minWidth: 860, minHeight: 580)
+        .tint(NockerlTheme.accent)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'title', type: 'string', description: 'Title shown in the top bar (the active destination on small widths).' },
+    { name: 'destinations', type: 'ShellDestination[]', required: true, description: 'Nav entries: <code>{ id, label, icon, dot? }</code>. Each renders as one focusable button.' },
+    { name: 'selected', type: 'string', required: true, description: 'Active destination <code>id</code>. Drives the selected indicator + which content shows.' },
+    { name: 'onSelect', type: '(id: string) => void', required: true, description: 'Fired when a destination is activated (click / Enter / Space).' },
+    { name: 'preset', type: "'web' | 'android' | 'voice'", default: "'web'", description: 'Platform chrome preset. <code>web</code>: top bar + expanded nav · <code>android</code>: top bar (owns the brand) + icon rail · <code>voice</code>: left nav only, no title bar. Sets the default layout and where the brand sits.' },
+    { name: 'layout', type: "'expanded' | 'rail'", default: 'preset default', description: 'Nav presentation: full sidebar or icon rail. Defaults from the preset; bottom navigation is retired.' },
+    { name: 'actions', type: 'ReactNode', description: 'Trailing top-bar controls (cluster, inbox, avatar). Rendered after the title.' },
+    { name: 'children', type: 'ReactNode', required: true, description: 'The content region, rendered transparent so the facet field shows behind it.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`MainScaffold()` takes only a `modifier`; it composes the regions internally and
+hoists their view-models. The real parameters live on the region composables it
+calls. Here are the most load-bearing ones:
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'MainScaffold.modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier; applies <code>fillMaxSize()</code> + <code>statusBarsPadding()</code> internally. State (header collapse, sheets) is held inside.' },
+    { name: 'GlobalTopBar.onAvatarClick / onInboxClick / onClusterClick', type: '() -> Unit', default: '{}', description: 'Top-bar actions that open the settings / inbox / cluster sheets.' },
+    { name: 'GlobalTopBar.unreadCount', type: 'Int', default: '0', description: 'Inbox badge count (orange agent-family token); falls back to a dot via <code>hasUnseen</code>.' },
+    { name: 'ProjectRow.onOpenPicker / onOpenFiles / onOpenTasks', type: '() -> Unit', required: true, description: 'Project selector + Files / Tasks buttons → their bottom sheets.' },
+    { name: 'TopChromeBoundary.collapsed', type: 'Boolean', required: true, description: 'Whether the project + session rows are collapsed up under the title bar.' },
+    { name: 'TopChromeBoundary.onCollapsedChange', type: '(Boolean) -> Unit', required: true, description: 'Drag/tap the cyan boundary handle to collapse/expand the header chrome.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`DashboardView` is a self-contained scene root with no parameters: it reads the
+shared `DashboardRouter` + `SettingsStore`. The shape is the configurable surface:
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'FacetBackground()', type: 'View', description: 'The pinned full-window geometric field (<code>.ignoresSafeArea()</code>), the animated ground under everything.' },
+    { name: 'sidebar', type: 'View (216pt)', description: 'Translucent floating panel (<code>canvas @ 0.3</code>, no material) so the field reads through: brand at top, nav rows, settings pinned to bottom.' },
+    { name: 'SidebarRow(section, isSelected, action)', type: 'View', description: 'One nav row. Selected → cyan label + cyan <code>@0.16</code> fill + cyan <code>@0.45</code> border; hover → onSurface <code>@0.06</code>.' },
+    { name: 'detail', type: 'View', description: 'The selected page, full-bleed over the same field (switched on <code>router.section</code>).' },
+    { name: 'router.section', type: 'DashboardSection', description: 'Active destination. Drives both the selected row and which detail pane shows.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+All three shells share one anatomy (a top region, a nav region, and a content
+region over the pinned animated facet field), but the form genuinely diverges:
+
+- **Nav placement:** Android stacks nav as **top chrome** (project + session rows
+  that collapse under the title bar); Voice + web use a **left sidebar / rail**.
+  Bottom navigation is retired: every shell is a sidebar or an icon rail.
+- **Top bar:** Android centers the logo with avatar/cluster/bell around it; Voice
+  has **no title bar at all** (the brand sits in the sidebar under the traffic
+  lights). Web carries a title + trailing actions.
+- **Boundary:** Android draws a **1.5dp cyan line + drag handle** between chrome
+  and content; Voice/web separate regions with a hairline only.
+- **The facet field is unified:** the same low-poly triangle mesh + ~18s
+  diagonal tone-wave on all three (`ChatFeedBackground.kt` / `FacetBackground.swift`).
+</Aside>

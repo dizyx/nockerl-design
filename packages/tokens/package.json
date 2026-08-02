@@ -1,0 +1,31 @@
+{
+  "name": "@dizyx/nockerl-tokens",
+  "version": "2.0.0",
+  "description": "Nockerl design tokens \u2014 the canonical web build (CSS custom properties) + a typed token map (tokens.json + TS), generated from the DTCG source. Source of truth: dizyx/nockerl-design.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dizyx/nockerl-design.git",
+    "directory": "packages/tokens"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.json": "./dist/tokens.json",
+    "./tokens.css": "./dist/tokens.css"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

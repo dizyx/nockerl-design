@@ -1,0 +1,157 @@
+---
+title: File upload / dropzone
+description: Drag-and-drop dropzone with a browse button, a selected-file list, and per-file upload progress.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import FileUploadDemo from '../../../components/demos/FileUploadDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FileUploadDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function AttachPanel() {
+  return (
+    <FileUpload
+      accept={['.ts', '.json', '.yaml', 'image/*']}
+      multiple
+      maxSize={10 * 1024 * 1024}
+      onFiles={(files) => files.forEach(uploadFile)}
+      onReject={(file, reason) => toast(`${file.name}: ${reason}`)}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android Jetpack Compose (canonical). The shipped app attaches IMAGES only via
+// the system photo picker; there is no dropzone / size / per-file progress yet.
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+
+val picker = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 8),
+) { uris -> viewModel.attach(uris) }
+
+NockerlIconButton(
+    icon = Icons.Filled.AttachFile,
+    contentDescription = "Attach",
+    onClick = {
+        picker.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+        )
+    },
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI (canonical). Nockerl Voice ships NO file affordance today; this
+// is the intended native API (the standard .fileImporter + a drop destination).
+.fileImporter(
+    isPresented: $showImporter,
+    allowedContentTypes: [.plainText, .json, .yaml, .image],
+    allowsMultipleSelection: true,
+) { result in
+    if case .success(let urls) = result { uploader.add(urls) }
+}
+.dropDestination(for: URL.self) { urls, _ in
+    uploader.add(urls)
+    return true
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'onFiles', type: '(files: File[]) => void', required: true, description: 'Called with the accepted files from a drop or the browse picker.' },
+    { name: 'accept', type: 'string[]', description: 'Allowed extensions / MIME globs (e.g. <code>.ts</code>, <code>image/*</code>). Anything else is rejected with a reason.' },
+    { name: 'multiple', type: 'boolean', default: 'true', description: 'Allow selecting more than one file at a time.' },
+    { name: 'maxSize', type: 'number', description: 'Per-file byte cap. Over-size files render the <strong>rejected</strong> treatment (⚠ + reason), never silently dropped.' },
+    { name: 'onReject', type: '(file: File, reason: string) => void', description: 'Called for each file that fails the <code>accept</code> / <code>maxSize</code> checks.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert + clearly-seen dropzone (never faded to invisible). Browse + drop are blocked.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The shipped app uses the platform photo picker (`PickMultipleVisualMedia`), an
+**image-only attach**, not a file dropzone. The parameters below are that
+launcher's real surface; the dropzone / size / per-file progress are web-only for
+now (see the drift note).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'contract', type: 'ActivityResultContract', required: true, description: '<code>PickMultipleVisualMedia(maxItems)</code> for a multi-image pick, or <code>PickVisualMedia()</code> for one.' },
+    { name: 'onResult', type: '(List<Uri>) -> Unit', required: true, description: 'Callback with the picked content URIs (empty if the user cancels).' },
+    { name: 'maxItems', type: 'Int', default: 'system max', description: 'Upper bound on the multi-select count, passed to the contract.' },
+    { name: 'mediaType', type: 'VisualMediaType', default: 'ImageOnly', description: 'Passed in the <code>PickVisualMediaRequest</code>: <code>ImageOnly</code>, <code>VideoOnly</code>, or <code>ImageAndVideo</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Not shipped in Nockerl Voice. The table is the intended native API: SwiftUI's
+`.fileImporter` plus a `.dropDestination` on the recessed dropzone surface.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'isPresented', type: 'Binding<Bool>', required: true, description: 'Drives the system file importer open/closed.' },
+    { name: 'allowedContentTypes', type: '[UTType]', required: true, description: 'The accepted uniform type identifiers (e.g. <code>.plainText</code>, <code>.json</code>, <code>.image</code>).' },
+    { name: 'allowsMultipleSelection', type: 'Bool', default: 'false', description: 'Permit selecting several files in the importer.' },
+    { name: 'onCompletion', type: 'Result<[URL], Error>', required: true, description: 'Picked file URLs, or the error if the import failed / was cancelled.' },
+    { name: '.dropDestination', type: 'for: URL.self', description: 'The drag-and-drop sink on the dropzone; returns <code>true</code> when the drop is accepted.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The dropzone, file list, per-file progress, and success / error / rejected states
+are **web-only** today, designed originally from the laws + the Button / TextField
+/ progress vocabulary, since the apps don't ship them:
+
+- **Android** attaches **images only** through the system photo picker
+  (`PickMultipleVisualMedia`) and shows dismissable thumbnail chips (an X in the
+  error color). No generic files, no size, no drag-drop, no per-file progress.
+- **Voice (macOS)** ships **no** file affordance at all; the Swift code/params
+  above are the intended `.fileImporter` + `.dropDestination` API.
+- The signature **dropzone** reuses the recessed-well + dashed-border look from the
+  text field; the **progress bar** reuses the gauge track; **browse/upload** reuse
+  the button ladder, so when the apps adopt it, it already matches.
+</Aside>

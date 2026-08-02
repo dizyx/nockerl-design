@@ -1,0 +1,150 @@
+---
+title: Context gauge
+description: The Nockerl context-window / token-budget meter, showing used/total tokens with cyan, amber, and red status bands.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import ContextGaugeDemo from '../../../components/demos/ContextGaugeDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ContextGaugeDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+// Linear bar + ring share one threshold model (0.60 / 0.85) and the same
+// formatTokenCount readout ("82K / 200K · 41%"). Cyan = healthy, warm = status.
+export function SessionContext({ tokens, contextWindow }: ContextState) {
+  return (
+    <>
+      <ContextGauge form="bar" used={tokens} total={contextWindow} />
+      <ContextGauge form="ring" used={tokens} total={contextWindow} />
+    </>
+  );
+}
+
+// Compact inline form for a session chips bar. An unmanaged (Cloud Agent)
+// session passes used={null} → a faint empty track, never a faked fill.
+<ContextGauge form="chip" used={null} total={contextWindow} label="docs" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The gauge ships as the per-chip context
+// line under each session keycap: com.nockerl.app.chat.ui.SessionChipsBar.
+// Thresholds live in that file as CONTEXT_LOW_THRESHOLD (0.60f) /
+// CONTEXT_HIGH_THRESHOLD (0.85f): cyan (< .60, the harness accent) → yellow
+// (< .85) → red (>= .85) over a faint canvasEdge track. NO number, just the line.
+SessionChipsBar(
+    sessions = sessions,
+    activeSessionSlug = activeSlug,
+    onSessionSelect = viewModel::selectSession,
+    onCreateSession = viewModel::createSession,
+    // … long-press menu callbacks …
+    streamStates = streamStates,
+    // per-slug usage ratio (0..1). A slug ABSENT from the map = no data →
+    // empty track (shouldShowContextGauge gates this to managed sessions only).
+    contextRatios = contextRatios,
+    engineAccent = harnessAccent,
+)
+
+// The numeric readout is composed from the gateway's ContextUsage:
+// utilizationPercent = totalTokens / contextWindow * 100  (SessionConfig.kt),
+// formatted with formatTokenCount (ChatUtils.kt): "${used}K / ${total}K · $pct%".
+val pct = contextUsage.utilizationPercent.toInt()
+val line = "${formatTokenCount(contextUsage.totalTokens)} / " +
+    "${formatTokenCount(contextUsage.contextWindow)} · $pct%"
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Nockerl Voice). NOT YET SHIPPED. Voice has no context gauge
+// (it surfaces no token budget today). This is the intended API, designed from
+// the laws + the Android thresholds; see the drift note below.
+ContextGauge(used: state.tokens, total: state.contextWindow, form: .bar)
+ContextGauge(used: state.tokens, total: state.contextWindow, form: .ring)
+
+// Same band model as Android: < 0.60 accent (healthy) · < 0.85 .warning ·
+// >= 0.85 .error. Readout uses the shared formatTokenCount → "82K / 200K · 41%".
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'used', type: 'number | null', required: true, description: 'Tokens consumed. <code>null</code> = unmanaged session (no data) → a faint empty track, never a faked fill.' },
+    { name: 'total', type: 'number', required: true, description: 'Context-window capacity in tokens. Defaults to <code>200_000</code> upstream when the gateway omits it.' },
+    { name: 'form', type: "'bar' | 'ring' | 'chip'", default: "'bar'", description: 'Linear meter, ring/arc gauge, or the compact inline chip underline.' },
+    { name: 'label', type: 'string', description: 'Optional name shown on the <code>chip</code> form (the session slug).' },
+    { name: 'lowThreshold', type: 'number', default: '0.60', description: 'Ratio below which the fill is cyan (healthy). Matches Android <code>CONTEXT_LOW_THRESHOLD</code>.' },
+    { name: 'highThreshold', type: 'number', default: '0.85', description: 'Ratio at/above which the fill is red (critical); between the two it is amber. Matches <code>CONTEXT_HIGH_THRESHOLD</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The gauge is not a standalone composable: it is the **context line** rendered
+inside `SessionChipsBar`. These are the relevant `SessionChipsBar` parameters; the
+thresholds + colors are file-level constants in the same file.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'sessions', type: 'List<SubSession>', required: true, description: 'The sub-sessions rendered as keycap chips; each carries its own context line.' },
+    { name: 'activeSessionSlug', type: 'String', required: true, description: 'The selected sub-session slug (drives the lifted/brighter keycap).' },
+    { name: 'contextRatios', type: 'Map<String, Float>', default: 'emptyMap()', description: 'Per-slug usage fraction (0..1). A slug <strong>absent</strong> from the map has no data → empty track (never faked).' },
+    { name: 'engineAccent', type: 'Color?', default: 'null', description: 'Accent used for the LOW (healthy) band, the harness accent. Falls back to <code>accentPrimary</code> (cyan).' },
+    { name: 'streamStates', type: 'Map<String, StreamState>', default: 'emptyMap()', description: 'Per-slug stream state for the leading status dot (unrelated to the context line).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Not shipped in Nockerl Voice. This is the **intended** SwiftUI API (a `View`
+initialized with the usage figures), designed from the laws + the Android
+thresholds so it round-trips with the other platforms when it lands.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'used', type: 'Int?', required: true, description: 'Tokens consumed. <code>nil</code> = unmanaged → empty track.' },
+    { name: 'total', type: 'Int', required: true, description: 'Context-window capacity in tokens.' },
+    { name: 'form', type: 'ContextGauge.Form', default: '.bar', description: 'Linear bar, <code>.ring</code> arc, or <code>.chip</code> inline underline.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Swift:** Nockerl Voice has **no context gauge** today (no token budget surfaced). The Swift API above is intended, not shipped.
+- **Token formatting:** Android `formatTokenCount` is **integer-only** (`1M`, `42K`, `512`); there is no `1.2M` decimal form anywhere in the source, so the readout shows `82K / 200K · 41%`, never `82.0K`. The web demo mirrors this exactly.
+- **Numeric readout:** Android draws the chip line with **no number** (just the colored line); the `used / total · pct%` readout lives above the chat input, not on the chip. The web bar/ring forms surface the figure inline.
+</Aside>

@@ -1,0 +1,60 @@
+---
+title: Code panel
+description: The dev-console editor, CodeMirror 6 themed entirely by design tokens, in the code-block frame.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import CodePanelDemo from '../../../components/demos/CodePanelDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <CodePanelDemo client:visible />
+</Example>
+
+The web console's **editor panel** is a real CodeMirror 6 instance whose entire look is
+the design system: the ground is a **recessed well** (fields sink), the caret and
+selection ride the accent (selection = the sanctioned soft wash, never an opaque brand
+fill), the gutter sits on the surface ramp, and the **syntax ramp mirrors the
+[`Code block`](/components/code-block/) canon exactly**. Keywords on accent-secondary,
+strings on status-success, functions on accent-tertiary, numbers on the categorical
+orange, comments muted italic. One code voice whether it's read-only or live.
+
+The chrome reuses the code-block **header grammar verbatim**: filename ·
+[`LanguageBadge`](/components/badge/#language-tag) · the shared CopyButton (copying the
+live document). Focus reads on the panel (an inner accent outline), never a CodeMirror
+default.
+
+<Aside type="note" title="The liftable deliverable">
+The design deliverable for the dashboard is **`nockerlCodeMirrorTheme()`**
+(`_codeMirrorTheme.ts`), an `Extension[]` built ONLY from `var(--token)` strings, so it
+theme-flips for free and never forks a hue. Web-only by scope (the de-phantom verdict);
+native surfaces read code through the cross-platform CodeBlock.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { EditorView, lineNumbers } from '@codemirror/view';
+import { EditorState } from '@codemirror/state';
+import { javascript } from '@codemirror/lang-javascript';
+import { nockerlCodeMirrorTheme } from './_codeMirrorTheme';
+
+new EditorView({
+  parent: host,
+  state: EditorState.create({
+    doc: source,
+    extensions: [lineNumbers(), javascript({ typescript: true }), nockerlCodeMirrorTheme()],
+  }),
+});
+```
+
+</TabItem>
+</Tabs>

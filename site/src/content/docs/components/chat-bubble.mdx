@@ -1,0 +1,181 @@
+---
+title: Chat bubble
+description: The base chat-bubble primitive, with the lifted surface, tail corner, and role alignment that hold a single message.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import ChatBubbleDemo from '../../../components/demos/ChatBubbleDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ChatBubbleDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the intended @dizyx/nockerl-react API (not yet exported; promotion tracked),
+// modeled on the shipped Compose bubble container.) The bubble is the PRIMITIVE
+// that holds one message; AgentMessage composes its header + body ON it.
+
+export function Thread() {
+  return (
+    <>
+      {/* agent → leading/left soft plane; user → trailing/right cyan jewel */}
+      <ChatBubble role="agent">Routing through the credential store.</ChatBubble>
+      <ChatBubble role="user">Perfect, ship it.</ChatBubble>
+
+      {/* a same-sender run: tail only on the edge bubbles, squared seams between */}
+      <ChatBubble role="agent" group="first">Reading the reconnect loop.</ChatBubble>
+      <ChatBubble role="agent" group="last">Re-running the SSE tests.</ChatBubble>
+
+      {/* own-message delivery lane + a centered system bubble */}
+      <ChatBubble role="user" delivery="sent" timestamp="10:25 AM">Use backoff.</ChatBubble>
+      <ChatBubble role="user" delivery="failed" onRetry={resend}>Couldn’t send.</ChatBubble>
+      <ChatBubble role="system">Context compacted</ChatBubble>
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The shipped bubble container is
+// com.nockerl.app.chat.ui.MessageBubble; its surface = NockerlCard + the
+// rememberBubbleShape tail. role drives alignment (USER = trailing/right cyan
+// gradient, ASSISTANT = leading/left cardAlt plane, SYSTEM = a centered divider).
+import com.nockerl.app.chat.ui.MessageBubble
+import com.nockerl.app.core.theme.BubbleTail
+import com.nockerl.app.core.theme.rememberBubbleShape
+
+// One bubble per message. The list collapses the header on a same-speaker run
+// (showHeader = !isContinuation) and caps the width at the phone bubble cap.
+MessageBubble(
+    message = message,                       // role → alignment + surface; carries blocks
+    showHeader = !isContinuation,            // grouping: collapse on a consecutive same-sender turn
+    accentColor = Color.Unspecified,         // Unspecified → the default cyan userCard gradient
+    bubbleMaxWidth = layout.bubbleMaxWidth,  // 320.dp phone cap; wider on tablets
+)
+
+// The bubble silhouette itself. The tail corner points at the speaker:
+val shape = rememberBubbleShape(
+    tail = if (isUser) BubbleTail.TOP_RIGHT else BubbleTail.TOP_LEFT,
+    radius = 20.dp,        // radius.bubble
+    tailRadius = 6.dp,     // radius.bubble-tail
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS (SwiftUI). NOT YET IMPLEMENTED: Nockerl Voice is a dictation/transcription
+// surface and ships no chat thread, so there is no bubble primitive on macOS. This
+// is the INTENDED API, derived from the laws + the Voice material (NockerlTheme,
+// the lifted card) so the bubble matches Android when a chat surface lands.
+ChatBubble(role: .agent) { Text("Routing through the credential store.") }
+ChatBubble(role: .user) { Text("Perfect, ship it.") }
+
+// a same-sender run: tail only on the edge bubbles
+ChatBubble(role: .agent, group: .first) { Text("Reading the reconnect loop.") }
+ChatBubble(role: .agent, group: .last)  { Text("Re-running the SSE tests.") }
+
+// own-message delivery lane + a centered system bubble
+ChatBubble(role: .user, delivery: .sent, timestamp: "10:25 AM") { Text("Use backoff.") }
+ChatBubble(role: .system) { Text("Context compacted") }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'role', type: "'user' | 'agent' | 'system'", required: true, description: 'Speaker. <code>user</code> → trailing/right (cyan jewel card); <code>agent</code> → leading/left (soft lifted plane); <code>system</code> → centered, muted divider bubble.' },
+    { name: 'children', type: 'ReactNode', description: 'The message body. The bubble is a pure <strong>container</strong>. It does not render a header, markdown, or tool panels (that is <code>AgentMessage</code>).' },
+    { name: 'group', type: "'single' | 'first' | 'middle' | 'last'", default: "'single'", description: 'Position in a consecutive same-sender run. The tail stays on the edge bubbles (<code>first</code>/<code>last</code>); interior speaker-side corners square off and spacing tightens.' },
+    { name: 'delivery', type: "'sending' | 'sent' | 'failed'", description: 'Own-message delivery state. Adds a warm receipt (clock · check · alert) under the bubble; <code>failed</code> restyles the bubble to the banner inline-alert grammar (inset status disc + whisper-red border + lifted neutral surface) with title, message and Retry. Never color-alone.' },
+    { name: 'timestamp', type: 'string', description: 'Short time string shown in the meta line under the bubble (e.g. <code>"10:23 AM"</code>).' },
+    { name: 'selected', type: 'boolean', default: 'false', description: 'Selected / long-pressed: a cyan focus ring + a faint cyan wash (the single brand accent), never a glow.' },
+    { name: 'onSelect', type: '() => void', description: 'Tap-to-select handler for <strong>selection</strong> (a toggle + soft cyan wash), distinct from the <a href="/components/long-press-pop/">long-press pop menu</a> (a menu of actions); the two compose. When set, the whole bubble becomes one focusable button (one accessible name).' },
+    { name: 'onRetry', type: '() => void', description: 'Retry handler for a <code>failed</code> bubble; renders a real, focusable Retry button.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'message', type: 'ChatMessage', required: true, description: 'The message model: <code>role</code> drives alignment + surface (<code>USER</code> cyan gradient / <code>ASSISTANT</code> cardAlt plane / <code>SYSTEM</code> centered divider) and carries the body blocks.' },
+    { name: 'showHeader', type: 'Boolean', default: 'true', description: 'Grouping control. The list passes <code>!isContinuation</code> so a consecutive same-sender bubble collapses its header and reads as part of the run.' },
+    { name: 'accentColor', type: 'Color', default: 'Color.Unspecified', description: 'Optional override for the user bubble fill. <code>Unspecified</code> → the default cyan <code>userCard2 → userCard</code> gradient.' },
+    { name: 'bubbleMaxWidth', type: 'Dp', default: '320.dp', description: 'Upper bound on bubble width (<code>widthIn(max=)</code>). Phone cap by default; the list passes a wider value on tablets.' },
+    { name: 'rememberBubbleShape(tail, radius, tailRadius)', type: 'RoundedCornerShape', description: 'The bubble silhouette. <code>tail</code> = <code>TOP_RIGHT</code> (user) / <code>TOP_LEFT</code> (assistant); <code>radius</code> default <code>20.dp</code>, <code>tailRadius</code> default <code>6.dp</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Not yet implemented. Nockerl Voice is a dictation/transcription surface with no
+chat thread, so no bubble primitive ships on macOS. The signature below is the
+**intended** SwiftUI API (a `ViewBuilder` content closure), derived from the laws
++ the shipped Compose bubble container.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'role', type: 'BubbleRole', required: true, description: '<code>.user</code> → trailing/right; <code>.agent</code> → leading/left; <code>.system</code> → centered. Drives alignment, surface, and the tail corner.' },
+    { name: 'group', type: 'GroupPosition', default: '.single', description: 'Position in a same-sender run, which keeps the tail on the edge bubbles and squares the interior seams.' },
+    { name: 'delivery', type: 'DeliveryState?', default: 'nil', description: 'Own-message delivery state (<code>.sending</code> / <code>.sent</code> / <code>.failed</code>), shown as a warm receipt under the bubble; never color-alone.' },
+    { name: 'timestamp', type: 'String?', default: 'nil', description: 'Short time string in the meta line under the bubble.' },
+    { name: 'content', type: '() -> Content', required: true, description: 'A <code>@ViewBuilder</code> body. The bubble is a container; the rich turn is composed on top.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Primitive vs. composition:** this is the bubble *container* (shape · tail ·
+  role alignment · grouping · delivery/selection). The full assistant turn
+  (identity header, markdown, tool-call panels, streaming) is
+  [Agent message](/components/agent-message/), composed **on** this bubble. Tool
+  panels and markdown are documented there, not here; note the bottom-of-chat
+  **streaming indicator** there is **design-only** (documented, not shipped in the
+  products).
+- **Swift:** no chat surface ships yet; Voice is transcription-only. The Swift
+  API above is intended, not implemented.
+- **Bubble radius:** Compose `MessageBubble` hardcodes the shape at **18.dp** /
+  **6.dp**, while `bubbleShape` (and the web demo) default to the token **20** /
+  **6** (`radius.bubble` / `radius.bubble-tail`). The bubble call-site should
+  consume the token.
+- **Grouping seams** *(resolved in [adjudication 2026-07-02 · B9])*: the **web grouping
+  model wins**: interior speaker-side corners of a same-sender run square off, one tail
+  per run. Compose (today collapses only the header, keeping every bubble's full tail)
+  conforms.
+- **Delivery receipts** *(resolved in [adjudication 2026-07-02 · B9]; failed treatment
+  restated by the [r5.2 addendum · task 2673])*: the sending / sent / failed lane + the
+  **in-thread failed bubble** built on the **Banner inline-alert grammar** (inset status
+  disc + whisper-red border + lifted neutral surface + Retry) is the ratified model. Android
+  moves stream errors off the floating status pill and per-bubble.
+</Aside>

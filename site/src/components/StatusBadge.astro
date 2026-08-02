@@ -1,0 +1,28 @@
+---
+// StatusBadge renders a page's review status as a pill in OUR NockerlBadge family:
+// a sans soft-label + a leading filled status disc (tone-colored). 'review' and
+// 'draft' carry the disc so unreviewed work is visually flagged; 'approved' is clean.
+type Status = 'draft' | 'review' | 'approved';
+
+interface Props {
+  status: Status;
+  /** Hide the leading status disc even on draft/review (e.g. compact contexts). */
+  noMark?: boolean;
+}
+
+const { status, noMark = false } = Astro.props;
+
+const labels: Record<Status, string> = {
+  draft: 'Draft',
+  review: 'In review',
+  approved: 'Approved',
+};
+
+// Draft + review are unreviewed → flag them.
+const showMark = !noMark && status !== 'approved';
+---
+
+<span class={`nk-status nk-status--${status}`} data-status={status}>
+  {showMark && <span class="nk-status__mark" aria-hidden="true" />}
+  {labels[status]}
+</span>

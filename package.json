@@ -1,0 +1,47 @@
+{
+  "name": "nockerl-design",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "site"
+  ],
+  "scripts": {
+    "build": "bun run scripts/build.ts && bun run scripts/pack-tokens.ts",
+    "verify": "bun run scripts/verify.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "check:size": "bun run scripts/check-file-size.ts",
+    "pack:tokens": "bun run scripts/pack-tokens.ts",
+    "lint:tokens": "bun run scripts/lint-tokens.ts",
+    "check:deps": "bun run scripts/check-deps.ts",
+    "compose:graph": "bun run scripts/compose-graph.ts",
+    "compose:graph:strict": "bun run scripts/compose-graph.ts --strict",
+    "props:extract": "bun run scripts/extract-props.ts",
+    "check:docs": "bun run scripts/check-docs-imports.ts",
+    "check:hand-roll": "bun run scripts/check-hand-roll.ts",
+    "bump": "bun run scripts/bump-version.ts",
+    "harness": "bun run lint:tokens && bun run check:deps && bun run compose:graph:strict && bun run props:extract && bun run check:docs && bun run check:hand-roll && bun run check:dashes",
+    "lint:react": "cd packages/react && eslint src --max-warnings 0",
+    "check": "bun run typecheck && bun run build && bun run verify && bun run check:dashes",
+    "check:dashes": "bun run scripts/check-dashes.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@happy-dom/global-registrator": "^20.10.6",
+    "@types/bun": "^1.3.14",
+    "eslint": "9.39.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "happy-dom": "^20",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "style-dictionary": "^4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "8.62.1"
+  },
+  "license": "MIT"
+}

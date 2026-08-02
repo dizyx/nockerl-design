@@ -1,0 +1,1193 @@
+{
+  "generated": "scripts/compose-graph.ts",
+  "counts": {
+    "components": 98,
+    "withContract": 98,
+    "leaf": 75,
+    "optional": 18,
+    "required": 5,
+    "violations": 0,
+    "byType": {}
+  },
+  "coverage": {
+    "opaqueSlotFills": 0
+  },
+  "components": {
+    "Accordion": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        },
+        "headerAccessory": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "AgentMessage": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "AppShell": {
+      "hierTier": "pattern",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "NockerlLockup"
+      ],
+      "consumers": []
+    },
+    "Avatar": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Badge": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Banner": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "BarChart": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "BottomSheet": {
+      "hierTier": "composite",
+      "tier": "required",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": true
+        },
+        "footer": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "BrandMark": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "NockerlLockup",
+        "NockerlLogo"
+      ],
+      "consumers": []
+    },
+    "Breadcrumbs": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Button": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Calendar": {
+      "hierTier": "behavior",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": [
+        "DatePicker"
+      ]
+    },
+    "Callout": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Card": {
+      "hierTier": "primitive",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Chart": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ChatBubble": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": [
+        "ChatInput",
+        "FloatingPills"
+      ]
+    },
+    "Checkbox": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Chip": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "CircularProgress": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "role=progressbar"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ClusterGrid": {
+      "hierTier": "pattern",
+      "tier": "required",
+      "slots": {
+        "default": {
+          "accepts": [
+            "NockerlNodeCell"
+          ],
+          "required": true
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "CodeBlock": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Combobox": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "CommandPalette": {
+      "hierTier": "pattern",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ContextGauge": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "DatePicker": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [
+        "Calendar"
+      ],
+      "consumers": []
+    },
+    "DefinitionTrigger": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Dialog": {
+      "hierTier": "composite",
+      "tier": "required",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": true
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "DiffViewer": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Divider": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "hr"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Drawer": {
+      "hierTier": "composite",
+      "tier": "required",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": true
+        },
+        "footer": {
+          "accepts": [
+            "NockerlButton",
+            "NockerlIconButton"
+          ],
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "EmptyState": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "actions": {
+          "accepts": [
+            "NockerlButton",
+            "NockerlIconButton"
+          ],
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "SearchField"
+      ],
+      "consumers": []
+    },
+    "Fab": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button",
+        "role=menu"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "FacetedBackground": {
+      "hierTier": "primitive",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Field": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input",
+        "textarea"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "FieldValidation": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "FileUpload": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "FormLayout": {
+      "hierTier": "pattern",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        },
+        "headerAccessory": {
+          "accepts": "*",
+          "required": false
+        },
+        "footer": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Gauge": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Icon": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "IconButton": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "JobRow": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "trailing": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Kbd": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "KeyValue": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "LineChart": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Link": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "a"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "List": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ListItem": {
+      "hierTier": "behavior",
+      "tier": "optional",
+      "slots": {
+        "details": {
+          "accepts": "*",
+          "required": false
+        },
+        "trailing": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ListboxOption": {
+      "hierTier": "behavior",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "LongPressPop": {
+      "hierTier": "pattern",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "MarkdownContent": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Menu": {
+      "hierTier": "behavior",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button",
+        "role=menu",
+        "role=menuitem"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "MultiSelect": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [
+        "SearchField"
+      ],
+      "consumers": []
+    },
+    "NavItem": {
+      "hierTier": "behavior",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "NockerlLockup": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "NockerlLogo"
+      ],
+      "consumers": [
+        "AppShell",
+        "BrandMark",
+        "Sidebar",
+        "TopBar",
+        "TypeSpecimen"
+      ]
+    },
+    "NockerlLogo": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": [
+        "BrandMark",
+        "NockerlLockup",
+        "RecordingHud",
+        "TopBar"
+      ]
+    },
+    "NodeCell": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "footer": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "OtpInput": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Overlay": {
+      "hierTier": "behavior",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "PageDots": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Pagination": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Panel": {
+      "hierTier": "pattern",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Popover": {
+      "hierTier": "behavior",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ProgressBar": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ProgressTrack": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "role=progressbar"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "RadioGroup": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input",
+        "role=radiogroup"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "RecordingHud": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "NockerlLogo"
+      ],
+      "consumers": [
+        "ChatInput"
+      ]
+    },
+    "SearchField": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": [
+        "EmptyState",
+        "MultiSelect",
+        "TopBar"
+      ]
+    },
+    "SegmentedControl": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button",
+        "role=radiogroup",
+        "role=radio"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Select": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "SessionChip": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "SessionChipsBar": {
+      "hierTier": "composite",
+      "tier": "required",
+      "slots": {
+        "default": {
+          "accepts": [
+            "NockerlSessionChip"
+          ],
+          "required": true
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Sidebar": {
+      "hierTier": "pattern",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "NockerlLockup"
+      ],
+      "consumers": []
+    },
+    "Skeleton": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Slider": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button",
+        "role=slider"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Sparkline": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Spinner": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "SplitButton": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "StatCard": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "StatusDisc": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "StatusDot": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Stepper": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Surface": {
+      "hierTier": "primitive",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Switch": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button",
+        "role=switch"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Table": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "footer": {
+          "accepts": "*",
+          "required": false
+        },
+        "empty": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Tabs": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button",
+        "role=tab",
+        "role=tablist"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "TextArea": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "textarea"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "TextField": {
+      "hierTier": "primitive",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "input"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "TimePicker": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Timeline": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Toast": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "TodoWidget": {
+      "hierTier": "composite",
+      "tier": "optional",
+      "slots": {
+        "headerAccessory": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "ToolCallCard": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Toolbar": {
+      "hierTier": "pattern",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": [
+            "NockerlButton",
+            "NockerlIconButton",
+            "NockerlSegmentedControl",
+            "NockerlDivider",
+            "NockerlMenu"
+          ],
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Tooltip": {
+      "hierTier": "behavior",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "TopBar": {
+      "hierTier": "pattern",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [
+        "NockerlLockup",
+        "NockerlLogo",
+        "SearchField"
+      ],
+      "consumers": []
+    },
+    "Tree": {
+      "hierTier": "composite",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [
+        "button"
+      ],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Well": {
+      "hierTier": "primitive",
+      "tier": "optional",
+      "slots": {
+        "default": {
+          "accepts": "*",
+          "required": false
+        }
+      },
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    },
+    "Wizard": {
+      "hierTier": "pattern",
+      "tier": "leaf",
+      "slots": {},
+      "owns": [],
+      "hasContract": true,
+      "renders": [],
+      "consumers": []
+    }
+  },
+  "violations": []
+}

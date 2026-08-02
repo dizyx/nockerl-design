@@ -1,0 +1,80 @@
+name: CI
+
+# The PR gate: everything the local `harness` + `check` + site build enforce, run on
+# every pull request and on pushes to main. A red gate blocks merge, so the enforced
+# invariants (token purity, dep-graph hierarchy, the composition contract, types, package
+# lint, unit tests, the file-size budget, and a clean site build) can never regress silently.
+#
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install root deps
+        run: bun install
+      - name: Install site deps
+        working-directory: site
+        run: bun install
+
+      # ── Tokens: regenerate + round-trip verify against the app fixtures ──
+      - name: Build tokens
+        run: bun run build
+      - name: Verify tokens (24 round-trips)
+        run: bun run verify
+
+      # ── Harness gates (BLOCKING) ──
+      - name: Typographic dash gate (no em/en dashes; no ignore pragma exists)
+        run: bun run check:dashes
+
+      - name: Lint tokens (no raw hardcoding)
+        run: bun run lint:tokens
+      - name: Component dep-graph (no cycles / no upward deps)
+        run: bun run check:deps
+      - name: Composition contract (strict - 0 violations)
+        run: bun run compose:graph:strict
+      - name: Docs imports honesty (every doc @dizyx/nockerl-react import must be a real barrel export)
+        run: bun run check:docs
+      - name: Props tables fresh (re-extract from code; fail if props.json drifted)
+        run: |
+          bun run props:extract
+          git diff --exit-code site/src/data/props.json
+      - name: One version line (all 5 manifests agree)
+        run: bun run bump
+
+      # ── Types + site ──
+      - name: Typecheck (root + site/src)
+        run: bun run typecheck
+      - name: Build @dizyx/nockerl-react (strict tsc - the exact publish build)
+        # The root typecheck does NOT include packages/react/src; this is the package's own
+        # `tsc -p` under exactOptionalPropertyTypes - the same build the release publish runs.
+        # Runs here so a package-level type error fails the PR, never the publish.
+        working-directory: packages/react
+        run: bun run build
+      - name: Astro check (site)
+        working-directory: site
+        run: bun run check
+      - name: ESLint (site)
+        working-directory: site
+        run: bunx eslint . --max-warnings 0
+      - name: ESLint (@dizyx/nockerl-react package)
+        run: bun run lint:react
+      - name: Unit tests (pure logic)
+        run: bun test
+      - name: File-size budget (<= 500 lines, ratcheted)
+        run: bun run check:size
+      - name: Build site
+        working-directory: site
+        run: bun run build
+
+  # ── Visual regression: render every component page (both themes) and pixel-diff against
+  # the committed baselines. A separate job (it needs a browser + a preview server). ──

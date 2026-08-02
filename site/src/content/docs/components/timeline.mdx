@@ -1,0 +1,163 @@
+---
+title: Timeline / activity feed
+description: The chronological event feed, a vertical rail of timestamped, status-colored event nodes.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import TimelineDemo from '../../../components/demos/TimelineDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TimelineDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function SessionActivity() {
+  return (
+    <Timeline
+      events={[
+        { id: 'e1', status: 'success', time: 'just now', datetime: '2026-06-27T14:32:10', title: 'Session completed', description: 'done · 1m 48s · 18.2k tok' },
+        { id: 'e2', status: 'error', time: '1m', title: 'Error: read_file timed out', description: 'ETIMEDOUT after 30s', mono: true },
+        { id: 'e3', status: 'info', time: '2m', title: 'tool_call: read_file', meta: 'running…', mono: true, hollow: true },
+        { id: 'e4', status: 'success', time: '2m', title: 'Session started', description: 'Large 2.0 · 14 tools' },
+      ]}
+      onEventActivate={(id) => openEvent(id)}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. No dedicated NockerlTimeline ships yet; the
+// chronological event feed IS the agent transcript. This is the intended API,
+// designed from AgentTranscriptPanel + AgentTranscriptSegments.groupSegments()
+// (a time-ordered run of events) + NotificationRow's formatTimeAgo. See drift.
+import com.nockerl.app.core.ui.NockerlTimeline
+import com.nockerl.app.core.ui.TimelineEvent
+import com.nockerl.app.core.ui.EventStatus
+
+NockerlTimeline(
+    events = listOf(
+        TimelineEvent("e1", title = "Session completed", description = "done · 1m 48s · 18.2k tok",
+            time = "just now", status = EventStatus.SUCCESS),
+        TimelineEvent("e2", title = "Error: read_file timed out", description = "ETIMEDOUT after 30s",
+            time = "1m", status = EventStatus.ERROR, mono = true),
+        TimelineEvent("e3", title = "tool_call: read_file", time = "2m",
+            status = EventStatus.INFO, mono = true, hollow = true, meta = "running…"),
+        TimelineEvent("e4", title = "Session started", description = "Large 2.0 · 14 tools",
+            time = "2m", status = EventStatus.SUCCESS),
+    ),
+    onEventClick = viewModel::openEvent,
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. No dedicated timeline ships yet; the closest surface is
+// HistorySection (a reverse-chronological list of timestamped rows) in
+// NockerlVoice/UI/HistoryView.swift. This is the intended API. See the drift note.
+NockerlTimeline(events: [
+    .init(id: "e1", title: "Session completed", description: "done · 1m 48s · 18.2k tok",
+          time: "just now", status: .success),
+    .init(id: "e2", title: "Error: read_file timed out", description: "ETIMEDOUT after 30s",
+          time: "1m", status: .error, mono: true),
+    .init(id: "e3", title: "tool_call: read_file", time: "2m",
+          status: .info, mono: true, hollow: true, meta: "running…"),
+    .init(id: "e4", title: "Session started", description: "Large 2.0 · 14 tools",
+          time: "2m", status: .success),
+]) { event in
+    open(event)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'events', type: 'TimelineEvent[]', required: true, description: 'The chronological events, newest first. Each: <code>{ id, title, time, status?, description?, datetime?, icon?, mono?, meta?, hollow?, live? }</code>.' },
+    { name: 'dense', type: 'boolean', default: 'false', description: 'Compact density: tighter rows + smaller nodes for a dense activity stream.' },
+    { name: 'onEventActivate', type: '(id: string) => void', description: 'When set, each event becomes a real <code>&lt;button&gt;</code> (opens detail). Keyboard-operable with a focus-visible ring.' },
+    { name: 'surface', type: 'string', default: 'card.surface1', description: 'The host surface token the nodes notch into, so the dot reads as a shape on that surface.' },
+  ]}
+/>
+
+`TimelineEvent` fields: `status` is `'success' | 'warning' | 'error' | 'info' | 'neutral' | 'accent'`
+(warm status + the cyan `accent` for the one highlight / live event). `time` is the relative
+gutter label (`"2m"`); `datetime` is the absolute ISO for the `<time>` element. `live` pulses the
+node; `mono` renders a tool-call title; `hollow` is a quieter routine node; `meta` is an inline chip.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'events', type: 'List<TimelineEvent>', required: true, description: 'The chronological events, newest first. <code>TimelineEvent(id, title, time, status, description?, datetime?, icon?, mono?, meta?, hollow?, live?)</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier for the feed container (the lifted card the rail sits on).' },
+    { name: 'dense', type: 'Boolean', default: 'false', description: 'Compact density: tighter rows + smaller nodes.' },
+    { name: 'onEventClick', type: '((String) -> Unit)?', default: 'null', description: 'When non-null, each event becomes clickable (ripple + the event id is passed back).' },
+  ]}
+/>
+
+`EventStatus` enum: `SUCCESS · WARNING · ERROR · INFO · NEUTRAL · ACCENT`. Status is never color
+alone: the node also carries a glyph (a check on done, a close on error) and a content description.
+
+</TabItem>
+<TabItem label="Swift">
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'events', type: '[TimelineEvent]', required: true, description: 'The chronological events, newest first. <code>TimelineEvent(id:title:time:status:description:datetime:mono:meta:hollow:live:)</code>.' },
+    { name: 'dense', type: 'Bool', default: 'false', description: 'Compact density: tighter rows + smaller nodes.' },
+    { name: 'onActivate', type: '((TimelineEvent) -> Void)?', default: 'nil', description: 'Trailing closure. When set, each event row is a button that hands back the event.' },
+    { name: 'status', type: 'EventStatus', description: 'Per-event enum: <code>.success · .warning · .error · .info · .neutral · .accent</code>. Drives the node hue + glyph.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Timeline is the **chronological event feed** (each node is a *moment in time*: timestamp +
+what happened), distinct from the [Stepper](/components/stepper/) (a *forward process* with
+done/current/upcoming flow state) and the [List](/components/list/) (plain rows). These are the
+real divergences:
+
+- **No platform ships a dedicated timeline yet.** The look + API are designed from the shipped
+  event-sequence surfaces: Android's `AgentTranscriptPanel` + `AgentTranscriptSegments` (a
+  time-ordered run of `session_init` / `tool_use` / `done` / `error` events) and `NotificationRow`
+  (`formatTimeAgo`); Swift's `HistorySection` (a reverse-chronological timestamped list). The
+  `NockerlTimeline` symbols above are the **intended** components to extract.
+- **Relative time:** the demo uses Android's `formatTimeAgo` ramp (`just now · 2m · 1h · 3d · 1w ·
+  1mo`); Swift's `HistorySection` renders an absolute `month().day().hour().minute()` instead. One
+  format (relative gutter + absolute `<time>` tooltip) should win.
+- **Two-sided + load-earlier:** web-original here; the apps' feeds are single-sided and paginate via
+  scroll. Track before adopting on Android/Swift.
+</Aside>

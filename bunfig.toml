@@ -1,0 +1,5 @@
+# bun test config. Preload registers a happy-dom document so component BEHAVIOR tests
+# (the *.dom.test.tsx files) can render + interact without a browser. The pure-logic
+# tests are unaffected (the DOM globals are additive). #2536
+[test]
+preload = ["./test-setup.ts"]

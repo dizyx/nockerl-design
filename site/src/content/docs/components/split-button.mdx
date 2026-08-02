@@ -1,0 +1,184 @@
+---
+title: Split button
+description: A default action welded to a caret that opens a menu of alternatives.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import SplitButtonDemo from '../../../components/demos/SplitButtonDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SplitButtonDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// The primary segment fires `onAction` directly; only the caret opens the menu.
+
+export function ComposeBar() {
+  const [defaultId, setDefaultId] = useState('send');
+  return (
+    <SplitButton
+      variant="primary"
+      leadingIcon="send"
+      defaultActionId={defaultId}
+      onAction={(id) => runSend(id)}          // primary OR a picked menu item
+      onDefaultChange={setDefaultId}          // a picked item becomes the new default
+      actions={[
+        { id: 'send', label: 'Send now', icon: 'send' },
+        { id: 'later', label: 'Send later', icon: 'clock' },
+        { id: 'archive', label: 'Send & archive', icon: 'archive' },
+        { id: 'draft', label: 'Save as draft', icon: 'edit', keepDefault: true },
+      ]}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). Material 3 ships SplitButtonLayout (experimental):
+// a leadingButton that fires the default + a trailingButton that toggles a
+// DropdownMenu of alternatives. The shipped app today hand-rolls this with a
+// Row(NockerlButton + NockerlIconButton) + DropdownMenu (see SessionCreationDropdowns.kt);
+// SplitButtonLayout is the intended canonical; see the drift note.
+var expanded by remember { mutableStateOf(false) }
+var default by remember { mutableStateOf("send") }
+
+SplitButtonLayout(
+    leadingButton = {
+        SplitButtonDefaults.LeadingButton(onClick = { runSend(default) }) {
+            Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
+            Spacer(Modifier.size(SplitButtonDefaults.LeadingIconSpacing))
+            Text(labelFor(default))
+        }
+    },
+    trailingButton = {
+        SplitButtonDefaults.TrailingButton(
+            checked = expanded,
+            onCheckedChange = { expanded = it },
+        ) {
+            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "More send actions")
+        }
+    },
+)
+DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+    DropdownMenuItem(
+        text = { Text("Send later") },
+        leadingIcon = { Icon(Icons.Outlined.Schedule, contentDescription = null) },
+        onClick = { expanded = false; default = "later"; runSend("later") },
+    )
+    DropdownMenuItem(
+        text = { Text("Send & archive") },
+        leadingIcon = { Icon(Icons.Outlined.Archive, contentDescription = null) },
+        onClick = { expanded = false; default = "archive"; runSend("archive") },
+    )
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS (SwiftUI). Menu(primaryAction:) IS the split-button idiom: the label fires
+// primaryAction directly, the attached caret opens the menu. Voice ships plain
+// Menu { … } today (UI/AppSettingsView.swift); primaryAction is the intended form.
+// A leading checkmark marks the current default (Voice's checked-row idiom).
+@State private var current = "send"
+
+Menu {
+    Button { run("later") }   label: { Label("Send later", systemImage: "clock") }
+    Button { run("archive") } label: { Label("Send & archive", systemImage: "archivebox") }
+    Divider()
+    Button { run("draft") }   label: { Label("Save as draft", systemImage: "pencil") }
+} label: {
+    Label(label(for: current), systemImage: "paperplane.fill")
+} primaryAction: {
+    run(current)                               // the primary segment's default action
+}
+.menuStyle(.button)
+.buttonStyle(.nockerlPrimary)
+
+func run(_ id: String) { current = id; send(id) } // a picked item becomes the new default
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'actions', type: 'SplitAction[]', required: true, description: 'Ordered list of <code>{ id, label, icon?, danger?, keepDefault? }</code>. The first is the initial default; the caret menu lists them all.' },
+    { name: 'onAction', type: '(id: string) => void', required: true, description: 'Fired by the primary segment (current default) AND by a picked menu item. Ignored while <code>disabled</code>.' },
+    { name: 'defaultActionId', type: 'string', description: 'Controlled id of the action the primary segment fires. Uncontrolled if omitted (tracks the last pick).' },
+    { name: 'onDefaultChange', type: '(id: string) => void', description: 'Called when a picked item promotes itself to the new default (skipped for <code>keepDefault</code> items).' },
+    { name: 'variant', type: "'primary' | 'secondary' | 'tertiary' | 'destructive'", default: "'primary'", description: 'Shared fill across both segments, following the Button emphasis ladder. One primary per view.' },
+    { name: 'size', type: "'sm' | 'md'", default: "'md'", description: 'Control height + padding; the caret is a square of the same height.' },
+    { name: 'leadingIcon', type: 'string', description: 'Optional glyph before the default label on the primary segment.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'The WHOLE control inert and <strong>clearly seen</strong> (never faded to invisible). A split never half-disables: both segments always share one state.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'leadingButton', type: '@Composable -> Unit', required: true, description: 'The default-action segment. Wrap <code>SplitButtonDefaults.LeadingButton(onClick = …)</code>. Rounds the leading corners.' },
+    { name: 'trailingButton', type: '@Composable -> Unit', required: true, description: 'The caret segment: <code>SplitButtonDefaults.TrailingButton(checked, onCheckedChange)</code> toggling a <code>DropdownMenu</code>. Rounds the trailing corners.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier applied to the two-segment layout.' },
+    { name: 'spacing', type: 'Dp', default: 'SplitButtonDefaults.Spacing', description: 'The hairline gap between the two segments (the divider seam).' },
+    { name: 'expanded', type: 'Boolean', default: 'false', description: 'State you hold for the menu; bind to the trailing button’s <code>checked</code> and the <code>DropdownMenu</code>’s <code>expanded</code>.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'Passed to BOTH inner buttons together, because a split never half-disables (the whole control shares one state).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`Menu(primaryAction:)` is the native split button: the label fires `primaryAction`,
+the attached caret opens the menu. State (`isEnabled`, pressed) comes from the
+SwiftUI environment; styling is the shared `.nockerl*` `ButtonStyle`.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'content', type: '@ViewBuilder', description: 'The menu body: <code>Button</code>/<code>Label</code> rows, <code>Section</code>, <code>Divider()</code>; a leading <code>systemImage: "checkmark"</code> marks the current default.' },
+    { name: 'label', type: '@ViewBuilder', description: 'The primary segment’s content (the default action’s <code>Label</code>).' },
+    { name: 'primaryAction', type: '() -> Void', description: 'Fired by the primary segment directly, which is the split-button behaviour. Without it, the whole control is a plain Menu (no default action).' },
+    { name: '.menuStyle(.button)', type: 'MenuStyle', description: 'Renders the trigger as a button with the attached caret (the welded two-segment look).' },
+    { name: '.buttonStyle(.nockerlPrimary)', type: 'ButtonStyle', description: 'Shared fill. Swap for <code>.nockerlSecondary</code> / <code>.nockerlDestructive</code> to match the variant ladder.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Neither shipped app has a literal split button yet. This is designed from the
+button + menu vocabulary, so the platforms diverge:
+
+- **Compose:** the app hand-rolls `Row(NockerlButton + NockerlIconButton) + DropdownMenu`; Material 3’s `SplitButtonLayout` (the canonical target above) is **not adopted yet**.
+- **Swift:** Voice ships plain `Menu { … }`; `Menu(primaryAction:)`, the actual split-button idiom, is **not used yet** (no default-action segment).
+- **vs. its neighbours:** use **Button** for a single action, **Menu** when there is *no* default action (the trigger only opens a popover), and **Fab** for the floating circular action + speed-dial. Split button is the JOIN: a default action welded to a menu of variants.
+</Aside>

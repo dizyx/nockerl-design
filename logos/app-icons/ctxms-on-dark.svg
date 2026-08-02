@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 108 108" width="108" height="108" role="img" aria-label="Nockerl CtxMS">
+  <title>Nockerl CtxMS</title>
+  <path d="M32.02 13.80 L55.80 13.71 L60.10 14.60 L64.67 17.50 L74.60 27.44 L76.80 30.65 L77.81 33.40 L78.20 36.20 L77.93 70.90 L76.20 75.29 L73.50 78.57 L69.90 80.92 L65.90 82.10 L31.40 82.00 L28.30 81.06 L25.30 79.32 L22.80 76.88 L21.10 74.15 L20.09 71.40 L19.70 68.60 L19.90 25.40 L21.53 20.90 L24.23 17.50 L27.90 15.03 L32.00 13.80 Z" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M32.51 20.30 L55.50 20.20 L57.60 20.61 L60.10 22.12 L70.74 33.10 L71.70 36.30 L71.66 69.00 L71.05 71.10 L69.78 73.10 L67.99 74.60 L65.40 75.60 L33.10 75.68 L29.70 74.48 L27.36 72.10 L26.20 68.50 L26.23 27.00 L26.85 24.80 L28.12 22.80 L29.91 21.30 L32.50 20.30 Z" fill="none" stroke="#0cc0df" stroke-width="2.5" stroke-linejoin="round"/>
+  <g fill="none" stroke="#e5e5e5" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M34 28 L55 28 L64 37 L64 68 L34 68 Z"/>
+   <path d="M55 28 L55 37 L64 37"/>
+   <line x1="41" y1="46" x2="57" y2="46"/>
+   <line x1="41" y1="53" x2="57" y2="53"/>
+   <line x1="41" y1="60" x2="51" y2="60"/>
+  </g>
+</svg>

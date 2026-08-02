@@ -1,0 +1,255 @@
+---
+title: Table / data grid
+description: The multi-column data grid, with sortable headers, typed cell alignment, row selection, a sticky header, hairline rows, a footer summary, and loading / empty states.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import TableDemo from '../../../components/demos/TableDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TableDemo client:visible />
+</Example>
+
+<Aside type="tip" title="Data-alignment canon (per column)">
+Alignment carries meaning, so it is typed per column, not guessed:
+
+- **Text → left** (`align` omitted) for names, labels, the reading edge.
+- **Numbers → right** (`align: 'end'`) so tokens, cost, counts line up digit-to-digit for comparison;
+  a `mono` column right-aligns by **default** (and renders tabular figures).
+- **Status chips / badges → center** (`align: 'center'`) because a pill is a self-contained token that
+  sits centered in its column rather than hugging an edge.
+
+Headers inherit their column's alignment (the sort arrow leads on the data edge for numbers) and a
+footer total sits under, and aligned to, its own column (the label left, the numeric totals right).
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. NockerlTable ships from
+// @dizyx/nockerl-react: the typed columns, sortable headers, checkbox selection
+// (select-all + per-row), sticky header, footer summary, and loading / empty
+// states are all in the package. v1 ships columns · sort · sticky · selection ·
+// empty · loading · density · footer; row virtualization + inline cell editing
+// are a later slice. (For a single-column sectioned list use NockerlListItem; for
+// one record's fields use Key-value.) NockerlTable is CONTROLLED. The caller
+// sorts `rows` (and paginates with NockerlPagination); each column's render(row)
+// supplies the cell content.
+import { useState } from 'react';
+import { NockerlTable, type NockerlTableSort } from '@dizyx/nockerl-react';
+
+export function SessionsTable({ rows, sort, selected, onSort, onSelect }: SessionsTableProps) {
+  return (
+    <NockerlTable
+      rows={rows}                          // rendered verbatim, so sort/paginate before passing in
+      getRowId={(r) => r.id}
+      columns={[
+        { key: 'name', header: 'Session', sortable: true,
+          render: (r) => <NameCell status={r.status} label={r.name} /> },
+        { key: 'status', header: 'Status', align: 'center', sortable: true,   // chips/badges → center
+          render: (r) => <StatusPill status={r.status} /> },
+        // The alignment CANON: text left (default), numbers right (align: 'end'), chips center
+        // (align: 'center'); a mono column right-aligns by default. mono renders tabular figures.
+        { key: 'tokens', header: 'Tokens', align: 'end', mono: true, sortable: true,
+          render: (r) => r.tokens.toLocaleString() },
+        { key: 'cost', header: 'Cost', align: 'end', mono: true, sortable: true,
+          render: (r) => `$${r.cost.toFixed(2)}` },
+        { key: 'updated', header: 'Updated', align: 'end', mono: true, sortable: true,
+          render: (r) => r.updatedLabel },
+      ]}
+      sort={sort}                          // { key, dir: 'asc' | 'desc' } drives header arrow + aria-sort
+      onSortChange={onSort}
+      selectable                            // checkbox column + header select-all (indeterminate when partial)
+      selectedIds={selected}
+      onSelectionChange={onSelect}
+      density="comfortable"                // 'comfortable' | 'compact' (padding only)
+      stickyHeader                          // header stays flush while the body scrolls
+      footer={(all) => <SummaryRow rows={all} />}   // totals row pinned to the bottom
+      loading={false}                       // true → skeleton rows that hold the grid
+      empty={<EmptyState />}                // shown when there are no rows
+      ariaLabel="Sessions"
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). There is no NockerlDataTable component;
+// tabular data is a Row of weighted COLUMNS inside a LazyColumn, with mono numeric
+// cells and HorizontalDivider hairlines (the ClusterSheet idiom). Sorting is state
+// the caller owns; the header row carries the clickable sort affordance.
+
+@Composable
+fun SessionTable(rows: List<Session>, sort: SortState, onSort: (SortKey) -> Unit) {
+    val colors = LocalNockerlColors.current
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Header row is the strong band; each sortable column is a clickable label + arrow.
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SortHeader("Session", SortKey.NAME, sort, onSort, Modifier.weight(1f))        // text-left
+            SortHeader("Tokens", SortKey.TOKENS, sort, onSort, Modifier.weight(0.5f), end = true) // numeric → right
+            SortHeader("Cost", SortKey.COST, sort, onSort, Modifier.weight(0.4f), end = true)
+        }
+        HorizontalDivider(thickness = 1.dp, color = colors.divider)
+
+        // Body: one Row of weighted cells per record; numeric cells are Monospace + right-aligned.
+        LazyColumn {
+            itemsIndexed(rows, key = { _, r -> r.id }) { i, r ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { /* select */ }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(r.name, style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1, modifier = Modifier.weight(1f))                      // text-left
+                    Text(r.tokens.format(), style = MaterialTheme.typography.labelMedium,
+                        fontFamily = FontFamily.Monospace, textAlign = TextAlign.End,
+                        modifier = Modifier.weight(0.5f))                                  // numeric → right + mono
+                    Text("$${r.cost}", style = MaterialTheme.typography.labelMedium,
+                        fontFamily = FontFamily.Monospace, textAlign = TextAlign.End,
+                        modifier = Modifier.weight(0.4f))
+                }
+                if (i < rows.lastIndex) HorizontalDivider(thickness = 1.dp, color = colors.divider)
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). AppKit-backed `Table` is the real multi-column grid:
+// `TableColumn`s, click-to-sort via `sortOrder` + `KeyPathComparator`, and a numeric
+// column using `.monospacedDigit()`. Selection binds to a Set of row ids.
+struct SessionsTable: View {
+    let rows: [Session]
+    @State private var selection = Set<Session.ID>()
+    @State private var sortOrder = [KeyPathComparator(\Session.updated)]
+
+    var body: some View {
+        Table(sortedRows, selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("Session", value: \.name) { row in
+                Label(row.name, systemImage: "circle.fill")     // leading status dot + name
+                    .foregroundStyle(NockerlTheme.onSurface)
+            }
+            TableColumn("Status", value: \.status.rank) { row in StatusPill(row.status) }
+            TableColumn("Tokens", value: \.tokens) { row in
+                Text(row.tokens, format: .number)
+                    .monospacedDigit().frame(maxWidth: .infinity, alignment: .trailing) // numeric → right
+            }
+            TableColumn("Cost", value: \.cost) { row in
+                Text(row.cost, format: .currency(code: "USD"))
+                    .monospacedDigit().frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            TableColumn("Updated", value: \.updated) { row in
+                Text(row.updatedLabel).monospacedDigit()
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+        }
+    }
+
+    // `Table` re-sorts when a header is clicked; apply the comparator to the data.
+    private var sortedRows: [Session] { rows.sorted(using: sortOrder) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+`NockerlTable` takes a `rows` array, a typed `columns` definition, and the cross-cutting
+concerns (sort, selection, density, sticky, footer, loading, empty) as props. Each `NockerlTableColumn`
+declares its own `key` / `header`, a `render(row)` cell, and per-column `align` / `mono` /
+`sortable` / `width`. **v1 ships columns · sort · sticky · selection · empty · loading · density ·
+footer**; row **virtualization** and inline **cell editing** are a deliberate later slice.
+NockerlTable is **controlled**: it renders `rows` verbatim (sort + paginate before passing them in)
+and reports sort intent via `onSortChange`.
+
+<PropsTable nameLabel="Prop" component="NockerlTable" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+There is **no `NockerlDataTable`**. The grid is hand-assembled from a header `Row`, weighted
+column cells, and `HorizontalDivider` hairlines (the `ClusterSheet` idiom). These are the
+building blocks you compose.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'Row + Modifier.weight(f)', type: '@Composable', description: 'A table row is a <code>Row</code> of cells; each cell\'s <code>Modifier.weight(f)</code> is its column width. The header is the same Row with strong-band background.' },
+    { name: 'textAlign', type: 'TextAlign', default: 'TextAlign.Start', description: '<code>TextAlign.End</code> right-aligns a numeric cell (and its header) inside its weighted column.' },
+    { name: 'fontFamily', type: 'FontFamily', default: 'default', description: '<code>FontFamily.Monospace</code> on numeric / id / metric cells so figures line up, following the in-app convention (LiveModelRow, NodeCard).' },
+    { name: 'sort (caller state)', type: 'SortState', description: 'Sorting is caller-owned state; the header cell is <code>clickable</code> and shows an arrow. The body is rendered from the pre-sorted list (<code>rows.sortedBy { … }</code>).' },
+    { name: 'clickable { }', type: 'Modifier', description: 'Row selection / activation: the whole row is one target; a selected row gets a soft cyan wash + trailing check (never a left stripe, Law 6).' },
+    { name: 'HorizontalDivider', type: '@Composable', default: 'thickness = 1.dp', description: 'The hairline BETWEEN rows (<code>color = colors.divider</code>). Cyan (1.5dp) is reserved for the chrome boundary, never a row rule.' },
+    { name: 'LazyColumn', type: '@Composable', description: 'The scrolling body. A sticky header uses <code>stickyHeader { }</code> (intended; see drift).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+macOS SwiftUI ships a **real `Table`** (AppKit-backed). You declare `TableColumn`s with a
+sort `value:` key path; `Table` drives click-to-sort through `sortOrder` + selection through a
+bound `Set`. State comes from the bindings, so there are no Nockerl-specific parameters.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Table(_, selection:, sortOrder:)', type: 'View', description: 'The grid. <code>selection</code> binds to a <code>Set&lt;ID&gt;</code> (multi-select); <code>sortOrder</code> binds to the comparator array that drives header sorting.' },
+    { name: 'TableColumn(_, value:)', type: 'TableColumn', description: 'One column. <code>value:</code> is a <code>KeyPathComparator</code> key path; supplying it makes the header sortable (the click + arrow are built in).' },
+    { name: '.monospacedDigit()', type: 'Modifier', description: 'Tabular figures on numeric cells so columns line up, following the in-app convention (HomeSection, RecordingHUD).' },
+    { name: '.frame(maxWidth: .infinity, alignment: .trailing)', type: 'Modifier', description: 'Right-aligns a numeric cell within its column.' },
+    { name: 'sorted(using: sortOrder)', type: 'Method', description: 'Apply the bound comparator to the data so the body reflects the header sort.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (table vs list vs key-value)">
+This page is the multi-**column** grid. The single-column sectioned collection is
+[List](/components/list/); one record's label→value fields are [Key-value](/components/key-value/).
+The real divergences between the shipped platforms, tracked in the [Review queue](/review-queue/):
+
+- **No true grid on mobile.** Neither Android nor Voice ships a `DataTable`. Both lay tabular
+  data out as **column-ish weighted rows** (Compose `Row { Modifier.weight(1f) }`, Voice
+  `LazyVGrid` of cards), with mono numeric cells + hairline rules. macOS SwiftUI is the one
+  platform with a real `Table` (`TableColumn` + `KeyPathComparator`). The web grid was designed
+  ORIGINALLY here from the laws + the shared checkbox / divider / pagination / mono vocabulary
+  and now **ships** as `NockerlTable` in `@dizyx/nockerl-react` (v1, with virtualization + inline
+  cell editing a later slice).
+- **Column-header sorting** is a web/macOS affordance; Compose's lists today are pre-sorted by
+  the caller (`sortedBy { it.name.lowercase() }`) with no clickable header arrow. A reusable
+  sort header for Compose is the open extraction item.
+- **Sticky header:** the web grid and the SwiftUI `Table` keep the header pinned; Compose has
+  `stickyHeader` but no shipped screen uses it yet, so canonizing it is open.
+- **Row selection** *(resolved in [adjudication 2026-07-02 · B20])*: the one selection model is a
+  **soft cyan wash + trailing check, never a left stripe**. The web grid pairs it with a checkbox
+  column; macOS uses the native `Table` selection highlight; Compose (today a per-row `clickable`
+  background) conforms.
+</Aside>

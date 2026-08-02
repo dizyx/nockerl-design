@@ -1,0 +1,76 @@
+---
+title: Radius
+description: The unified corner-radius scale, with 12px controls, 16px cards, and the pill reserved for chips and the input bar.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Corner radius is **unified and intentional** (ADR-0003). Two values do most of the work:
+`radius-control` (12) and `radius-card` (16). The full pill is reserved. The scale is
+one shared truth across platforms; radius is **brand expression, not interaction behavior**,
+so it does not fork per OS.
+
+## The scale
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `radius-none` | 0px | Square edges |
+| `radius-track` | 2px | Slider fills / progress tracks (the real Android `NockerlProgressTrackShape`) |
+| `radius-control` | 12px | **Buttons, fields, most controls** |
+| `radius-panel` | 12px | Nested panels, tool cards, chips-as-panels |
+| `radius-card` | 16px | **Cards and surfaces** |
+| `radius-bubble` | 20px | Chat message bubbles |
+| `radius-bubble-tail` | 6px | Tightened "tail" corner of a bubble, pointing at the speaker |
+| `radius-pill` | 9999px | **Chips + the input bar only** |
+
+The law (see [Design laws](/foundations/design-laws/)): **pill is reserved for chips and
+the input bar.** Every other control uses the 12px control radius, a rounded rectangle,
+never a "broken pill". Cards step up to 16px. The gap between 12 and the full pill is kept
+visually obvious so a button can never read as a truncated chip.
+
+## Where each radius is used
+
+Grounded in the primitives, not aspiration:
+
+- **`radius-control` (12)**: `Button`, `Well` (the recessed field), plain `IconButton`,
+  `Menu` / `ListboxOption` rows, `Tooltip`, `Popover` fields and buttons, and the
+  `SegmentedControl` frame (its thumb nests one step *inside* at `calc(control − 0.5)`).
+- **`radius-card` (16)**: `Surface` / `Card` in the default `card` variant (the lifted plane).
+- **`radius-panel` (12)**: `Surface` in the `panel` variant (nested panels, tool cards).
+- **`radius-pill`**: `Chip`, `Badge`, `Avatar`, `StatusDot`, and the `Slider` track + thumb.
+- **`radius-track` (2)**: `ProgressTrack` (squared rails, deliberately **not** a pill).
+
+## Per-platform values
+
+Radius is **unified**: the same numeric intent ships everywhere, only the *unit* changes with
+the platform's native type. The semantic tokens are authored in `px`; the Compose build emits
+the same numbers as **`dp`**, and the Swift build emits them as **points**, so `radius-control`
+is 12px on web, 12dp on Android, and 12pt on Swift, and `radius-card` is 16 on all three. This
+is the industry pattern (Fluent 2's global → alias → control layering; Spotify's near-identical
+cross-platform shape) and the explicit ADR-0003 posture: *unify brand expression, honor only
+real platform behavior.*
+
+The web `card → 4px` shadcn default that once diverged was **drift, not a decision**. ADR-0003
+dropped it, so web now inherits the unified 16. The only genuinely platform-specific shape token
+left is Android's `chamfer`.
+
+<Aside type="note" title="Android-only: chamfer accent">
+`radius-chamfer` (**14dp**) drives Compose's `ChamferedCornerShape`, an angled corner *cut*
+(not a round) used sparingly for **workspace-pill / team-card** accents. It lives in
+`tokens/platform/android/radius.json` because it is the one legitimate per-platform shape delta
+(ADR-0003); every other radius falls through to the shared semantic scale unchanged. Web may
+adopt an equivalent clip later. That is an open, deliberately-deferred option, not a promise.
+</Aside>
+
+## Tokens
+
+The radius scale is published in `@dizyx/nockerl-tokens` as CSS custom properties
+(`--radius-*`). The **intent** names (`control`, `card`, `pill`) live in the semantic layer;
+the concrete value/unit per platform (px vs dp vs pt, plus Android's `chamfer`) lives in the
+platform layer. See the [Token hierarchy](/getting-started/installation/) for how the layers
+compose.

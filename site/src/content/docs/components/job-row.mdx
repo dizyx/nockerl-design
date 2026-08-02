@@ -1,0 +1,74 @@
+---
+title: Job notification row
+description: One background job or inbox notification as a list row, with a state mark, title, relative time, and unread ink.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import JobRowDemo from '../../../components/demos/JobRowDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <JobRowDemo client:visible />
+</Example>
+
+**One background job or inbox notification as a row** (WS4, agent-console epic), a
+thin shell over the [`ListItem`](/components/list-item/) grammar that invents no new
+row anatomy:
+
+- **Leading = the job state.** `success` / `warning` / `error` ride the ListItem's
+  canonical B20 status mark (shape + color dual-coding); `running` is a live
+  [`Spinner`](/components/spinner/); `queued` is a **muted clock**: waiting is not a
+  status, so it takes no warm color and no cyan.
+- **Trailing = the time.** The relative label uses the
+  [`Timeline`](/components/timeline/) time idiom (display label + machine `dateTime`
+  surfaced on the row). An unread group count rides an accent
+  [`Badge`](/components/badge/).
+- **Read vs unread lives in the INK.** Unread rows keep the ListItem's full voice;
+  read rows dim to muted ink at regular weight. Never a left-rail, never a wash;
+  law §6 keeps status in the leading mark, and the selection wash stays reserved
+  for selection.
+
+<Aside type="note" title="JobCard is a view">
+The catalog's "JobCard" is this same row hosted alone on a lifted card surface (the
+second example above), a **view**, not a second component. Same rule as the approval
+views: presentation contexts are configs.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlJobRow } from '@dizyx/nockerl-react';
+
+// an inbox list: rows stacked on one card surface
+<NockerlJobRow
+  title="CI failed on nockerl-dashboard"
+  detail="typecheck · 2 errors in inbox-panel.tsx"
+  state="error"          // queued | running | success | warning | error
+  time="2m ago"          // the Timeline relative-time idiom
+  dateTime="2026-07-05T02:08:00Z"
+  unread                 // full ink; omit → dimmed read row
+  count={2}              // grouped notifications → trailing accent badge
+  onSelect={openNotification}
+/>
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Android">
+The Compose mirror (the same ListItem-grammar row for the app inbox) rides the compose
+lane of the agent-console epic.
+</Aside>
+
+## Parameters
+
+<PropsTable nameLabel="Prop" component="NockerlJobRow" />

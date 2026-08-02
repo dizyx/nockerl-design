@@ -1,0 +1,20 @@
+---
+title: Composition contracts
+description: The code-derived composition graph, covering every component's tier, slots, accepts, and the live hand-rolled-facsimile violation census. Generated from the compose contracts and enforced by the gate.
+status: review
+---
+
+import ComposeGraph from '../../components/ComposeGraph.astro';
+
+Every shipped design component declares a **`compose` contract** (`site/src/components/compose-contract.ts`): a **leaf** (`{ tier: 'leaf' }`) or a **container** with named **slots** (`{ slots: { name: { accepts, required } } }`), plus an optional **`owns`** list of the raw facsimile tags it legitimately implements as its own primitive.
+
+`scripts/compose-graph.ts` reads those contracts and the **real JSX composition graph** (via the TypeScript compiler) and emits the map below. It replaces the old hand-maintained dependency doc. It is **derived from code**, so it can never drift out of date, and the gate (`bun run compose:graph`) fails on any violation:
+
+- **`raw-facsimile`**: a component renders a raw `<button>` / `<input>` / `<a href>` / `<hr>` / `[role=…]` it does not `own`. Compose the real primitive instead.
+- **`off-accepts-child`**: a container is slotted with a design component not in its slot's `accepts`.
+- **`required-slot-unfilled`**: a required slot left empty at a usage site.
+- **`missing-contract`**: a shipped component with no `compose` declaration.
+
+This is what makes **"demos use real components"** a permanent, enforced invariant rather than a manual audit.
+
+<ComposeGraph />

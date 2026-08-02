@@ -1,0 +1,14 @@
+---
+title: Dev console
+description: The web console chrome family of status bar, tab bar, file explorer, and code panel.
+---
+
+The **web console chrome** family (agent-console epic, WS5) is the set of surfaces that
+make the dashboard's dev console: a thin [status bar](/components/dev-status-bar/), an editor
+[tab bar](/components/dev-tab-bar/), a [file explorer](/components/file-explorer/) over
+the shipped Tree, and the [code panel](/components/code-panel/). **Web-only by scope**
+(the de-phantom verdicts): these have no native-console equivalents, but every one
+speaks the shared tokens and design laws.
+
+The dev SIDE PANEL is deliberately **not** a component: it is a view composing the
+shipped [`Panel`](/components/panel/) (with its splitter); see the note there.

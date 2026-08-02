@@ -1,0 +1,9 @@
+#!/bin/sh
+# Blocks a commit that introduces an em dash, en dash, or a lookalike.
+# This hook is a convenience only. It can be skipped with --no-verify, which is
+# exactly why the same check also runs in CI, where it cannot be bypassed.
+bun run scripts/check-dashes.ts || {
+  echo ""
+  echo "Commit blocked: rewrite the sentence rather than swapping in a hyphen."
+  exit 1
+}

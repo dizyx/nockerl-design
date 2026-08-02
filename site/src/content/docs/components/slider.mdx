@@ -1,0 +1,168 @@
+---
+title: Slider / range
+description: Recessed track + draggable thumb for setting a value, whether single, stepped, or a two-thumb range.
+status: review
+platforms: [web, android, swift]
+nativePublished: [swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import SliderDemo from '../../../components/demos/SliderDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <SliderDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlSlider, NockerlRangeSlider } from '@dizyx/nockerl-react';
+
+export function SamplingControls() {
+  const [temp, setTemp] = useState(1.0);
+  const [band, setBand] = useState({ low: 20, high: 70 });
+  return (
+    <>
+      {/* Real Local Engine sampling ranges (Sampling.kt) */}
+      <NockerlSlider label="Temperature" value={temp} onChange={setTemp} min={0.1} max={2.0} step={0.05} />
+      <NockerlSlider label="Top-P (nucleus)" value={topP} onChange={setTopP} min={0} max={1} step={0.01} />
+
+      {/* Stepped with tick marks */}
+      <NockerlSlider label="Render quality" value={q} onChange={setQ} min={0} max={6} step={1} ticks />
+
+      {/* Two-thumb range; thumbs can't cross */}
+      <NockerlRangeSlider label="Price band" low={band.low} high={band.high}
+        onChange={(low, high) => setBand({ low, high })} min={0} max={100} step={5} unit="$" />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). androidx.compose.material3.Slider.
+// Shipped in chat/ui/SamplingAdvancedSettings.kt for the per-session sampling knobs.
+// `steps` is the count of stops BETWEEN the endpoints: ((max - min) / step) - 1.
+Slider(
+    value = temperature,                          // 1.0, the universal Qwen default
+    onValueChange = { next -> temperature = snapToStep(next, spec) },
+    valueRange = 0.1f..2.0f,                       // Temperature (Sampling.kt)
+    steps = computeSliderSteps(spec),             // ((2.0 - 0.1) / 0.05) - 1 = 37
+    enabled = enabled,
+)
+
+// Two-thumb range (Material RangeSlider), designed here; not yet shipped in-app.
+RangeSlider(
+    value = low..high,
+    onValueChange = { range -> low = range.start; high = range.endInclusive },
+    valueRange = 0f..100f,
+    steps = 19,                                    // ((100 - 0) / 5) - 1
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlSlider` WRAPS the
+// native `Slider` (macOS pointer feel, keyboard/VoiceOver come from the system) and
+// brands it: cyan `accentPrimary` tint + a persistent, REQUIRED Nockerl-typography
+// label (never placeholder-as-label, law §14). The label is the first argument.
+import NockerlDesign
+
+// Continuous by default; pass `step:` for a stepped slider. Real Local Engine sampling
+// range (Sampling.kt): Temperature 0.1 to 2.0 step 0.05.
+NockerlSlider("Temperature", value: $temperature, in: 0.1...2.0, step: 0.05)
+
+// Stepped slider with optional end captions (plain strings, not view builders).
+NockerlSlider(
+    "Render quality",
+    value: $quality,
+    in: 0...6,
+    step: 1,
+    minimumLabel: "0",
+    maximumLabel: "6"
+)
+
+// Disable via the standard SwiftUI path.
+NockerlSlider("Top-P (nucleus)", value: $topP, in: 0...1, step: 0.01)
+    .disabled(!enabled)
+
+// Two-thumb range: SwiftUI has no native range Slider, so NockerlDesign ships none
+// yet. It is a documented follow-up (compose two bound thumbs over one track).
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlSlider" />
+
+`RangeSlider` swaps `value` for `low` / `high` and takes `onChange={(low, high) => …}`; the two thumbs are bound so they can never cross.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'value', type: 'Float', required: true, description: 'Current value. <code>RangeSlider</code> takes a <code>ClosedFloatingPointRange&lt;Float&gt;</code> instead.' },
+    { name: 'onValueChange', type: '(Float) -> Unit', required: true, description: 'Continuous callback. The app snaps via <code>snapToStep</code> before storing.' },
+    { name: 'valueRange', type: 'ClosedFloatingPointRange<Float>', default: '0f..1f', description: 'Min/max, e.g. <code>0.1f..2.0f</code> for Temperature (<code>Sampling.kt</code>).' },
+    { name: 'steps', type: 'Int', default: '0', description: 'Stops BETWEEN the endpoints: <code>((max - min) / step) - 1</code>. <code>0</code> = continuous.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the track + thumb dim and ignore input.' },
+    { name: 'colors', type: 'SliderColors', default: 'SliderDefaults.colors()', description: 'Defaults to the theme <code>primary</code> (= brand cyan) for the active track + thumb.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier; pass <code>Modifier.fillMaxWidth()</code> for a full-width row.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlSlider` wraps the native `Slider` over a `Binding<Double>` and snaps to
+`step`. The `label` is required (persistent above the track + the a11y name). State
+(`isEnabled`, focus) comes from the environment via `.disabled(_:)`, not a parameter.
+Unavailable on tvOS (SwiftUI ships no `Slider` there).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'label', type: 'String', required: true, description: 'First positional arg: the persistent label above the track and the a11y name. Empty is a runtime assert (placeholder-as-label banned, law §14).' },
+    { name: 'value', type: 'Binding<Double>', required: true, description: 'Two-way binding to the value.' },
+    { name: 'in', type: 'ClosedRange<Double>', default: '0...1', description: 'Bounds, e.g. <code>0.1...2.0</code> for Temperature.' },
+    { name: 'step', type: 'Double?', default: 'nil', description: 'Snap granularity. <code>nil</code> = continuous.' },
+    { name: 'minimumLabel', type: 'String?', default: 'nil', description: 'Optional caption at the track start (e.g. <code>"0.1"</code>).' },
+    { name: 'maximumLabel', type: 'String?', default: 'nil', description: 'Optional caption at the track end (e.g. <code>"2.0"</code>).' },
+    { name: '.disabled(_:)', type: 'ViewModifier', description: 'Inert + dimmed; the standard SwiftUI disable path.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The single-thumb slider is now **published on Swift** (`NockerlSlider`, NockerlDesign
+SwiftPM) and **shipped on Android** (Material `Slider`, in the sampling sheet); web is
+the laggard (intended API designed here from the laws).
+
+- **Range slider:** the two-thumb range is **not shipped on any platform**. Android ships single-thumb only, and `NockerlSlider` documents it as a follow-up (SwiftUI has no native range `Slider`). The value bubble and explicit tick marks are also designed originally here.
+- **Swift look:** `NockerlSlider` wraps the native `Slider` and tints it cyan (`accentPrimary`) with a persistent Nockerl label; the recessed-well / lifted catch-light disc treatment is still the target the platforms should converge on.
+- **Temperature range:** the real `SAMPLING_KNOB_SPECS` (`Sampling.kt`) uses **0.1 to 2.0 step 0.05**, not the rounder "0 to 2 step 0.1"; the demo + code use the **shipped** values.
+- **Look:** Android uses Material's default thumb/track; the recessed well + lifted catch-light disc is the Nockerl treatment the platforms should converge on.
+</Aside>

@@ -1,0 +1,206 @@
+---
+title: Chart / sparkline
+description: Token-colored charts for line / area, bar, sparkline, and a usage ring.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import ChartDemo from '../../../components/demos/ChartDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ChartDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. Series colors are tokens: brand cyan
+// (var(--color-accent-primary)) for the primary, the categorical ramp for the rest.
+// Axes/grid bind to border + muted tokens; nothing is hardcoded. The selectable legend
+// and card chrome stay in the CONSUMER; the chart primitives own only the plot.
+import { NockerlLineChart, NockerlBarChart, NockerlSparkline, NockerlGauge } from '@dizyx/nockerl-react';
+
+export function UsagePanel() {
+  return (
+    <>
+      {/* `area` is a TOP-LEVEL NockerlLineChart prop (fills under every series), not per-series.
+          Each series is { key, label, color, data }. There is no `legend` prop: the
+          consumer owns the legend/card chrome (compose NockerlChip toggles). */}
+      <NockerlLineChart
+        xLabels={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+        series={[
+          { key: 'cloud', label: 'Cloud', color: 'var(--color-accent-primary)', data: cloud },
+          { key: 'local', label: 'Local', color: 'var(--color-core-categorical-violet400)', data: local },
+        ]}
+        area
+      />
+
+      {/* NockerlBarChart takes `bars` ({ label, value, color }), where the color is per-bar (a
+          categorical tint or brand cyan). There is no `data` / `colorBy` prop. */}
+      <NockerlBarChart
+        bars={[
+          { label: 'Edit', value: 42, color: 'var(--color-accent-primary)' },
+          { label: 'Read', value: 31, color: 'var(--color-core-categorical-sky400)' },
+          { label: 'Bash', value: 24, color: 'var(--color-core-categorical-emerald400)' },
+        ]}
+      />
+
+      <NockerlSparkline data={tokenTrend} color="var(--color-accent-primary)" showLast />
+
+      {/* The usage ring is the NockerlGauge primitive in its `ring` shape. It owns the
+          cyan < .60 → amber < .85 → red band semantics internally. */}
+      <NockerlGauge shape="ring" value={58} max={100} centerPrimary="58%" label="Context window 58% used" />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android Jetpack Compose (canonical). The shipped Sparkline draws a stroked
+// Path normalized to its own min/max with a "now" dot (chat/ui/ClusterSheet.kt);
+// the context line fills by ratio with cyan→amber→red bands (SessionChipsBar.kt).
+// Series colors come from NockerlColors (accent + categorical ramp).
+@Composable
+fun Sparkline(data: List<Float>, color: Color, modifier: Modifier = Modifier) {
+    val min = data.min(); val max = data.max(); val range = (max - min).takeIf { it > 0f } ?: 1f
+    Canvas(modifier) {
+        val stepX = (size.width - 2f) / (data.size - 1)
+        val path = Path().apply {
+            data.forEachIndexed { i, v ->
+                val x = 1f + i * stepX
+                val y = size.height - 1f - ((v - min) / range) * (size.height - 2f)
+                if (i == 0) moveTo(x, y) else lineTo(x, y)
+            }
+        }
+        drawPath(path, color, style = Stroke(width = 1.5f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+        val lastY = size.height - 1f - ((data.last() - min) / range) * (size.height - 2f)
+        drawCircle(color, radius = 1.5f, center = Offset(1f + (data.size - 1) * stepX, lastY))
+    }
+}
+
+// A usage ring uses the same threshold semantics via drawArc.
+@Composable
+fun UsageRing(ratio: Float, modifier: Modifier = Modifier) {
+    val colors = LocalNockerlColors.current
+    val color = when {
+        ratio >= 0.85f -> colors.statusError
+        ratio >= 0.60f -> colors.statusWarning
+        else -> colors.accent
+    }
+    Canvas(modifier) {
+        val sw = 10.dp.toPx()
+        drawArc(colors.canvasEdge, -90f, 360f, false, style = Stroke(sw))
+        drawArc(color, -90f, 360f * ratio.coerceIn(0f, 1f), false, style = Stroke(sw, cap = StrokeCap.Round))
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI + Swift Charts (canonical). The shipped chart card lives in
+// NockerlVoice/UI/HomeSection.swift: a BarMark with a vertical cyan→accentDark
+// gradient, a LEADING y-axis (hairline grid + muted labels) and a strided x-axis.
+import Charts
+
+struct CostChart: View {
+    let cloud: [DayCount]
+    var body: some View {
+        Chart(cloud) { item in
+            BarMark(x: .value("Day", item.date, unit: .day),
+                    y: .value("Cost", item.count))
+                .foregroundStyle(
+                    LinearGradient(colors: [NockerlTheme.accent, NockerlTheme.accentDark],
+                                   startPoint: .top, endPoint: .bottom)
+                )
+                .cornerRadius(2)
+        }
+        .frame(height: 210)
+        .chartXAxis {
+            AxisMarks(values: .stride(by: .day, count: 6)) {
+                AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    .foregroundStyle(NockerlTheme.onSurfaceMuted)
+            }
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading) {
+                AxisGridLine().foregroundStyle(NockerlTheme.hairline)
+                AxisValueLabel().foregroundStyle(NockerlTheme.onSurfaceMuted)
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'series (LineChart)', type: 'ChartSeries[]', required: true, description: 'Each: <code>key</code>, <code>label</code>, a token <code>color</code> (a <code>var(--color-…)</code> string for brand cyan or a categorical tint), and <code>data: number[]</code>. The caller passes the already-filtered active set.' },
+    { name: 'xLabels (LineChart)', type: 'string[]', required: true, description: 'Category labels along the x-axis. Length should match each series.' },
+    { name: 'area (LineChart)', type: 'boolean', default: 'false', description: 'TOP-LEVEL prop: also fill under the line (the AREA variant), applied to every series. There is no per-series <code>area</code> and no <code>legend</code> prop: the consumer owns the selectable legend + card chrome.' },
+    { name: 'bars (BarChart)', type: 'ChartBar[]', required: true, description: 'Each: <code>label</code>, <code>value</code>, and a token <code>color</code> (a <code>var(--color-…)</code> string, either a categorical tint per bar or brand cyan). There is no <code>data</code> / <code>colorBy</code> prop.' },
+    { name: 'showLast (Sparkline)', type: 'boolean', default: 'true', description: '<code>Sparkline</code> only: draw the filled dot at the latest point ("now"). <code>data</code> is <code>number[]</code>; <code>color</code> is a <code>var(--color-…)</code> string.' },
+    { name: 'shape / value (Gauge ring)', type: "'ring'; number", description: 'The usage ring is <code>Gauge shape="ring"</code> with <code>value</code> / <code>max</code>. It resolves the band internally: cyan <code>&lt; .60</code> → amber <code>&lt; .85</code> → red.' },
+    { name: 'ariaLabel', type: 'string', description: 'Accessible name for the figure (LineChart / BarChart). A data summary is generated when omitted.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'data', type: 'List<Float>', required: true, description: '<code>Sparkline</code> values; normalized to their own min/max. Needs ≥ 2 points (else a faint empty track renders).' },
+    { name: 'ratio', type: 'Float', required: true, description: '<code>UsageRing</code> / context line fill, 0..1. Threshold bands: cyan < <code>0.60</code> → amber < <code>0.85</code> → red.' },
+    { name: 'color', type: 'Color', required: true, description: 'Series stroke color. Pass <code>LocalNockerlColors.current.accent</code> or a categorical tint.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier that carries the size (the <code>Canvas</code> fills it).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`Chart` from Swift Charts is configured by content marks + axis modifiers rather
+than discrete parameters; the data is the input.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'BarMark / LineMark', type: 'ChartContent', description: 'The mark per datum. Filled with a vertical <code>NockerlTheme.accent → accentDark</code> gradient; <code>.cornerRadius(2)</code>.' },
+    { name: '.chartYAxis', type: 'modifier', description: 'Leading <code>AxisMarks</code>: <code>AxisGridLine</code> on <code>NockerlTheme.hairline</code>, <code>AxisValueLabel</code> on <code>onSurfaceMuted</code>.' },
+    { name: '.chartXAxis', type: 'modifier', description: 'Strided <code>AxisMarks</code> with muted-foreground labels.' },
+    { name: 'Equalizer', type: 'View', description: 'The 5-bar audio meter (RecordingHUD): log-scaled capsules in <code>NockerlTheme.accent</code>; the live counterpart to a static sparkline.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Rendering:** web + Android draw charts **by hand** (SVG / Compose `Canvas`); Swift uses **Swift Charts**. The vocabulary (token colors, hairline grid, cyan→accentDark bars) is unified; the engine differs.
+- **Series count:** the shipped Android `Sparkline` and Voice `BarChart` are **single-series**; the multi-series line + legend toggle shown here is the intended web API, not yet on the native apps.
+- **Bar radius:** native bars hardcode **2** / Swift `.cornerRadius(2)`; should consume `radius.track`.
+- **Usage bands:** Android `SessionChipsBar` hardcodes the amber/red band hexes; they should resolve to `status.warning` / `status.error`.
+</Aside>

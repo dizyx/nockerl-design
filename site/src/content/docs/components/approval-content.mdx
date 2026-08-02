@@ -1,0 +1,112 @@
+---
+title: Approval content
+description: The host-agnostic approval anatomy (preview, options, risk note, and the ratified confirm/cancel grammar).
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ApprovalContentDemo from '../../../components/demos/ApprovalContentDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ApprovalContentDemo client:visible />
+</Example>
+
+The **one shared approval shape** for the agent console (WS2, agent-console epic): every
+moment an agent stops and asks (a tool call, a plan, an `AskUserQuestion`) renders this
+same anatomy, top-down:
+
+1. **Title row** *(optional)*. Only for hosts without their own header (inline panels).
+2. **Preview slot.** *What is being approved*: a
+   [`ToolCallCard`](/components/tool-call-card/), [Markdown](/components/markdown-content/)
+   plan content, a diff, a mono command in a sunken [`Well`](/components/input-fields/).
+3. **Options slot.** Choice rows: the real [`RadioGroup`](/components/radio-group/),
+   [`Checkbox`](/components/checkbox/), [`TextField`](/components/text-field/).
+4. **Risk-note slot.** Caveats in the ratified [`Banner`](/components/banner/) /
+   [`Callout`](/components/callout/) alert grammar (recessed status disc + whisper intent
+   border on a solid surface, never a wash, never a rail).
+5. **Actions.** `NockerlApprovalActions`, the ratified CTA grammar
+   ([Dialog](/components/dialog/) r5 canon): **outline confirm** (`tertiary` cyan) ·
+   **ghost cancel** · destructive confirm = **outline-red**, never a filled primary on a
+   lifted surface. Confirm can hold `confirmDisabled` until the options slot is satisfied.
+
+## Host-agnostic by design
+
+`NockerlApprovalContent` is **pure content**: no overlay, no scrim, no chrome. The title
+and the actions migrate to whatever chrome the host owns:
+
+| Host | Title | Actions |
+|------|-------|---------|
+| [`BottomSheet`](/components/bottom-sheet/) | the sheet header (`title` / `subtitle`) | **pinned** in the sheet's `footer` slot (never scroll away) |
+| [`Dialog`](/components/dialog/) | the dialog header | the dialog's own CTA row (same grammar) |
+| Inline panel | the content's own `title` prop | the `actions` slot, inline at the end |
+
+<Aside type="note" title="Ratified (2026-07-05): one anatomy, platform-idiomatic hosts">
+The host wiring is settled (adjudication addendum 2026-07-05): **web desktop/pointer**
+presents approvals in **inline panels** (the Panel/Dialog grammar, never a desktop
+bottom sheet); **compact/touch web widths** are sheet-idiomatic and host the same
+anatomy in the shipped [`BottomSheet`](/components/bottom-sheet/); **Android** rides
+`NockerlBottomSheet` (the ApprovalSheet shell). The HOST is interaction idiom (law §9);
+the ANATOMY is the drift-guard (§12) and never changes across hosts. The demo above
+derives the host from the context switch exactly per this rule.
+</Aside>
+
+## The approval views are configs, not components
+
+Per the component-vs-view rule (task 2653c), the three console approval moments are
+**pure slot configurations** of this one anatomy. They introduce **no new components**:
+
+| View | `preview` | `options` | `riskNote` | Confirm |
+|------|-----------|-----------|-----------|---------|
+| **Tool approval** | [`ToolCallCard`](/components/tool-call-card/) (or a mono command `Well`) | n/a | `Banner` on destructive/write commands | `Approve` · destructive commands flip `tone="destructive"` |
+| **Plan approval** | [Markdown](/components/markdown-content/) plan body | n/a | n/a | `Approve plan` / cancel `Keep planning` |
+| **AskUserQuestion** | optional context | `RadioGroup` (+ `Checkbox` multi-select, `TextField` "other") | n/a | `Submit`, `confirmDisabled` until answered |
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlApprovalActions, NockerlApprovalContent, NockerlBottomSheet } from '@dizyx/nockerl-react';
+
+// SHEET host: title on the sheet, actions PINNED in the footer slot.
+<NockerlBottomSheet
+  open={open}
+  onDismiss={deny}
+  stage={stage}
+  title="Approve shell command"
+  subtitle="This command modifies the working tree"
+  footer={<NockerlApprovalActions tone="destructive" confirmLabel="Run anyway" onConfirm={approve} onCancel={deny} />}
+>
+  <NockerlApprovalContent preview={<CommandWell cmd="rm -rf build/" />} riskNote={<RiskBanner />} />
+</NockerlBottomSheet>
+
+// INLINE PANEL host: the content carries its own title row + inline actions.
+<NockerlApprovalContent
+  title="Release timing"
+  subtitle="The agent needs a decision to continue"
+  options={<NockerlRadioGroup label="How should this ship?" options={choices} value={choice} onChange={setChoice} />}
+  actions={<NockerlApprovalActions confirmLabel="Submit" confirmDisabled={!choice} onConfirm={submit} onCancel={cancel} />}
+/>
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Android">
+The Compose mirror (`NockerlApprovalContent` hosted in the canonical
+`NockerlBottomSheet`, matching `ToolApprovalSheet`) rides the compose lane of the
+agent-console epic. Same anatomy, same slot names.
+</Aside>
+
+## Parameters
+
+<PropsTable nameLabel="Prop" component="NockerlApprovalContent" />
+
+<PropsTable nameLabel="Prop" component="NockerlApprovalActions" />

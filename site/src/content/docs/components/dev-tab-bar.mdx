@@ -1,0 +1,65 @@
+---
+title: Dev tab bar
+description: Editor tabs for the web console, the shipped Tabs extended with closable + dirty affordances.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import DevTabBarDemo from '../../../components/demos/DevTabBarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DevTabBarDemo client:visible />
+</Example>
+
+The web console's **editor tab strip**, deliberately **not a new component**: it is the
+shipped [`Tabs`](/components/tabs/) composite carrying two dev-tab extensions (the
+extend-never-fork rule):
+
+- **`onClose`** makes every tab closable: a quiet **X** for pointer users (out of the tab
+  order) and **Delete / Backspace** on the focused tab for keyboard users, the ARIA
+  deletable-tabs pattern. The list stays controlled: the callback only reports the value;
+  the host removes the tab and moves selection.
+- **`dirty`** (per tab) renders the editor's **unsaved dot** in the trailing slot; with a
+  closable tab it yields to the X on hover/focus (an opacity cross-fade, frozen under
+  `prefers-reduced-motion`).
+- **Overflow** needs nothing new: Tabs' own scrollable tablist + edge fades take over
+  when the strip outgrows its container.
+
+<Aside type="note" title="Web-only by scope">
+Per the de-phantom verdict on the agent-console epic: editor tabs are console chrome with
+no native equivalent. The extensions live in the shared `NockerlTabs` (any platform that
+ever needs them inherits the same API).
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlTabs } from '@dizyx/nockerl-react';
+
+<NockerlTabs
+  label="Open files"
+  size="sm"
+  tabs={files.map((f) => ({ value: f.path, label: f.name, dirty: f.unsaved }))}
+  value={activePath}
+  onChange={setActivePath}
+  onClose={(path) => closeFile(path)}  // host removes the tab + moves selection
+/>
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+The full surface lives on the [`Tabs`](/components/tabs/) page; the dev-tab additions:
+
+<PropsTable nameLabel="Prop" component="NockerlTabs" />

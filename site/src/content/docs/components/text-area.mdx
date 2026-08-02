@@ -1,0 +1,165 @@
+---
+title: Text area
+description: The Nockerl multi-line text area, a recessed input well with a character counter.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import TextAreaDemo from '../../../components/demos/TextAreaDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TextAreaDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the
+// canonical API the published @dizyx/nockerl-react package exposes. The shipped shadcn
+// textarea.tsx is being conformed to it; see the drift note below.)
+import { NockerlTextArea } from '@dizyx/nockerl-react';
+
+export function TaskPrompt() {
+  const [prompt, setPrompt] = useState('');
+  return (
+    <NockerlTextArea
+      label="Task instructions"
+      value={prompt}
+      onChange={setPrompt}
+      placeholder="Describe what the agent should do…"
+      helperText="The agent runs with these instructions."
+      maxLength={2000}
+      minRows={3}
+      maxRows={12}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose, canonical). There is no extracted NockerlTextArea yet; a
+// multi-line field is the same OutlinedTextField WITHOUT singleLine, with a maxLines cap
+// (see com.nockerl.app.chat.ui.ChatInputBar, which caps at 5 lines). Flagged in drift.
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import com.nockerl.app.core.theme.NockerlControlShape
+
+OutlinedTextField(
+    value = prompt,
+    onValueChange = { if (it.length <= MAX) prompt = it },
+    label = { Text("Task instructions") },
+    maxLines = 12,                 // auto-grows up to this, then scrolls
+    isError = prompt.length > MAX,
+    supportingText = {
+        Text("${prompt.length} / $MAX") // the character counter
+    },
+    modifier = Modifier.fillMaxWidth(),
+    shape = NockerlControlShape,   // the 12dp control radius token
+    colors = OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = MaterialTheme.colorScheme.primary, // brand cyan
+    ),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). A multi-line field is a TextField with a vertical axis
+// (macOS 13+) wrapped in the same recessed .nockerlFieldBackground() modifier from
+// NockerlVoice/UI/SettingsComponents.swift. The counter is a sibling Text view.
+TextField("Describe what the agent should do…", text: $prompt, axis: .vertical)
+    .textFieldStyle(.plain)
+    .lineLimit(3...12)              // grows between 3 and 12 lines, then scrolls
+    .foregroundStyle(NockerlTheme.onSurface)
+    .nockerlFieldBackground()       // canvasAlt inset surface + hairline, rounded rect
+
+Text("\(prompt.count) / \(maxLen)") // character counter (sibling)
+    .font(.caption)
+    .foregroundStyle(prompt.count > maxLen ? NockerlTheme.error : NockerlTheme.onSurfaceMuted)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlTextArea" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+Compose has **no extracted `NockerlTextArea`** yet; a multi-line field is the same
+`OutlinedTextField` without `singleLine`, with these parameters. The recessed-well
+treatment and the counter are **not** built in (M3 outlined boxes are used; the counter is
+a manual `supportingText`); tracked in drift below.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'value', type: 'String', required: true, description: 'Current text value.' },
+    { name: 'onValueChange', type: '(String) -> Unit', required: true, description: 'Invoked on every edit. Enforce a length cap here (no built-in maxLength).' },
+    { name: 'label', type: '@Composable (() -> Unit)?', default: 'null', description: 'Floating label slot: the persistent label.' },
+    { name: 'maxLines', type: 'Int', default: 'Int.MAX_VALUE', description: 'The area auto-grows up to this many lines, then scrolls. (Leave <code>singleLine</code> off.)' },
+    { name: 'minLines', type: 'Int', default: '1', description: 'Starting height in lines.' },
+    { name: 'isError', type: 'Boolean', default: 'false', description: 'Renders the error treatment (red outline + error-colored label/supporting text).' },
+    { name: 'supportingText', type: '@Composable (() -> Unit)?', default: 'null', description: 'Helper / error line, and where the <code>current / max</code> counter is rendered.' },
+    { name: 'shape', type: 'Shape', default: 'NockerlControlShape', description: 'Pass the <code>NockerlControlShape</code> token (12dp) so the area shares the one control radius.' },
+    { name: 'colors', type: 'TextFieldColors', default: 'OutlinedTextFieldDefaults.colors(…)', description: 'Set <code>focusedBorderColor = colorScheme.primary</code> for the brand-cyan focus edge.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI applies the area chrome as the **`.nockerlFieldBackground()` view modifier** on a
+vertical-axis `TextField`. State (focus, editing) comes from the SwiftUI environment.
+There are no explicit state parameters, and the label, counter, and error are **sibling
+views** (no bundled slots yet).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.nockerlFieldBackground()', type: 'ViewModifier', description: 'The recessed input chrome: <code>NockerlTheme.canvasAlt</code> inset surface + a hairline stroke, in a rounded rectangle. Wrap a <code>.textFieldStyle(.plain)</code> field with it.' },
+    { name: 'axis: .vertical', type: 'TextField init arg', description: 'Makes the <code>TextField</code> multi-line (macOS 13+) so it can grow.' },
+    { name: '.lineLimit(min...max)', type: 'modifier', description: 'Auto-grow bounds: grows between the two line counts, then scrolls.' },
+    { name: '.foregroundStyle(NockerlTheme.onSurface)', type: 'modifier', description: 'Binds the typed-text color to the on-surface token.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The recessed-well spec is the target; these are the real divergences between the shipped
+platforms, tracked in the [Review queue](/review-queue/):
+
+- **No shared component:** there is no `NockerlTextArea` on any platform. Voice has the
+  shared `.nockerlFieldBackground()` modifier (reused for multi-line); Android repeats
+  `OutlinedTextField` inline; web ships the shadcn `textarea.tsx`. An extracted component
+  with a bundled counter is owed.
+- **Recessed vs outlined:** Voice + the spec are **recessed wells**; Android's
+  `OutlinedTextField` is an **outlined box** (no inset). It should adopt the inset surface.
+- **Control radius:** Voice hardcodes **8pt**; Android uses the **12dp** token; web's
+  shadcn textarea is **`rounded-md`** (6px). The well must be the **12px** control radius
+  everywhere.
+- **Counter:** only web (canonical) bundles the `current / max` counter + over-cap error.
+  Android/Voice render it manually (or omit it). It should be a first-class prop.
+- **Auto-grow:** web (JS), Compose (`maxLines`), and Swift (`.lineLimit`) each auto-grow,
+  but via three different mechanisms; behavior is aligned, implementation is not.
+</Aside>

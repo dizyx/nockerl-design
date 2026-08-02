@@ -1,0 +1,205 @@
+---
+title: Wizard / process steps
+description: The guided multi-step flow. A step indicator + the active step's content + Back / Next / Finish navigation + validation gating + a review step.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import WizardDemo from '../../../components/demos/WizardDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <WizardDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// The Wizard is the FLOW: it renders a NockerlStepper indicator + the active step's
+// content + the Back/Next/Finish footer, and gates advance on each step's
+// `isValid`. The shipped "Create session" flow (SessionCreationForm) is the
+// content this models.
+
+export function CreateSessionWizard({ onFinish }: { onFinish: (v: SessionValues) => void }) {
+  return (
+    <Wizard
+      label="Create session"
+      onFinish={onFinish}                 // fired from the last step's Finish
+      steps={[
+        {
+          label: 'Basics',
+          isValid: (v) => v.name.trim().length > 0,   // gates Next
+          render: (v, set) => (
+            <>
+              <NockerlTextField label="Session name" required value={v.name} onChange={(name) => set({ name })} />
+              <NockerlRadioGroup label="Harness" value={v.engine} onChange={(engine) => set({ engine })}
+                options={[{ value: 'cloud-agent', label: 'Cloud Agent' }, { value: 'api-server', label: 'Local Engine' }]} />
+            </>
+          ),
+        },
+        {
+          label: 'Model',
+          isValid: (v) => v.provider.length > 0,
+          render: (v, set) => (
+            <>
+              <Select label="Provider" required value={v.provider} onChange={(provider) => set({ provider })} />
+              <Select label="Model" value={v.model} onChange={(model) => set({ model })} />
+            </>
+          ),
+        },
+        { label: 'Review', render: (v) => <ReviewSummary values={v} /> },   // final step → Finish
+      ]}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. INTENDED API (com.nockerl.app.core.ui.NockerlWizard):
+// no formal wizard ships yet; the real "Create session" flow renders as a single
+// SessionCreationSheet (one scroll, not paged). This generalizes those fields into
+// a guided flow that OWNS a NockerlStepper + the step body + the Back/Next/Finish bar.
+import com.nockerl.app.core.ui.NockerlWizard
+import com.nockerl.app.core.ui.NockerlWizardStep
+
+NockerlWizard(
+    label = "Create session",
+    onFinish = viewModel::createSession,        // invoked from the last step's Finish
+    steps = listOf(
+        NockerlWizardStep(
+            label = "Basics",
+            isValid = { it.name.isNotBlank() },  // gates Next; footer Next disabled until true
+            content = { values, set ->
+                NockerlTextField("Session name", values.name, onValueChange = { set(values.copy(name = it)) })
+                NockerlEngineRadios(values.engine, onSelect = { set(values.copy(engine = it)) })
+            },
+        ),
+        NockerlWizardStep(
+            label = "Model",
+            isValid = { it.provider.isNotEmpty() },
+            content = { values, set ->
+                NockerlProviderDropdown(values.provider, onSelect = { set(values.copy(provider = it)) })
+                NockerlModelDropdown(values.model, onSelect = { set(values.copy(model = it)) })
+            },
+        ),
+        NockerlWizardStep(label = "Review", content = { values, _ -> NockerlReviewSummary(values) }),
+    ),
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. INTENDED API (NockerlVoice/UI/NockerlWizard.swift): no formal
+// wizard ships yet. The closest precedent is OnboardingView (a status checklist,
+// not a paged Back/Next flow); this generalizes it into a guided container that
+// pairs a NockerlStepper with the active step's content and a Back/Next/Finish bar.
+NockerlWizard(label: "Create session", values: $session, onFinish: createSession) {
+    NockerlWizardStep("Basics", isValid: { !$0.name.isEmpty }) { values in   // gates Next
+        NockerlTextField("Session name", text: values.name)
+        NockerlEngineRadios(selection: values.engine)        // Cloud Agent / Local Engine
+    }
+    NockerlWizardStep("Model", isValid: { !$0.provider.isEmpty }) { values in
+        NockerlProviderPicker(selection: values.provider)
+        NockerlModelPicker(selection: values.model)          // optional → "Provider default"
+    }
+    NockerlWizardStep("Review") { values in
+        NockerlReviewSummary(values)                          // last step → Finish
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'steps', type: 'WizardStep[]', required: true, description: 'Ordered steps. Each is <code>{ label, render, isValid? }</code>. <code>render(values, set)</code> draws the step body; <code>isValid(values)</code> gates Next (omit for an always-passable step like Review).' },
+    { name: 'onFinish', type: '(values: T) => void', required: true, description: 'Fired when Finish is pressed on the last step. Receives the accumulated values.' },
+    { name: 'label', type: 'string', description: "Accessible name for the flow region (e.g. <code>'Create session'</code>); also drives the header eyebrow." },
+    { name: 'current', type: 'number', description: 'Controlled active step index. Omit to let the Wizard own its step state internally.' },
+    { name: 'onStepChange', type: '(index: number) => void', description: 'Notified on every Back / Next / indicator-jump. Pair with <code>current</code> for a controlled flow.' },
+    { name: 'allowJumpBack', type: 'boolean', default: 'true', description: 'When true, completed discs in the indicator are clickable to jump back. Forward jumps are never allowed (gating).' },
+    { name: 'finishing', type: 'boolean', default: 'false', description: 'Holds the Finish button with a spinner + <code>aria-busy</code> while the create call is in flight.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'steps', type: 'List<NockerlWizardStep>', required: true, description: '<code>NockerlWizardStep(label, content, isValid = { true })</code>. <code>content</code> is a <code>@Composable (values, set) -> Unit</code> body; <code>isValid</code> gates the footer Next.' },
+    { name: 'onFinish', type: '(T) -> Unit', required: true, description: 'Invoked from the last step’s Finish with the accumulated values.' },
+    { name: 'label', type: 'String', default: '""', description: 'Content description for the flow + the header eyebrow text.' },
+    { name: 'current', type: 'Int?', default: 'null', description: 'Controlled active step. Null = the wizard hoists its own <code>rememberSaveable</code> step state.' },
+    { name: 'onStepChange', type: '((Int) -> Unit)?', default: 'null', description: 'Called on Back / Next / jump-back. Pair with <code>current</code> to control the flow.' },
+    { name: 'allowJumpBack', type: 'Boolean', default: 'true', description: 'Completed stepper discs become clickable (ripple) to return to an earlier step.' },
+    { name: 'finishing', type: 'Boolean', default: 'false', description: 'Shows a spinner in Finish and blocks re-press while the create call runs.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. Pass <code>Modifier.fillMaxWidth()</code> for a full-width flow card.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the flow as a `NockerlWizard` view built from a `@ViewBuilder` of
+`NockerlWizardStep`s; the active index is internal unless bound. State styling
+reads from `NockerlTheme` (accent, success, surface highlight, divider).
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'steps (builder)', type: '@WizardBuilder', required: true, description: '<code>NockerlWizardStep(_:isValid:content:)</code>: a label, an optional <code>isValid</code> predicate that gates Next, and the step’s content view.' },
+    { name: 'onFinish', type: '(T) -> Void', required: true, description: 'Closure fired from the last step’s Finish with the bound values.' },
+    { name: 'values', type: 'Binding<T>', required: true, description: 'The accumulated flow values; each step reads/writes through this binding.' },
+    { name: 'label', type: 'String', default: '""', description: 'Accessibility label for the flow + the header eyebrow.' },
+    { name: 'current', type: 'Binding<Int>?', default: 'nil', description: 'Optional binding to control the active step; nil = internal <code>@State</code>.' },
+    { name: 'allowJumpBack', type: 'Bool', default: 'true', description: 'Completed stops in the indicator become tappable to step back.' },
+    { name: 'finishing', type: 'Bool', default: 'false', description: 'Drives the Finish spinner + disabled state while creating.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The Wizard is the guided *flow*, not the indicator:
+
+- **Wizard vs [Stepper](/components/stepper/):** the Wizard is the whole flow. It
+  renders the step indicator **plus** each step's content **plus** the
+  Back / Next / Finish footer **plus** validation gating. The Stepper is only the
+  discs + connectors the Wizard shows at the top; a Wizard *uses* a Stepper.
+- **No formal wizard ships yet** on any platform. The real "Create session" flow
+  renders as a **single page** in web `SessionCreationForm` and Android
+  `SessionCreationSheet` (one bottom sheet, not paged), and Voice's
+  `OnboardingView` is a **status checklist**, not a Back/Next flow. So the demo
+  reproduces those real fields (Name → harness → Provider → Model) but the
+  paged container above is an **intended** API designed from the laws + Stepper +
+  Form-layout vocabulary, pending implementation.
+- **Step content** is the [Form layout](/components/form-layout/) vocabulary
+  (recessed wells, required `*`, inline errors); the Wizard adds only the
+  orchestration (indicator + navigation + gating + review).
+</Aside>

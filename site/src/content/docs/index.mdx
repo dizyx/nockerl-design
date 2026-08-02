@@ -1,0 +1,63 @@
+---
+title: Nockerl Design
+description: The single source of truth for everything visual across Nockerl (tokens, foundations, and cross-platform component specs).
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What this is
+
+**Nockerl Design is the single design framework for all of Nockerl**, the owner *and
+publisher* of design tokens, components, and this documentation site. Every product
+**consumes it as a versioned dependency**, across web, Android (Jetpack Compose), and
+Swift. A remodel here ships to every client via a version bump, and no client ever
+re-invents a design value.
+
+The products it dresses today are **Nockerl Voice** (Swift on macOS), **Nockerl CtxMS**,
+and **Nockerl Security**, alongside the framework's own documentation site. Each one has an
+icon in this repository under `logos/app-icons/`, so a product consumes its own brand
+assets from here rather than keeping a private copy.
+
+<CardGrid stagger>
+  <Card title="Tokens, not values" icon="setting">
+    Every color, type ramp, space, radius, elevation, and motion value is a token.
+    Hardcoding a hex or a radius in a client is a bug; clients consume `@dizyx/nockerl-tokens`.
+  </Card>
+  <Card title="Cyan is the only accent" icon="approve-check">
+    One brand anchor: cyan <code>#0CC0DF</code>. Mono surfaces + cyan. Warm tones
+    (amber / orange / red) are status signals only, never decoration.
+  </Card>
+  <Card title="Depth without glow" icon="moon">
+    Depth is a neutral drop shadow plus a top catch-light, lit from above. No glows,
+    no colored shadows, no neon. A colored <code>box-shadow</code> is a defect.
+  </Card>
+  <Card title="Three platforms, one spine" icon="puzzle">
+    Brand expression is unified; interaction is platform-honest. Web hover + focus ring,
+    Android ripple + haptics, macOS pointer, all documented per component.
+  </Card>
+</CardGrid>
+
+## How it fits together
+
+```
+tokens/ (DTCG JSON)  --Style Dictionary (Bun)-->  build/{web, android, swift}
+                                                       │
+                                  published (CI, GitHub Packages, semver)
+                                                       ▼
+        @dizyx/nockerl-tokens (npm) · nockerl-compose (Maven) · NockerlDesign (SPM)
+                                                       ▼
+                  consumed by: Voice · CtxMS · Security · future clients
+```
+
+The pipeline turns one DTCG source of truth into per-platform outputs, publishes them as
+versioned packages, and this site documents the result: foundations, the design laws,
+and a page per component showing it across every platform with live examples, states,
+accessibility, and review status.
+
+## Where to go next
+
+- **[Installation](/getting-started/installation/)** covers how clients consume the tokens.
+- **[Principles](/getting-started/principles/)** sets out the point of view behind every decision.
+- **[Design laws](/foundations/design-laws/)** is the non-negotiable ruleset.
+- **[Button](/components/button/)** is the gold-standard component reference page.
+- **[Review queue](/review-queue/)** lists every page tagged draft / in review / approved.

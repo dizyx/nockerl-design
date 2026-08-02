@@ -1,0 +1,209 @@
+---
+title: Multi-select
+description: The selection-management picker, with token chips, checkable rows, and bulk select-all / clear-all.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import MultiSelectDemo from '../../../components/demos/MultiSelectDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <MultiSelectDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+const LABELS = [
+  { value: 'bug', label: 'bug', secondary: 'Defect to fix', status: 'error' },
+  { value: 'feature', label: 'feature', secondary: 'New capability', status: 'info' },
+  { value: 'design', label: 'design', secondary: 'Design framework', status: 'success' },
+  { value: 'wontfix', label: 'wontfix', secondary: 'Locked', status: 'idle', disabled: true },
+];
+
+export function LabelPicker() {
+  const [labels, setLabels] = useState<string[]>(['bug', 'feature']);
+  return (
+    <MultiSelect
+      label="Labels"
+      options={LABELS}
+      value={labels}
+      onChange={setLabels}
+      display="tokens"   // removable chips in the field (or "count" → "N selected")
+      maxTokens={3}      // collapse the rest to "+N more"
+      max={5}            // cap: unchecked rows lock once reached
+      filterable         // optional inline filter (secondary, not the headline)
+      placeholder="Add labels…"
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). No reusable NockerlMultiSelect ships yet;
+// the multi-select pattern is checkbox rows bound to a MutableSet<String>, exactly
+// as in chat/ui/AskUserQuestionSheet.kt. The brand checkbox + chip vocabulary:
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import com.nockerl.app.core.ui.NockerlChip
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+val selected = remember { mutableStateMapOf<Int, MutableSet<String>>() }
+val chosen = selected.getOrPut(index) { mutableSetOf() }
+
+// Each option is a Row that owns the click; the Checkbox is decorative
+// (onCheckedChange = null) and tinted to the brand accent.
+Row(
+    modifier = Modifier.fillMaxWidth().clickable {
+        if (chosen.contains(option.label)) chosen.remove(option.label)
+        else chosen.add(option.label)
+        selected[index] = chosen   // trigger recomposition
+    },
+    verticalAlignment = Alignment.CenterVertically,
+) {
+    Checkbox(
+        checked = chosen.contains(option.label),
+        onCheckedChange = null,
+        colors = CheckboxDefaults.colors(checkedColor = LocalNockerlColors.current.accentPrimary),
+    )
+    Text(option.label)
+}
+
+// Chosen values surface as removable chips (the token row):
+NockerlChip(text = "bug", onClick = { chosen.remove("bug") }, selected = true)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. No formal multi-select ships; it composes the shipped Chip +
+// FlowLayout token field with a checkmark option list (NockerlVoice/UI/
+// SettingsComponents.swift + the checkmark idiom). This is the intended assembly.
+@State private var selected: Set<String> = ["bug", "feature"]
+
+// The trigger field: chosen values as removable token chips, wrapped by FlowLayout.
+FlowLayout(spacing: 6) {
+    ForEach(Array(selected), id: \.self) { value in
+        Chip(text: value) { selected.remove(value) }   // cyan capsule + ✕
+    }
+}
+
+// The dropdown: checkable option rows (selection = a cyan checkmark, never a glow).
+ForEach(options, id: \.value) { option in
+    Button {
+        if selected.contains(option.value) { selected.remove(option.value) }
+        else { selected.insert(option.value) }
+    } label: {
+        HStack {
+            Text(option.label)
+            Spacer()
+            if selected.contains(option.value) {
+                Image(systemName: "checkmark").foregroundStyle(NockerlTheme.accent)
+            }
+        }
+    }
+    .buttonStyle(.plain)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Persistent label above the trigger. Never a placeholder.' },
+    { name: 'options', type: 'MultiSelectOption[]', required: true, description: 'Full set. Each: <code>value</code>, <code>label</code>, optional <code>secondary</code> / <code>status</code> / <code>disabled</code>.' },
+    { name: 'value', type: 'string[]', required: true, description: 'The selected set (controlled).' },
+    { name: 'onChange', type: '(next: string[]) => void', required: true, description: 'Emits the next selected set on toggle, select-all, clear-all, or token removal.' },
+    { name: 'display', type: "'tokens' | 'count'", default: "'tokens'", description: '<code>tokens</code> = removable chips in the field; <code>count</code> = a "N selected" summary pill.' },
+    { name: 'maxTokens', type: 'number', default: '3', description: 'Tokens shown before collapsing the rest to <code>+N more</code> (tokens mode).' },
+    { name: 'max', type: 'number', description: 'Selection cap. Unchecked rows disable once reached; select-all fills up to it.' },
+    { name: 'filterable', type: 'boolean', default: 'false', description: 'Show the optional inline filter input. Secondary: search is the <a href="/components/combobox/">Combobox</a>’s headline, not this control’s.' },
+    { name: 'placeholder', type: 'string', description: 'Shown in the field when nothing is selected.' },
+    { name: 'helperText', type: 'string', description: 'Supporting line under the trigger. Replaced by a warm limit message at the cap.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert and <strong>clearly seen</strong> (never faded to invisible); chosen values stay readable.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+No reusable `NockerlMultiSelect` composable ships yet. The pattern below is the real
+multi-select in `chat/ui/AskUserQuestionSheet.kt`; the parameters are the primitives
+it composes (Material3 `Checkbox` + `NockerlChip`).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'selections', type: 'MutableMap<Int, MutableSet<String>>', required: true, description: 'The selected set per question. Toggling a row adds/removes the option from its <code>MutableSet</code>.' },
+    { name: 'checked', type: 'Boolean', required: true, description: '<code>Checkbox</code> arg: whether this option is in the set. The parent <code>Row</code> owns the click.' },
+    { name: 'onCheckedChange', type: '((Boolean) -> Unit)?', default: 'null', description: 'Passed <code>null</code> so the box is decorative; the surrounding <code>Row.clickable</code> mutates the set.' },
+    { name: 'colors', type: 'CheckboxColors', default: 'checkedColor = accentPrimary', description: 'Brand override via <code>CheckboxDefaults.colors</code>. The checked fill is the cyan accent.' },
+    { name: 'text', type: 'String', required: true, description: '<code>NockerlChip</code> arg: a chosen value rendered as a removable token.' },
+    { name: 'selected', type: 'Boolean', default: 'false', description: '<code>NockerlChip</code> arg: a chosen token renders selected (solid cyan).' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: '<code>NockerlChip</code> arg: remove the value from the set.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+No formal multi-select ships. It composes the shipped `Chip` + `FlowLayout` (the token
+field) with a `checkmark` option list. State is a `Set<String>` toggled per row.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Set<String>', type: '@State', description: 'The selection model. Insert / remove on each row tap; the source of truth for chips + checkmarks.' },
+    { name: 'Chip(text:onRemove:)', type: 'View', description: 'A chosen value as a removable token: cyan capsule (logoMid → accentDark gradient) + an <code>xmark</code> button.' },
+    { name: 'FlowLayout(spacing:)', type: 'Layout', description: 'Wraps the chosen-value chips across lines inside the trigger field.' },
+    { name: 'Image(systemName: "checkmark")', type: 'View', description: 'The selected mark on an option row, tinted <code>NockerlTheme.accent</code> (#0CC0DF). Selection is never a glow.' },
+    { name: 'SegmentedSelector', type: 'View', description: 'Ships for <em>single</em> selection; stands in where the choice is mutually exclusive, not a set.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Multi-select vs. Combobox: pick by emphasis">
+Both can multi-select, but they emphasize different jobs. The
+[**Combobox**](/components/combobox/) leads with **type-to-filter autocomplete**, a
+text-field well you type in, results filter live. **Multi-select** leads with
+**selection management**: a button trigger, checkable option rows, a header with a live
+count and **select-all / clear-all**, token chips with `+N more` overflow, and an
+optional `max`. Reach for the Combobox when finding the item is the hard part; reach for
+multi-select when managing the chosen set is.
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **No shipped component on Android or Swift.** Web is the only platform with an intended
+  `MultiSelect` component. Android ships the pattern (checkbox rows + `MutableSet<String>`
+  in `AskUserQuestionSheet.kt`); Swift composes `Chip` + `FlowLayout` + a `checkmark` list.
+  Both should graduate to a reusable `NockerlMultiSelect`.
+- **Selected mark differs.** Web/Android fill a **checkbox** (cyan tick); Swift uses a
+  trailing **`checkmark` glyph**. One selected-state expression should win.
+- **Bulk actions + count summary + `max`** exist only in the web spec so far. Android’s
+  sheet and Swift’s assembly have no select-all / clear-all header or count mode yet.
+</Aside>

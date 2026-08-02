@@ -1,0 +1,180 @@
+---
+title: Time picker
+description: A time-of-day picker with a clock dial, hour/minute spinbuttons, and AM/PM or 24h.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import TimePickerDemo from '../../../components/demos/TimePickerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <TimePickerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the intended API, not yet exported from @dizyx/nockerl-react (promotion tracked).
+// Neither app ships a custom time picker, so the web island is designed from the
+// laws, pairing with DatePicker's field + popover + accent vocabulary.)
+
+export function ReminderForm() {
+  const [at, setAt] = useState<{ hour: number; minute: number }>({ hour: 14, minute: 30 });
+
+  return (
+    <>
+      {/* Field + popover, 12-hour with AM/PM. */}
+      <TimePicker label="Reminder time" value={at} onChange={setAt} />
+
+      {/* Always-open inline clock, 24-hour, 5-minute step, no past times. */}
+      <TimePicker
+        label="Run at"
+        value={at}
+        onChange={setAt}
+        inline
+        use24Hour
+        minuteStep={5}
+        min={{ hour: 9, minute: 41 }}
+      />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose, Material 3 (BOM 2026.02.01). The app has no custom
+// time picker: chat/ui/ChatUtils.kt and inbox/ui/NotificationRow.kt only FORMAT
+// times (SimpleDateFormat("h:mm a") / DateTimeFormatter "MMM d, yyyy h:mm a").
+// Use the stock picker, themed by NockerlTheme (cyan accent, 12dp control radius).
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimeInput
+import androidx.compose.material3.rememberTimePickerState
+
+val state = rememberTimePickerState(
+    initialHour = 14,
+    initialMinute = 30,
+    is24Hour = false,        // false → the AM/PM clock dial
+)
+
+// The clock dial (hour ring → minute ring).
+TimePicker(state = state)
+
+// Or the keyboard-first text entry (hour/minute fields + AM/PM toggle).
+TimeInput(state = state)
+
+// Read back: state.hour (0..23) + state.minute (0..59).
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. Nockerl Voice has no custom time picker; "clock" is an SF
+// Symbol and it only formats durations (HomeSection.duration). Use the stock
+// DatePicker with .hourAndMinute, tinted to the brand cyan from NockerlTheme.
+import SwiftUI
+
+struct ReminderForm: View {
+    @State private var at = Date()
+
+    var body: some View {
+        DatePicker(
+            "Reminder time",
+            selection: $at,
+            displayedComponents: .hourAndMinute   // hour + minute only, no date
+        )
+        .datePickerStyle(.stepperField)           // or .wheel for spinning columns
+        .tint(NockerlTheme.accent)                // cyan selection
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Persistent field label above the trigger (never placeholder-as-label).' },
+    { name: 'value', type: '{ hour: number; minute: number } | null', required: true, description: 'Selected time, <code>hour</code> in 0 to 23 (controlled). <code>null</code> renders the empty <code>Set a time</code> prompt.' },
+    { name: 'onChange', type: '(t: { hour: number; minute: number }) => void', required: true, description: 'Fires on a dial pick, a spinbutton step/type, or an AM/PM flip.' },
+    { name: 'inline', type: 'boolean', default: 'false', description: 'When <code>true</code>, the clock panel is always open (no field trigger / popover).' },
+    { name: 'use24Hour', type: 'boolean', default: 'false', description: 'Hides the AM/PM toggle and labels the dial 0 to 23. Toggleable in-panel via the 12h/24h switch.' },
+    { name: 'minuteStep', type: 'number', default: '1', description: 'Quantises the minute (e.g. <code>5</code>); the minute ring shows the stepped marks.' },
+    { name: 'min', type: '{ hour: number; minute: number }', description: 'Inclusive earliest selectable time. Earlier picks render dimmed but legible.' },
+    { name: 'max', type: '{ hour: number; minute: number }', description: 'Inclusive latest selectable time. Later picks render dimmed but legible.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Inert and clearly seen (never faded to invisible). The trigger is non-interactive.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'state', type: 'TimePickerState', required: true, description: 'From <code>rememberTimePickerState(...)</code>. Holds <code>hour</code>, <code>minute</code>, and the dial/input mode.' },
+    { name: 'initialHour', type: 'Int', default: '0', description: 'Pre-selected hour (0 to 23). Passed to <code>rememberTimePickerState</code>.' },
+    { name: 'initialMinute', type: 'Int', default: '0', description: 'Pre-selected minute (0 to 59). Passed to <code>rememberTimePickerState</code>.' },
+    { name: 'is24Hour', type: 'Boolean', default: 'locale default', description: 'When <code>false</code>, shows the AM/PM clock dial; when <code>true</code>, the 24-hour dial.' },
+    { name: 'colors', type: 'TimePickerColors', default: 'NockerlTheme', description: 'Dial face, selector, clock/period containers, all bound to the cyan accent tokens.' },
+    { name: 'layoutType', type: 'TimePickerLayoutType', default: 'adaptive', description: 'Forces <code>Vertical</code> / <code>Horizontal</code> arrangement of the dial + period toggle.' },
+  ]}
+/>
+
+`TimeInput(state = state)` shares the same `TimePickerState` but renders the
+keyboard-first hour/minute fields + AM/PM toggle instead of the dial.
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the time picker as the standard `DatePicker` restricted to
+`.hourAndMinute`. State is the bound `selection`; AM/PM vs. 24-hour follows the
+device locale. There is no minute-step or bounds API short of a custom range.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'selection', type: 'Binding<Date>', required: true, description: 'Two-way bound time. Only the hour + minute components are read/written under <code>.hourAndMinute</code>.' },
+    { name: 'displayedComponents', type: 'DatePickerComponents', default: '.date', description: 'Set to <code>.hourAndMinute</code> for time-of-day (omit <code>.date</code>, which is the date picker).' },
+    { name: '.datePickerStyle', type: 'DatePickerStyle', default: '.automatic', description: '<code>.stepperField</code> for hour/minute steppers, <code>.wheel</code> for spinning columns (the iOS-style wheel).' },
+    { name: 'in', type: 'ClosedRange / PartialRangeFrom<Date>', description: 'Optional selectable bounds, e.g. <code>now...</code> (no past times).' },
+    { name: '.tint', type: 'Color', default: 'accentColor', description: 'Selection color. Set to <code>NockerlTheme.accent</code> (brand cyan).' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **No shipped custom time picker.** Neither Android nor Voice draws its own clock.
+  Android only *formats* times (`SimpleDateFormat("h:mm a")`); Voice formats durations.
+  Kotlin/Swift above document the **stock** Material 3 / SwiftUI pickers; the web island is
+  designed originally from the laws (recessed field-trigger + dial face, lifted panel card,
+  cyan selected number + hand, mono digits, segmented AM/PM + 12h/24h toggles) so it pairs
+  with the [date picker](/components/date-picker/) as one date-and-time set.
+- **Dial vs. wheel vs. columns** *(resolved in [adjudication 2026-07-02 · B7])*: the entry mode
+  **defaults to the platform idiom** (Material dial, SwiftUI wheel, the web dial + spinbuttons)
+  under **shared prop names**: one contract, native default per surface.
+- **Minute step + bounds** *(resolved in [adjudication 2026-07-02 · B7])*: a **shared
+  `minuteStep` / `min` / `max` API** everywhere. Web already exposes it; Material 3 (no native
+  step) and SwiftUI (`in:` range only) adopt the shared contract.
+</Aside>

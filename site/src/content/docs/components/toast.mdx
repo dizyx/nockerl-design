@@ -1,0 +1,230 @@
+---
+title: Toast / snackbar
+description: A transient floating notification that appears in a corner, stacks, and auto-dismisses on a timer, with an optional action and close.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ToastDemo from '../../../components/demos/ToastDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ToastDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. NockerlToast ships from
+// @dizyx/nockerl-react: ONE transient floating card. The solid lifted surface,
+// the leading filled status disc whose ring drains as the countdown, hover/focus
+// pause, and Esc-to-dismiss are all in the package. NockerlToast is the single
+// toast; the app owns the corner viewport + the stack (spawn / remove / cap).
+import { useCallback, useRef, useState } from 'react';
+import { NockerlToast, type NockerlToastProps } from '@dizyx/nockerl-react';
+
+// The queued DATA (the toast fields minus the render-time callbacks) plus an id.
+type ToastData = Omit<NockerlToastProps, 'onClose' | 'onAction'>;
+interface Queued extends ToastData {
+  id: number;
+}
+
+function useToasts() {
+  const [toasts, setToasts] = useState<Queued[]>([]);
+  const idRef = useRef(0);
+  const remove = useCallback((id: number) => setToasts((l) => l.filter((t) => t.id !== id)), []);
+  const show = useCallback((t: ToastData) => {
+    const id = ++idRef.current;
+    setToasts((l) => [...l, { ...t, id }].slice(-4)); // cap the visible stack at 4
+  }, []);
+  return { toasts, show, remove };
+}
+
+function SessionActions() {
+  const { toasts, show, remove } = useToasts();
+  return (
+    <>
+      <button onClick={() => show({ intent: 'info', message: 'A new session opened on api-server.', duration: 5000 })}>
+        Open
+      </button>
+      <button
+        onClick={() =>
+          show({
+            intent: 'error',
+            title: 'Message failed to send',
+            message: 'The gateway returned a 502.',
+            actionLabel: 'Undo',
+            duration: 0, // 0 → persistent: stays until dismissed
+          })
+        }
+      >
+        Send
+      </button>
+
+      {/* Mount the stack in a corner viewport (bottom-right here); NockerlToast is one card. */}
+      <div className="toast-viewport">
+        {toasts.map((t) => (
+          <NockerlToast key={t.id} {...t} onClose={() => remove(t.id)} onAction={resend} />
+        ))}
+      </div>
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. NO toast/snackbar ships today (the app surfaces
+// transient state as inline connection "pills" + the Inbox sheet). This is the
+// proposed com.nockerl.app.core.ui.NockerlSnackbarHost, built on NockerlSurface +
+// the status tokens: the Material SnackbarHostState shape, Nockerl material.
+import com.nockerl.app.core.ui.NockerlSnackbarHost
+import com.nockerl.app.core.ui.NockerlSnackbarIntent
+import com.nockerl.app.core.ui.rememberNockerlSnackbarState
+
+val snackbar = rememberNockerlSnackbarState()
+val scope = rememberCoroutineScope()
+
+Scaffold(snackbarHost = { NockerlSnackbarHost(snackbar) }) { padding ->
+    Content(Modifier.padding(padding)) {
+        scope.launch {
+            val result = snackbar.show(
+                message = "The gateway returned a 502.",
+                intent = NockerlSnackbarIntent.ERROR,
+                title = "Message failed to send",
+                actionLabel = "Undo",
+                duration = NockerlSnackbarDuration.INDEFINITE,   // persistent
+            )
+            if (result == NockerlSnackbarResult.ACTION) viewModel.resend()
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (Voice). The RecordingHUD (NockerlVoice/UI/RecordingHUD.swift)
+// IS the shipped transient floating overlay: a non-activating NSPanel that
+// auto-hides via scheduleHide(after:) and never steals focus. This is the
+// proposed NockerlToast that generalises it into a stackable, severity-aware HUD.
+@StateObject private var toasts = NockerlToastCenter.shared
+
+toasts.show(
+    "The gateway returned a 502.",
+    intent: .error,
+    title: "Message failed to send",
+    action: .init(label: "Undo") { resend() },
+    duration: .persistent            // .seconds(5) auto-dismisses; .persistent waits
+)
+
+// The host overlay, mounted once near the app root, anchors the stack to a corner.
+ContentView()
+    .nockerlToastHost(center: toasts, position: .bottomTrailing)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+`NockerlToast` renders ONE toast from a `NockerlToastProps` object plus an `onClose`
+(timer / Esc / close-X) and an optional `onAction` (the action button). The corner
+viewport + the stack (spawn / remove / cap) are the app's. Mount the cards where you
+want them; the toast owns its own countdown, hover/focus pause, and Esc dismissal.
+
+<PropsTable nameLabel="Prop" component="NockerlToast" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`NockerlSnackbarHost` is the proposed Compose host: a corner-anchored stack of
+`NockerlSurface`s (panel radius + the lit-from-above material) washed with the
+intent's status color, the same `errorContainer` treatment generalised. State is
+driven by `rememberNockerlSnackbarState()`, mirroring `SnackbarHostState`.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'message', type: 'String', required: true, description: 'Body copy, rendered with <code>bodyMedium</code> on the card foreground.' },
+    { name: 'intent', type: 'NockerlSnackbarIntent', default: 'INFO', description: 'Status intent: <code>INFO · SUCCESS · WARNING · ERROR</code>. <code>INFO</code> is the only cyan; the rest are warm status tokens.' },
+    { name: 'title', type: 'String?', default: 'null', description: 'Optional heading (one line) above the message, in the status color.' },
+    { name: 'showIcon', type: 'Boolean', default: 'true', description: 'Show the leading status icon (top-aligned). Color is paired with the icon + text, never alone.' },
+    { name: 'actionLabel', type: 'String?', default: 'null', description: 'Optional action: a <code>GHOST</code> <code>NockerlButton</code> in the status color. Tapping it resumes the suspend <code>show()</code> with <code>ACTION</code>.' },
+    { name: 'duration', type: 'NockerlSnackbarDuration', default: 'SHORT', description: 'Auto-dismiss window: <code>SHORT · LONG · INDEFINITE</code>. <code>INDEFINITE</code> is persistent (a pinned marker; waits for close). A countdown rides the bottom edge.' },
+    { name: 'withDismissAction', type: 'Boolean', default: 'true', description: 'Show a trailing dismiss <code>NockerlIconButton</code>, a separate focusable target. Resumes <code>show()</code> with <code>DISMISSED</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlToast` is the proposed SwiftUI generalisation of the shipped `RecordingHUD`:
+a non-activating, focus-safe overlay surface tinted by the intent's `NockerlTheme`
+status token, stacked in a corner by `.nockerlToastHost(center:position:)` and
+auto-dismissed on a timer.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'show(_:intent:)', type: 'Void', description: 'Enqueue a toast: the message + intent (<code>.info</code> / <code>.success</code> / <code>.warning</code> / <code>.error</code>). <code>.info</code> uses <code>NockerlTheme.accent</code> (cyan); the rest use warm status tokens.' },
+    { name: 'title:', type: 'String?', description: 'Optional heading above the message, in the status color. Defaults to <code>nil</code>.' },
+    { name: 'showIcon:', type: 'Bool', description: 'Leading SF Symbol in the status color (e.g. <code>exclamationmark.triangle.fill</code>), top-aligned. Defaults to <code>true</code>.' },
+    { name: 'action:', type: 'ToastAction?', description: 'Optional <code>(label, handler)</code> rendered as a quiet trailing <code>.nockerlGhost</code> button (e.g. <code>Undo</code>), right-aligned. Defaults to <code>nil</code>.' },
+    { name: 'duration:', type: 'ToastDuration', description: '<code>.seconds(_)</code> auto-dismisses (a bottom-edge countdown; hover pauses, echoing the HUD <code>scheduleHide</code>); <code>.persistent</code> waits for close. Defaults to <code>.seconds(5)</code>.' },
+    { name: '.nockerlToastHost(center:position:)', type: 'View', description: 'Mounts the stack overlay near the app root and anchors it to a corner (<code>.bottomTrailing</code> by default, like the HUD). Non-activating, so it never steals focus.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Toast vs banner vs dialog">
+Three feedback surfaces, three jobs. Don't reach for the wrong one:
+
+- **Toast (this page)**: *transient + floating + non-blocking.* It appears in a
+  corner, **stacks**, **auto-dismisses on a timer**, and never takes focus. For
+  ephemeral confirmations ("Saved", "Undo?") and passing errors.
+- **[Banner](/components/banner/)**: *inline + persistent.* It sits **in the
+  layout** and stays until the state clears or the user dismisses it. For ongoing
+  app state (read-only, degraded mode, an approval waiting).
+- **[Dialog](/components/dialog/)**: *modal + blocking.* It **interrupts** with a
+  scrim and demands a decision. For destructive confirms and required choices.
+</Aside>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+**Web ships `NockerlToast`** (@dizyx/nockerl-react); the **native** platforms do not
+yet ship a toast/snackbar. The Kotlin/Swift specs above are designed from the laws +
+the shipped transient-message vocabulary. The real divergences to reconcile when they
+land, tracked in the [Review queue](/review-queue/):
+
+- **Shipped precedent differs sharply:** Voice has a real transient floating overlay
+  (`RecordingHUD`, a non-activating `NSPanel` that auto-hides via `scheduleHide`,
+  1.8s for a result / 8.0s for an error, fades 0.22s/0.28s, status-tinted border +
+  neutral shadow, never steals focus). **Android ships nothing**: transient state
+  is inline connection "pills" + the Inbox sheet. This page proposes the shared,
+  stackable component both should adopt.
+- **`info` intent color** *(resolved in [adjudication 2026-07-02 · A1])*: `info` = **cyan**
+  everywhere. Voice's token set gains `status.info` as a cyan **alias** (`NockerlTheme.accent`)
+  so every platform carries the full semantic vocabulary even where the value aliases.
+- **Stacking + position** *(resolved in [adjudication 2026-07-02 · A2])*: stacking = **max 3
+  visible, overflow collapses to "+N", FIFO**. The Voice HUD may keep its one-at-a-time morphing
+  presentation (Law 9) but adopts the shared stack policy where it stacks.
+- **Duration scale** *(resolved in [adjudication 2026-07-02 · A2])*: durations = an enum
+  **`short` / `base` / `long` / `persistent`** backed by ms tokens. Voice's literal seconds and
+  Compose's Material `SHORT/LONG` map onto the shared enum.
+</Aside>

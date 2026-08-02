@@ -1,0 +1,124 @@
+---
+title: Layout Grids
+description: The page-level grid, with breakpoint classes, column counts, gutter, outer margin, and the container ladder that clamps content.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+The layout grid is the **page-level** rhythm: how a screen divides into columns, how far
+content sits from the viewport edge, and where a content column stops growing. It sits one
+level above the [4px spacing grid](/foundations/spacing/). Every grid value is a spacing
+multiple, so page layout and component insets share one rhythm.
+
+Three tokens carry the whole model: one **gutter**, one minimum **outer margin**, and a
+three-step **container ladder**. Column *counts* are deliberately **not tokens**. They
+change per breakpoint inside layout code (CSS grid, Compose `Row`/window-size classes,
+SwiftUI stacks), and a number that only ever feeds a `grid-template-columns` expression is
+layout, not paint.
+
+## Breakpoint classes
+
+Four viewport classes, aligned with the platform conventions each client already honors
+(CSS media queries on web, `WindowSizeClass` on Android, size classes on Apple platforms):
+
+| Class | Viewport width | Columns | Container clamp |
+| --- | --- | --- | --- |
+| **Phone** | < 768px | 4 | none (full width minus margins) |
+| **Tablet** | 768 to 1023px | 8 | `--grid-container-md` (768px) |
+| **Desktop** | 1024 to 1439px | 12 | `--grid-container-lg` (1024px) |
+| **Wide** | ≥ 1440px | 12 | `--grid-container-xl` (1280px) |
+
+The column count is a *ceiling*, not a mandate: a settings page on desktop may use a
+single reading column inside the `lg` container; a dashboard uses all 12. What never
+changes per class: the gutter between columns and the minimum margin at the edges.
+
+## The tokens
+
+| Token | Value | Meaning |
+| --- | --- | --- |
+| `--grid-gutter` | 20px (`{space.5}`) | Gap between page-grid columns. This is the shipped two-column [Form Layout](/components/form-layout/) column-gap, promoted to the page grid. |
+| `--grid-margin` | 16px (`{space.4}`) | **Minimum** outer margin between content and the viewport edge, matching App Shell's shipped content inset. |
+| `--grid-container-md` | 768px | Tablet-class content clamp for docs and reading surfaces. |
+| `--grid-container-lg` | 1024px | Desktop-class content clamp for standard app pages. |
+| `--grid-container-xl` | 1280px | Wide-class content clamp for dashboards and data-dense pages. |
+
+Compose: `NockerlGrid.gutter` / `.margin` / `.containerMd` / `.containerLg` /
+`.containerXl` (dp). Swift: `NockerlGrid` (pt). Source:
+`tokens/semantic/grid.json`.
+
+<Aside type="caution" title="Not the overlay ladder">
+`--size-container-xs…lg` (216 to 360px) is a **different ladder**: the footprints of
+self-clamped overlays (menus, tooltips, popovers, the vertical stepper). Grid containers
+clamp **page shells**; size containers clamp **floating surfaces**. Never substitute one
+for the other.
+</Aside>
+
+Margins **grow by centering, not by token**: past the container clamp the leftover space
+becomes symmetric auto margins. `--grid-margin` only guarantees the floor on small
+viewports, as in the classic `margin-inline: auto; padding-inline: var(--grid-margin);
+max-width: var(--grid-container-lg)` shell.
+
+## How the shells compose it
+
+- **[App Shell](/components/app-shell/)** owns the outermost frame: nav rail/drawer on the
+  leading edge, then a content region padded by `--grid-margin` (16px, the shipped
+  content inset). The grid applies **inside** the content region. The rail is chrome,
+  not a column.
+- **[Panel](/components/containers/)** regions split the content area on `--grid-gutter`
+  gaps. A two-panel desktop split (list + detail) is an 8+4 or 6+6 column division;
+  panels snap to column edges, never to arbitrary pixels.
+- **[Form Layout](/components/form-layout/)** is the two-column precedent: a form clamps
+  to its own 560px reading measure inside the page container, and its `1fr 1fr` field
+  pairs sit on the same 20px gutter the page grid uses. One rhythm, two scales.
+
+## Worked examples
+
+One per breakpoint class, using only shipped pieces:
+
+- **Phone (< 768).** Chat session view: a single 4-column-wide region; bubbles, input
+  bar, and cards all run full-bleed to the 16px margins. No clamp, since the viewport
+  *is* the measure.
+- **Tablet (768 to 1023).** Docs/settings: content clamps to `--grid-container-md`; a
+  [Form Section](/components/form-layout/) stays single-column (field pairs may go
+  `1fr 1fr` above 768 per the form spec).
+- **Desktop (1024 to 1439).** Sessions list + detail: content clamps to
+  `--grid-container-lg`; the [Table](/components/table/) spans 8 columns, a detail
+  [Card](/components/card/) takes the remaining 4, separated by one 20px gutter.
+- **Wide (≥ 1440).** Dashboard: clamps to `--grid-container-xl`; four
+  [Stat Cards](/components/data-display/) sit 3 columns each; charts below span 6+6.
+  Auto margins absorb everything past 1280px.
+
+## Rules
+
+1. **Margins are a floor.** Content may gain margin from clamping; it never sits closer
+   than 16px to the edge.
+2. **Columns are layout code.** Counts live in CSS/Compose/SwiftUI per breakpoint.
+   Never hardcode a column *width*; derive it from the container, count, and gutter.
+3. **One gutter.** Page columns, panel splits, and form field pairs all separate on
+   20px. Denser internal gaps belong to components (the [spacing
+   scale](/foundations/spacing/)), not the grid.
+4. **Chrome is not a column.** Nav rails, drawers, and top bars sit outside the grid;
+   the grid governs the content region App Shell hands out.
+5. **Clamp per class, never per page.** A page picks its class's container (or a
+   narrower reading measure inside it). It never invents a bespoke max-width.
+
+## Platform notes
+
+- **Web:** the shell pattern above; column division via CSS grid
+  (`repeat(12, minmax(0, 1fr))` with `gap: var(--grid-gutter)`).
+- **Android:** map breakpoint classes to `WindowWidthSizeClass`
+  (Compact/Medium/Expanded ≈ phone/tablet/desktop+); `NockerlGrid.containerLg` clamps a
+  `Column` via `widthIn(max = …)`; gutters via `Arrangement.spacedBy(NockerlGrid.gutter)`.
+- **Swift:** size-class driven; clamp with `.frame(maxWidth: NockerlGrid.containerLg)`;
+  gutters via `HStack(spacing: NockerlGrid.gutter)`. Honor-the-platform (§9): NavigationSplitView
+  supplies its own column chrome, so the grid governs the detail content, not the split chrome.
+
+## Tokens
+
+Published in `@dizyx/nockerl-tokens` as `--grid-*` CSS custom properties, and as
+`NockerlGrid` on Compose (dp) and Swift (pt), built from `tokens/semantic/grid.json`.

@@ -1,0 +1,21 @@
+{
+  "$description": "SEMANTIC page-grid tokens. The PAGE-level layout rhythm: one gutter, one minimum outer margin, and the container max-width ladder that clamps content per breakpoint class. Deliberately minimal: column COUNTS are layout code (they change per breakpoint in CSS/Compose/SwiftUI), not paint, so they are documented on the foundations page but never tokenized. Distinct from `size.container.*`, which is the OVERLAY footprint ladder (menus / tooltips / popovers, 216-360px). Grid containers clamp page shells, not floating surfaces. Gutter + margin alias the core space scale; container widths are raw (they are viewport-class artifacts, not 4px-rhythm gaps, though all are 4px multiples).",
+  "grid": {
+    "gutter": {
+      "$type": "dimension",
+      "$value": "{space.5}",
+      "$description": "The gap between page-grid columns: 20px, the shipped two-column FormLayout column-gap precedent (the system's only multi-column canon)."
+    },
+    "margin": {
+      "$type": "dimension",
+      "$value": "{space.4}",
+      "$description": "The MINIMUM outer margin between page content and the viewport edge, 16px, matching AppShell's shipped content inset. Wider viewports gain margin from container clamping (auto margins), never by growing this token."
+    },
+    "container": {
+      "$description": "Content max-widths per breakpoint class. `md` clamps tablet-class reading surfaces, `lg` desktop, `xl` wide. Phone never clamps (full width minus margins).",
+      "md": { "$type": "dimension", "$value": "768px", "$description": "Tablet-class container: docs/reading surfaces." },
+      "lg": { "$type": "dimension", "$value": "1024px", "$description": "Desktop-class container, standard app pages." },
+      "xl": { "$type": "dimension", "$value": "1280px", "$description": "Wide-class container: dashboards / data-dense pages." }
+    }
+  }
+}

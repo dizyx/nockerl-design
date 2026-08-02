@@ -1,0 +1,160 @@
+---
+title: Breadcrumbs
+description: The hierarchical path/trail that shows where you are and how to get back.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import BreadcrumbsDemo from '../../../components/demos/BreadcrumbsDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <BreadcrumbsDemo client:visible />
+</Example>
+
+<Aside type="tip" title="Mobile: auto-collapse (task 2640)">
+Breadcrumbs are a **desktop pattern**; on a phone-narrow container the trail
+**auto-collapses to first + “…” + current** (see the Mobile stage above). Every hidden
+ancestor stays reachable through the same keyboard-operable overflow menu, and the
+current crumb keeps its ellipsis. The desktop render is untouched; if a mobile surface
+can use back-navigation or a tree instead, prefer that.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. Breadcrumbs are a web-leaning
+// pattern (neither shipped app has one), so this is the intended API, not yet
+// exported from @dizyx/nockerl-react (promotion tracked).
+
+export function FilePathTrail() {
+  return (
+    <Breadcrumbs
+      collapseAfter={2}
+      onNavigate={(label) => router.push(label)}
+      items={[
+        { label: 'dizyx', href: '/w/dizyx', icon: 'root' },
+        { label: 'nockerl-design', href: '/w/dizyx/nockerl-design', icon: 'folder' },
+        { label: 'site', href: '#', icon: 'folder' },
+        { label: 'src', href: '#', icon: 'folder' },
+        { label: 'BreadcrumbsDemo.tsx', icon: 'file' }, // no href → current page
+      ]}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. There is NO breadcrumb component: the app wayfinds
+// with system/arrow back + an indented file tree (see FilesSheet.kt). The path's
+// leaf is the filename; "up" is the back arrow. This is the platform-native
+// equivalent of a trail, documented honestly, not a fabricated API.
+import androidx.compose.material.icons.Icons
+import com.nockerl.app.core.ui.NockerlIconButton
+
+@Composable
+private fun ViewerHeader(filePath: String, onBack: -> Unit) {
+    val fileName = filePath.substringAfterLast('/')   // leaf of the path
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        NockerlIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,   // "up" one level
+            contentDescription = "Back to file tree",
+            onClick = onBack,
+        )
+        Text(fileName, style = MaterialTheme.typography.titleMedium, maxLines = 1)
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. There is NO breadcrumb component in Nockerl Voice: hierarchy
+// is shown with `navigationTitle` + the system back button, and disclosure rows
+// use `chevron.right` (SettingsView.swift). Documented honestly, with no invented API.
+NavigationStack {
+    FileTreeView(node: project.root)
+        .navigationTitle(project.name)          // the current level's title
+        .navigationDestination(for: FileNode.self) { node in
+            FileViewer(node: node)
+                .navigationTitle(node.name)     // back button auto-shows the parent
+        }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'items', type: 'Crumb[]', required: true, description: 'Ordered path, root → current. Each <code>Crumb</code> is <code>{ label, href?, icon? }</code>. The <strong>last</strong> item is the current page: omit its <code>href</code> and it renders non-interactive with <code>aria-current="page"</code>.' },
+    { name: 'collapseAfter', type: 'number', description: 'When set and the trail is deeper than <code>collapseAfter + 2</code>, keeps the first crumb + this many <strong>trailing</strong> crumbs and folds the middle into a keyboard-openable <code>…</code> menu.' },
+    { name: 'capped', type: 'boolean', default: 'false', description: 'Caps the trail width so the current crumb ellipsizes instead of overflowing the chrome bar.' },
+    { name: 'onNavigate', type: '(label: string) => void', description: 'Fired when an ancestor crumb (or an item in the overflow menu) is activated. The current crumb never fires it.' },
+    { name: 'icon', type: "'root' | 'folder' | 'task' | 'file'", description: 'Per-<code>Crumb</code> leading glyph. Echoes the apps: <code>root</code> (workspace), <code>folder</code> (project), <code>task</code>, <code>file</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+No breadcrumb component ships on Android, so the table documents the **path-aware
+back-nav** that stands in for it (`FilesSheet.kt`). Flagged as drift below.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'filePath', type: 'String', required: true, description: 'Full path of the current node. <code>substringAfterLast(\'/\')</code> yields the leaf shown in the header.' },
+    { name: 'onBack', type: '() -> Unit', required: true, description: 'Pops one level (Viewer → Tree). The system / gesture back triggers the same path.' },
+    { name: 'icon', type: 'ImageVector', default: 'Icons.AutoMirrored.Filled.ArrowBack', description: 'The "up" affordance: an auto-mirrored back arrow, not a horizontal trail.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+No breadcrumb component ships in Nockerl Voice. `NavigationStack` supplies the
+title + system back that stand in for a trail. Flagged as drift below.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.navigationTitle', type: 'View modifier', description: 'Sets the current level’s title; pushing a destination auto-shows a back button labeled with the parent.' },
+    { name: '.navigationDestination', type: 'View modifier', description: 'Declares the child view for a value, driving the push/pop hierarchy in place of a horizontal trail.' },
+    { name: 'chevron.right', type: 'SF Symbol', description: 'The disclosure glyph on a navigable row (SettingsView.swift), the closest the app gets to a crumb separator.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+Breadcrumbs are a **web-only** pattern today. The shipped natives wayfind differently,
+which is correct for those surfaces:
+
+- **No native component.** Android (`FilesSheet`) and Voice (`SettingsView`) use **back
+  navigation + indented trees**, not a horizontal trail. The TypeScript API is the
+  canonical one; the Kotlin/Swift columns document the real stand-in.
+- **Shared vocabulary, not a port.** The web trail deliberately reuses house parts: the
+  **chrome surface + 1.5dp cyan signature line** (the apps' header treatment), the **house
+  chevron** as the separator, and the **root/folder/task/file** leading glyphs. It reads
+  as Nockerl without inventing anything mobile doesn't have.
+</Aside>

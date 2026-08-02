@@ -1,0 +1,60 @@
+---
+title: Dev status bar
+description: The thin console strip of quiet status segments, dots and keyboard hints pinned to the bottom edge.
+status: review
+platforms: [web]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import DevStatusBarDemo from '../../../components/demos/DevStatusBarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DevStatusBarDemo client:visible />
+</Example>
+
+The **web console's ambient strip** (WS5, agent-console epic): branch, agent/job state,
+cursor position, keyboard hints. All of it is reading-scale CHROME, deliberately **not**
+the [`Toolbar`](/components/toolbar/)'s control-scale grammar. Segments are quiet spans by
+default; give one `onSelect` and it becomes a real button (hover wash + ink + focus
+outline); nothing looks pressable unless it is. State rides the shared
+[`StatusDot`](/components/status-dot/) ladder; hints are real [`Kbd`](/components/kbd/)
+keycaps.
+
+<Aside type="note" title="Web-only by scope">
+Per the de-phantom verdict on the agent-console epic: native consoles have no
+equivalent surface, so this ships web-only (on the shared tokens and laws, no
+cross-platform spec needed).
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlDevStatusBar, NockerlDevStatusSegment } from '@dizyx/nockerl-react';
+
+<NockerlDevStatusBar
+  start={
+    <>
+      <NockerlDevStatusSegment icon={branchIcon} label="main" onSelect={openBranches} />
+      <NockerlDevStatusSegment dot="info" label="agent · streaming" />
+    </>
+  }
+  end={<NockerlDevStatusSegment label="Palette" kbd={['⌘', 'K']} onSelect={openPalette} />}
+/>
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<PropsTable nameLabel="Prop" component="NockerlDevStatusBar" />
+
+<PropsTable nameLabel="Prop" component="NockerlDevStatusSegment" />

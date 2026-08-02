@@ -1,0 +1,203 @@
+---
+title: FAB
+description: The floating action button for the screen's single most important action, pinned to a corner.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import FabDemo from '../../../components/demos/FabDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FabDemo client:visible />
+</Example>
+
+<Aside type="note" title="Why the speed-dial isn't a Popover or Menu">
+The speed-dial is a distinct **idiom**, not a surface variant. It deliberately does not fold
+onto the Popover / Menu surface. A Popover or Menu is **one overlay surface** holding a list of
+text rows; a speed-dial is a stack of **individual floating mini-actions**, each a real
+`NockerlIconButton` with its own lifted label chip, radiating from the FAB. Collapsing it onto a
+single menu surface would erase the pattern.
+
+It still obeys the **overlay surface grammar**: every label chip is a lifted card, built from a
+neutral drop shadow + a top catch-light + the `card-surface` fill + a hairline, on the `control`
+radius. That is the chip-scale of the very same Popover recipe (no glow, no colored shadow), and
+the open / close behavior is the shared **NockerlOverlay** (scrim, focus-trap, Esc). Same laws,
+the right idiom.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// A FAB FLOATS above content, pinned to a corner, so give it a positioned parent.
+
+export function SessionFeed() {
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* …the scrollable feed… */}
+
+      {/* Round (icon-only) FAB: the single most important action */}
+      <Fab icon={<EditIcon />} label="New session" onClick={createSession} />
+
+      {/* Extended FAB with icon + label for the headline action */}
+      <Fab icon={<PlusIcon />} label="New task" extendedLabel="New task" onClick={createTask} />
+
+      {/* Speed-dial that expands into mini secondary actions */}
+      <FabSpeedDial
+        label="Create"
+        actions={[
+          { id: 'chat', label: 'New chat', icon: <ChatIcon />, onSelect: newChat },
+          { id: 'voice', label: 'Voice note', icon: <MicIcon />, onSelect: newVoice },
+          { id: 'upload', label: 'Upload file', icon: <UploadIcon />, onSelect: upload },
+        ]}
+      />
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The shipped Nockerl FAB is a corner-pinned
+// CircleShape Surface lifted at NockerlElevation.Level3 (the floating-chrome tier),
+// e.g. the scroll-to-bottom FAB in chat/ui/ChatScreen.kt. Standard M3 FAB builders
+// also accept the Nockerl shadow/colors via Modifier + containerColor.
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.foundation.shape.CircleShape
+import com.nockerl.app.core.theme.NockerlElevation
+import com.nockerl.app.core.theme.nockerlShadow
+
+// Round (icon-only), a solid accent circle in the prominent-action slot.
+FloatingActionButton(
+    onClick = viewModel::createSession,
+    shape = CircleShape,
+    containerColor = colors.accentPrimary,
+    contentColor = colors.onAccent,
+    modifier = Modifier.nockerlShadow(NockerlElevation.Level3, CircleShape),
+) { Icon(Icons.Default.Edit, contentDescription = "New session") }
+
+// Extended, with icon + label for the headline action (control radius, not a pill).
+ExtendedFloatingActionButton(
+    onClick = viewModel::createTask,
+    icon = { Icon(Icons.Default.Add, contentDescription = null) },
+    text = { Text("New task") },
+)
+
+// Sizes: small (40) and large (72) flank the standard (56).
+SmallFloatingActionButton(onClick = ::fork) { Icon(Icons.Default.CallSplit, null) }
+LargeFloatingActionButton(onClick = ::fork) { Icon(Icons.Default.CallSplit, null) }
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. Nockerl Voice ships no literal FAB; its closest equivalent is
+// the circular record / primary affordance. This is the INTENDED Nockerl style,
+// a corner-pinned circular primary applied as a ButtonStyle, overlaid on content.
+// (See the drift note below.)
+ZStack(alignment: .bottomTrailing) {
+    sessionFeed
+
+    Button(action: createSession) {
+        Image(systemName: "square.and.pencil")
+    }
+    .buttonStyle(.nockerlFab)          // solid accent circle, Level3 shadow + catch-light
+    .padding(16)
+
+    // Extended, with icon + label for the headline action.
+    Button(action: createTask) {
+        Label("New task", systemImage: "plus")
+    }
+    .buttonStyle(.nockerlFabExtended)  // control radius, not a pill
+    .padding(16)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'icon', type: 'ReactNode', required: true, description: 'The glyph. Centered in the circle; sized per <code>size</code>.' },
+    { name: 'label', type: 'string', required: true, description: 'Accessible name. <strong>Required</strong> for the round (icon-only) FAB, which has no visible text. The extended FAB also names itself from <code>extendedLabel</code>.' },
+    { name: 'extendedLabel', type: 'string', description: 'Visible text → renders the <strong>extended</strong> (icon + label) FAB at the control radius. Omit for the round FAB.' },
+    { name: 'onClick', type: '() => void', description: 'Activate handler. Ignored while <code>disabled</code>.' },
+    { name: 'size', type: "'small' | 'standard' | 'large'", default: "'standard'", description: 'Footprint: <code>small</code> 40 · <code>standard</code> 56 · <code>large</code> 72. (Round FAB only.)' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Lowered / inert: sheds its lift shadow and stays <strong>clearly visible</strong> (never faded to invisible).' },
+  ]}
+/>
+
+`FabSpeedDial` adds `actions` (an array of `{ id, label, icon, onSelect }`) and reuses
+`label` as the trigger name; it manages `aria-expanded`, Esc-to-close, and focus.
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'Invoked on tap.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Pass <code>Modifier.nockerlShadow(NockerlElevation.Level3, CircleShape)</code> for the floating lift, and align it to a corner in the parent.' },
+    { name: 'shape', type: 'Shape', default: 'FAB default', description: 'Use <code>CircleShape</code> for the round FAB; the extended builder uses the control radius.' },
+    { name: 'containerColor', type: 'Color', default: 'theme', description: 'Fill. The Nockerl prominent slot uses <code>colors.accentPrimary</code>.' },
+    { name: 'contentColor', type: 'Color', default: 'theme', description: 'Icon / label color. Pair the accent fill with <code>colors.onAccent</code>.' },
+    { name: 'content', type: '@Composable -> Unit', required: true, description: 'The icon (round) or, on <code>ExtendedFloatingActionButton</code>, supplied via the <code>icon</code> + <code>text</code> slots.' },
+  ]}
+/>
+
+Builders: `FloatingActionButton` (standard), `SmallFloatingActionButton` (40),
+`LargeFloatingActionButton` (72), `ExtendedFloatingActionButton` (icon + label).
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the FAB as a `ButtonStyle` applied to a standard `Button`, overlaid
+on content with `ZStack(alignment: .bottomTrailing)`. State (`isEnabled`, `isPressed`)
+comes from the environment + the style `Configuration`. There are no state parameters.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.nockerlFab', type: 'ButtonStyle', description: 'Solid accent circle, on-accent glyph, Level3 neutral shadow + top catch-light. Pressed → ~0.92 brightness + slight scale; disabled → card surface + muted glyph, lift removed. <em>Intended, not yet shipped in Voice.</em>' },
+    { name: '.nockerlFabExtended', type: 'ButtonStyle', description: 'Icon + label at the control radius (not a pill); otherwise identical fill / lift / states to <code>.nockerlFab</code>. <em>Intended, not yet shipped.</em>' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Fill** *(resolved in [adjudication 2026-07-02 · B13])*: the FAB fill is a **solid accent cyan**
+  circle. The tonal and outline treatments are retired. The shipped Android FAB (today a tonal
+  `surfaceContainerHighest` circle with a cyan outline + icon) conforms to the solid accent.
+- **No FAB wrapper:** Android has no `NockerlFab`, so call sites compose
+  `Surface(CircleShape)` + `nockerlShadow(Level3)` by hand, or the M3 builders. A
+  wrapper should be added so the lift + accent are not re-derived per screen.
+- **Swift:** Nockerl Voice ships **no FAB**. Its circular **record** affordance
+  (`RecordingHUD.swift`) is the nearest relative. `.nockerlFab` / `.nockerlFabExtended`
+  are the intended styles, not yet implemented.
+- **Sizes:** web exposes `size` (small/standard/large); Compose uses distinct builders;
+  Swift is fixed.
+</Aside>

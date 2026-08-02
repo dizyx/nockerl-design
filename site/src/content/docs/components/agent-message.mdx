@@ -1,0 +1,183 @@
+---
+title: Agent message
+description: A chat row from an AI agent, the signature assistant turn on the chat surface.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import AgentMessageDemo from '../../../components/demos/AgentMessageDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <AgentMessageDemo client:visible />
+</Example>
+
+<Aside type="note" title="Design status: not shipped">
+The bottom-of-chat **streaming / typing indicator** (the "Streaming…" dots shown while
+tokens arrive) is documented here for the design system of record, but is **not currently
+implemented in the products**: live bottom-of-chat streaming indicators proved inconsistent
+and hard to get right, so the apps have moved away from them. The design stays as
+reference; the `streaming` prop remains in the spec, unshipped.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the intended @dizyx/nockerl-react API (not yet exported; promotion tracked),
+// modeled on the shipped Compose MessageBubble.)
+
+export function Thread() {
+  return (
+    <>
+      <AgentMessage role="assistant" model="Large 2.1" timestamp="10:21 AM">
+        <p>Reading the reconnect loop, then patching the backoff:</p>
+        <ToolCallBlock family="shell-fs" name="Read SseClient.kt" status="done" elapsed="0.4s" />
+      </AgentMessage>
+
+      <AgentMessage role="user">
+        <p>Cap it at 30s.</p>
+      </AgentMessage>
+
+      {/* Live SSE target. The typing dots render after the body */}
+      <AgentMessage role="assistant" model="Large 2.1" showHeader={false} streaming>
+        <p>Applying the patch…</p>
+      </AgentMessage>
+
+      {/* Failed turn: a filled status-error disc + icon + text + a real Retry */}
+      <AgentMessage role="assistant" model="Large 2.1" error onRetry={resend}>
+        <Failure>Stream failed after 3 retries.</Failure>
+      </AgentMessage>
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). com.nockerl.app.chat.ui.MessageBubble
+import com.nockerl.app.chat.ui.MessageBubble
+import com.nockerl.app.chat.domain.ChatMessage
+import com.nockerl.app.chat.domain.MessageRole
+
+// One bubble per ChatMessage. role drives alignment (ASSISTANT = leading/left,
+// USER = trailing/right); the body renders message.blocks in order: markdown
+// text, tool-call panels, thinking, images. The MessageList passes showHeader =
+// !isContinuation and the live-stream id as isStreaming.
+MessageBubble(
+    message = message,                       // role, blocks, model, timestamp, tools
+    showHeader = !isContinuation,            // collapse header on a same-speaker run
+    isStreaming = message.id == streamingId, // live SSE target → live markdown + dot
+    bubbleMaxWidth = layout.bubbleMaxWidth,  // 320.dp phone cap; wider on tablets
+    modelLabel = uiState.modelLabel,         // resolved name, e.g. "Large 2.1"
+    onImageClick = onImageClick,             // hands a Coil model up for the lightbox
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI. NOT YET IMPLEMENTED: Nockerl Voice is a dictation/transcription
+// surface and ships no conversational chat bubble. This is the INTENDED API,
+// derived from the laws + the Voice component vocabulary (NockerlTheme, the card
+// material) so the assistant turn matches Android when a chat surface lands.
+AgentMessage(role: .assistant, model: "Large 2.1", timestamp: "10:21 AM") {
+    Text("Reading the reconnect loop, then patching the backoff:")
+    ToolCallBlock(family: .shellFs, name: "Read SseClient.kt", status: .done, elapsed: "0.4s")
+}
+
+AgentMessage(role: .user) { Text("Cap it at 30s.") }
+
+AgentMessage(role: .assistant, model: "Large 2.1", showHeader: false, isStreaming: true) {
+    Text("Applying the patch…")
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'role', type: "'assistant' | 'user'", required: true, description: "Speaker. <code>assistant</code> → leading/left (soft lifted plane); <code>user</code> → trailing/right (cyan jewel card)." },
+    { name: 'model', type: 'string', description: 'Resolved model name in the identity header (assistant only), e.g. <code>"Large 2.1"</code>.' },
+    { name: 'timestamp', type: 'string', description: 'Short time string in the header (e.g. <code>"10:23 AM"</code>).' },
+    { name: 'showHeader', type: 'boolean', default: 'true', description: 'Show the identity header. Pass <code>false</code> on a consecutive same-speaker turn to collapse it.' },
+    { name: 'streaming', type: 'boolean', default: 'false', description: 'Live SSE target. Renders the typing dots after the body (frozen under reduced-motion).' },
+    { name: 'error', type: 'boolean', default: 'false', description: 'Failed turn: a filled status-error disc + the error material. Always paired with an icon + text, never color-alone.' },
+    { name: 'onRetry', type: '() => void', description: 'Retry handler for a failed turn; renders a real, focusable Retry button.' },
+    { name: 'children', type: 'ReactNode', description: 'Ordered body: markdown text, <code>ToolCallBlock</code>, code, list, a reasoning block.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'message', type: 'ChatMessage', required: true, description: 'The message model, carrying <code>role</code> (drives alignment), <code>blocks</code>, <code>provider</code>/<code>model</code>, <code>timestamp</code>, <code>tools</code>, <code>toolProgress</code>.' },
+    { name: 'showHeader', type: 'Boolean', default: 'true', description: 'Render the model · timestamp header. The list passes <code>!isContinuation</code> to collapse it on a same-speaker run.' },
+    { name: 'accentColor', type: 'Color', default: 'Color.Unspecified', description: 'Optional override for the user bubble fill. Unspecified → the default cyan <code>userCard</code> gradient.' },
+    { name: 'isStreaming', type: 'Boolean', default: 'false', description: 'Live SSE target. Renders live, flash-free markdown and the pulsing dot while tokens arrive.' },
+    { name: 'bubbleMaxWidth', type: 'Dp', default: '320.dp', description: 'Upper bound on bubble width. Phone cap by default; the list passes a wider value on tablets.' },
+    { name: 'modelLabel', type: 'String?', default: 'null', description: 'Resolved display name; falls back to <code>provider · model</code> when not cached.' },
+    { name: 'onImageClick', type: 'OnImageClick', default: 'NoopOnImageClick', description: 'Invoked with a Coil-compatible model when an inline image is tapped (opens the lightbox).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+Not yet implemented: Nockerl Voice is a dictation/transcription surface with no
+chat thread. The signature below is the **intended** SwiftUI API (a `ViewBuilder`
+content closure), derived from the laws + the shipped Compose `MessageBubble`.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'role', type: 'MessageRole', required: true, description: '<code>.assistant</code> → leading/left; <code>.user</code> → trailing/right. Drives alignment + bubble material.' },
+    { name: 'model', type: 'String?', default: 'nil', description: 'Resolved model name in the identity header (assistant only).' },
+    { name: 'timestamp', type: 'String?', default: 'nil', description: 'Short time string in the header.' },
+    { name: 'showHeader', type: 'Bool', default: 'true', description: 'Show the identity header; <code>false</code> collapses it on a same-speaker run.' },
+    { name: 'isStreaming', type: 'Bool', default: 'false', description: 'Live target. Renders the typing dots (frozen when Reduce Motion is on).' },
+    { name: 'content', type: '() -> Content', required: true, description: 'A <code>@ViewBuilder</code> body: text + tool / code / reasoning blocks.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **Swift:** no chat surface ships yet; Voice is transcription-only. The Swift API
+  above is intended, not implemented.
+- **Bubble radius:** Compose hardcodes the bubble at **18.dp** with a **6.dp** tail
+  via `rememberBubbleShape`; the tokens are **20** / **6** (`radius.bubble` /
+  `radius.bubble-tail`, used by the web demo). Compose should consume the token.
+- **Copy affordance** *(resolved in [adjudication 2026-07-02 · C4])*: each platform keeps
+  its interaction idiom. Android's bubble **long-press opens the multi-action menu** (Copy
+  becomes an item); web exposes an explicit, focusable **Copy** button (no hover / long-press
+  on a pointer-less keyboard path).
+- **Failed turn** *(resolved in [adjudication 2026-07-02 · B9]; treatment restated by the
+  [r5.2 addendum · task 2673])*: the **in-thread failed bubble** wins on every platform,
+  styled to the **Banner inline-alert grammar** of an **inset status-error disc**, the intent
+  whispered into the border, a **lifted** neutral surface (never a red/pink fill, never a
+  bare inset well), text + Retry. Android moves stream errors off the floating status pill
+  and into the thread.
+</Aside>

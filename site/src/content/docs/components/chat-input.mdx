@@ -1,0 +1,198 @@
+---
+title: Chat input
+description: The floating pill bottom-of-chat input, with attach, message field, and the send↔mic morphing action.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ChatInputDemo from '../../../components/demos/ChatInputDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ChatInputDemo client:visible />
+</Example>
+
+The **headline surface of the chat experience**: a large, fully-rounded pill that FLOATS
+above the message cards, laid out `[attach] [text field] [send/mic]`. Canonical truth is
+the Android app's `ChatInputBar`, brought up as the shipped Compose `NockerlChatInput`;
+the web `NockerlChatInput` mirrors it 1:1.
+
+Three things make it read as the signature it is:
+
+- **The §2 floating border.** The pill container carries the signature thick cyan edge:
+  `border.width.floating` (1.5px) in the full accent, the mark that trains the eye that
+  *a thick cyan border = a layer hovering above content* ([design
+  laws](/foundations/design-laws/) §2). The border rides the **container only**; the
+  controls inside keep their own treatment.
+- **A field that is part of the pill.** The text field is transparent inside the pill
+  (ink on the chrome on-tokens, accent caret), deliberately **not** a recessed
+  [`TextArea`](/components/text-area/) well (a well-in-a-pill would be a box-in-a-box).
+  It grows to five lines, then scrolls.
+- **The send↔mic morph (the one  refinement).** The trailing 48px accent circle is a
+  single toggle: SEND when there's text, MIC when empty, long-press to flip manually. The
+  glyph **cross-fades + scales** (0.6 → 1) on the fast/standard motion tokens. One
+  legible morph on interpolatable props (§4), never a same-color hard swap. Frozen under
+  `prefers-reduced-motion`.
+
+<Aside type="tip" title="What composes AROUND the pill">
+  The pill is the design grammar only. Pending attachments
+  ([`AttachmentPopover`](/components/chat-input/#attachment-popover)) and the live
+  [`Recording HUD`](/components/recording-hud/) ride **above** the pill as siblings on the
+  same floating layer. The app's voice state machine and attachment plumbing stay in the
+  app, not in this component.
+</Aside>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: @dizyx/nockerl-react. Controlled value; the action circle auto-picks
+// send (text present) or mic (empty); Enter sends, Shift+Enter breaks the line.
+import { NockerlChatInput } from '@dizyx/nockerl-react';
+
+export function Composer({ onSend, onMic, onAttach }: ComposerProps) {
+  const [draft, setDraft] = useState('');
+  return (
+    <NockerlChatInput
+      value={draft}
+      onValueChange={setDraft}
+      onSend={() => {
+        onSend(draft);
+        setDraft('');
+      }}
+      onMic={onMic}
+      onAttach={onAttach}
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (CANONICAL source: chat/ui/ChatInputBar.kt, shipped as
+// NockerlChatInput). The same grammar: floating pill + attach + field + send/mic
+// with the cross-fade morph; long-press flips the manual override.
+NockerlChatInput(
+    value = draft,
+    onValueChange = { draft = it },
+    onSend = { viewModel.send(draft); draft = "" },
+    onMic = { viewModel.startRecording() },
+    onAttach = { attachSheetOpen = true },
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlChatInput" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The Compose signature mirrors the web props: `value`, `onValueChange`, `onSend`, `onMic`,
+`placeholder`, `disabled`, optional `onAttach` + `attachIcon`. Long-press routes through
+`Modifier.longPressPop` (pop feedback + haptics); the morph runs on `AnimatedContent`
+with the fast/standard motion tokens.
+
+</TabItem>
+</Tabs>
+
+## Attachment popover
+
+The moment something is attached, the pending thumbnails appear **directly above the
+pill**, the shipped `NockerlAttachmentPopover` (canonical source: the app's
+`PendingImageRow`, brought up as the Compose `NockerlAttachmentPopover`). Try it live in
+the demo above: the **+** attaches, the badge removes, a send consumes them.
+
+Each thumbnail is a small tile on the **same L3 floating layer** as the pill (messages
+scroll under both), clipped to the panel radius, traced by the **warm agent-family
+edge** at the shared `border.width.floating` weight, deliberately *not* cyan: the warm
+edge marks **dismissable transient chrome**, where the pill's cyan §2 edge marks the
+fixed floating layer. A compact status-error badge overhangs the top-end corner to
+remove the attachment; the row scrolls horizontally on overflow.
+
+The component owns only the frame (float + edge + badge). The caller supplies each
+image src and keeps the pick/decode/upload plumbing outside.
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+import { NockerlAttachmentPopover } from '@dizyx/nockerl-react';
+
+<NockerlAttachmentPopover
+  attachments={pending}          // [{ src, alt }]
+  onRemove={(i) => setPending((p) => p.filter((_, j) => j !== i))}
+/>
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Compose (CANONICAL). One Painter per pending attachment.
+NockerlAttachmentPopover(
+    attachments = pendingPainters,
+    onRemove = { viewModel.removeAttachment(it) },
+)
+```
+
+</TabItem>
+</Tabs>
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlAttachmentPopover" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+`attachments: List<Painter>` · `onRemove: (Int) -> Unit` · `modifier` · `enabled`. The
+same frame; images arrive as Painters instead of src URLs.
+
+</TabItem>
+</Tabs>
+
+## The integrated flow
+
+The demo above is the **whole experience on one stage**: tap the **mic** and the
+[`Recording HUD`](/components/recording-hud/) pops directly above the pill, a sibling on
+the same L3 floating layer, one small gap, both carrying the §2 floating edge. The HUD
+**leads with the brand mark** (*Nockerl is listening*, never an anonymous red strip),
+then the pulsing status dot, the m:ss timer, the live 5-bar meter, and a ghost **Cancel**
+(the canonical order ratified with the native `NockerlRecordingHud`).
+
+Stack order, bottom-up, everything floating over the scrolling feed:
+
+1. **The pill**: persistent, cyan §2 edge.
+2. **The Recording HUD**: transient, cyan edge, brand-led (present only while recording).
+3. **The attachment popover**: transient, warm dismissable edge (present only with
+   pending attachments).
+
+The voice state machine (recording → transcribing → streaming), the real microphone, and
+the upload plumbing all live in the app. The design system supplies the three floating
+surfaces and their shared grammar.
+
+## Platform notes
+
+- **Enter sends on web** (Shift+Enter breaks the line). The native pill has no
+  return-to-send; unify brand expression, honor platform behavior.
+- **Long-press** flips the send↔mic override on both platforms (touch/pointer). Keyboard
+  users always have auto mode: type → send, clear → mic.
+- The pill never renders a glow or colored shadow: depth is the L3 neutral lift + the
+  top catch-light; the cyan edge is a **border**, not an emission (§1 + §2).

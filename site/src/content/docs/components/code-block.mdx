@@ -1,0 +1,175 @@
+---
+title: Code block
+description: The dedicated code-display surface, a recessed monospace well with an optional filename/language header, copy, and line numbers.
+status: review
+platforms: [web, android, swift]
+nativePublished: [swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlockDemo from '../../../components/demos/CodeBlockDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <CodeBlockDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function FileViewer({ source }: { source: string }) {
+  return (
+    <CodeBlock
+      filename="backoff.ts"
+      language="typescript"
+      code={source}
+      showLineNumbers
+      highlightLines={[4]}
+      onCopy={() => track('code.copy')}
+    />
+  );
+}
+
+// Unified-diff mode: added/removed lines get a warm wash + a +/- gutter.
+<CodeBlock filename="backoff.kt" language="kotlin" diff oldCode={before} code={after} />;
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The dedicated viewer body lives in
+// com.nockerl.app.files.ui; the diff variant in com.nockerl.app.chat.ui.
+import com.nockerl.app.files.ui.FileViewerContent
+import com.nockerl.app.files.ui.LanguageBadge
+import com.nockerl.app.chat.domain.computeDiff
+
+// Header chrome (filename + language pill) is supplied by the surrounding sheet:
+LanguageBadge(language = "TypeScript")
+
+// The recessed, 2D-scrollable monospace well (line-number gutter; lines never wrap):
+FileViewerContent(
+    content = state.viewerContent,   // FileContent(content, language, isBinary, error)
+    isLoading = state.isViewerLoading,
+    modifier = Modifier.fillMaxSize(),
+)
+
+// Unified diff for an Edit/Write (red/green lines, +/- gutter, copy of the new content):
+val diffLines = computeDiff(old = before, new = after)   // List<DiffLine>
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlCodeBlock` is a
+// RECESSED monospace well (code sinks into the page, law §2): an optional filename
+// header that also hosts the copy button, an optional line-number gutter, and
+// horizontal scrolling. Lines NEVER wrap unless `wrap` is set. Replaces Voice's raw
+// `.monospaced` Text. The `code` argument is the first positional.
+import NockerlDesign
+
+NockerlCodeBlock(
+    source,                       // the source text, rendered verbatim
+    filename: "backoff.swift",    // header title + copy button; omit → no header
+    showLineNumbers: true
+)
+
+// No filename → the well renders without a header (copy still appears where the
+// platform has a pasteboard).
+NockerlCodeBlock(snippet)
+
+// Soft-wrap long lines instead of scrolling horizontally.
+NockerlCodeBlock(longLine, wrap: true)
+
+// Syntax highlighting, highlight-lines, and the unified-diff mode are documented
+// web/Android-first follow-ups, not in NockerlDesign yet.
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'code', type: 'string', required: true, description: 'The source to display. Rendered in the <code>font.family.mono</code> well.' },
+    { name: 'filename', type: 'string', description: 'Shown in the header bar. Omit → the block renders with no header.' },
+    { name: 'language', type: "'typescript' | 'kotlin' | 'swift' | 'json' | 'shell'", description: 'Drives the cyan-soft language pill + the file-type tint dot.' },
+    { name: 'showLineNumbers', type: 'boolean', default: 'false', description: 'Right-aligned, muted line-number gutter (sticky under horizontal scroll).' },
+    { name: 'highlightLines', type: 'number[]', default: '[]', description: 'Lines to emphasize: a faint cyan wash + a left cyan rail (a shape, not a glow). This inset rail is the <strong>one sanctioned Law 6 carve-out</strong> (adjudication B18): editorial emphasis inside a code surface only, always paired with a wash, never status, never selection, and never outside code.' },
+    { name: 'wrap', type: 'boolean', default: 'false', description: 'Soft-wrap long lines. Off → lines scroll horizontally (the app default).' },
+    { name: 'diff', type: 'boolean', default: 'false', description: 'Unified-diff mode: a <code>+/-</code> gutter with warm added/removed washes.' },
+    { name: 'oldCode', type: 'string', description: 'The pre-change source, diffed against <code>code</code> when <code>diff</code> is set.' },
+    { name: 'onCopy', type: '() => void', description: 'Fires after a successful copy. The button confirms <strong>Copied</strong> for ~2s.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'content', type: 'FileContent?', required: true, description: '<code>FileContent(content, language, isBinary, error)</code>. Drives the well + its empty / binary / error states.' },
+    { name: 'isLoading', type: 'Boolean', required: true, description: 'Shows a centered progress indicator while the file is fetched.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Applied to the content root. Pass <code>Modifier.fillMaxSize()</code> for a full viewer.' },
+    { name: 'language', type: 'String', description: '<code>LanguageBadge(language)</code>, the cyan-soft pill beside the filename in the sheet top bar.' },
+    { name: 'diffLines', type: 'List&lt;DiffLine&gt;', description: '<code>DiffView</code> input from <code>computeDiff(old, new)</code>; each <code>DiffLine(type, text, lineNumber)</code> is ADDED / REMOVED / UNCHANGED.' },
+    { name: 'newContent', type: 'String', description: 'The resulting content the <code>DiffView</code> copy button writes to the clipboard.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+`NockerlCodeBlock` is the recessed well: a filename header (which also hosts the copy
+button), an optional line-number gutter, and horizontal scroll. It renders the
+platform `.monospaced` design (the Swift token build emits no mono type role yet;
+see drift). The `code` argument is the first positional.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'code', type: 'String', required: true, description: 'First positional arg: the source text, rendered verbatim in the mono well.' },
+    { name: 'filename', type: 'String?', default: 'nil', description: 'Header title (e.g. <code>"backoff.swift"</code>). The header also hosts the copy button; omit → no header (copy still shows where the platform has a pasteboard).' },
+    { name: 'showLineNumbers', type: 'Bool', default: 'false', description: 'Render the muted, right-aligned line-number gutter.' },
+    { name: 'wrap', type: 'Bool', default: 'false', description: 'Soft-wrap long lines instead of scrolling horizontally (horizontal scroll is the default idiom).' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+These are the real divergences:
+
+- **Swift now ships the well.** `NockerlCodeBlock` (NockerlDesign) provides the recessed
+  well, filename header, copy, line-number gutter, and horizontal scroll, replacing
+  Voice's raw `.monospaced` `Text`. Syntax highlighting, highlight-lines, and diff are
+  **not** in it yet (web/Android-first follow-ups).
+- **Mono font token:** the ratified code face is **Space Mono**, but the Swift token build
+  emits no mono type role and the package bundles no fonts, so `NockerlCodeBlock` renders
+  the **platform** `.monospaced` design. Emitting + bundling the mono token is the flagged
+  follow-up.
+- **Syntax highlighting:** the Android file viewer is **plain monospace** (highlighting
+  deferred), and `NockerlCodeBlock` is too; only the markdown renderer + this web demo tint
+  syntax. The well + chrome are identical either way. Pick one policy.
+- **Language pill:** `NockerlCodeBlock` takes **no** `language` (no pill), and there is also no
+  `file-type.swift` token. Add both when the language affordance lands on Swift.
+- **Diff** ships on **Android** (`DiffView`) and is specified for web; **Swift** has none.
+</Aside>

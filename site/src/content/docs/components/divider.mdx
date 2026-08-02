@@ -1,0 +1,166 @@
+---
+title: Divider
+description: The Nockerl divider, a crisp hairline rule, full-bleed or inset, labeled or plain.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import DividerDemo from '../../../components/demos/DividerDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <DividerDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlDivider } from '@dizyx/nockerl-react';
+
+export function SettingsGroup() {
+  return (
+    <Card>
+      <Row label="Theme" value="System" />
+      <NockerlDivider />                                {/* full-bleed hairline */}
+      <Row label="Default model" value="Large 2.0" />
+      <NockerlDivider inset="var(--space-4)" />          {/* inset to clear the text column */}
+      <Row label="Workspace" value="dizyx" />
+
+      <NockerlDivider label="OR" />                      {/* centered label, balanced rules */}
+      <NockerlDivider label="Session overrides" sectionLabel />  {/* flush-left header */}
+
+      <Inline>
+        Streaming <NockerlDivider orientation="vertical" /> 2 tools
+      </Inline>
+
+      <NockerlDivider tone="accent" />                   {/* the 1.5px cyan boundary line */}
+    </Card>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). Material 3 HorizontalDivider / VerticalDivider,
+// colored from the NockerlColors tokens (com.nockerl.app.core.theme).
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.VerticalDivider
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+val colors = LocalNockerlColors.current
+
+// Full-bleed standard rule (MainScaffold).
+HorizontalDivider(thickness = 1.dp, color = colors.divider)
+
+// Inset rule: indent to clear the row's text column (FlicTargetPickerSheet).
+HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = colors.altHairline)
+
+// Vertical rule between inline items.
+VerticalDivider(thickness = 1.dp, color = colors.divider, modifier = Modifier.height(22.dp))
+
+// The signature cyan boundary line, full-width 1.5dp accentPrimary (TopChromeBoundary).
+Box(Modifier.fillMaxWidth().height(1.5.dp).background(colors.accentPrimary))
+
+// Labeled divider: two weighted rules around a centered label (SystemMessageDivider).
+Row(verticalAlignment = Alignment.CenterVertically) {
+    Box(Modifier.weight(1f).height(1.dp).background(colors.statusWarning.copy(alpha = 0.3f)))
+    Text("Session reset", style = MaterialTheme.typography.labelSmall, color = colors.statusWarning,
+        modifier = Modifier.padding(horizontal = 12.dp))
+    Box(Modifier.weight(1f).height(1.dp).background(colors.statusWarning.copy(alpha = 0.3f)))
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). NockerlVoice/UI uses a hairline Rectangle filled with
+// the NockerlTheme.hairline / .divider / .accent tokens (NockerlTheme.swift).
+
+// Horizontal rule, full-bleed (SettingsView / HistoryView).
+Rectangle().fill(NockerlTheme.hairline).frame(height: 1)
+
+// Inset rule: pad the rule, not the rows.
+Rectangle().fill(NockerlTheme.hairline).frame(height: 1).padding(.horizontal, 20)
+
+// Vertical rule between inline items (RecordingHUD pill / DashboardView sidebar).
+Rectangle().fill(NockerlTheme.divider).frame(width: 1, height: 22)
+
+// The signature cyan boundary line, the brand-carrying rule.
+Rectangle().fill(NockerlTheme.accent).frame(height: 1.5)
+
+// System-supplied separator for menus / lists (MenuBarContent, OnboardingView).
+Divider()
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlDivider" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+Compose ships Material 3's `HorizontalDivider` / `VerticalDivider`; Nockerl supplies the
+**color token** (`colors.divider` / `altHairline`) and, for the signature line + labeled
+variants, a thin `Box` / `Row`. There is no single wrapper component yet.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. Use <code>Modifier.padding(horizontal = …)</code> for an inset rule.' },
+    { name: 'thickness', type: 'Dp', default: 'DividerDefaults.Thickness (1.dp)', description: 'Hairline weight. The signature cyan boundary line uses <strong>1.5.dp</strong>.' },
+    { name: 'color', type: 'Color', default: 'DividerDefaults.color', description: 'Pass a Nockerl token: <code>colors.divider</code>, <code>colors.altHairline</code>, or <code>colors.accentPrimary</code> for the signature line.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI has no parameterized divider component; Nockerl draws a `Rectangle` filled with a
+theme token and sized to the hairline. The native `Divider()` is used only inside menus and
+`Form`-style lists where the system separator is expected.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'Rectangle().fill(NockerlTheme.hairline)', type: 'View', description: 'Standard hairline (white @ 8% on dark). Size with <code>.frame(height: 1)</code> or <code>.frame(width: 1)</code>.' },
+    { name: 'Rectangle().fill(NockerlTheme.divider)', type: 'View', description: 'Slightly stronger rule (white @ 12% on dark), used for vertical separators between inline items.' },
+    { name: 'Rectangle().fill(NockerlTheme.accent)', type: 'View', description: 'The cyan signature boundary line. Size with <code>.frame(height: 1.5)</code>.' },
+    { name: 'Divider()', type: 'View', description: 'System separator: menus (<code>MenuBarContent</code>) and onboarding lists only.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The hairline tone and the signature cyan line agree; the wrapping does not:
+
+- **No shared component.** Web exposes one `Divider` (orientation + tone + label); Compose
+  uses Material's `HorizontalDivider`/`VerticalDivider` + a hand-rolled `Box` for the
+  signature line and labeled variants; Swift draws a `Rectangle`. The labeled/section and
+  accent variants should land as one wrapper per platform.
+- **Token naming.** The standard rule is `divider`; the *alt-plane* rule is `altHairline`
+  (Compose) / `hairline` (Swift). Both apps also reach for `outlineVariant` (Material) at
+  ~50% alpha in places. That should resolve to the `divider` token.
+- **Signature line weight is a literal.** Both apps hardcode the cyan boundary at
+  **1.5dp/1.5pt**; it should become a token (`divider.signature`) alongside the standard 1.
+</Aside>

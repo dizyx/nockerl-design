@@ -1,0 +1,172 @@
+---
+title: Badge
+description: A passive count, dot, or compact status indicator that anchors to a host or stands alone.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import BadgeDemo from '../../../components/demos/BadgeDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <BadgeDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the
+// canonical API the published @dizyx/nockerl-react package is intended to expose. It unifies
+// the shipped idioms: a count/dot overlay (Compose BadgedBox) + a tonal status pill.)
+import { NockerlBadge } from '@dizyx/nockerl-react';
+
+export function InboxBell({ unread }: { unread: number }) {
+  return (
+    <button aria-label={unread > 0 ? `Inbox, ${unread} unread` : 'Inbox, unseen activity'}>
+      <BellIcon />
+      {/* anchored: a count → "99+" overflow, falling back to a bare dot at 0 */}
+      {unread > 0 ? <NockerlBadge count={unread} tone="danger" anchored /> : <NockerlBadge dot tone="danger" anchored />}
+    </button>
+  );
+}
+
+// standalone status pills (passive, so name them for assistive tech)
+<NockerlBadge label="research" tone="warning" variant="soft" />
+<NockerlBadge count={12} tone="accent" ariaLabel="12 items" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
+// A first-class NockerlBadge wrapper: count pill, bare dot (NockerlBadgeDot), and tonal label pill.
+// Anchor to a host with a plain Box overlay at the call site (the library ships the badge, not a BadgedBox).
+import com.dizyx.nockerl.design.components.NockerlBadge
+import com.dizyx.nockerl.design.components.NockerlBadgeDot
+import com.dizyx.nockerl.design.components.NockerlBadgeTone
+import com.dizyx.nockerl.design.components.NockerlBadgeVariant
+
+Box(contentAlignment = Alignment.TopEnd) {
+    Icon(Icons.Filled.Notifications, contentDescription = "Inbox")
+    when {
+        // count pill: "99+" past 99, contrast-picked label. Defaults to the agent (orange) tone.
+        unreadCount > 0 -> NockerlBadge(count = unreadCount, contentDescription = "$unreadCount unread")
+        // bare dot for unseen-but-uncounted activity (accessible name REQUIRED)
+        hasUnseen -> NockerlBadgeDot(contentDescription = "Unseen activity")
+    }
+}
+
+// inline tonal status pill, a label pill naming a state (SOFT = hue @ 15% wash + full-hue label)
+NockerlBadge(text = "Research", tone = NockerlBadgeTone.WARNING, variant = NockerlBadgeVariant.SOFT)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// SwiftUI: the published NockerlDesign SwiftPM package. A first-class NockerlBadge with the
+// full set: count pill, bare dot (the .dot factory), and tonal label pill (soft / solid).
+// Anchor to a host with .overlay(alignment: .topTrailing).
+import NockerlDesign
+
+Image(systemName: "bell")
+    .overlay(alignment: .topTrailing) {
+        // count pill: "99+" past 99; bare dot at zero. Defaults to the agent (orange) tone.
+        if unread > 0 {
+            NockerlBadge(count: unread, label: "\(unread) unread")
+        } else {
+            NockerlBadge.dot(label: "Unseen activity")
+        }
+    }
+
+// standalone tonal status pills (passive, named for assistive tech)
+NockerlBadge("Research", tone: .warning, variant: .soft)
+NockerlBadge("CI", tone: .success, variant: .solid)
+```
+
+</TabItem>
+</Tabs>
+
+## Language tag
+
+A code **language is metadata, never status**, so its tag carries **no hue**.
+`NockerlLanguageBadge` is the first-class, hue-free tag: a quiet lowercase **monospace** pill
+(neutral soft wash + muted ink) shared by the CodeBlock header, the DiffViewer header, and the
+Markdown code fence, so the tag reads identically everywhere. The label runs through the shared
+`nockerlLanguageLabel` contract (trim + lowercase, blank → nothing). It is byte-identical to
+the native rails, so `'TypeScript'` renders `typescript` on every surface.
+
+<Aside type="tip" title="App-configurable color (ratified r5 relaxation)">
+The **framework default stays hue-free** and ships no per-language color map. Apps *may*
+differentiate languages via the optional `color` prop (their own mapping: TS ≠ Kotlin ≠
+Swift), and **for this one case a status hue is permitted**: a language color reads as
+identity metadata, not state. Unset, the tag is the quiet neutral canon matching Android +
+Voice.
+</Aside>
+
+<PropsTable nameLabel="Prop" component="NockerlLanguageBadge" />
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlBadge" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The published `NockerlBadge` ships as a first-class wrapper with three forms; tones map onto
+semantic palette slots via `NockerlBadgeTone` (never a raw hue).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'NockerlBadge(count, tone, contentDescription)', type: 'Int, NockerlBadgeTone, String?', required: true, description: 'The count pill: solid tone fill, contrast-picked label, capped <code>"99+"</code>. <code>tone</code> defaults to <code>AGENT</code>; <code>contentDescription</code> defaults to the count text.' },
+    { name: 'NockerlBadge(text, tone, variant)', type: 'String, NockerlBadgeTone, NockerlBadgeVariant', required: true, description: 'The tonal label pill. <code>variant</code>: <code>SOFT</code> (the default, a hue @ 0.15 wash + full-hue label) or <code>SOLID</code> (tone fill + contrast ink).' },
+    { name: 'NockerlBadgeDot(contentDescription, tone)', type: 'String, NockerlBadgeTone', required: true, description: 'The bare 8dp disc for unseen-but-uncounted activity. Accessible name is <strong>required, non-empty</strong>; <code>tone</code> defaults to <code>AGENT</code>.' },
+    { name: 'NockerlBadgeTone', type: 'enum', description: 'Semantic hue ladder: <code>ACCENT · SUCCESS · WARNING · DANGER · INFO · AGENT</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The published `NockerlBadge` ships the full set on the same `NockerlBadgeTone` ladder as
+Compose: count pill, bare dot, and tonal label pill (soft / solid). It is a passive `View`;
+anchor it with `.overlay(alignment: .topTrailing)`.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'NockerlBadge(count:tone:label:)', type: 'Int, NockerlBadgeTone, String?', required: true, description: 'The count pill: solid tone fill, contrast-picked label, capped <code>"99+"</code>. <code>tone</code> defaults to <code>.agent</code>; <code>label</code> defaults to the count text.' },
+    { name: 'NockerlBadge(_:tone:variant:)', type: 'String, NockerlBadgeTone, NockerlBadgeVariant', required: true, description: 'The tonal label pill. <code>variant</code>: <code>.soft</code> (the default, a hue @ 0.15 wash + full-hue label), <code>.solid</code> (tone fill + contrast ink), or <code>.outline</code> (a 1pt tone stroke on a transparent fill + full-hue label, the Button-outline grammar; the lightest form for dense rows. Swift-first: react/compose parity tracked).' },
+    { name: 'NockerlBadge.dot(tone:label:)', type: 'NockerlBadgeTone, String', required: true, description: 'The bare 8pt disc. Accessible <code>label</code> is <strong>required, non-empty</strong>; <code>tone</code> defaults to <code>.agent</code>.' },
+    { name: 'NockerlBadgeTone', type: 'enum', description: 'Semantic hue ladder: <code>.accent · .success · .warning · .danger · .info · .agent</code>.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (one open item)">
+The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
+(`NockerlDesign`) packages now both ship a first-class `NockerlBadge` with the **full set**:
+count pill, bare dot, and tonal label pill (soft / solid) on the same `NockerlBadgeTone`
+ladder. The earlier coverage gap and "no shared wrapper" drift are resolved. What remains:
+
+- **Default count hue** *(resolved in [adjudication 2026-07-02 · B5])*: the unread-count badge hue
+  is **danger-red**; the orange agent-family token was a categorical misuse. The web demo already
+  defaults the inbox to danger-red; both native packages (today defaulting the count / dot to the
+  `.agent` / `AGENT` orange) conform.
+</Aside>

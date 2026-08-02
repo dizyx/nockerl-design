@@ -1,0 +1,178 @@
+---
+title: Card
+description: The Nockerl card, the elevated surface that lifts off the canvas.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import CardDemo from '../../../components/demos/CardDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <CardDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function SessionList() {
+  return (
+    <>
+      {/* Static container: the standard L2 plane. */}
+      <Card elevation="l2">
+        <h3>Nockerl design system</h3>
+        <p>A lifted card: neutral shadow below, catch-light on top.</p>
+      </Card>
+
+      {/* Interactive. The whole surface is one tappable button. */}
+      <Card elevation="l2" interactive ariaLabel="Open session nockerl-cli" onClick={openSession}>
+        <span className="eyebrow">Session</span>
+        <h3>nockerl-cli</h3>
+      </Card>
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose, canonical). com.nockerl.app.core.theme.NockerlCard
+import com.nockerl.app.core.theme.NockerlCard
+import com.nockerl.app.core.theme.NockerlElevation
+
+// Static container: the standard L2 plane (tier-1 fill, hairline, lit material).
+NockerlCard(modifier = Modifier.fillMaxWidth()) {
+    Column(Modifier.padding(16.dp)) {
+        Text("Nockerl design system")
+        Text("A lifted card: tinted drop shadow below, catch-light on top.")
+    }
+}
+
+// Interactive. There is no onClick param; compose clickable on the modifier.
+NockerlCard(
+    elevation = NockerlElevation.Level2,
+    modifier = Modifier
+        .fillMaxWidth()
+        .clickable(onClickLabel = "Open session nockerl-cli") { openSession() },
+) {
+    Column(Modifier.padding(16.dp)) { Text("nockerl-cli") }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). In NockerlVoice/UI, the lifted-card treatment is
+// composed from the NockerlTheme tokens (no single Card view yet).
+RoundedRectangle(cornerRadius: NockerlTheme.cardRadius)   // 14pt today; see drift
+    .fill(NockerlTheme.card1)                             // #2C313A on dark
+    .overlay(
+        RoundedRectangle(cornerRadius: NockerlTheme.cardRadius)
+            .strokeBorder(NockerlTheme.hairline, lineWidth: 1)   // white ~8%
+    )
+    .shadow(color: .black.opacity(0.5), radius: 10, y: 6)  // NEUTRAL drop shadow
+    .overlay(alignment: .top) {                            // top catch-light sheen
+        LinearGradient(colors: [.white.opacity(0.06), .clear],
+                       startPoint: .top, endPoint: .bottom)
+            .frame(height: 1)
+    }
+    .overlay { content.padding(16) }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'elevation', type: "'l1' | 'l2' | 'l3' | 'l4'", default: "'l2'", description: 'Elevation rung. Grows the <strong>neutral shadow</strong>, never the surface lightness.' },
+    { name: 'interactive', type: 'boolean', default: 'false', description: 'Renders the surface as a <code>button</code>: hover raises, press sinks, focus shows the ring.' },
+    { name: 'borderless', type: 'boolean', default: 'false', description: 'Drop the hairline border; depth then reads from shadow + catch-light alone.' },
+    { name: 'onClick', type: '() => void', description: 'Click handler. Only meaningful when <code>interactive</code>.' },
+    { name: 'ariaLabel', type: 'string', description: 'Accessible name for an interactive card (required when its content is not a clear label).' },
+    { name: 'children', type: 'ReactNode', description: 'Card content. Padded by the card; never bleeds to the edge.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier (size, alignment, and <code>.clickable { }</code> to make the card a tap target).' },
+    { name: 'shape', type: 'Shape', default: 'NockerlCardShape', description: 'Card silhouette. Defaults to the rounded card radius; pass a <code>ChamferedCornerShape</code> for the angled accent.' },
+    { name: 'color', type: 'Color', default: 'cardSurface1', description: 'Solid surface fill. Ignored when <code>gradient</code> is set.' },
+    { name: 'gradient', type: 'Brush?', default: 'null', description: 'Optional gradient fill (the agent / team-card top-lit sheen). Overrides <code>color</code>.' },
+    { name: 'elevation', type: 'Dp', default: 'NockerlElevation.Level2', description: 'Drop-shadow elevation. Prefer a <code>NockerlElevation</code> preset (<code>Level1 · Level2 · Level3</code>).' },
+    { name: 'border', type: 'Color?', default: 'cardHairline', description: 'Hairline border color. Pass <code>null</code> for no border.' },
+    { name: 'borderWidth', type: 'Dp', default: '1.dp', description: 'Border stroke width.' },
+    { name: 'content', type: '@Composable BoxScope.() -> Unit', required: true, description: 'Card content, laid out inside the lifted surface.' },
+  ]}
+/>
+
+<Aside type="note" title="No onClick parameter on NockerlCard">
+`NockerlCard` is a pure surface. To make it tappable you compose `Modifier.clickable { }`
+(with `onClickLabel` for the accessible name) onto the `modifier`, exactly as the
+shipped tool / agent cards do. This keeps the surface and the interaction concerns
+separate.
+</Aside>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI has **no single `Card` view yet**; the lifted-card treatment is composed from the
+`NockerlTheme` tokens (fill + hairline + neutral shadow + top sheen) at the call site. The
+parameters below are those tokens; a wrapper view is the planned reconciliation.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'NockerlTheme.card1', type: 'Color', description: 'Base card fill (<code>#2C313A</code> dark / <code>#FFFFFF</code> light). <code>card2</code> / <code>card3</code> are the raised tiers.' },
+    { name: 'NockerlTheme.cardRadius', type: 'CGFloat', default: '14', description: 'Corner radius. <strong>14pt today</strong>, but the token is 16 (see drift).' },
+    { name: 'NockerlTheme.hairline', type: 'Color', description: 'Hairline border: white ~8% on dark, black ~7% on light.' },
+    { name: '.shadow(color: .black…)', type: 'modifier', description: 'The NEUTRAL drop shadow (black-tinted, never colored).' },
+    { name: 'top LinearGradient', type: 'overlay', description: 'The ~1px top catch-light sheen (white → clear), the companion to the shadow.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The spec is approved; these are the real divergences between the shipped platforms,
+tracked in the [Review queue](/review-queue/):
+
+- **Card radius:** the token `radius.card` is **16px** (unified, ADR-0003), but Compose
+  hardcodes `NockerlCardRadius` = **18dp** and Swift `NockerlTheme.cardRadius` = **14pt**.
+  Both should consume the token; web keeps its sharper container override.
+- **Elevation ladder:** Compose ships **L1 to L3** presets (`NockerlElevation`, no `Level4`);
+  the L4 rung is the `elevation.sheet` token (14px) used by bottom sheets. Swift has **no
+  preset ladder**; shadows are per-call. Web exposes the full **L1 to L4** scale.
+- **Interactive API** *(resolved in [adjudication 2026-07-02 · A3])*: a tappable card is **one
+  declared `interactive` / onClick prop on the Card API** on all three platforms (pressed =
+  elevation dip + focus ring). Web already exposes `interactive`; natives may implement via
+  `clickable` internally (Compose today) or a `Button` wrap (Swift), but the prop is the shared
+  contract.
+- **Card component:** Swift has **no `Card` view** yet (composed from tokens inline). A
+  wrapper to match Compose's `NockerlCard` is the planned step.
+</Aside>

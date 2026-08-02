@@ -1,0 +1,143 @@
+---
+title: Button
+description: The Nockerl button, the primary action control.
+status: approved
+platforms: [web, android, swift]
+nativePublished: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import ButtonDemo from '../../../components/demos/ButtonDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="approved" />
+
+<Example caption="Live · web">
+  <ButtonDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
+// this is the canonical API the published @dizyx/nockerl-react package exposes.)
+import { NockerlButton } from '@dizyx/nockerl-react';
+
+export function SessionToolbar() {
+  return (
+    <div className="toolbar">
+      <NockerlButton text="Create session" variant="primary" leadingIcon="+" onClick={createSession} />
+      <NockerlButton text="Files" variant="secondary" onClick={openFiles} />
+      <NockerlButton text="Archive all" variant="tertiary" onClick={archiveAll} />
+      <NockerlButton text="Cancel" variant="ghost" onClick={dismiss} />
+      <NockerlButton text="Delete" variant="destructive" onClick={confirmDelete} />
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
+import com.dizyx.nockerl.design.components.NockerlButton
+import com.dizyx.nockerl.design.components.NockerlButtonVariant
+
+NockerlButton(
+    text = "Create session",
+    onClick = viewModel::createSession,
+    variant = NockerlButtonVariant.PRIMARY,
+    leadingContent = { Icon(Icons.Default.Add, contentDescription = null) },
+)
+NockerlButton("Files", onClick = ::openFiles, variant = NockerlButtonVariant.SECONDARY)
+NockerlButton("Archive all", onClick = ::archiveAll, variant = NockerlButtonVariant.TERTIARY)
+NockerlButton("Cancel", onClick = ::dismiss, variant = NockerlButtonVariant.GHOST)
+NockerlButton("Delete", onClick = ::confirmDelete, variant = NockerlButtonVariant.DESTRUCTIVE)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// SwiftUI: the published NockerlDesign SwiftPM package. `NockerlButton` is a self-contained
+// View; the label is auto-uppercased. The full five-step ladder ships, tertiary included.
+import NockerlDesign
+
+NockerlButton("Create session", variant: .primary) { createSession() }
+NockerlButton("Files", variant: .secondary) { openFiles() }
+NockerlButton("Archive all", variant: .tertiary) { archiveAll() }
+NockerlButton("Cancel", variant: .ghost) { dismiss() }
+NockerlButton("Delete", variant: .destructive) { confirmDelete() }
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlButton" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'String', required: true, description: 'Visible label. Rendered with <code>NockerlControlTextStyle</code>.' },
+    { name: 'onClick', type: '() -> Unit', required: true, description: 'Invoked on click. No-op while <code>enabled = false</code>.' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier. Pass <code>Modifier.fillMaxWidth()</code> for a block button.' },
+    { name: 'variant', type: 'NockerlButtonVariant', default: 'PRIMARY', description: 'Fill ladder: <code>PRIMARY · SECONDARY · TERTIARY · GHOST · DESTRUCTIVE</code>.' },
+    { name: 'enabled', type: 'Boolean', default: 'true', description: 'When <code>false</code>, the button is dimmed (alpha) and non-interactive.' },
+    { name: 'contentPadding', type: 'PaddingValues', default: 'horizontal 18.dp, vertical 11.dp', description: 'Inner padding around the content row.' },
+    { name: 'maxLines', type: 'Int', default: 'Int.MAX_VALUE', description: 'Label lines before ellipsis. Pass <code>1</code> for a width-capped, single-line button.' },
+    { name: 'leadingContent', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional content (typically an <code>Icon</code>) before the label; receives the variant content color via <code>LocalContentColor</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The published `NockerlButton` is a self-contained `View`: `NockerlButton(_ text:, variant:, action:)`.
+The label is auto-uppercased (buttons are the only uppercase in the type system). State
+(`isEnabled`, `isPressed`) flows from the SwiftUI environment. Honor `.disabled(_:)` for the
+dimmed, non-interactive state; there are no explicit state parameters.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'text', type: 'String', required: true, description: 'The label (the leading unlabeled argument). Rendered uppercased, weight <code>.light</code>, tracked −0.03em.' },
+    { name: 'variant', type: 'NockerlButtonVariant', default: '.primary', description: 'Fill ladder: <code>.primary · .secondary · .tertiary · .ghost · .destructive</code>. Primary is a vertical cyan catch-light gradient; tertiary is the outlined cyan step; all share <code>NockerlRadius.control</code> (12pt).' },
+    { name: 'action', type: '() -> Void', required: true, description: 'The trailing closure, invoked on tap.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note" title="Cross-platform parity (published packages)">
+The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
+(`NockerlDesign`) packages now share one API, and the earlier drift is resolved:
+
+- **Full ladder on both.** Swift ships all five variants (`.primary` … `.destructive`),
+  **including `.tertiary`**. The old "4 vs 5" gap is closed.
+- **Control radius is tokenized.** Swift consumes `NockerlRadius.control` (**12pt**) for the
+  fill, border, and hit shape; the hardcoded 10pt is gone.
+
+Remaining, intentional expression differences:
+
+- **Primary fill:** Swift paints a **vertical catch-light gradient**
+  (`accentPrimaryHi → accentPrimary`) and Compose a **solid** `accentPrimary`. Both are
+  static fills (no tween). Web mirrors the subtle vertical catch-light. This is a deliberate
+  per-platform expression, not a token drift.
+- **Sizing:** web exposes `size` (sm/md/lg); Compose uses `contentPadding`; Swift is a fixed
+  content padding + 40pt min height. Same visual weight, different knob per platform.
+</Aside>

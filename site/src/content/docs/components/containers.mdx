@@ -1,0 +1,52 @@
+---
+title: Containers & surfaces
+description: The planes content sits on (what lifts, what recedes, and the elevation ladder).
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+
+<StatusBadge status="review" />
+
+The **planes** content lives on. Every surface either **lifts** off the ground or
+**recedes** into it. One consistent light source decides which.
+
+### Lift vs recede
+
+- **Cards lift**: a clear luminance step above a darker ground + drop shadow + top
+  catch-light.
+- **Panels / wells recede**: darker + inner shadow (the same move that defines a field).
+- **Ground is the darkest layer.** Lift comes from the luminance gap, not from making a
+  card light-gray (see [Elevation &amp; depth](/foundations/elevation-and-depth/)).
+
+### Elevation ladder
+
+Depth is ordered, not arbitrary. Pick a tier, don't tune a shadow by hand:
+
+- **L1**: resting card / panel on the canvas.
+- **L2**: raised card, hover, popover.
+- **L3**: sheet, drawer, dialog.
+- **L4**: transient overlay (tooltip, menu) above everything.
+
+### Material & shape
+
+- Depth = **neutral (or tinted-black) shadow + top catch-light, never a glow** or colored
+  shadow (see [Design laws](/foundations/design-laws/)).
+- **Card radius 16**, control radius 12. Surfaces read softer than the controls inside
+  them.
+
+## Components
+
+| Component | Status |
+| --- | --- |
+| [Card](/components/card/) | ⚠ in review |
+| [Panel / well](/components/panel/) | ▢ queued |
+| [Bottom sheet](/components/bottom-sheet/) | ▢ queued |
+| [Dialog / modal](/components/dialog/) | ▢ queued |
+| [Popover](/components/popover/) | ▢ queued |
+| [Tooltip](/components/tooltip/) | ▢ queued |
+| [Accordion / expander](/components/accordion/) | ▢ queued |
+| [Drawer / side panel](/components/drawer/) | ▢ queued |
+| [Divider](/components/divider/) | ▢ queued |
+| [App shell / scaffold](/components/app-shell/) | ▢ queued |

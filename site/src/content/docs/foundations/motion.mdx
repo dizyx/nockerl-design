@@ -1,0 +1,102 @@
+---
+title: Motion
+description: Physical, springy motion that animates interpolatable properties, never a fill swap. One standard easing curve, a small set of durations, and a reduced-motion freeze every primitive honors.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+Nockerl motion is **physical, springy, and choreographed**, never pulsing or glowing as
+decoration. The governing law (see [Design laws](/foundations/design-laws/)):
+
+> **Feedback animates interpolatable properties only**: brightness, scale, elevation,
+> opacity, transform. **Never tween between two fills or gradients.**
+
+CSS cannot interpolate between two backgrounds and Compose's `Brush` can't either. Both
+hard-cut and flash. So the fill stays static and feedback rides on brightness + transform +
+shadow instead.
+
+## The standard curve
+
+Almost everything eases on **one curve**: `cubic-bezier(.2, 0, 0, 1)`. A slight ease-in,
+a long decelerate: motion arrives with momentum and settles gently, which reads as physical
+rather than mechanical. It is by far the dominant easing in the primitives; the rare
+exception is a keyframed spring-overshoot (a pop that lands slightly past its target and
+back) for entrances that should feel bouncy.
+
+## Durations
+
+State feedback is **fast**; larger choreographed moves take longer. The values in use
+cluster into a small set:
+
+| Feel | Duration | Where |
+| --- | --- | --- |
+| Instant | `0s` | reduced-motion, immediate swaps |
+| Fast | `~.12s` | hover / press / focus, the common control feedback |
+| Base | `~.2s` | standard state transitions |
+| Slow | `~.26s` to `.35s` | larger choreographed moves, segmented-control slide, reveals |
+| Sheet | `~.4s` | overlay / bottom-sheet enter and exit |
+
+`~.12s` is the overwhelmingly common one: control feedback should feel immediate, not
+animated. Springs are reserved for the larger moves where a little physicality pays off.
+
+## In practice
+
+```css
+.button {
+  transition:
+    transform 0.12s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.12s,
+    filter 0.12s;
+}
+.button:hover  { filter: brightness(1.06); transform: translateY(-1px); }
+.button:active { filter: brightness(0.9);  transform: scale(0.985); }
+```
+
+- **Only interpolatable properties move**: `transform`, `opacity`, `filter`, `box-shadow`.
+  The fill (`background`) never tweens; brightness rides on `filter` so the surface stays a
+  single static color that can't hard-cut.
+- **Fast for feedback, springs for moves.** `~.12s` for state feedback; a keyframed spring
+  for larger choreographed transitions.
+- **Honor the platform.** Android adds a ripple from the touch point and haptics on
+  long-press; web uses hover + a focus-visible ring; macOS uses pointer + focus ring.
+
+## Reduced motion
+
+**Every primitive honors `prefers-reduced-motion: reduce`**. It is a system-wide law, not a
+per-component nicety. Motion doesn't just speed up; it *stops*:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .nk-tt-tip { transition: none; transform: scale(1); }  /* appear in place, no pop */
+}
+```
+
+- **Transitions freeze** (`transition: none`). Hover lifts, scale pops, and slides resolve
+  instantly to their end state.
+- **Entrances appear in place.** A tooltip or popover shows without its scale-pop.
+- **Infinite loops degrade.** A spinner's continuous spin becomes a slow, gentle opacity
+  pulse on a static arc; never a fast infinite spin.
+
+The freeze applies to *decorative* motion. Meaning is never carried by animation alone: a
+spinner still announces via `role="status"`, and state changes stay legible with motion off.
+
+<Aside type="note" title="The published motion token set">
+The set above is **ratified and emitted** from `tokens/core/motion.json` to all three targets:
+
+- **Web** (`@dizyx/nockerl-tokens`): `--motion-duration-instant / fast / base / slow / sheet /
+  pulse` (0 / 120 / 200 / 320 / 400 / 800 ms) and `--motion-easing-standard / emphasized / exit`.
+- **Compose**: `NockerlMotionDuration` + the easing curves in `NockerlTokens.kt`.
+- **SwiftUI**: `NockerlMotion` in `NockerlTokens.swift`.
+
+The web primitives consume the **standard curve as the token**: `var(--motion-easing-standard)`
+replaced the former `cubic-bezier(.2, 0, 0, 1)` literal everywhere it appeared. Two spots
+deliberately remain literal: a handful of genuinely custom curves (a spring overshoot, an
+ease-out) with no token equivalent, and the primitives' micro-durations (`.12s` / `.16s`), which
+sit below the ratified ladder. Conforming those timings is a motion decision tracked with this
+slice, not a mechanical swap. Treat the token names as the contract.
+</Aside>

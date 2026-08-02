@@ -1,0 +1,179 @@
+---
+title: Command palette
+description: The ⌘K launcher, a centered modal that searches grouped commands.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CommandPaletteDemo from '../../../components/demos/CommandPaletteDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <CommandPaletteDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+const commands = [
+  { id: 'new-session', label: 'New session', hint: 'Start a fresh session',
+    group: 'Actions', icon: 'plus', shortcut: ['⌘', 'N'], run: createSession },
+  { id: 'go-inbox', label: 'Go to Inbox', hint: '3 unread', group: 'Navigation',
+    icon: 'inbox', shortcut: ['G', 'I'], run: => navigate('/inbox') },
+  { id: 'recent-design', label: 'nockerl-design · docs', group: 'Recent',
+    icon: 'doc', run: => openSession('design') },
+];
+
+export function App() {
+  const [open, setOpen] = useState(false);
+  // ⌘K / Ctrl-K toggles the palette from anywhere.
+  useHotkey('mod+k', => setOpen((v) => !v));
+
+  return (
+    <CommandPalette
+      open={open}
+      onOpenChange={setOpen}
+      commands={commands}
+      groupOrder={['Actions', 'Navigation', 'Recent']}
+      placeholder="Type a command or search…"
+    />
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose. No physical ⌘K; the launcher is a modal that
+// reuses NockerlBottomSheet (the shipped elevated-over-scrim idiom). Opened
+// from the GlobalTopBar search affordance. (Intended API; see drift note.)
+import com.nockerl.app.core.ui.NockerlCommandPalette
+import com.nockerl.app.core.ui.CommandGroup
+
+NockerlCommandPalette(
+    visible = uiState.paletteOpen,
+    onDismissRequest = viewModel::closePalette,
+    query = uiState.query,
+    onQueryChange = viewModel::onQueryChange,
+    commands = uiState.commands,           // filtered + bucketed by group
+    groupOrder = listOf(
+        CommandGroup.ACTIONS,
+        CommandGroup.NAVIGATION,
+        CommandGroup.RECENT,
+    ),
+    onRun = viewModel::run,                 // ripple + haptic on tap
+    placeholder = "Type a command or search…",
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI. The trigger is a real .keyboardShortcut("k", modifiers: .command)
+// (the same modifier Voice uses for ⌘D / ⌘Q in MenuBarContent.swift). The sheet
+// floats over a scrim; rows surface their per-row shortcut as monospaced hints.
+struct RootView: View {
+    @State private var paletteOpen = false
+    @State private var query = ""
+
+    var body: some View {
+        WorkspaceView()
+            .background(
+                Button("") { paletteOpen.toggle() }
+                    .keyboardShortcut("k", modifiers: .command)   // ⌘K
+                    .hidden()
+            )
+            .sheet(isPresented: $paletteOpen) {
+                NockerlCommandPalette(
+                    query: $query,
+                    commands: commands,        // filtered + grouped (Actions / Navigation / Recent)
+                    placeholder: "Type a command or search…",
+                    onRun: { command in run(command); paletteOpen = false }
+                )
+            }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'open', type: 'boolean', required: true, description: 'Whether the palette is shown. Drops a scrim and floats the panel near top-center.' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', required: true, description: 'Fired on Esc, scrim click, or after a command runs. Focus is restored to the trigger on close.' },
+    { name: 'commands', type: 'Command[]', required: true, description: 'The full set. Each: <code>{ id, label, hint?, group, icon, shortcut?, run, disabled? }</code>. Filtered live by what is typed (label + hint substring).' },
+    { name: 'groupOrder', type: 'string[]', default: "['Actions','Navigation','Recent']", description: 'Section order. Headers render above each non-empty bucket; ↑↓ flow across groups in this order.' },
+    { name: 'placeholder', type: 'string', default: "'Search…'", description: 'Search-field placeholder. The field is a persistent input, never a label.' },
+    { name: 'emptyLabel', type: 'string', default: "'No results'", description: 'Shown with the query when nothing matches, above a quiet “Try a different search.”' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'visible', type: 'Boolean', required: true, description: 'Whether the palette sheet is shown. Built on <code>NockerlBottomSheet</code> (elevated over the <code>scrim</code> token).' },
+    { name: 'onDismissRequest', type: '() -> Unit', required: true, description: 'Invoked on scrim tap, back gesture, or system dismiss.' },
+    { name: 'query', type: 'String', required: true, description: 'Current search text (recessed well). Pair with <code>onQueryChange</code> for live filtering.' },
+    { name: 'onQueryChange', type: '(String) -> Unit', required: true, description: 'Emits on each keystroke from a connected keyboard or IME.' },
+    { name: 'commands', type: 'List<NockerlCommand>', required: true, description: 'Filtered + bucketed entries: <code>id, label, hint?, group, icon, shortcut?, enabled</code>.' },
+    { name: 'groupOrder', type: 'List<CommandGroup>', default: 'ACTIONS, NAVIGATION, RECENT', description: 'Section order; a quiet header precedes each non-empty bucket.' },
+    { name: 'onRun', type: '(NockerlCommand) -> Unit', required: true, description: 'Invoked on row tap: ripple + haptic. No-op for a disabled row.' },
+    { name: 'placeholder', type: 'String', default: '"Search…"', description: 'Search-field placeholder for the recessed well.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI exposes the palette as a `View` presented in a `.sheet`; the ⌘K trigger is a
+standard `.keyboardShortcut("k", modifiers: .command)`. State lives in `@State`
+bindings; there is no explicit `open` parameter on the view itself.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'query', type: 'Binding<String>', description: 'Two-way bound search text in the recessed field. Filters via <code>localizedCaseInsensitiveContains</code> (the HistoryView idiom).' },
+    { name: 'commands', type: '[NockerlCommand]', description: 'Filtered + grouped entries (<code>id, label, hint?, group, icon, shortcut?, isEnabled</code>); per-row <code>shortcut</code> renders as monospaced kbd hints.' },
+    { name: 'placeholder', type: 'String', description: 'Search-field prompt. The field carries a leading magnifier glyph.' },
+    { name: 'onRun', type: '(NockerlCommand) -> Void', description: 'Closure run when a row is chosen (click or ↵). Dismiss the sheet inside it.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The palette is a **first-class surface on web + macOS** and an **adapted idiom on Android**:
+
+- **No shipped Android palette.** The nearest live idiom is the modal **bottom sheet**
+  (`NockerlBottomSheet` / `SessionSwitcherSheet`). The Compose API above is **intended**,
+  not yet shipped. It reuses the sheet for the elevated-over-scrim launcher.
+- **Trigger differs by platform.** macOS uses a real `⌘K` (`.keyboardShortcut`); web mirrors
+  it with `⌘K` / `Ctrl-K`; **Android has no physical hotkey**: the launcher opens from the
+  `GlobalTopBar` search affordance, and per-row shortcut hints are decorative there.
+- **Presentation differs.** Web + macOS float a **top-centered panel** over a scrim; Android
+  presents the same content **bottom-anchored** as a sheet (the platform-native modal).
+</Aside>

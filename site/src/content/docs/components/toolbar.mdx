@@ -1,0 +1,217 @@
+---
+title: Toolbar
+description: A grouped strip of actions (icon buttons, toggles, separators, and an overflow menu) for editors, formatting, and selections.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import ToolbarDemo from '../../../components/demos/ToolbarDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ToolbarDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. There is NO bespoke Toolbar*NockerlButton
+// family: a toolbar SLOTS the shipped primitives (NockerlIconButton / NockerlButton / NockerlDivider /
+// NockerlSegmentedControl) inside a role="toolbar" container that owns the roving tabindex.
+// Toggles use the primitives' `pressed` prop (soft-cyan wash + aria-pressed).
+import { NockerlIconButton, NockerlButton, NockerlDivider, NockerlSegmentedControl } from '@dizyx/nockerl-react';
+
+export function FormattingToolbar() {
+  const [marks, setMarks] = useState({ bold: true, italic: false });
+  const [view, setView] = useState('split');
+  // reg / tab / onKey come from the toolbar container's roving-tabindex hook: each
+  // child registers its DOM node (NockerlIconButton/NockerlButton forward the ref), is the sole tab
+  // stop when tab === idx, and forwards Arrow/Home/End to the container. See ToolbarDemo.
+  return (
+    <Toolbar label="Text formatting">
+      {({ reg, tab, onKey }) => (
+        <>
+          <span className="toolbar-group">
+            <NockerlIconButton icon={<BoldIcon />} label="Bold" pressed={marks.bold}
+              ref={(el) => reg(0, el)} tabIndex={tab === 0 ? 0 : -1} onKeyDown={(e) => onKey(e, 0)}
+              onClick={() => setMarks((m) => ({ ...m, bold: !m.bold }))} />
+            <NockerlIconButton icon={<ItalicIcon />} label="Italic" pressed={marks.italic}
+              ref={(el) => reg(1, el)} tabIndex={tab === 1 ? 0 : -1} onKeyDown={(e) => onKey(e, 1)}
+              onClick={() => setMarks((m) => ({ ...m, italic: !m.italic }))} />
+          </span>
+          <NockerlDivider orientation="vertical" />
+          {/* a mutually-exclusive group → the real NockerlSegmentedControl (single-select). NockerlIcon
+              keys come from SEGMENT_ICONS: split · list · unified · grid · board · sun · moon · auto. */}
+          <NockerlSegmentedControl label="View" value={view} onChange={setView} size="sm"
+            segments={[{ value: 'split', icon: 'split' }, { value: 'list', icon: 'list' }, { value: 'grid', icon: 'grid' }]} />
+          <NockerlDivider orientation="vertical" />
+          {/* one filled primary (labelled NockerlButton); the ⋯ overflow trigger is a plain NockerlIconButton */}
+          <NockerlButton variant="primary" size="sm" leadingIcon={<PlusIcon />} text="New session"
+            ref={(el) => reg(2, el)} tabIndex={tab === 2 ? 0 : -1} onKeyDown={(e) => onKey(e, 2)} onClick={createSession} />
+          <NockerlIconButton variant="plain" icon={<KebabIcon />} label="More actions"
+            ref={(el) => reg(3, el)} tabIndex={tab === 3 ? 0 : -1} onKeyDown={(e) => onKey(e, 3)}
+            aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(true)} />
+        </>
+      )}
+    </Toolbar>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android (Jetpack Compose). No single NockerlToolbar component ships yet; the
+// canonical action strip is a Row of grouped controls on the chrome surface,
+// composed from the shipped com.nockerl.app.core.ui primitives (NockerlIconButton
+// PLAIN + a vertical divider + a DropdownMenu overflow). Mirrors ChatInputBar.
+import com.nockerl.app.core.ui.NockerlIconButton
+import com.nockerl.app.core.theme.LocalNockerlColors
+
+@Composable
+fun FormattingToolbar(state: EditorState) {
+    val chrome = LocalNockerlColors.current
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = Modifier
+            .background(chrome.chromeSurface, NockerlControlShape)
+            .padding(4.dp),
+    ) {
+        // A pressed toggle reuses the segmented active look: soft-cyan wash + cyan glyph.
+        NockerlIconButton(Icons.Default.FormatBold, "Bold", onClick = state::toggleBold,
+            tint = if (state.bold) chrome.accentPrimary else chrome.onChrome)
+        NockerlIconButton(Icons.Default.FormatItalic, "Italic", onClick = state::toggleItalic,
+            tint = if (state.italic) chrome.accentPrimary else chrome.onChrome)
+
+        VerticalDivider(Modifier.height(20.dp), color = chrome.divider)   // a full-height separator
+
+        NockerlIconButton(Icons.Default.FormatListBulleted, "List", onClick = state::toggleList)
+        var overflow by remember { mutableStateOf(false) }
+        Box {
+            NockerlIconButton(Icons.Default.MoreVert, "More actions", onClick = { overflow = true })
+            DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
+                DropdownMenuItem(text = { Text("Insert image") }, onClick = state::insertImage)
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS SwiftUI. The idiomatic API is the native .toolbar modifier with
+// ToolbarItemGroup; a Menu in the trailing group is the overflow. (Drift: the
+// shipped Voice app is a menu-bar utility and uses a custom HStack command bar,
+// RecordingHUD, instead of .toolbar, so this is the intended idiom, not shipped.)
+.toolbar {
+    ToolbarItemGroup(placement: .principal) {
+        Toggle(isOn: $bold) { Label("Bold", systemImage: "bold") }
+        Toggle(isOn: $italic) { Label("Italic", systemImage: "italic") }
+
+        Divider()   // a full-height separator between groups
+
+        Picker("Alignment", selection: $align) {
+            Image(systemName: "text.alignleft").tag(Align.left)
+            Image(systemName: "text.aligncenter").tag(Align.center)
+            Image(systemName: "text.alignright").tag(Align.right)
+        }
+        .pickerStyle(.segmented)
+    }
+    ToolbarItemGroup(placement: .primaryAction) {
+        Button("New", systemImage: "plus") { createSession() }
+            .buttonStyle(.nockerlPrimary)
+        Menu {                                   // the overflow ⋯
+            Button("Insert image", systemImage: "photo") { insertImage() }
+        } label: { Label("More actions", systemImage: "ellipsis") }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Accessible name for the strip (wired to <code>role="toolbar"</code> via <code>aria-label</code>). Required: a toolbar is one focus group and needs a name.' },
+    { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Layout axis. Arrow keys follow it: Left/Right when horizontal, Up/Down when vertical.' },
+    { name: 'children', type: '(roving) => ReactNode', description: 'The container SLOTS the real primitives: <code>IconButton</code>, <code>Button</code>, <code>Divider</code>, <code>SegmentedControl</code>, and the overflow ⋯ (a plain <code>IconButton</code> + a Menu). NOT a bespoke Toolbar*Button family. The render-prop hands each child its roving plumbing (<code>reg</code> / <code>tab</code> / <code>onKey</code>).' },
+    { name: 'IconButton.pressed / Button.pressed', type: 'boolean', description: 'TOGGLE mode on the real primitive: renders the soft-cyan selection wash and sets <code>aria-pressed</code>. Use for sticky formatting marks (bold/italic) or a labelled toggle (Wrap). Omit for a plain command control.' },
+    { name: 'Button.variant', type: "'primary' | 'ghost' | …", default: "'primary'", description: "Labelled toolbar buttons are the Button primitive. Use <code>primary</code> for the one filled CTA (max one per strip), <code>ghost</code> for plain labelled actions (Filter / Share). A destructive icon tints via <code>style={{ color: 'var(--color-status-error)' }}</code> (IconButton has no danger idiom)." },
+    { name: 'roving = { reg, tab, onKey }', type: '{ reg; tab; onKey }', description: 'Wire each slotted primitive with <code>ref={(el) => reg(idx, el)}</code>, <code>tabIndex={tab === idx ? 0 : -1}</code>, <code>onKeyDown={(e) => onKey(idx)}</code>. Button + IconButton forward the ref and spread these native attrs, so the container keeps exactly one child tabbable and Arrow/Home/End move focus across controls.' },
+    { name: 'SegmentedControl', type: 'primitive', description: 'A mutually-exclusive segment group inside the toolbar (e.g. alignment) is the real <code>SegmentedControl</code> (<code>segments</code> / <code>value</code> / <code>onChange</code>, single-select). Its own <code>role="radiogroup"</code> + roving tabindex nests inside the strip.' },
+    { name: 'Overflow ⋯ items', type: 'OverflowItem[]', description: 'The ⋯ trigger is a plain <code>IconButton</code> opening a Menu of folded-away actions (icon + label, optional <code>checked</code> / <code>danger</code>). Use to collapse low-priority or space-tight controls.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Applied to the action <code>Row</code>. Set the <code>chromeSurface</code> background + <code>NockerlControlShape</code> + padding here.' },
+    { name: 'horizontalArrangement', type: 'Arrangement.Horizontal', default: 'spacedBy(2.dp)', description: 'Gap between controls within a group. Groups are split by a <code>VerticalDivider</code>.' },
+    { name: 'verticalAlignment', type: 'Alignment.Vertical', default: 'CenterVertically', description: 'Controls are vertically centered and equal-height on the strip.' },
+    { name: 'NockerlIconButton.icon', type: 'ImageVector', required: true, description: 'The action glyph. The toolbar action unit (<code>PLAIN</code> idiom, a 12px-control tappable glyph).' },
+    { name: 'NockerlIconButton.contentDescription', type: 'String?', required: true, description: 'Accessibility label; icon-only actions must name themselves.' },
+    { name: 'NockerlIconButton.tint', type: 'Color', default: 'onChrome', description: 'Glyph color. A pressed toggle passes <code>accentPrimary</code> (the segmented active look).' },
+    { name: 'VerticalDivider.color', type: 'Color', default: 'colors.divider', description: 'The full-height separator hairline between groups (<code>Modifier.height(20.dp)</code>).' },
+    { name: 'DropdownMenu', type: '@Composable', description: 'The overflow ⋯, anchored off a trailing <code>MoreVert</code> icon button, holding the folded-away actions.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI builds the toolbar declaratively with the native `.toolbar` modifier; there is
+no single Nockerl `Toolbar` view. Groups are `ToolbarItemGroup`, separators are `Divider()`,
+toggles are `Toggle`, and the overflow is a `Menu`. State comes from `@State`/`@Binding`.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: '.toolbar { … }', type: 'View modifier', description: 'Attaches the action strip to a view / window. The system places it as native chrome.' },
+    { name: 'ToolbarItemGroup(placement:)', type: 'ToolbarContent', description: 'A grouped run of controls. <code>.principal</code> centers (formatting); <code>.primaryAction</code> trails (primary + overflow).' },
+    { name: 'Toggle(isOn:)', type: 'View', description: 'A sticky toggle button, the pressed mark. Carries its own <code>isOn</code> binding.' },
+    { name: 'Divider()', type: 'View', description: 'A full-height separator between groups inside a group run.' },
+    { name: '.pickerStyle(.segmented)', type: 'View modifier', description: 'A connected single-select group (e.g. alignment), the segmented-control idiom inside the toolbar.' },
+    { name: 'Menu { … }', type: 'View', description: 'The overflow ⋯: a trailing menu of folded-away / low-priority actions.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **No single component, so compose the primitives:** neither web (`@dizyx/nockerl-react`) nor
+  Compose ships a `Toolbar` primitive, and there is deliberately no bespoke
+  `ToolbarButton`/`ToolbarToggle`/`ToolbarSeparator` family. Both platforms compose the strip
+  from the shipped vocabulary: web slots `IconButton` / `Button` (with `pressed` for toggles) /
+  `Divider` / `SegmentedControl` into a `role="toolbar"` container that owns the roving tabindex;
+  Compose uses `NockerlIconButton` + a divider + a `DropdownMenu`. Swift uses the native `.toolbar`.
+- **Swift `.toolbar` is unshipped here:** the only Nockerl macOS app (Voice) is a menu-bar
+  utility and uses a custom `HStack` command bar (the `RecordingHUD` pill: brand anchor +
+  `Rectangle().fill(divider)` separator + controls on `chromeSurface`), not `.toolbar`.
+- **Toolbar vs. top-bar:** this is a generic, reusable *action* strip (formatting / editor /
+  selection actions), distinct from [top-bar](/components/top-bar/), the app's global header
+  chrome (title + navigation). They look similar (both chrome) but solve different jobs; don't
+  use one for the other.
+</Aside>

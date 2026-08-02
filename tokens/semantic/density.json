@@ -1,0 +1,15 @@
+{
+  "$description": "SEMANTIC density-tier tokens. TWO tiers only (compact / comfortable), matching the two-density ramp and the table component's `density` prop; a third (spacious) tier is deliberately absent until a product driver exists. A tier changes ROW HEIGHT and VERTICAL PADDING only, never the fill, never the type color (the Table rule, generalized). All four values are ALIASES over the core space scale, not new primitives: density is a re-selection of existing rhythm, not new geometry.",
+  "density": {
+    "rowHeight": {
+      "$description": "Minimum row height (a FLOOR, taller rows like the 56px two-line ListItem exceed it) per tier. Comfortable (48px) clears every platform touch floor outright: the ListItem '48dp law'. Compact (32px) is the documented dense List row min-height and a VISUAL height only: on Android, interactive compact rows must still expose a 48dp touch target via expanded hit areas.",
+      "compact": { "$type": "dimension", "$value": "{space.8}", "$description": "32px: chat, consoles, dense data lists (the documented dense List row)." },
+      "comfortable": { "$type": "dimension", "$value": "{space.12}", "$description": "48px, docs, settings, forms (the default tier)." }
+    },
+    "padY": {
+      "$description": "Cell/row vertical padding per tier, the exact NockerlTable v1 values (comfortable body cell = space-3, compact body cell = space-1).",
+      "compact": { "$type": "dimension", "$value": "{space.1}", "$description": "4px: the Table compact body-cell vertical padding." },
+      "comfortable": { "$type": "dimension", "$value": "{space.3}", "$description": "12px, the Table comfortable body-cell vertical padding." }
+    }
+  }
+}

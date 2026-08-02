@@ -1,0 +1,572 @@
+/*
+ * Nockerl Design: Starlight theme.
+ * Drives Starlight's OWN CSS variables (`--sl-color-*`) directly, per color mode, so
+ * dark/light actually switch. (We do NOT route through tokens.css's `--color-*`, which
+ * is scoped to a `.dark` class; Starlight toggles `[data-theme]`, so those never fire.
+ * That was the "dark doesn't work / it's all light" bug.)
+ *
+ * Dark is the brand default. Cyan #0CC0DF accent. Outfit (thin-forward type system; 500
+ * is the bold cap; hierarchy from size). Neutral shadows only:
+ * NO glows/colored shadows; NO colored left-rails (asides neutralized).
+ */
+/* Outfit + Space Mono are self-hosted via @fontsource, loaded as Starlight customCss in
+   astro.config.mjs - the same mechanism the Installation page documents for consumers.
+   (Previously a Google Fonts @import lived here; self-hosting removes the runtime CDN dep.) */
+
+:root {
+  --sl-font: 'Outfit', system-ui, sans-serif;
+  --sl-font-mono: 'Space Mono', ui-monospace, monospace;
+  /* Suppress the browser's default SQUARE tap-highlight on touch (it ignores border-radius,
+     so rounded controls flashed a squared fill on press). Web press feedback is each control's
+     own rounded :active (brightness / scale / wash); native platforms handle press themselves
+     (Android ripple / iOS state layer), bounded to the component shape. Inherited -> covers all. */
+  -webkit-tap-highlight-color: transparent;
+}
+/* Sidebar nav links get a subtle rounded press wash on tap (now the square highlight is gone). */
+.sidebar-content a:active { background: color-mix(in srgb, var(--color-accent-primary) 8%, transparent); }
+
+/* == Documentation typography: the Nockerl type system applied to the docs pages
+   themselves. Hierarchy from SIZE; weights stay thin (Outfit); 500 is the bold cap;
+   emphasis inside a heading inverts to thin. (Components/demos consume the tokens.) == */
+.sl-markdown-content { font-weight: 300; }
+.sl-markdown-content :is(h1, h2) { font-weight: 200; letter-spacing: var(--font-tracking-snug); }
+.sl-markdown-content h3 { font-weight: 500; letter-spacing: var(--font-tracking-snug); }
+.sl-markdown-content :is(h4, h5, h6) { font-weight: 500; }
+.sl-markdown-content strong { font-weight: 500; }                 /* body emphasis = our bold (500) */
+.sl-markdown-content :is(h1, h2, h3) strong { font-weight: 100; } /* emphasis in a heading inverts to thin */
+/* Starlight page title (rendered outside .sl-markdown-content) */
+.content-panel h1, .sl-markdown-content > h1:first-child { font-weight: 200; letter-spacing: var(--font-tracking-snug); }
+
+/* == Heading rhythm (, audited site-wide) == A heading that opens a new section leads it
+   by 1.5em; because that is PROPORTIONAL, the break scales with the heading's own size: a 35px
+   H2 gets ~53px of air, a 16px H3 ~44px, so section > subsection separation is automatic and
+   uniform (measured 53px H2 / 44px H3 across 16 pages, both themes). Paired with the tight ~16px
+   below each heading, every heading hugs its own content: a ~3.3:1 above:below ratio, so it reads
+   as the START of its section, never a floater. We deliberately DO NOT override this to a larger
+   fixed value: the proportional cadence is correct, and a global bump would shift every doc page,
+   breaking the r3 pixel-steady component baselines for no rhythm gain. This is the owned decision;
+   tune the section lead here (not per page) if the cadence ever needs to change. */
+
+/* == Site chrome conforms to the thin-forward type system (heaviest weight = 500) == */
+/* Starlight ships sidebar group headings at 600 (semibold) and the current link at 600;
+   that reads heavy against our system. Bring both to our medium cap (500), the nav
+   stays light, and the active page reads via the cyan accent, not a bold weight. */
+.sidebar-content .large { font-weight: var(--font-weight-medium); }
+.sidebar-content a[aria-current='page'] { font-weight: var(--font-weight-medium); }
+/* The page status badge ("In review") sits above the lede and was touching it. Give it
+   clear air below (it's an inline-flex pill, so the margin extends its line box). */
+.sl-markdown-content > .nk-status { margin-bottom: var(--space-5); }
+
+/* == DARK (default): Nockerl near-black + cyan ==== */
+:root,
+:root[data-theme='dark'] {
+  --sl-color-accent-low: #0a3a44;
+  --sl-color-accent: #0cc0df;
+  --sl-color-accent-high: #9be7f3;
+  --sl-color-white: #f5f5f5;
+  --sl-color-gray-1: #e8e8e8;
+  --sl-color-gray-2: #cfd2d6;
+  --sl-color-gray-3: #a0a0a0;
+  --sl-color-gray-4: #6b7178;
+  --sl-color-gray-5: #2a2d33;
+  --sl-color-gray-6: #15171a;
+  --sl-color-black: #0a0b0d;
+  --sl-color-bg: #0a0b0d;
+  --sl-color-bg-nav: #0e1014;
+  --sl-color-bg-sidebar: #0e1014;
+  --sl-color-bg-inline-code: #1d2024;
+  --sl-color-hairline-shade: rgba(255, 255, 255, 0.08);
+  --sl-color-hairline: rgba(255, 255, 255, 0.08);
+  --sl-color-text: #cfd2d6;
+  --sl-color-text-accent: #5ed4e8;
+  /* card/surface + well tones used by the doc components below */
+  --nk-card: #15171a;
+  --nk-card-2: #1d2024;
+  --nk-well: #0e1014;
+  --nk-hairline: rgba(255, 255, 255, 0.08);
+  --nk-muted: #a0a0a0;
+  --nk-on: #e8e8e8;
+  /* Code surface: a subtly-raised card, distinct from the near-black ground (dark is close
+     to Starlight's default already; this ties it to our tokens). */
+  --nk-code-bg: var(--nk-card-2);
+}
+
+/* == LIGHT: Nockerl off-white + deep cyan ==== */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #cdedf5;
+  --sl-color-accent: #0891b2;
+  --sl-color-accent-high: #06414c;
+  --sl-color-white: #1a1a1a;
+  --sl-color-gray-1: #262626;
+  --sl-color-gray-2: #3a3a3a;
+  --sl-color-gray-3: #5a5a5a;
+  --sl-color-gray-4: #8a8a8a;
+  --sl-color-gray-5: #d7dae0;
+  --sl-color-gray-6: #eef0f3;
+  --sl-color-gray-7: #f7f8fa;
+  --sl-color-black: #ffffff;
+  --sl-color-bg: #f3f4f6;
+  --sl-color-bg-nav: #ffffff;
+  --sl-color-bg-sidebar: #ffffff;
+  --sl-color-bg-inline-code: #e9ebee;
+  --sl-color-hairline-shade: rgba(26, 26, 26, 0.1);
+  --sl-color-hairline: rgba(26, 26, 26, 0.1);
+  --sl-color-text: #3a3a3a;
+  --sl-color-text-accent: #0a7f9c;
+  --nk-card: #ffffff;
+  --nk-card-2: #f0f2f5;
+  --nk-well: #eef0f3;
+  --nk-hairline: rgba(26, 26, 26, 0.1);
+  --nk-muted: #5a5a5a;
+  --nk-on: #1a1a1a;
+  /* Code surface: WHITE card on the grey page: the light-mode code block was grey-on-grey;
+     lifting it to card-white gives the clear differentiation the review asked for. */
+  --nk-code-bg: var(--nk-card);
+}
+
+/* Radial top-light on the dark ground (lit-from-above; not a glow). Dark only. */
+:root body,
+:root[data-theme='dark'] body {
+  background:
+    radial-gradient(1100px 600px at 82% -8%, #12161b, transparent 60%),
+    #0a0b0d;
+}
+:root[data-theme='light'] body {
+  background: #f3f4f6;
+}
+
+/* == Scrollbars: thin, neutral, token-colored, so the dark docs feel finished
+   (not a bright OS bar on the near-black ground). Theme-aware via --nk-on (the
+   surface ink). Firefox (scrollbar-*) + WebKit (::-webkit-scrollbar). == */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--nk-on) 26%, transparent) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--nk-on) 22%, transparent);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--nk-on) 40%, transparent);
+  background-clip: padding-box;
+}
+
+/* == Asides / notes / callouts: rebuilt to BE our alert family (the Callout recipe).
+   A RECESSED canvas-alt surface (fields/notes sink), an intent-tinted HAIRLINE (no colored
+   left-rail, per the no-rail law), an INNER top shadow (the sink), and the title icon
+   rendered as our filled StatusDisc coin (knockout glyph, neutral drop + inner catch-light).
+   Type is the ramp: the title is medium (our 500 cap), never browser-bold; inline emphasis
+   is 500 too; this reaches the native-ref note that lives OUTSIDE .sl-markdown-content,
+   which is exactly why its <strong> was rendering at the browser's 700 (the rogue bold). == */
+.starlight-aside {
+  --nk-aside-c: var(--color-accent-primary);            /* note = info (cyan), default */
+  position: relative;
+  border: var(--space-px) solid color-mix(in srgb, var(--nk-aside-c) 20%, var(--color-card-hairline));
+  border-inline-start-width: var(--space-px);           /* neutral edge: NO colored rail */
+  border-radius: var(--radius-panel);                   /* 12px, never pill */
+  background: var(--color-canvas-alt);                  /* recessed (sink) */
+  box-shadow: inset 0 var(--space-px) var(--elevation-level1) color-mix(in srgb, var(--color-shadow-tint) 45%, transparent);
+  padding: var(--space-4);
+}
+.starlight-aside--tip { --nk-aside-c: var(--color-status-success); }
+.starlight-aside--caution { --nk-aside-c: var(--color-status-warning); }
+.starlight-aside--danger { --nk-aside-c: var(--color-status-error); }
+/* Title row: intent-colored, our medium cap (500), tracked like our labels, no browser-bold. */
+.starlight-aside__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--nk-aside-c);
+  font-family: var(--sl-font);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--font-tracking-snug);
+  text-transform: none;
+}
+/* The title icon becomes our StatusDisc: a filled intent coin with a knockout glyph
+   (neutral drop + inner catch-light), the SAME grammar as Banner / Callout / Toast. */
+.starlight-aside__title svg {
+  box-sizing: content-box;
+  width: 0.74em;
+  height: 0.74em;
+  padding: 0.3em;
+  /* overflow:visible so the circular pill radius does NOT clip a glyph that fills its
+     viewBox (a warning triangle / tip rocket reaches its box edges; the default svg
+     overflow:hidden + border-radius was cutting their base off). The glyph is inset well
+     inside the coin, so an unclipped glyph still sits fully within the circle. */
+  overflow: visible;
+  border-radius: var(--radius-pill);
+  background: var(--nk-aside-c);
+  color: var(--color-canvas);                           /* knockout glyph (stencil) */
+  box-shadow:
+    0 var(--space-px) var(--elevation-level1) color-mix(in srgb, var(--color-shadow-tint) 40%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+}
+/* The native-ref note carries no icon, so give it the same leading disc so it reads as family. */
+.nk-native-ref .starlight-aside__title::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 0.82em;
+  height: 0.82em;
+  border-radius: var(--radius-pill);
+  background: var(--nk-aside-c);
+  box-shadow:
+    0 var(--space-px) var(--elevation-level1) color-mix(in srgb, var(--color-shadow-tint) 40%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+}
+.starlight-aside__content { color: var(--color-on-card); }
+.starlight-aside__content :is(p, li) { font-weight: 300; }
+.starlight-aside__content a { color: var(--nk-aside-c); }
+/* Inline emphasis inside ANY aside = our bold (500), never the browser 700. */
+.starlight-aside strong { font-weight: var(--font-weight-medium); }
+
+/* == Prev / Next pagination: our lifted Card, not Starlight's flat grey link. card-surface1
+   fill + hairline + top catch-light + a NEUTRAL drop on the shadow LADDER. These are large,
+   full-width cards, so they ride the L3 rung at rest (L1's near-flat 2px sliver read as
+   distinct-from-Card on a card this big) and step to L4 on hover; the cyan accent
+   (not a heavy weight) signals the target. White in light mode. == */
+.pagination-links a {
+  background: var(--color-card-surface1);
+  border: var(--space-px) solid var(--color-card-hairline);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 var(--space-2) var(--elevation-level3) -8px color-mix(in srgb, var(--color-shadow-tint) 65%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+  color: var(--color-on-card);
+  transition:
+    box-shadow 0.14s,
+    border-color 0.14s,
+    transform 0.14s;
+}
+.pagination-links a:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 40%, var(--color-card-hairline));
+  box-shadow:
+    0 var(--space-4) var(--elevation-sheet) -10px color-mix(in srgb, var(--color-shadow-tint) 70%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+  transform: translateY(-1px);
+}
+.pagination-links a:focus-visible {
+  outline: var(--space-0-5) solid var(--color-accent-primary);
+  outline-offset: var(--space-0-5);
+}
+/* The small "Previous"/"Next" label reads as a muted eyebrow; the page title carries the weight. */
+.pagination-links a > span { color: var(--color-on-card-muted); }
+.pagination-links .link-title {
+  color: var(--color-on-card);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--font-tracking-snug);
+}
+.pagination-links svg { color: var(--color-accent-primary); }
+
+/* == Search: reskin Starlight's stock Pagefind search to read as OUR SearchField.
+   CSS-only (no component fork): trigger → recessed Field well + cyan focus + our kbd
+   badge; modal → our card on a real scrim; Pagefind UI vars → our tokens so the input
+   and result rows are on-brand. (The Pagefind result MARKUP is the framework's; we
+   restyle it, we don't own it.) == */
+site-search button[data-open-modal] {
+  /* Mirror the NockerlWell recessed-field recipe EXACTLY (the SearchField's well): canvas-alt
+     fill, outline-subtle hairline, control radius, the INNER sink shadow + a 1px TOP CATCH-LIGHT
+     (the piece the old reskin was missing). Tokens throughout, no raw rgba/px. */
+  background: var(--color-canvas-alt);
+  border: var(--space-px) solid var(--color-outline-subtle);
+  border-radius: var(--radius-control);
+  box-shadow: inset 0 var(--space-0-5) var(--space-1) color-mix(in srgb, var(--color-shadow-tint) 45%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+  color: var(--color-on-card-muted);
+  font-family: var(--sl-font);
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s,
+    background-color 0.12s,
+    color 0.12s;
+}
+site-search button[data-open-modal]:hover {
+  border-color: color-mix(in srgb, var(--color-outline-subtle) 80%, var(--color-on-card));
+  color: var(--color-on-card);
+}
+site-search button[data-open-modal]:focus-visible {
+  /* our field focus = a cyan OUTLINE ring that HUGS the control radius (keeps the inner sink),
+     never an offset outline or a glow, identical to NockerlWell.is-focus. */
+  border-color: var(--color-accent-primary);
+  box-shadow: inset 0 var(--space-0-5) var(--space-1) color-mix(in srgb, var(--color-shadow-tint) 45%, transparent),
+    0 0 0 var(--space-0-5) color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+  outline: none;
+}
+site-search button[data-open-modal] kbd {
+  background: none;
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  gap: 3px;
+}
+site-search button[data-open-modal] kbd kbd {
+  font-family: var(--sl-font-mono);
+  font-size: 11px;
+  background: var(--nk-card);
+  border: 1px solid var(--nk-hairline);
+  border-radius: 6px;
+  color: var(--nk-muted);
+  padding: 1px 5px;
+}
+
+/* the modal: our card on a real scrim */
+site-search dialog {
+  background: transparent;
+  border: 0;
+}
+site-search dialog::backdrop {
+  background: color-mix(in srgb, var(--sl-color-black) 55%, transparent);
+  backdrop-filter: blur(2px);
+}
+site-search .dialog-frame {
+  /* our lifted card: card surface + hairline + card radius + a NEUTRAL drop shadow (no color)
+     and the 1px top catch-light (cards lift). */
+  background: var(--color-card-surface1);
+  border: var(--space-px) solid var(--color-card-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 var(--space-4) var(--elevation-level3) calc(var(--space-5) * -1)
+      color-mix(in srgb, var(--color-shadow-tint) 70%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+}
+
+/* Pagefind UI → our tokens (input + results read as ours) */
+:root {
+  --pagefind-ui-primary: var(--color-accent-primary);
+  --pagefind-ui-text: var(--nk-on);
+  --pagefind-ui-background: var(--nk-card);
+  --pagefind-ui-border: var(--nk-hairline);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 12px;
+  --pagefind-ui-font: var(--sl-font);
+}
+.pagefind-ui__search-input {
+  /* the modal's input is our recessed well too: same sink shadow + top catch-light as the trigger */
+  background: var(--color-canvas-alt) !important;
+  box-shadow: inset 0 var(--space-0-5) var(--space-1) color-mix(in srgb, var(--color-shadow-tint) 45%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+}
+.pagefind-ui__result {
+  border-radius: 12px;
+}
+.pagefind-ui__result:hover,
+.pagefind-ui__result[aria-selected='true'] {
+  background: color-mix(in srgb, var(--color-accent-primary) 9%, transparent);
+}
+
+/* ── Doc-component primitives (theme-adaptive via --nk-* + --sl-color-*) ───── */
+/* Status pill, a member of OUR Badge family: sans soft-label + a leading filled
+   status disc. Token-reactive (no mono, no rgba literals, no emoji). */
+.nk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font-family: var(--sl-font);
+  font-size: var(--font-size-12, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: var(--font-tracking-normal);
+  padding: 2px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.nk-status--approved {
+  background: color-mix(in srgb, var(--color-status-success) 16%, transparent);
+  color: var(--color-status-success);
+  border: 1px solid color-mix(in srgb, var(--color-status-success) 30%, transparent);
+}
+.nk-status--review {
+  background: color-mix(in srgb, var(--color-accent-primary) 16%, transparent);
+  color: var(--color-accent-primary);
+  border: 1px solid color-mix(in srgb, var(--color-accent-primary) 30%, transparent);
+}
+.nk-status--draft {
+  background: color-mix(in srgb, var(--color-on-card) 12%, transparent);
+  color: var(--color-on-card-muted);
+  border: 1px solid var(--color-card-hairline);
+}
+/* the leading mark is a small filled status disc inheriting the tone color (not an emoji) */
+.nk-status__mark {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 9999px;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+.nk-tabs {
+  margin: 1rem 0;
+}
+.nk-tabs__list {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--nk-hairline);
+  padding: 0;
+  list-style: none;
+}
+.nk-tabs__tab {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: var(--nk-muted);
+  font-family: var(--sl-font);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  transition:
+    color 0.12s,
+    background-color 0.12s;
+}
+.nk-tabs__tab:hover {
+  color: var(--nk-on);
+  background: color-mix(in srgb, var(--nk-on) 6%, transparent);
+}
+/*  + design-laws §11: this rule was hardcoded hexes: dark-theme values that never
+   followed the light theme, now resolved from the accent tokens.
+   NO selection border here, deliberately: this tab states its choice with a SOLID accent
+   FILL, and a 45% accent edge painted over that same accent fill is a visual no-op. The
+   base rule's `1px solid transparent` still holds the layout, so the box doesn't shift. */
+.nk-tabs__tab[aria-selected='true'] {
+  color: var(--color-on-accent);
+  background: var(--color-accent-primary);
+}
+/* §11: the focus ring's WIDTH and behaviour are deliberately unchanged (a11y); only the
+   hardcoded hex is resolved to the accent token, so the ring follows the light theme too. */
+.nk-tabs__tab:focus-visible {
+  outline: var(--space-0-5) solid var(--color-accent-primary);
+  outline-offset: var(--space-0-5);
+}
+.nk-tabs__panel {
+  border: 1px solid var(--nk-hairline);
+  border-radius: 0 16px 16px 16px;
+  padding: 20px;
+  background: var(--nk-card);
+}
+.nk-tabs__panel[hidden] {
+  display: none;
+}
+
+.nk-props code {
+  font-family: var(--sl-font-mono);
+  font-size: 0.85em;
+}
+.nk-props .nk-props__name {
+  color: var(--sl-color-text-accent);
+  font-weight: 600;
+}
+.nk-props .nk-props__required {
+  color: #ef5350;
+  font-weight: 700;
+}
+
+.nk-example {
+  margin: 1.25rem 0;
+}
+.nk-example__frame {
+  background: var(--nk-card);
+  border: 1px solid var(--nk-hairline);
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow:
+    0 6px 18px -8px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.nk-example__caption {
+  font-size: 11px;
+  letter-spacing: var(--font-tracking-tight);
+  text-transform: uppercase;
+  color: var(--nk-muted);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.nk-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 1rem 0;
+  /* B2: align-items:start so a row does NOT stretch its shorter swatches to match a
+     taller neighbour. Combined with the fixed chip height + the 2-line min-height on
+     __meta below, every swatch in a row is a uniform height regardless of how many
+     lines its meta text wraps to. */
+  align-items: start;
+}
+/* : swatch cards inherit a vertical-flow top-margin from the prose (Starlight spaces
+   consecutive content), which inside this grid pushes every non-first swatch DOWN so the
+   first rides higher. The grid spaces via `gap`; neutralize the leaked flow margin. Same
+   systemic class as the Select-row / Checkbox alignment fixes (see api-conventions.md). */
+.nk-swatches > .nk-swatch { margin-top: 0; }
+/* Each swatch IS a real card, built from the SAME tokens the Surface/Card primitive
+   composes (see components/primitives/Surface.tsx): the card-surface1 fill, the
+   card-hairline border at --space-px, the --radius-card radius, and the depth recipe =
+   a NEUTRAL drop shadow (level-1 rung, shadow-tint, no color) + a 1px TOP catch-light
+   (inset surface-highlight sheen). No glow, no colored shadow (design law). The color
+   CHIP keeps its literal hex: it is a color sample, not a themed surface. */
+.nk-swatch {
+  background: var(--color-card-surface1);
+  border: var(--space-px) solid var(--color-card-hairline);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: 0 var(--space-0-5) var(--elevation-level1) -3px
+      color-mix(in srgb, var(--color-shadow-tint) 55%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
+}
+.nk-swatch__chip {
+  height: 64px;
+}
+.nk-swatch__meta {
+  padding: var(--space-2) 10px;
+  font-size: 12px;
+  /* B2: the meta is a fixed-height box (name line + a 2-line val slot); shorter metas
+     top-align inside it, so swatch height no longer depends on how many lines the val
+     wraps to. Every swatch in a row is uniform height. */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 78px;
+}
+.nk-swatch__name {
+  font-weight: 600;
+  color: var(--nk-on);
+}
+.nk-swatch__val {
+  font-family: var(--sl-font-mono);
+  color: var(--nk-muted);
+  font-size: 11px;
+  /* B2: pin the line-height AND reserve exactly two of those lines, so a 1-line val and a
+     wrapped 2-line val occupy the identical height (2 * 1.4em). The wrapping value can no
+     longer stretch its swatch taller than its neighbours, independent of prose line-height. */
+  line-height: 1.4;
+  min-height: 2.8em;
+}
+
+/* === Shared overlay-DEMO STAGE ====
+   The contained "stage" the overlay demos (Menu / Popover / Tooltip / SplitButton)
+   open INSIDE: a lit-from-above card panel that clamps each floating layer to itself
+   (never the page). This was copy-pasted verbatim across those four demos except for the
+   per-demo max-width / min-height. Consolidated here as ONE utility: each demo now adds
+   `nk-demo-overlay-stage` and keeps ONLY its own footprint (max-width / min-height).
+   The `radial-gradient` ground, hairline, radius and neutral drop-shadow all come from
+   tokens, so a single token edit moves every stage. Visual NO-OP. */
+.nk-demo-overlay-stage {
+  position: relative;
+  width: 100%;
+  margin-inline: auto;
+  border-radius: calc(var(--radius-card) + var(--space-2));
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--color-card-surface1) 70%, transparent), transparent 60%), var(--color-canvas);
+  border: var(--space-px) solid var(--color-card-hairline);
+  box-shadow: inset 0 var(--space-px) 0 var(--color-surface-highlight), 0 var(--elevation-level3) 28px -12px color-mix(in srgb, var(--color-shadow-tint) 60%, transparent);
+}

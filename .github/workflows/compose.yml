@@ -1,0 +1,88 @@
+# Compose (Android): build, lint, and the design-gallery visual-regression gate.
+#
+# The Kotlin half of the verification story (the macOS `swift.yml` is the Swift
+# half): builds the publishable library modules, lints everything (ktlint,
+# allWarningsAsErrors is enforced by the modules themselves), and runs the
+# Roborazzi screenshot tests HEADLESS (Robolectric, so no emulator), failing on
+# any pixel diff vs the committed golden gallery in
+# `packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/`.
+#
+# ── UPDATING GOLDENS ──────────────────────────────────────────────────────────
+# A DELIBERATE design change re-records the goldens locally and commits them:
+#   ./gradlew :nockerl-design-gallery:recordRoborazziDebug
+#   git add nockerl-design-gallery/src/test/screenshots
+# On a regression, download the `roborazzi-diff-report` artifact for the
+# *_compare.png diffs.
+#
+# Determinism note: goldens are recorded on linux-x86_64 (the authoring box) and
+# verified on ubuntu runners with the same Robolectric android-all jar and native
+# renderer, so pixels match. If a runner-side diff ever appears with no code
+# change, suspect a Robolectric/Roborazzi version drift, not the components.
+name: Compose
+
+on:
+  pull_request:
+    paths:
+      - "packages/compose/**"
+      - ".github/workflows/compose.yml"
+  push:
+    branches: [main]
+    paths:
+      - "packages/compose/**"
+      - ".github/workflows/compose.yml"
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: packages/compose
+
+jobs:
+  build-lint-verify:
+    name: Build + ktlint + Roborazzi verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build library modules (release)
+        run: ./gradlew :nockerl-design-tokens:assembleRelease :nockerl-design-components:assembleRelease --stacktrace
+
+      - name: ktlint (all modules)
+        run: ./gradlew ktlintCheck --stacktrace
+
+      # Pure-JVM contract tests: the shared cross-platform semantics
+      # (stepper/accordion/pickers/contrast) + token bindings, no rendering.
+      - name: Component contract tests (JVM)
+        run: ./gradlew :nockerl-design-components:testDebugUnitTest --stacktrace
+
+      # Renders every Showkase gallery entry (dark + light) via Robolectric and
+      # fails on any diff vs the committed goldens. This is the visual-regression gate.
+      - name: Verify Roborazzi gallery (visual regression gate)
+        run: ./gradlew :nockerl-design-gallery:verifyRoborazziDebug --stacktrace
+
+      # On failure, publish the *_compare.png / *_actual.png diffs so reviewers
+      # can see exactly what changed.
+      - name: Upload diff report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: roborazzi-diff-report
+          path: |
+            packages/compose/build/outputs/roborazzi/compare/**
+            packages/compose/nockerl-design-gallery/build/outputs/roborazzi/compare/**
+            packages/compose/nockerl-design-gallery/build/reports/roborazzi/**
+          if-no-files-found: ignore
+          retention-days: 14

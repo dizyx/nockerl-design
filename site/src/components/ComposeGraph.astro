@@ -1,0 +1,97 @@
+---
+/**
+ * ComposeGraph.astro renders the GENERATED composition graph (build/compose census).
+ *
+ * The data is site/src/data/compose-graph.json, produced by `bun run compose:graph`
+ * (scripts/compose-graph.ts) from the real `compose` contracts + JSX graph. This page
+ * is the live, code-derived replacement for the old hand-maintained dependency map: it
+ * never rots because the gate regenerates the JSON and (Phase 4) fails on any drift.
+ */
+import graph from '../data/compose-graph.json';
+
+type Slot = { accepts: string[] | '*'; required?: boolean };
+type Comp = {
+  hierTier: string;
+  tier: string | null;
+  slots: Record<string, Slot> | null;
+  owns: string[];
+  hasContract: boolean;
+  renders: string[];
+  consumers: string[];
+};
+type Violation = { type: string; component: string; detail: string; file: string; line: number };
+
+const g = graph as unknown as {
+  counts: { components: number; withContract: number; leaf: number; optional: number; required: number; violations: number; byType: Record<string, number> };
+  coverage: { opaqueSlotFills: number };
+  components: Record<string, Comp>;
+  violations: Violation[];
+};
+
+const comps = Object.entries(g.components).sort((a, b) => a[0].localeCompare(b[0]));
+const slotStr = (slots: Record<string, Slot> | null): string =>
+  !slots ? 'none' : Object.entries(slots).map(([n, s]) => `${n}: ${s.accepts === '*' ? '∗' : (s.accepts as string[]).join('/')}${s.required ? ' ✳' : ''}`).join(' · ');
+const vByType = Object.entries(g.counts.byType).sort();
+---
+
+<div class="cg">
+  <div class="cg__cards">
+    <div class="cg__card"><span class="cg__n">{g.counts.components}</span><span class="cg__l">components</span></div>
+    <div class="cg__card"><span class="cg__n">{g.counts.withContract}</span><span class="cg__l">with a contract</span></div>
+    <div class="cg__card"><span class="cg__n">{g.counts.leaf}·{g.counts.optional}·{g.counts.required}</span><span class="cg__l">leaf · optional · required</span></div>
+    <div class={`cg__card ${g.counts.violations ? 'cg__card--warn' : 'cg__card--ok'}`}><span class="cg__n">{g.counts.violations}</span><span class="cg__l">violations</span></div>
+  </div>
+
+  <h2>Violations</h2>
+  {vByType.length ? (
+    <p class="cg__by">{vByType.map(([t, n]) => (<span class="cg__pill">{n} {t}</span>))}</p>
+    <table class="cg__t">
+      <thead><tr><th>Type</th><th>Component</th><th>Detail</th><th>Where</th></tr></thead>
+      <tbody>
+        {g.violations.map((v) => (
+          <tr>
+            <td><code>{v.type}</code></td>
+            <td>{v.component}</td>
+            <td>{v.detail}</td>
+            <td class="cg__where">{v.file}:{v.line}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (<p>✓ No violations: every container composes real, approved children.</p>)}
+
+  <h2>Composition map</h2>
+  <p class="cg__note">Tier is derived from the contract (leaf / optional / required). <code>owns</code> = raw facsimile tags a component legitimately implements as its own primitive. Slots show <code>name: accepts</code> (<code>∗</code> = any design component, <code>✳</code> = required).</p>
+  <table class="cg__t">
+    <thead><tr><th>Component</th><th>Hier</th><th>Tier</th><th>Owns</th><th>Slots</th><th>Renders</th><th>Consumers</th></tr></thead>
+    <tbody>
+      {comps.map(([name, c]) => (
+        <tr>
+          <td><b>{name}</b></td>
+          <td class="cg__dim">{c.hierTier}</td>
+          <td>{c.tier ?? 'none'}</td>
+          <td class="cg__dim">{c.owns.length ? c.owns.join(', ') : 'none'}</td>
+          <td class="cg__dim">{slotStr(c.slots)}</td>
+          <td class="cg__dim" title={c.renders.join(', ')}>{c.renders.length || 'none'}</td>
+          <td class="cg__dim" title={c.consumers.join(', ')}>{c.consumers.length || 'none'}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .cg__cards { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0 1.5rem; }
+  .cg__card { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.75rem 1rem; border: 1px solid var(--sl-color-gray-5); border-radius: 0.6rem; background: var(--sl-color-gray-7, var(--sl-color-black)); min-width: 8rem; }
+  .cg__card--warn { border-color: var(--color-status-warning); }
+  .cg__card--ok { border-color: var(--color-status-success); }
+  .cg__n { font-size: 1.5rem; font-weight: var(--font-weight-bold); line-height: 1; }
+  .cg__l { font-size: 0.75rem; color: var(--sl-color-gray-3); }
+  .cg__by { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .cg__pill { font-size: 0.8rem; padding: 0.15rem 0.55rem; border-radius: 1rem; background: var(--sl-color-gray-6); border: 1px solid var(--sl-color-gray-5); }
+  .cg__t { display: table; width: 100%; font-size: 0.82rem; }
+  .cg__t th, .cg__t td { text-align: left; vertical-align: top; padding: 0.3rem 0.5rem; }
+  .cg__where { font-family: var(--sl-font-mono, monospace); font-size: 0.72rem; color: var(--sl-color-gray-3); white-space: nowrap; }
+  .cg__dim { color: var(--sl-color-gray-2); }
+  .cg__note { font-size: 0.82rem; color: var(--sl-color-gray-3); }
+</style>

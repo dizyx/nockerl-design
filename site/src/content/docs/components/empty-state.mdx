@@ -1,0 +1,199 @@
+---
+title: Empty state
+description: The centered, full-region zero-data placeholder with icon, title, description, and optional action.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import EmptyStateDemo from '../../../components/demos/EmptyStateDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <EmptyStateDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+import { NockerlButton } from '@dizyx/nockerl-react';
+import { Inbox, Plus, RotateCcw } from 'lucide-react';
+
+// First-run onboarding: the brand mark + a primary call-to-action.
+<EmptyState
+  icon={<Plus />}
+  tone="brand"
+  title="No sessions yet"
+  description="Spin up your first Cloud Agent session and it'll show up here."
+  actions={<NockerlButton text="Create session" variant="primary" onClick={createSession} />}
+/>;
+
+// No search results: a hint + a recover action (title switches on the query).
+<EmptyState
+  icon={<Inbox />}
+  title={query ? 'No matches' : 'No results'}
+  description="Try a different search or clear the filter."
+  actions={<NockerlButton text="Clear filter" variant="secondary" onClick={clearFilter} />}
+/>;
+
+// Failed to load: the warm error tone + a Retry.
+<EmptyState
+  icon={<RotateCcw />}
+  tone="error"
+  title="Couldn't load files"
+  description="Check your connection and try again."
+  actions={<NockerlButton text="Retry" variant="tertiary" onClick={reload} />}
+/>;
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The shipped pattern is a centered Column
+// (a 48dp muted icon → bodyMedium message → optional NockerlButton), e.g.
+// files/ui/FilesSheet.kt, inbox/ui/InboxSheet.kt, chat/ui/MessageList.kt.
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import com.nockerl.app.core.ui.NockerlButton
+import com.nockerl.app.core.ui.NockerlButtonVariant
+
+@Composable
+fun EmptyState(
+    icon: ImageVector,
+    title: String,
+    description: String? = null,
+    action: (@Composable -> Unit)? = null,
+) {
+    val colors = LocalNockerlColors.current
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(icon, contentDescription = null, modifier = Modifier.size(48.dp), tint = colors.onCardAltMuted.copy(alpha = 0.5f))
+        Spacer(Modifier.height(16.dp))
+        Text(title, style = MaterialTheme.typography.titleMedium, color = colors.onCard)
+        description?.let {
+            Spacer(Modifier.height(4.dp))
+            Text(it, style = MaterialTheme.typography.bodyMedium, color = colors.onCardAltMuted)
+        }
+        action?.let { Spacer(Modifier.height(16.dp)); it() }
+    }
+}
+
+// Failed-to-load: pass a Retry as the action.
+EmptyState(Icons.Filled.FolderOpen, "Couldn't load files", "Check your connection and try again.") {
+    NockerlButton(text = "Retry", onClick = ::reload, variant = NockerlButtonVariant.TERTIARY)
+}
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). Nockerl Voice uses the SYSTEM ContentUnavailableView
+// for empty + no-results states (UI/HistoryView.swift, UI/SettingsView.swift).
+// systemImage is an SF Symbol; description is a Text. No-results gets its own title.
+if filtered.isEmpty {
+    ContentUnavailableView(
+        records.isEmpty ? "No transcriptions yet" : "No matches",
+        systemImage: "waveform",
+        description: Text(records.isEmpty ? "Your dictations will appear here." : "Try a different search.")
+    )
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+}
+
+// With an action, use the closure form (SwiftUI's built-in empty-state slot):
+ContentUnavailableView {
+    Label("Couldn't load files", systemImage: "exclamationmark.triangle")
+} description: {
+    Text("Check your connection and try again.")
+} actions: {
+    Button("Retry") { reload() }.buttonStyle(.nockerlSecondary)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'title', type: 'string', required: true, description: 'The headline. Bound to the <code>title.large</code> type role.' },
+    { name: 'icon', type: 'ReactNode', description: 'A stroke glyph rendered in a recessed icon well above the title (muted by default).' },
+    { name: 'description', type: 'string', description: 'Supporting line under the title (<code>body.medium</code> role). Keep it to one or two short sentences.' },
+    { name: 'tone', type: "'neutral' | 'brand' | 'error'", default: "'neutral'", description: 'Icon-well treatment: <code>neutral</code> muted, <code>brand</code> cyan (first-run), <code>error</code> warm status (failed-to-load). Never color alone, always paired with icon + text.' },
+    { name: 'actions', type: 'ReactNode', description: 'Optional call-to-action(s), typically one primary <code>Button</code> plus an optional ghost. Centered under the description.' },
+    { name: 'compact', type: 'boolean', default: 'false', description: 'Denser rhythm + smaller well for a short inline list rather than a full region.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'title', type: 'String', required: true, description: 'The headline. Rendered with <code>typography.titleMedium</code>.' },
+    { name: 'icon', type: 'ImageVector', description: 'Leading illustration. Drawn at <code>48.dp</code>, tinted <code>onCardAltMuted</code> @ <code>alpha 0.5</code>.' },
+    { name: 'description', type: 'String?', default: 'null', description: 'Supporting line (<code>typography.bodyMedium</code>, <code>onCardAltMuted</code>). Context-aware per filter tab in lists (e.g. "No unread notifications").' },
+    { name: 'modifier', type: 'Modifier', default: 'Modifier.fillMaxSize()', description: 'The centered Column fills the region (<code>Arrangement.Center</code>, <code>CenterHorizontally</code>).' },
+    { name: 'action', type: '(@Composable -> Unit)?', default: 'null', description: 'Optional trailing action, typically a <code>NockerlButton</code>. The error arm uses <code>TERTIARY</code>.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI uses the **system** `ContentUnavailableView`; there is no custom Nockerl
+type. State (empty vs. no-results) is decided by the caller and reflected in the
+title/description; the actions/label come from view-builder closures.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'title', type: 'LocalizedStringKey', required: true, description: 'The headline (first positional argument). No-results gets its own title ("No matches").' },
+    { name: 'systemImage', type: 'String', required: true, description: 'An SF Symbol name (e.g. <code>"waveform"</code>) drawn above the title.' },
+    { name: 'description', type: 'Text?', default: 'nil', description: 'Supporting line under the title.' },
+    { name: 'actions', type: '() -> View', description: 'Closure-form only: a trailing actions builder (e.g. a Retry <code>Button</code> with a Nockerl <code>ButtonStyle</code>). Not available on the short initializer.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The web spec is in review; the shipped platforms diverge on the empty-state primitive:
+
+- **No shared component.** Android hand-rolls a centered `Column` per screen (no
+  `NockerlEmptyState` yet); Voice uses the **system** `ContentUnavailableView`;
+  web is unshipped. The Compose pattern above should be promoted to a real
+  `core/ui` composable so all empties match.
+- **Icon language** *(resolved in [adjudication 2026-07-02 · B17])*: empty-state illustrations are
+  **our stroke-SVG brand set on all platforms** (the web's token-colored inline strokes); utility
+  glyphs stay platform-native (Material / SF). Android's `ImageVector` tint and Voice's SF Symbols
+  give way to the shared brand set for the illustration slot.
+- **CTA support.** Android + web allow an action (Retry / Create); Voice's empties
+  ship **text-only** (no action on the short `ContentUnavailableView`). Use the
+  closure form when an action is needed.
+- **Title role.** Web/Android settle on `title.medium/large`; the chat/no-session
+  arm on Android still uses `displayMedium` + a wordmark, which is out of scope for
+  the generic empty state.
+</Aside>

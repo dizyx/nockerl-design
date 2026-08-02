@@ -1,0 +1,155 @@
+---
+title: Status dot
+description: A small semantic state dot for online/idle/busy/offline and success/warning/error/info, with an optional label and a live pulse.
+status: review
+platforms: [web, android, swift]
+nativePublished: [android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import StatusDotDemo from '../../../components/demos/StatusDotDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <StatusDotDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the
+// canonical API the published @dizyx/nockerl-react package is intended to expose. It unifies
+// the shipped idioms: Compose's NockerlStatusDot + PulsingDot and Voice's PulsingDot.)
+import { NockerlStatusDot } from '@dizyx/nockerl-react';
+
+// bare dot: name it so the state is never conveyed by color alone
+<NockerlStatusDot status="success" ariaLabel="Online" />
+
+// dot + label (the label is the accessible text)
+<NockerlStatusDot status="warning" label="Idle" />
+<NockerlStatusDot status="error" label="Busy" />
+<NockerlStatusDot status="neutral" label="Offline" />
+
+// live: opacity pulse for streaming/recording, an expanding ping ring for "connected"
+<NockerlStatusDot status="info" label="Streaming…" pulse ariaLabel="Streaming" />
+<NockerlStatusDot status="error" pulse ping ariaLabel="Recording" />
+
+// anchored to a host corner (the avatar-presence + session-chip idiom); pass the
+// host surface so the dot sits in a matching notch, and outline for a quieter state
+<NockerlStatusDot status="success" surface="var(--color-card-surface1)" ariaLabel="Online" />
+<NockerlStatusDot status="info" outline ariaLabel="Idle" />
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
+// A first-class NockerlStatusDot with two hue ladders: the semantic status ladder, and a raw
+// palette color (the session-dot idiom; pass a dot token, never a literal). Pulse fades alpha.
+import com.dizyx.nockerl.design.components.NockerlStatusDot
+import com.dizyx.nockerl.design.components.NockerlStatusDotStatus
+import com.dizyx.nockerl.design.components.NockerlStatusDotDefaults
+
+val colors = LocalNockerlColors.current
+
+// semantic ladder: hue AND the default accessible name come from the status
+NockerlStatusDot(status = NockerlStatusDotStatus.SUCCESS)                       // "Success"
+NockerlStatusDot(status = NockerlStatusDotStatus.NEUTRAL, size = NockerlStatusDotDefaults.QuietSize)
+
+// live states, the same dot pulsed (alpha 1f -> 0.3f, tween 800ms, Reverse)
+NockerlStatusDot(status = NockerlStatusDotStatus.INFO, contentDescription = "Streaming", pulse = true)
+
+// raw palette color: the session-dot idiom; accessible name required
+NockerlStatusDot(color = colors.dotStreaming, contentDescription = "Streaming", pulse = true)
+NockerlStatusDot(color = colors.dotUnread, contentDescription = "Unread")
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// SwiftUI: the published NockerlDesign SwiftPM package. A first-class NockerlStatusDot with
+// the full semantic ladder, an optional label, and a live pulse. Two hue ladders: the
+// semantic status ladder, and a raw palette color (the session-dot idiom).
+import NockerlDesign
+
+// bare dot: name it so state is never conveyed by color alone
+NockerlStatusDot(status: .success)                       // accessible name "Success"
+
+// dot + label (the label is the accessible text)
+NockerlStatusDot(status: .warning, label: "Idle")
+NockerlStatusDot(status: .neutral, label: "Offline", size: .quiet)
+
+// live: opacity pulse (1.0 ↔ 0.3, 800ms; freezes under Reduce Motion)
+NockerlStatusDot(status: .info, label: "Streaming…", pulse: true)
+
+// raw palette color: the session-dot idiom; accessible name required
+NockerlStatusDot(color: palette.dotStreaming, label: "Streaming", pulse: true)
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable nameLabel="Prop" component="NockerlStatusDot" />
+
+</TabItem>
+<TabItem label="Kotlin">
+
+The published `NockerlStatusDot` ships as a first-class wrapper with two overloads: a
+semantic status ladder and a raw palette color (the session-dot idiom).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'NockerlStatusDot(status, …)', type: 'NockerlStatusDotStatus', required: true, description: 'Semantic ladder. Hue AND the default accessible name come from the status: <code>SUCCESS · WARNING · ERROR · INFO · NEUTRAL</code>.' },
+    { name: 'NockerlStatusDot(color, contentDescription, …)', type: 'Color, String?', required: true, description: 'Raw palette color, the session-dot idiom (<code>dotStreaming</code> · <code>dotUnread</code> · …, never a literal). Accessible name required (no status to derive one).' },
+    { name: 'size', type: 'Dp', default: 'LoudSize (8.dp)', description: '<code>NockerlStatusDotDefaults.LoudSize</code> (8dp, live/attention) or <code>QuietSize</code> (6dp, ambient).' },
+    { name: 'pulse', type: 'Boolean', default: 'false', description: 'Animate the live alpha pulse (<code>1f → 0.3f</code>, <code>tween(800ms)</code>, <code>RepeatMode.Reverse</code>).' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+The published `NockerlStatusDot` ships the full semantic ladder + optional label + live
+pulse, with two inits mirroring Compose: a semantic status and a raw palette color.
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'NockerlStatusDot(status:label:pulse:size:)', type: 'NockerlStatusDotStatus, String?, Bool, NockerlStatusDotSize', required: true, description: 'Semantic ladder: <code>.success · .warning · .error · .info · .neutral</code> drive hue AND the default accessible name; <code>label</code> is an optional visible + accessible label.' },
+    { name: 'NockerlStatusDot(color:label:pulse:size:)', type: 'Color, String, Bool, NockerlStatusDotSize', required: true, description: 'Raw palette color, the session-dot idiom (<code>palette.dotStreaming</code>, …). <code>label</code> is <strong>required, non-empty</strong> (no status to derive a name from).' },
+    { name: 'size', type: 'NockerlStatusDotSize', default: '.loud', description: '<code>.loud</code> (8pt, live/attention) or <code>.quiet</code> (6pt, ambient).' },
+    { name: 'pulse', type: 'Bool', default: 'false', description: 'The live pulse: opacity <code>1.0 ↔ 0.3</code>, <strong>800ms</strong> easeInOut autoreversing. Frozen at full opacity under Reduce Motion.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (one open item)">
+This is the dedicated semantic **state** dot, distinct from [badge](/components/badge/),
+which is a passive **count / notification** overlay. The published **Compose**
+(`com.dizyx.nockerl.design.components`) and **Swift** (`NockerlDesign`) packages now both
+ship a first-class `NockerlStatusDot` with the **full semantic ladder** (success / warning /
+error / info / neutral), the raw session-dot color idiom, an optional label, the size ramp
+(quiet 6pt / loud 8pt), and a matching **800ms** opacity pulse. The earlier coverage gap,
+duration mismatch, and "no shared wrapper" drift are all resolved. What remains:
+
+- **The `ping` ring** *(resolved in [adjudication 2026-07-02 · B6])*: the expanding concentric
+  **ping ring is dropped**. One attention expression everywhere: an **800ms opacity pulse**
+  (1 → ~0.3), which every native platform already animates. The web-only `ping` is retired.
+</Aside>

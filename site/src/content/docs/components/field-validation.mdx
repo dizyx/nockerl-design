@@ -1,0 +1,195 @@
+---
+title: Field validation
+description: The Nockerl field-level validation message, covering helper, error, warning, success, and counter.
+status: review
+platforms: [web, android, swift]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import Example from '../../../components/Example.astro';
+import FieldValidationDemo from '../../../components/demos/FieldValidationDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <FieldValidationDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the intended API,
+// not yet exported from @dizyx/nockerl-react (promotion tracked). The message + icon + border are one
+// bundled status layer on the field: error/warning/success/neutral, never color alone.)
+
+export function SessionForm() {
+  const [email, setEmail] = useState('');
+  const valid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+  const status = email === '' ? 'neutral' : valid ? 'success' : 'error';
+
+  return (
+    <>
+      <ValidatedField label="Session name" required value={name} onValueChange={setName}
+        status="error" message="A session name is required." />
+
+      <ValidatedField label="Notify email" type="email" leadingIcon="@"
+        value={email} onValueChange={setEmail}
+        status={status}
+        message={status === 'error' ? 'Enter a valid email address.' : 'We send run summaries here.'} />
+
+      {/* counter + over-limit error, and a multi-rule checklist */}
+      <ValidatedField label="Title" value={title} onValueChange={setTitle} maxLength={32} />
+      <ValidatedField label="New password" type="password" value={pwd} onValueChange={setPwd}
+        status={pwdOk ? 'success' : 'error'}
+        issues={[{ label: 'At least 12 characters', ok: pwd.length >= 12 }]} />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). The shipped validation path is the M3
+// OutlinedTextField error state: isError + a supportingText line in colorScheme.error
+// (see auth.ui.LoginScreen / chat.ui.SessionCreationSheet). Required / warning /
+// success / counter are NOT yet extracted on Android; see the drift note below.
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import com.nockerl.app.core.theme.NockerlControlShape
+
+OutlinedTextField(
+    value = email,
+    onValueChange = { email = it; viewModel.clearError() },
+    label = { Text("Notify email") },
+    singleLine = true,
+    isError = emailError != null,
+    supportingText = {
+        // bodySmall line under the field; colorScheme.error when isError = true.
+        Text(emailError ?: "We send run summaries here.")
+    },
+    modifier = Modifier.fillMaxWidth(),
+    shape = NockerlControlShape, // the 12dp control radius token
+    colors = OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = MaterialTheme.colorScheme.primary, // brand cyan
+        errorBorderColor = MaterialTheme.colorScheme.error,     // status red
+    ),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: SwiftUI (canonical). Voice carries the richest validation vocabulary: a
+// status message is a sibling caption Text in NockerlTheme.error / .warning / .success
+// with an SF Symbol, never color alone (SettingsView API-key SUCCESS row;
+// OnboardingView ERROR / WARNING captions). There is no bundled message slot yet.
+TextField("you@example.com", text: $email)
+    .textFieldStyle(.plain)
+    .foregroundStyle(NockerlTheme.onSurface)
+    .nockerlFieldBackground()   // canvasAlt inset well + hairline, rounded rect
+
+// The validation message sits directly under the field as a sibling:
+if let error {                              // ERROR
+    Label(error, systemImage: "exclamationmark.triangle.fill")
+        .font(.caption).foregroundStyle(NockerlTheme.error)
+} else if valid {                           // SUCCESS
+    Label("We can reach you here.", systemImage: "checkmark.circle.fill")
+        .font(.caption).foregroundStyle(NockerlTheme.success)
+} else {                                    // HELPER (neutral)
+    Text("We send run summaries here.")
+        .font(.caption).foregroundStyle(NockerlTheme.onSurfaceMuted)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'label', type: 'string', required: true, description: 'Persistent visible label, bound to the input via <code>htmlFor</code> / <code>id</code>.' },
+    { name: 'value', type: 'string', required: true, description: 'Controlled value of the field.' },
+    { name: 'onValueChange', type: '(value: string) => void', description: 'Change handler. Re-run validation here to update <code>status</code> / <code>message</code> live.' },
+    { name: 'status', type: "'neutral' | 'error' | 'warning' | 'success'", default: "'neutral'", description: 'Validation state. Drives the message tone, the status glyph, and the field border. <code>neutral</code> = the resting helper line, no border recolor. Warm status tokens only, never the brand cyan.' },
+    { name: 'message', type: 'string', description: 'The single line under the field (helper / error / warning / success copy). Pairs with a glyph so it is <strong>never color alone</strong>. The error message renders <code>role="alert"</code> and is wired via <code>aria-describedby</code>.' },
+    { name: 'issues', type: '{ label: string; ok: boolean }[]', description: 'Multiple rules rendered as a live checklist (e.g. password requirements). When set, replaces <code>message</code>.' },
+    { name: 'required', type: 'boolean', default: 'false', description: 'Adds a status-colored <code>*</code> after the label and sets the input <code>required</code>.' },
+    { name: 'maxLength', type: 'number', description: 'Shows a right-aligned character counter; turns to the error treatment (counter + border) when over the cap.' },
+    { name: 'leadingIcon', type: 'string', description: 'Optional glyph inside the well, before the text.' },
+    { name: 'type', type: "'text' | 'email' | 'password' | …", default: "'text'", description: 'Underlying input type / keyboard.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+Compose validates through the M3 `OutlinedTextField` **error state**. Only the
+error path ships today: `isError` flips the border + `supportingText` to
+`colorScheme.error`. Required indicators, the warning / success tones, the counter,
+and a multi-rule checklist are **not yet extracted** on Android (drift below).
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'isError', type: 'Boolean', default: 'false', description: 'Renders the error treatment: error-colored border, label, and <code>supportingText</code>.' },
+    { name: 'supportingText', type: '@Composable (() -> Unit)?', default: 'null', description: 'The helper / error line under the field, a <code>bodySmall</code> <code>Text</code>. Tints to <code>colorScheme.error</code> while <code>isError</code>.' },
+    { name: 'colors', type: 'TextFieldColors', default: 'OutlinedTextFieldDefaults.colors(…)', description: 'Set <code>errorBorderColor = colorScheme.error</code> (status red) and <code>focusedBorderColor = colorScheme.primary</code> (brand cyan).' },
+    { name: 'value / onValueChange', type: 'String / (String) -> Unit', required: true, description: 'Current text and the edit callback. Clear the error here (<code>viewModel.clearError()</code>) so the message updates live.' },
+    { name: 'label', type: '@Composable (() -> Unit)?', default: 'null', description: 'Floating label slot; pass <code>{ Text("Notify email") }</code>.' },
+    { name: 'shape', type: 'Shape', default: 'NockerlControlShape', description: 'The 12dp control radius token, shared with every field.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Swift">
+
+SwiftUI has **no bundled message slot**. The field chrome is the
+`.nockerlFieldBackground()` modifier; the validation message is a **sibling**
+`Text` / `Label` below it, tinted by a `NockerlTheme` status color and paired with
+an SF Symbol so it is never color alone.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'NockerlTheme.error', type: 'Color', description: 'The error tone (<code>#EF5350</code> dark). Use on the message <code>Text</code> + an <code>exclamationmark.triangle.fill</code> symbol, as in OnboardingView’s denied caption.' },
+    { name: 'NockerlTheme.warning', type: 'Color', description: 'The warning tone (<code>#FFC107</code>). A caution note under the field (OnboardingView uses <code>.foregroundStyle(.orange)</code> for this).' },
+    { name: 'NockerlTheme.success', type: 'Color', description: 'The success tone (<code>#4CAF50</code> dark). Paired with <code>checkmark.circle.fill</code>, as in the SettingsView “API key saved” confirmation.' },
+    { name: 'NockerlTheme.onSurfaceMuted', type: 'Color', description: 'The neutral helper line (<code>.font(.caption)</code>), the resting supporting text.' },
+    { name: '.nockerlFieldBackground()', type: 'ViewModifier', description: 'The recessed input well the message attaches to: <code>canvasAlt</code> inset + hairline, rounded rectangle.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+The bundled status layer (one `status` + `message` + glyph, four tones) is the
+target; these are the real divergences between the shipped platforms:
+
+- **Vocabulary coverage:** Voice ships all four tones (helper / error / warning /
+  success, each a caption + SF Symbol). Android ships **error only** (M3 `isError` +
+  `supportingText`). Web bundles all four as `status`. Warning + success + the
+  required indicator are owed on Android.
+- **No shared component:** the validation message is hand-assembled per screen:
+  Android repeats `supportingText` inline; Voice repeats a sibling `Text`. An
+  extracted `ValidatedField` is owed on Android + web (it follows the text-field
+  drift, since there is no `NockerlTextField` yet either).
+- **Counter + multi-rule list:** designed here (and shown live in the demo); neither
+  app ships a character counter or a rule checklist yet.
+- **Required indicator:** the `*` mark is web-only so far; Android marks required in
+  copy ("required" in the label string), Voice not at all.
+</Aside>

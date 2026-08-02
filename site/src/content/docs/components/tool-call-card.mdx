@@ -1,0 +1,221 @@
+---
+title: Tool-call card
+description: The panel an agent turn renders when it invokes a tool, with a family-colored icon tile, params, status, and a collapsible result.
+status: review
+platforms: [web, android]
+---
+
+import StatusBadge from '../../../components/StatusBadge.astro';
+import Example from '../../../components/Example.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import ToolCallCardDemo from '../../../components/demos/ToolCallCardDemo.tsx';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+<StatusBadge status="review" />
+
+<Example caption="Live · web">
+  <ToolCallCardDemo client:visible />
+</Example>
+
+## Code
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+```tsx
+// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
+// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+
+export function Turn() {
+  return (
+    <>
+      {/* A running shell-fs call: a pulsing dot + elapsed, no body to disclose yet. */}
+      <ToolCallCard name="$ ./gradlew test" family="shell-fs" status="running" elapsedSeconds={6} icon="terminal" />
+
+      {/* A finished Read: collapsible key/value params + a recessed code/text well. */}
+      <ToolCallCard
+        name="Read SseClient.kt"
+        family="shell-fs"
+        status="success"
+        elapsedSeconds={0.4}
+        icon="file"
+        params={[{ label: 'file_path', value: 'net/SseClient.kt' }, { label: 'limit', value: '40' }]}
+        output={{ lines: readSnippet }}
+      />
+
+      {/* An Edit: the output renders as an inline unified diff instead of a code well. */}
+      <ToolCallCard
+        name="Edit Backoff.kt"
+        family="shell-fs"
+        status="success"
+        icon="edit"
+        diff={{ path: 'net/Backoff.kt', lines: editDiff }}
+      />
+    </>
+  );
+}
+```
+
+</TabItem>
+<TabItem label="Kotlin">
+
+```kotlin
+// Android: Jetpack Compose (canonical). com.nockerl.app.chat.ui.ToolCallCard
+// renders ONE ToolCall (chat/domain/ContentBlock.kt). Status is DERIVED from the
+// model (output == null → running, output present → success, isError → error), and
+// the family accent comes from toolFamily(name) → familyAccent(…) (ToolFamily.kt).
+import com.nockerl.app.chat.ui.ToolCallCard
+import com.nockerl.app.chat.domain.ToolCall
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+
+// Running: no output yet, so the card shows a neutral pulse + elapsed.
+ToolCallCard(
+    tool = ToolCall(
+        id = "toolu_01",
+        name = "Bash",
+        input = buildJsonObject { put("command", "./gradlew test") },
+        elapsedSeconds = 6.0,
+    ),
+)
+
+// Finished Read (output present → success); the expanded body is a CopyableCodeSurface.
+ToolCallCard(
+    tool = ToolCall(
+        id = "toolu_02",
+        name = "Read",
+        input = buildJsonObject { put("file_path", "net/SseClient.kt") },
+        output = readSnippet,
+        elapsedSeconds = 0.4,
+    ),
+)
+
+// Edit. Compose computes the inline unified diff (computeLineDiff) from old/new_string.
+ToolCallCard(
+    tool = ToolCall(
+        id = "toolu_03",
+        name = "Edit",
+        input = buildJsonObject {
+            put("file_path", "net/Backoff.kt")
+            put("old_string", oldSrc)
+            put("new_string", newSrc)
+        },
+        output = "Applied 1 edit",
+    ),
+)
+```
+
+</TabItem>
+<TabItem label="Swift">
+
+```swift
+// macOS: Nockerl Voice ships NO tool-call card. Voice is a voice-first surface
+// (NockerlVoice/UI) with no chat tool-invocation feed, so there is no `.nockerl…`
+// style or view to document here. The card below is the INTENDED SwiftUI API for
+// when the transcript lands on macOS, modelled on the canonical Compose ToolCallCard.
+// Tracked as cross-platform drift; see the Aside below.
+ToolCallCard(
+    name: "Read SseClient.kt",
+    family: .shellFs,                 // → familyAccent: cyan · orange · indigo · sky · fuchsia · muted
+    status: .success,                 // .running · .success · .error (derived from the call)
+    elapsedSeconds: 0.4,
+    params: [.init(label: "file_path", value: "net/SseClient.kt")],
+    output: .code(readSnippet)        // .code(_) | .diff(path:lines:) | nil
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Harness failure block (a view, no new grammar)
+
+Per the WS4 verdict (task 2655d), a **harness failure** is the whole agent run dying
+(a crashed session, a gateway 500, a budget kill), bigger than one tool error. It is a
+**thin composition** of ratified parts, not a component:
+
+1. **The failure banner.** The r5.2-ratified failure grammar (adjudication
+   2026-07-02, addendum r5.2): an **inset error disc**, a **whisper-red border**
+   (the [`Banner`](/components/banner/) 22% mix, never a red fill), on a **lifted**
+   solid surface. Title = what died ("Harness crashed"); message = the one-line why.
+2. **The evidence well.** Whatever the failure left behind, in the part that already
+   owns it: this card's **error output well** for a tool-level trace, a
+   [`CodeBlock`](/components/code-block/) for a stack/log excerpt, a
+   [`DiffViewer`](/components/diff-viewer/) for a bad patch.
+3. **Recovery actions.** The banner's own right-aligned quiet action ("Retry",
+   "Open logs"), or for a decision moment the
+   [Approval content](/components/approval-content/) CTA row.
+
+Stack them in that order in the transcript column: banner first (the verdict), the
+evidence collapsed beneath (this card's collapse idiom). Compose; **invent nothing**:
+the failure expression must stay byte-identical with the ChatBubble send-failure and
+the AgentMessage stream-failure, which bind to the same banner grammar.
+
+## Parameters
+
+<Tabs syncKey="lang">
+<TabItem label="TypeScript">
+
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'name', type: 'string', required: true, description: 'Tool name / one-line summary, in the <code>mono</code> font (e.g. <code>Read SseClient.kt</code>, <code>$ ./gradlew test</code>).' },
+    { name: 'family', type: "'shell-fs' | 'agent' | 'scheduling' | 'planning' | 'external' | 'default'", required: true, description: 'Drives the <strong>filled icon-tile</strong> accent from the <strong>categorical family tokens</strong>. The family color rides in the leading tile, never a left rail (Law 6), never the brand cyan.' },
+    { name: 'status', type: "'running' | 'success' | 'error'", required: true, description: 'Run state: <code>running</code> → a neutral pulse dot, <code>success</code> → a check, <code>error</code> → a close. All warm + a glyph, never color-alone.' },
+    { name: 'elapsedSeconds', type: 'number', description: 'Wall-clock time in the status chip: <code>%.1fs</code> under 10s, else <code>Ns</code>.' },
+    { name: 'icon', type: 'ReactNode', required: true, description: 'The family glyph for the icon tile (tinted via <code>currentColor</code>).' },
+    { name: 'params', type: 'ToolParam[]', description: 'Compact <strong>key → value</strong> call parameters shown first in the expanded body (muted label + strong mono value).' },
+    { name: 'output', type: '{ lines: OutLine[]; error?: boolean }', description: 'Expanded code/text result rendered in the <strong>recessed well</strong>. <code>error</code> tints it with the error wash.' },
+    { name: 'diff', type: '{ path: string; lines: DiffLine[] }', description: 'Render the result as an inline unified diff (added/removed washes + a +/- gutter) instead of a code well.' },
+    { name: 'defaultOpen', type: 'boolean', default: 'false', description: 'Start expanded. The header is the disclosure (<code>aria-expanded</code>); a body-less card stays static.' },
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Kotlin">
+
+<PropsTable
+  nameLabel="Parameter"
+  rows={[
+    { name: 'tool', type: 'ToolCall', required: true, description: 'The call to render: <code>id · name · input: JsonObject? · output: String? · isError · elapsedSeconds</code>. Status is <strong>derived</strong> from <code>output</code>/<code>isError</code>; the summary + icon + family from <code>name</code>.' },
+    { name: 'spawnState', type: 'SpawnState?', default: 'null', description: 'Only for the <code>nockerl_spawn_agent</code> fan-out adapter. Drives the per-child status/transcript block. Ignored by the generic card.' },
+  ]}
+/>
+
+The card is a single composable over the `ToolCall` domain model. There is no `status`,
+`family`, or `icon` parameter: `normalizeName` + `toolFamily` + `toolIcon` resolve them
+from `tool.name`, and the run state from `tool.output` / `tool.isError`. A handful of
+gateway tools (`nockerl_web_research`, `ToolSearch`, `nockerl_spawn_agent`) and plan-mode
+markers short out to dedicated cards before the generic mold.
+
+</TabItem>
+<TabItem label="Swift">
+
+Voice ships **no** tool-call card (it has no chat tool-invocation feed), so there is no
+shipped Swift API. The table below is the **intended** surface for when the transcript
+lands on macOS, modelled on the Compose card.
+
+<PropsTable
+  nameLabel="Style"
+  rows={[
+    { name: 'name', type: 'String', required: true, description: '<em>Intended.</em> Tool name / summary in the mono font.' },
+    { name: 'family', type: 'ToolFamily', required: true, description: '<em>Intended.</em> <code>.shellFs · .agent · .scheduling · .planning · .external · .default</code> → the filled family-accent icon tile (never a left rail).' },
+    { name: 'status', type: 'ToolStatus', required: true, description: '<em>Intended.</em> <code>.running · .success · .error</code> (the warm status chip).' },
+    { name: 'output', type: 'ToolOutput?', description: '<em>Intended.</em> <code>.code(_)</code> for the recessed well or <code>.diff(path:lines:)</code> for an inline diff.' },
+  ]}
+/>
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+- **`tool-call-card` vs `agent-message`:** the tool-call card is the **standalone, reusable**
+  tool-invocation panel; `agent-message` is the whole assistant turn and **embeds** these
+  cards inline. Document the card here, the turn there.
+- **Family taxonomy:** Android's `ToolFamily` has **six** families
+  (`shell-fs · agent · scheduling · planning · external · default`); the inline panel in
+  `agent-message` only surfaces four. The card is the full taxonomy.
+- **Swift:** Voice ships **none**. No chat tool feed exists on macOS. The Swift code +
+  params above are the intended API, not a shipped one.
+- **Web:** no `@dizyx/nockerl-react` component is published yet; the TypeScript API above is
+  the canonical target.
+</Aside>
