@@ -56,3 +56,25 @@ into each other at the outer ring and turn into an unreadable blob.
 Ring spacing and glyph detail have to be chosen together. A notch deeper than the offset
 survives; a shallower one fills in. That means a new icon needs tuning rather than dropping
 a shape into a template.
+
+## Generated ladders
+
+Platform artwork is generated from the SVGs, never drawn by hand.
+
+| Path | What it is |
+|------|-----------|
+| `app-icons/<product>.appiconset/` | macOS icon set, both scales of every point size, with `Contents.json` |
+| `favicons/<product>-{light,dark}-<px>.png` | web icons at 16, 32, 48 and 180 |
+
+macOS does not mask app icons the way iOS does, so the rounded plate and Apple's
+margin are drawn into the artwork itself. Every size is rendered from the vector
+rather than resampled from one large PNG, so the small sizes stay crisp.
+
+Regenerate after changing a source SVG:
+
+```bash
+python3 scripts/make-appiconset.py voice logos/app-icons/voice.appiconset
+```
+
+A macOS app consumes its set by copying the directory into its asset catalog and
+pointing `ASSETCATALOG_COMPILER_APPICON_NAME` at it.
