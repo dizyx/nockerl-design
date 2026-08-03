@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import StatCardDemo from '../../../components/demos/StatCardDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -191,10 +191,10 @@ control-layer metric <em>constants</em> (the 44pt touch floor), not a component.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Stat card vs. chart vs. context-gauge, and cross-platform drift">
+<DocCallout tone="warning" title="Stat card vs. chart vs. context-gauge, and cross-platform drift">
 - **Pick the right component.** **Stat card** is the *single-KPI tile* (one number + label + optional delta/sparkline). For a full plot (line/area/bar, multi-series, axes, a usage donut) use [Chart / sparkline](/components/chart/). For the live token-budget meter use [Context gauge](/components/context-gauge/). The tile *borrows* the chart's sparkline + `formatTokenCount` vocabulary, but it is not a chart.
 - **Delta / trend leads on web.** The trend chip is designed here from the laws (**warm status color + a direction glyph, never color alone**) and is the intended `@dizyx/nockerl-react` API. The Kotlin and Swift tabs document tiles built without it, so the delta is the clearest place the platforms have yet to meet.
 - **Same idea, two builds.** Voice `StatCard` = an **accent icon chip + big bold mono number + muted label** (the comfortable tile here). Android `StatTile` = a **compact** mono tile (small inline icon + label, value + trailing sparkline). The web tile unifies both as `size`.
 - **Radius drift.** Voice hardcodes **10pt**, Android **6dp**; the tile here uses `radius.card` (**16**). The native tiles should consume `radius.card`.
 - **Count format.** Android `formatTokenCount` is integer (`1M` / `42K`); Voice's header uses one decimal (`8.4k`). One compact-number policy needs to win.
-</Aside>
+</DocCallout>

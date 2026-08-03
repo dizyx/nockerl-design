@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TimelineDemo from '../../../components/demos/TimelineDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -145,7 +145,7 @@ alone: the node also carries a glyph (a check on done, a close on error) and a c
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Timeline is the **chronological event feed** (each node is a *moment in time*: timestamp +
 what happened), distinct from the [Stepper](/components/stepper/) (a *forward process* with
 done/current/upcoming flow state) and the [List](/components/list/) (plain rows). These are the
@@ -161,4 +161,4 @@ real divergences:
   format (relative gutter + absolute `<time>` tooltip) should win.
 - **Two-sided + load-earlier:** web-original here; the apps' feeds are single-sided and paginate via
   scroll. Track before adopting on Android/Swift.
-</Aside>
+</DocCallout>

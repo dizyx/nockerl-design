@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TopBarDemo from '../../../components/demos/TopBarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -174,7 +174,7 @@ in full on the [Recording HUD](/components/recording-hud/) page and is not dupli
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Top-bar vs. app-shell vs. toolbar:** the top bar is the *global header row* (brand
   + title / breadcrumb + account cluster). [app-shell](/components/app-shell/) is the
   *whole layout* that hosts it (header + nav region + content over the facet field);
@@ -190,4 +190,4 @@ in full on the [Recording HUD](/components/recording-hud/) page and is not dupli
   the 1.5pt cyan boundary as the **command-pill outline**, not a full-width line.
 - **No single web component yet:** `@dizyx/nockerl-react`'s `TopBar` API above is the
   **intended** shape, not yet published.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ToastDemo from '../../../components/demos/ToastDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -194,7 +194,7 @@ auto-dismissed on a timer.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Toast vs banner vs dialog">
+<DocCallout tone="note" title="Toast vs banner vs dialog">
 Three feedback surfaces, three jobs. Don't reach for the wrong one:
 
 - **Toast (this page)**: *transient + floating + non-blocking.* It appears in a
@@ -205,9 +205,9 @@ Three feedback surfaces, three jobs. Don't reach for the wrong one:
   app state (read-only, degraded mode, an approval waiting).
 - **[Dialog](/components/dialog/)**: *modal + blocking.* It **interrupts** with a
   scrim and demands a decision. For destructive confirms and required choices.
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 **Web ships `NockerlToast`** (@dizyx/nockerl-react). The Kotlin and Swift tabs document
 the **proposed** native shape, designed from the laws plus the transient-message
 vocabulary the apps already use. The divergences to reconcile when they land, tracked in
@@ -228,4 +228,4 @@ the [Review queue](/review-queue/):
 - **Duration scale** *(settled)*: durations = an enum **`short` / `base` / `long` /
   `persistent`** backed by ms tokens. Voice's literal seconds and Compose's Material
   `SHORT/LONG` map onto the shared enum.
-</Aside>
+</DocCallout>

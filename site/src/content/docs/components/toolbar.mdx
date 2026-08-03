@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ToolbarDemo from '../../../components/demos/ToolbarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -28,7 +28,7 @@ import { Aside } from '@astrojs/starlight/components';
 // (NockerlIconButton / NockerlButton / NockerlDivider / NockerlSegmentedControl) inside a
 // role="toolbar" container that owns the roving tabindex, rather than adding a bespoke
 // Toolbar*NockerlButton family.
-// Toggles use the primitives' `pressed` prop (soft-cyan wash + aria-pressed).
+// Toggles use the primitives' `pressed` prop (cyan selection ring + cyan glyph, aria-pressed).
 import { NockerlIconButton, NockerlButton, NockerlDivider, NockerlSegmentedControl } from '@dizyx/nockerl-react';
 
 export function FormattingToolbar() {
@@ -89,7 +89,7 @@ fun FormattingToolbar(state: EditorState) {
             .background(chrome.chromeSurface, NockerlControlShape)
             .padding(4.dp),
     ) {
-        // A pressed toggle reuses the segmented active look: soft-cyan wash + cyan glyph.
+        // A pressed toggle reuses the segmented active look: a cyan outline + cyan glyph.
         NockerlIconButton(Icons.Default.FormatBold, "Bold", onClick = state::toggleBold,
             tint = if (state.bold) chrome.accentPrimary else chrome.onChrome)
         NockerlIconButton(Icons.Default.FormatItalic, "Italic", onClick = state::toggleItalic,
@@ -155,7 +155,7 @@ fun FormattingToolbar(state: EditorState) {
     { name: 'label', type: 'string', required: true, description: 'Accessible name for the strip (wired to <code>role="toolbar"</code> via <code>aria-label</code>). Required: a toolbar is one focus group and needs a name.' },
     { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Layout axis. Arrow keys follow it: Left/Right when horizontal, Up/Down when vertical.' },
     { name: 'children', type: '(roving) => ReactNode', description: 'The container SLOTS the real primitives: <code>IconButton</code>, <code>Button</code>, <code>Divider</code>, <code>SegmentedControl</code>, and the overflow ⋯ (a plain <code>IconButton</code> + a Menu). NOT a bespoke Toolbar*Button family. The render-prop hands each child its roving plumbing (<code>reg</code> / <code>tab</code> / <code>onKey</code>).' },
-    { name: 'IconButton.pressed / Button.pressed', type: 'boolean', description: 'TOGGLE mode on the real primitive: renders the soft-cyan selection wash and sets <code>aria-pressed</code>. Use for sticky formatting marks (bold/italic) or a labelled toggle (Wrap). Omit for a plain command control.' },
+    { name: 'IconButton.pressed / Button.pressed', type: 'boolean', description: 'TOGGLE mode on the real primitive: renders the selection-weight cyan ring and cyan glyph, with no wash (law §6, state by outline), and sets <code>aria-pressed</code>. Use for sticky formatting marks (bold/italic) or a labelled toggle (Wrap). Omit for a plain command control.' },
     { name: 'Button.variant', type: "'primary' | 'ghost' | …", default: "'primary'", description: "Labelled toolbar buttons are the Button primitive. Use <code>primary</code> for the one filled CTA (max one per strip), <code>ghost</code> for plain labelled actions (Filter / Share). A destructive icon tints via <code>style={{ color: 'var(--color-status-error)' }}</code> (IconButton has no danger idiom)." },
     { name: 'roving = { reg, tab, onKey }', type: '{ reg; tab; onKey }', description: 'Wire each slotted primitive with <code>ref={(el) => reg(idx, el)}</code>, <code>tabIndex={tab === idx ? 0 : -1}</code>, <code>onKeyDown={(e) => onKey(e, idx)}</code>. <code>onKey</code> is <code>(e: React.KeyboardEvent, i: number) => void</code>, so the event goes first: drop it and arrow-key navigation stops working. Button + IconButton forward the ref and spread these native attrs, so the container keeps exactly one child tabbable and Arrow/Home/End move focus across controls.' },
     { name: 'SegmentedControl', type: 'primitive', description: 'A mutually-exclusive segment group inside the toolbar (e.g. alignment) is the real <code>SegmentedControl</code> (<code>segments</code> / <code>value</code> / <code>onChange</code>, single-select). Its own <code>role="radiogroup"</code> + roving tabindex nests inside the strip.' },
@@ -202,7 +202,7 @@ toggles are `Toggle`, and the overflow is a `Menu`. State comes from `@State`/`@
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **One strip composed from primitives:** the toolbar is deliberately not a bespoke
   `ToolbarButton`/`ToolbarToggle`/`ToolbarSeparator` family. Every platform composes the strip
   from the shipped vocabulary: web slots `IconButton` / `Button` (with `pressed` for toggles) /
@@ -215,4 +215,4 @@ toggles are `Toggle`, and the overflow is a `Menu`. State comes from `@State`/`@
   selection actions), distinct from [top-bar](/components/top-bar/), the app's global header
   chrome (title + navigation). They look similar (both chrome) but solve different jobs; don't
   use one for the other.
-</Aside>
+</DocCallout>

@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ProgressBarDemo from '../../../components/demos/ProgressBarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -196,7 +196,7 @@ package enums below.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Use the **progress bar** for general determinate/indeterminate progress with the
 plain cyan fill. It is **not** the [context gauge](/components/context-gauge/) (the
 threshold-banded cyan → amber → red token-budget meter) and **not** the
@@ -215,4 +215,4 @@ here is **determinate only**.
 - **Track radius:** both the real Android track and Swift's `NockerlProgressBar` are
   **squared** (`radius-track` = 2dp/2pt), not a pill. The web demo matches this.
 - **Height:** Android uses **3 to 4dp**; web exposes `thin` / `thick` as a convenience.
-</Aside>
+</DocCallout>

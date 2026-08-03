@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TooltipDemo from '../../../components/demos/TooltipDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -215,7 +215,7 @@ system-owned; there are no styling or timing parameters.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Tooltip vs. Popover (and cross-platform drift)">
+<DocCallout tone="note" title="Tooltip vs. Popover (and cross-platform drift)">
 A **tooltip** is a brief, non-interactive *hint* shown on hover/focus after a
 delay; you cannot click into it. A **[popover](/components/popover/)** is a
 rich, anchored *panel* you tab into (it holds text, fields, actions). When a hint
@@ -231,4 +231,4 @@ tooltip has a fixed ~2s delay and no styling.
 - **Adoption** *(ratified)*: **`TooltipBox`** is the confirmed path for icon-only Android
   actions (persistent-label a11y). Until a surface adopts it, `contentDescription` is what
   names an icon-only action.
-</Aside>
+</DocCallout>

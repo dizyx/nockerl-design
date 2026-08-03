@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import SidebarDemo from '../../../components/demos/SidebarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -223,7 +223,7 @@ is a 0.985 scale, a transform rather than a fill change.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift">
+<DocCallout tone="warning" title="Cross-platform drift">
 The **sidebar** is the persistent, in-layout nav column, the **`inline` role of the ONE
 nav-surface**: `NockerlNavSurface` (= `NockerlDrawer`) is a single edge-anchored surface with
 `mode: inline | overlay`. `inline` is this persistent rail; `overlay` is the
@@ -236,9 +236,8 @@ Platforms are allowed to diverge while the migration runs. What follows is the h
 today, not a defect list.
 
 - **Selection reads by outline on every platform.** Accent border, accent ink, and the
-  leading icon, with **no wash**, no left rail, and no stripe (law §6). The Swift row
-  already carries no wash. The web is being conformed to the same position, so the soft
-  cyan wash it previously used comes out; the law does not move.
+  leading icon, with **no wash**, no left rail, and no stripe (law §6). Both the Swift row
+  and the web row now carry it; the soft cyan wash the web once used is gone.
 - **Hover on an already-selected row differs on purpose.** Swift answers nothing: on macOS a
   selected sidebar row is inert under the pointer, Voice ships that, and it is approved. The
   web brightens the row's existing cyan edge to full strength instead, because a pointer-first
@@ -261,4 +260,4 @@ today, not a defect list.
 - **Keyboard support does not transfer.** The Swift rows leave the focus chain and have no
   arrow-key traversal, which is defensible on macOS and prohibited on the web. See the
   Swift `focus` row above.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TableDemo from '../../../components/demos/TableDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <TableDemo client:visible />
 </Example>
 
-<Aside type="tip" title="Data-alignment canon (per column)">
+<DocCallout tone="tip" title="Data-alignment canon (per column)">
 Alignment carries meaning, so it is typed per column, not guessed:
 
 - **Text → left** (`align` omitted) for names, labels, the reading edge.
@@ -29,7 +29,7 @@ Alignment carries meaning, so it is typed per column, not guessed:
 
 Headers inherit their column's alignment (the sort arrow leads on the data edge for numbers) and a
 footer total sits under, and aligned to, its own column (the label left, the numeric totals right).
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -233,7 +233,7 @@ bound `Set`. State comes from the bindings, so there are no Nockerl-specific par
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (table vs list vs key-value)">
+<DocCallout tone="warning" title="Cross-platform drift (table vs list vs key-value)">
 This page is the multi-**column** grid. The single-column sectioned collection is
 [List](/components/list/); one record's label→value fields are [Key-value](/components/key-value/).
 The real divergences between the shipped platforms, tracked in the [Review queue](/review-queue/):
@@ -254,4 +254,4 @@ The real divergences between the shipped platforms, tracked in the [Review queue
   the trailing check**, with **no wash** and never a left stripe (Law 6). The web grid pairs it
   with a checkbox column; macOS uses the native `Table` selection highlight; Compose carries it
   on the per-row `clickable` target.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SelectDemo from '../../../components/demos/SelectDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -197,16 +197,16 @@ pattern.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Pick the right picker">
+<DocCallout tone="note" title="Pick the right picker">
 Select is the **plainest** picker: one value from a fixed list, no typing. Reach for a
 neighbour when you need more: [Combobox](/components/combobox/) when the user should
 **type to filter** a long list (autocomplete); [Multi-select](/components/multi-select/)
 when they pick **several** values (token chips, per-row checkboxes, select-all);
 [Menu](/components/menu/) when the rows are **actions**, not a value (icons, shortcuts,
 submenus).
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The spec is in review; these are the real divergences between the shipped platforms:
 
 - **Selected-row check** *(settled)*: a **trailing check** on the selected row is the shared
@@ -223,4 +223,4 @@ The spec is in review; these are the real divergences between the shipped platfo
 - **Sizing:** web has `size` (sm/md); Compose's anchor is fixed at 48dp; Swift is intrinsic.
 - **Error state:** web has a first-class `errorText` (warm border + icon + message); the
   apps surface validation outside the control today.
-</Aside>
+</DocCallout>

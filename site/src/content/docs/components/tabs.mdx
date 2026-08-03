@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TabsDemo from '../../../components/demos/TabsDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -173,7 +173,7 @@ content panel, a11y-first, ported 1:1 from the web/Compose `NockerlTabs`. (The s
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Tabs are the **sectioned-content switcher**: each tab owns a `tabpanel`
 (`role="tablist"`), distinct from a [segmented control](/components/segmented-control/),
 which flips mutually-exclusive **views/modes** with **no panels**
@@ -198,4 +198,4 @@ Real divergences between the shipped platforms:
   **same sliding cyan underline seated inside a recessed well**, never
   a filled pill (a fill would ape the segmented control). Web, Compose, **and Swift** ship it
   (`NockerlTabsVariant.enclosed` seats the underline row inside a recessed `NockerlWell`).
-</Aside>
+</DocCallout>

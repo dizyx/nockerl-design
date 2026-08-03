@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TreeDemo from '../../../components/demos/TreeDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -179,7 +179,7 @@ expandable folder.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **The recursive tree ships on all three platforms.** Web **publishes** `NockerlTree`
   (`@dizyx/nockerl-react`) with **both** single-select and multi-select tri-state checkboxes.
   Swift **publishes** `NockerlTree` (NockerlDesign), riding the native `List(children:)` over
@@ -197,4 +197,4 @@ expandable folder.
 - **Indent step:** Compose uses **20dp** per level for files (`depth * 20`) and **28dp** for
   the two-tier task subtree; the shipped web `NockerlTree` mirrors the 20px file-tree step. One
   indent token should win across platforms.
-</Aside>
+</DocCallout>

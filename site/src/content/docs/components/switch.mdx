@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import SwitchDemo from '../../../components/demos/SwitchDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -133,11 +133,11 @@ no native case yet).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Track shape:** web draws a **recessed well** that lifts to a static
   cyan gradient; Compose + SwiftUI use the **stock platform track** (only the ON
   color is themed). The catch-light / inset-well treatment is still owed a
   custom Compose track.
 - **Loading:** only web models a `loading` state (async settings write). Compose
   and SwiftUI gate this at the call site (no in-thumb spinner).
-</Aside>
+</DocCallout>

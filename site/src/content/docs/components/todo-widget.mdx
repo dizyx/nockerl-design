@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TodoWidgetDemo from '../../../components/demos/TodoWidgetDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -54,10 +54,10 @@ import { NockerlTodoWidget } from '@dizyx/nockerl-react';
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Android">
+<DocCallout tone="note" title="Android">
 This page documents the web card. On Compose the mirror is the same plan card rendered
 inside the agent transcript, under the same header, glyph and meter rules.
-</Aside>
+</DocCallout>
 
 ## Parameters
 

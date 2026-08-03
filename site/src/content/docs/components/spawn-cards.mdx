@@ -8,7 +8,7 @@ platforms: [android, swift]
 import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/spawncards-block-children.png';
 
 <StatusBadge status="review" />
@@ -97,7 +97,7 @@ NockerlSpawnBlockCard(
   ]}
 />
 
-<Aside type="note" title="Web">
+<DocCallout tone="note" title="Web">
   The react half rides the adoption lane: the dashboard's spawn UI adopts these as the
   canon shape (dashboard implementation was research input only).
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import WizardDemo from '../../../components/demos/WizardDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -190,7 +190,7 @@ reads from `NockerlTheme` (accent, success, surface highlight, divider).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The Wizard is the guided *flow*, not the indicator:
 
 - **Wizard vs [Stepper](/components/stepper/):** the Wizard is the whole flow. It
@@ -207,4 +207,4 @@ The Wizard is the guided *flow*, not the indicator:
 - **Step content** is the [Form layout](/components/form-layout/) vocabulary
   (recessed wells, required `*`, inline errors); the Wizard adds only the
   orchestration (indicator + navigation + gating + review).
-</Aside>
+</DocCallout>

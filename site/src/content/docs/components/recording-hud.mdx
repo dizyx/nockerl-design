@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import RecordingHudDemo from '../../../components/demos/RecordingHudDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -147,7 +147,7 @@ without re-announcing on every meter frame.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (this surface lives natively in Voice + Android)">
+<DocCallout tone="warning" title="Cross-platform drift (this surface lives natively in Voice + Android)">
 The recording HUD is **canonical on both Voice** (`RecordingHUD.swift`) **and Android**
 (`VoiceRecordingUI.kt`); web is **derived**. The meter geometry + the
 `ln(raw+1)/ln(32768)` level math are identical across all three. Honest divergences:
@@ -171,4 +171,4 @@ The recording HUD is **canonical on both Voice** (`RecordingHUD.swift`) **and An
   input bar). The error border swaps to the warm **warning** token on both.
 - **Timer color:** the elapsed clock is the **warm record** color while recording
   (error token), a status signal, not a decorative accent.
-</Aside>
+</DocCallout>

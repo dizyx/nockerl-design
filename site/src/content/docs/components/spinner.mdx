@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SpinnerDemo from '../../../components/demos/SpinnerDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -159,7 +159,7 @@ no explicit parameters beyond the view modifiers below.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The **spinner** is the indeterminate *circular* loader for unknown-length work,
 distinct from its neighbours: the [progress bar](/components/progress-bar/) owns
 determinate / indeterminate **linear** progress *and* the **determinate ring** (it
@@ -176,4 +176,4 @@ spinner has **no value, no %, and no track number**.
   plus the Android treatment.
 - **Track:** the apps ship a **trackless** arc (transparent track); the web `track`
   prop is an opt-in recessed ring, off by default to match.
-</Aside>
+</DocCallout>
