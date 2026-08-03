@@ -54,9 +54,9 @@ const FEATURES: Feature[] = [
 
 export default function FeatureCards() {
   return (
-    <div className="nk-features">
+    <div className="nk-features not-content">
       {FEATURES.map((f) => (
-        <NockerlSurface key={f.title} elevation={1} className="nk-features__card">
+        <NockerlSurface key={f.title} level={1} className="nk-features__card">
           <h3 className="nk-features__title">{f.title}</h3>
           <p className="nk-features__body">{f.body}</p>
         </NockerlSurface>
@@ -65,25 +65,29 @@ export default function FeatureCards() {
         .nk-features {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: var(--space-4, 16px);
-          margin: var(--space-6, 24px) 0;
+          gap: var(--space-4);
+          margin: var(--space-6) 0;
           align-items: stretch;
         }
         @media (max-width: 46rem) { .nk-features { grid-template-columns: 1fr; } }
-        .nk-features__card { padding: var(--space-5, 20px); height: 100%; }
+        .nk-features__card { padding: var(--space-5); height: 100%; }
+        /* Ink is the on-CARD pair, not on-canvas: these sit on a lifted surface, not the ground. */
         .nk-features__title {
-          margin: 0 0 var(--space-2, 8px);
-          font-family: var(--type-title-medium-font-family, 'Outfit'), sans-serif;
-          font-weight: 500;
-          font-size: 1.05rem;
-          letter-spacing: -0.01em;
-          color: var(--color-on-canvas, inherit);
+          margin: 0 0 var(--space-2);
+          font-family: var(--type-title-medium-font-family);
+          font-weight: var(--type-title-medium-font-weight);
+          font-size: var(--type-title-medium-font-size);
+          line-height: var(--type-title-medium-line-height);
+          letter-spacing: var(--font-tracking-snug);
+          color: var(--color-on-card);
         }
         .nk-features__body {
           margin: 0;
-          font-size: 0.9rem;
-          line-height: 1.6;
-          color: var(--color-on-canvas-muted, inherit);
+          font-family: var(--type-body-medium-font-family);
+          font-weight: var(--type-body-medium-font-weight);
+          font-size: var(--type-body-medium-font-size);
+          line-height: var(--type-body-medium-line-height);
+          color: var(--color-on-card-muted);
         }
       `}</style>
     </div>
