@@ -11,7 +11,7 @@
  *     or beside content. No app title, no nav, no back button.
  *   • NOT `menu` / `segmented-control` / `icon-button`: it COMPOSES them. It
  *     reuses the icon-button glyph idiom, the divider hairline as a separator, the
- *     segmented soft-cyan active wash for toggles, and the menu for overflow, all
+ *     segmented active outline for toggles, and the menu for overflow, all
  *     wired together under the WAI-ARIA `toolbar` roving-focus pattern.
  *
  * Sourced from the shipped apps, never the web dashboard:
@@ -109,7 +109,7 @@ const STYLES = `
 /* SEPARATORS between groups are the NockerlDivider primitive (orientation="vertical" on a
    horizontal strip, "horizontal" on a vertical one), the crisp full-height hairline
    the apps ship. The BUTTONS / TOGGLES are the NockerlButton + NockerlIconButton primitives
-   (pressed = the soft-cyan selection wash). Both now OWN their own CSS; the toolbar
+   (pressed = the cyan selection ring + cyan glyph, no fill). Both now OWN their own CSS; the toolbar
    only styles its SURFACE + LAYOUT below (see .nk-tb / .nk-tb__group / the overflow). */
 
 /* the contextual / SELECTION action bar: the same chrome surface, tinted by a
