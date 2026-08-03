@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import IconButtonDemo from '../../../components/demos/IconButtonDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; there is
@@ -44,8 +45,8 @@ export function SessionToolbar() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
@@ -77,8 +78,8 @@ NockerlIconButton(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // SwiftUI: the published NockerlDesign SwiftPM package. A self-contained View that takes
@@ -93,18 +94,18 @@ NockerlIconButton(Image(systemName: "paperplane.fill"), label: "Send message", s
 NockerlIconButton(Image(systemName: "stop.fill"), label: "Stop generating", style: .filledCircle) { stop() }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlIconButton" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -122,8 +123,8 @@ NockerlIconButton(Image(systemName: "stop.fill"), label: "Stop generating", styl
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The published `NockerlIconButton` is a self-contained `View` that takes an `Image` + a
 REQUIRED accessible name. Both idioms ship (`.plain` / `.filledCircle`). State (`isEnabled`,
@@ -142,8 +143,8 @@ pressed) flows from the SwiftUI environment; honor `.disabled(_:)` for the dimme
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Cross-platform parity (published packages)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FabDemo from '../../../components/demos/FabDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -33,8 +34,8 @@ the right idiom.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -66,8 +67,8 @@ export function SessionFeed() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The shipped Nockerl FAB is a corner-pinned
@@ -103,8 +104,8 @@ SmallFloatingActionButton(onClick = ::fork) { Icon(Icons.Default.CallSplit, null
 LargeFloatingActionButton(onClick = ::fork) { Icon(Icons.Default.CallSplit, null) }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. Nockerl Voice ships no literal FAB; its closest equivalent is
@@ -129,13 +130,13 @@ ZStack(alignment: .bottomTrailing) {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -152,8 +153,8 @@ ZStack(alignment: .bottomTrailing) {
 `FabSpeedDial` adds `actions` (an array of `{ id, label, icon, onSelect }`) and reuses
 `label` as the trigger name; it manages `aria-expanded`, Esc-to-close, and focus.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -170,8 +171,8 @@ ZStack(alignment: .bottomTrailing) {
 Builders: `FloatingActionButton` (standard), `SmallFloatingActionButton` (40),
 `LargeFloatingActionButton` (72), `ExtendedFloatingActionButton` (icon + label).
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the FAB as a `ButtonStyle` applied to a standard `Button`, overlaid
 on content with `ZStack(alignment: .bottomTrailing)`. State (`isEnabled`, `isPressed`)
@@ -185,8 +186,8 @@ comes from the environment + the style `Configuration`. There are no state param
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Fill** *(resolved in [adjudication 2026-07-02 · B13])*: the FAB fill is a **solid accent cyan**

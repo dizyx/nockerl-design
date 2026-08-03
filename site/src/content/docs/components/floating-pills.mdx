@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FloatingPillsDemo from '../../../components/demos/FloatingPillsDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: SHIPPED in @dizyx/nockerl-react (promoted from this page's canon, task 2654).
@@ -48,8 +49,8 @@ import { NockerlContextChip, NockerlSessionChip, NockerlSessionChipsBar } from '
 <NockerlContextChip engineGlyph={cloudGlyph} name="docs site" ratio={0.42} />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). com.nockerl.app.chat.ui.SessionChipsBar
@@ -77,8 +78,8 @@ SessionChipsBar(
 // NockerlElevation.Level3, shown only while the feed is scrolled up.
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). NockerlVoice/UI/RecordingHUD.swift
@@ -102,13 +103,13 @@ private var pill: some View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlSessionChipsBar" />
 
@@ -120,8 +121,8 @@ The scroll-to-bottom key on this page is the site-level `_ScrollToBottom` compos
 (a lifted circle + the same floating border + an unread-count badge), not yet a
 package export.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -138,8 +139,8 @@ package export.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI ships a **single** floating pill (the recording HUD status pill), not a tappable
 cluster. It’s a `Capsule` on `chromeSurface` with an accent stroke, lifted by a tinted drop
@@ -156,8 +157,8 @@ suggestion-pill type on this platform yet (see drift note).
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 These are the real divergences between the shipped platforms:

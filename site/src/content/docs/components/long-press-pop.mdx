@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import LongPressPopDemo from '../../../components/demos/LongPressPopDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -35,8 +36,8 @@ The hover **⋯** is therefore not an odd extra affordance; it is simply how a *
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -58,8 +59,8 @@ export function MessageBubble({ message }: { message: Message }) {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose). PUBLISHED: the shared press-feedback modifier
@@ -92,8 +93,8 @@ Box {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). NockerlVoice/UI/HistoryView.swift uses the system
@@ -109,13 +110,13 @@ TranscriptionRow(record: record)
     }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -128,8 +129,8 @@ TranscriptionRow(record: record)
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `Modifier.longPressPop` is the shared press-feedback primitive (published in `com.dizyx.nockerl.design.components`); it owns the dip + ripple + haptic and calls `onLongPress`. The anchored list is a standard `DropdownMenu` opened from that callback.
 
@@ -144,8 +145,8 @@ TranscriptionRow(record: record)
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the pattern as the system `.contextMenu { … }` modifier on a view. There are no explicit parameters: it takes a `@ViewBuilder` of `Button`s; the system supplies the lift, the dim, and the long-press / right-click / Control-click triggers.
 
@@ -159,8 +160,8 @@ SwiftUI exposes the pattern as the system `.contextMenu { … }` modifier on a v
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The trigger and treatment are unified; the real divergences between shipped platforms:

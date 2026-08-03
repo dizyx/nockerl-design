@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import OtpInputDemo from '../../../components/demos/OtpInputDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -50,8 +51,8 @@ export function VerifyStep({ onVerified }: { onVerified: (code: string) => void 
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. NO formal OTP component ships yet; this is the real
@@ -87,8 +88,8 @@ Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI. NOT IMPLEMENTED in Nockerl Voice: no verification-code or
@@ -108,13 +109,13 @@ NockerlOtpInput(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -133,8 +134,8 @@ NockerlOtpInput(
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 No packaged `NockerlOtpInput` ships yet. These are the parameters of the real
 building block (`OutlinedTextField` per cell) that the idiom above composes, plus the
@@ -153,8 +154,8 @@ state a future component would own.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 Not implemented in Nockerl Voice. This is the **proposed** `NockerlOtpInput` API,
 designed from the field + validation vocabulary, not a shipped signature.
@@ -171,8 +172,8 @@ designed from the field + validation vocabulary, not a shipped signature.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The web demo is the reference; this component is **designed originally** from the

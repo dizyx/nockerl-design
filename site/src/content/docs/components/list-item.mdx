@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ListItemDemo from '../../../components/demos/ListItemDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -38,8 +39,8 @@ reveal its message body, tap again to collapse. Key behaviours:
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -66,8 +67,8 @@ export function SessionList({ sessions, activeId, onSelect }: SessionListProps) 
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose). PUBLISHED: the NockerlListItem grammar in
@@ -120,8 +121,8 @@ NockerlListItemRow(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI (Voice). NockerlVoice/UI/HistoryView.swift
@@ -154,18 +155,18 @@ private func row(_ record: TranscriptionRecord) -> some View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlListItem" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `NockerlListItemRow` is the row **scaffold**; it applies no height, padding, background, or
 click of its own. Callers supply those via `modifier`, so each list keeps its own anatomy.
@@ -185,8 +186,8 @@ The leading mark is the canonical `NockerlLeadingStatusMark`.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI (Voice) has **no extracted list-item component**. Rows are composed **inline** from
 an `HStack` whose label `Button` (`.buttonStyle(.plain)`) is the whole-row tap target, plus
@@ -203,8 +204,8 @@ building blocks the shipped `HistoryView` row uses. Tracked as a conformance ite
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The grammar is shared; these are the real divergences between the shipped platforms, tracked

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import PaginationDemo from '../../../components/demos/PaginationDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -46,8 +47,8 @@ export function TaskListFooter({ total }: { total: number }) {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The native lists DON'T use numbered
@@ -77,8 +78,8 @@ fun loadMore() {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Nockerl Voice, canonical). History is an in-memory SwiftData
@@ -99,18 +100,18 @@ struct HistorySection: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlPagination" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 Compose ships **offset paging + load-more**, not a numbered control. These are the
 real `fetchTasks` paging parameters; a numbered bar would be new work (see drift).
@@ -128,8 +129,8 @@ real `fetchTasks` paging parameters; a numbered bar would be new work (see drift
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI (Voice) has **no pagination control**: a `@Query` + `LazyVStack` pages
 lazily on scroll. These are the knobs that exist, listed honestly (see drift).
@@ -143,8 +144,8 @@ lazily on scroll. These are the knobs that exist, listed honestly (see drift).
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Numbered pagination is a **web/dashboard pattern**. Neither shipped app has it,

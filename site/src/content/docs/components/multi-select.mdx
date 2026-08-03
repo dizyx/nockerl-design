@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import MultiSelectDemo from '../../../components/demos/MultiSelectDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -51,8 +52,8 @@ export function LabelPicker() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). No reusable NockerlMultiSelect ships yet;
@@ -88,8 +89,8 @@ Row(
 NockerlChip(text = "bug", onClick = { chosen.remove("bug") }, selected = true)
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. No formal multi-select ships; it composes the shipped Chip +
@@ -122,13 +123,13 @@ ForEach(options, id: \.value) { option in
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -147,8 +148,8 @@ ForEach(options, id: \.value) { option in
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 No reusable `NockerlMultiSelect` composable ships yet. The pattern below is the real
 multi-select in `chat/ui/AskUserQuestionSheet.kt`; the parameters are the primitives
@@ -167,8 +168,8 @@ it composes (Material3 `Checkbox` + `NockerlChip`).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 No formal multi-select ships. It composes the shipped `Chip` + `FlowLayout` (the token
 field) with a `checkmark` option list. State is a `Set<String>` toggled per row.
@@ -184,8 +185,8 @@ field) with a `checkmark` option list. State is a `Set<String>` toggled per row.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Multi-select vs. Combobox: pick by emphasis">
 Both can multi-select, but they emphasize different jobs. The
