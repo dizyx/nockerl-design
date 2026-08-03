@@ -29,13 +29,28 @@
  *      either.
  *   3. Whether that root carries `not-content`.
  *
+ *   4. Whether that row would ACTUALLY stagger. Being a flex row is not sufficient. The flow
+ *      rule is an adjacent-sibling rule and it excludes the same eight tags on both sides,
+ *      so a row whose items are each preceded by a span, a link or inline code cannot take
+ *      the margin at all. Asking the narrower question lets such a row pass honestly rather
+ *      than being tagged to silence the gate, which would be actively wrong when the row
+ *      holds authored prose.
+ *
  * WHAT IT DELIBERATELY DOES NOT DO
  *   It cannot tell that adding the opt-out will collapse spacing that was, wrongly, coming
  *   from the prose cascade. That is a real hazard and the failure message names it.
  *
- * Roots whose class list is computed at runtime cannot be read statically. Those are
- * reported as SKIPPED rather than passed, because a visible blind spot is worth more than a
- * silent green.
+ * KNOWN IMPRECISION, AND THE DIRECTION IT ERRS
+ *   The element scan is a regex over source, so two branches of a conditional read as two
+ *   adjacent siblings even though only one renders. That produces a false positive, never a
+ *   false negative: a real stagger is always reported, and the cost is that a component may
+ *   have to spell one element out instead of two. That is the correct direction for a gate
+ *   whose whole purpose is catching a defect nobody can see locally.
+ *
+ * A class list built at runtime is resolved by harvesting the string literals in the
+ * expression, which covers ternaries, template literals and joined arrays. Only an
+ * expression with no literals at all is unreadable, and that is still reported as SKIPPED
+ * rather than passed, because a visible blind spot is worth more than a silent green.
  *
  * Usage:  bun run scripts/check-prose-leak.ts   (wired into `harness`)
  */
@@ -109,16 +124,63 @@ const themeFlexGrid = new Set<string>();
 if (existsSync(THEME)) flexGridClasses(readFileSync(THEME, 'utf8'), themeFlexGrid);
 
 // ── 3. the root element and its static class list ────────────────────────────────────
-/** `covered` is true when this element, or anything above it, carries the opt-out. */
-type El = { tag: string; classes: string[] | null; covered: boolean };
+/**
+ * `covered` is true when this element, or anything above it, carries the opt-out.
+ * `parent` indexes into the same array, or -1 for the root, so sibling order can be read.
+ */
+type El = { tag: string; classes: string[] | null; covered: boolean; parent: number };
 
 const VOID = new Set(['br', 'img', 'input', 'hr', 'meta', 'link', 'source', 'path', 'circle', 'rect', 'use']);
 
 /**
+ * The tags the flow rule excludes, taken verbatim from its selector:
+ *
+ *   :not(a, strong, em, del, span, input, code, br)
+ *   + :not(a, strong, em, del, span, input, code, br, :where(.not-content *))
+ *
+ * The exclusion appears on BOTH sides, which is the part that is easy to miss. A row whose
+ * items are each preceded by one of these tags cannot take the margin at all, so it cannot
+ * stagger, and tagging it would be wrong rather than merely redundant: the opt-out exempts
+ * the whole subtree, and a subtree holding authored prose needs the cascade.
+ */
+const FLOW_EXCLUDED = new Set(['a', 'strong', 'em', 'del', 'span', 'input', 'code', 'br']);
+
+/**
+ * The class names an element can carry, or null when nothing can be read.
+ *
+ * A plain string attribute is exact. A computed one is not, but it is rarely opaque: a
+ * ternary, a template literal or a joined array still spells its class names out as string
+ * literals in the source. Harvesting every literal inside the expression gives the UNION of
+ * what the element might carry, which is the conservative reading. A false positive here is
+ * a visible failure someone can argue with; a false negative is the silent stagger this gate
+ * exists to prevent.
+ *
+ * Only an expression with no literals at all (a bare variable) is genuinely unreadable, and
+ * that still returns null so it is reported as a blind spot rather than passed.
+ */
+function classesOf(attrs: string): string[] | null {
+  const exact = attrs.match(/\b(?:class|className)\s*=\s*"([^"]*)"/);
+  if (exact) return exact[1]!.split(/\s+/).filter(Boolean);
+
+  const computed = attrs.match(/\b(?:class|className)\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}/);
+  if (!computed) return [];
+
+  const found = new Set<string>();
+  for (const lit of computed[1]!.matchAll(/'([^']*)'|"([^"]*)"|`([^`]*)`/g)) {
+    const raw = lit[1] ?? lit[2] ?? lit[3] ?? '';
+    // A template literal keeps its static parts; an interpolation is dropped, which can
+    // leave a dangling modifier stem such as `nk-status--`. The stem is harmless: it is not
+    // a real rule name, so it matches nothing in the CSS.
+    for (const cls of raw.replace(/\$\{[^}]*\}/g, ' ').split(/\s+/)) if (cls) found.add(cls);
+  }
+  return found.size ? [...found] : null;
+}
+
+/**
  * Every rendered element in source order, element [0] being the root, each carrying whether
- * an ancestor already exempts it. Ancestry matters: the flow selector excludes
- * `:where(.not-content *)`, so one tagged row covers everything nested inside it, and
- * flagging those descendants again would be a false positive.
+ * an ancestor already exempts it and which element contains it. Ancestry matters: the flow
+ * selector excludes `:where(.not-content *)`, so one tagged row covers everything nested
+ * inside it, and flagging those descendants again would be a false positive.
  */
 function elementsOf(src: string, isAstro: boolean): El[] {
   let body = src;
@@ -137,7 +199,7 @@ function elementsOf(src: string, isAstro: boolean): El[] {
   body = body.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<script[\s\S]*?<\/script>/g, '');
 
   const out: El[] = [];
-  const stack: boolean[] = [];
+  const stack: Array<{ covered: boolean; index: number }> = [];
   const TOKEN = /<\/([a-zA-Z][\w.-]*)\s*>|<([a-zA-Z][\w.-]*)((?:[^>"']|"[^"]*"|'[^']*'|\{[^}]*\})*)>/g;
 
   for (const m of body.matchAll(TOKEN)) {
@@ -149,22 +211,65 @@ function elementsOf(src: string, isAstro: boolean): El[] {
     const attrs = m[3] ?? '';
     const selfClosing = attrs.trimEnd().endsWith('/') || VOID.has(tag.toLowerCase());
 
-    let classes: string[] | null;
-    const staticCls = attrs.match(/\b(?:class|className)\s*=\s*"([^"]*)"/);
-    if (staticCls) classes = staticCls[1]!.split(/\s+/).filter(Boolean);
-    else if (/\b(?:class|className)\s*=\s*\{/.test(attrs)) classes = null;
-    else classes = [];
-
-    const inherited = stack.length > 0 && stack[stack.length - 1] === true;
+    const classes = classesOf(attrs);
+    const top = stack[stack.length - 1];
+    const inherited = top?.covered === true;
     const covered = inherited || (classes?.includes(OPT_OUT) ?? false);
-    out.push({ tag, classes, covered });
-    if (!selfClosing) stack.push(covered);
+    const index = out.length;
+    out.push({ tag, classes, covered, parent: top ? top.index : -1 });
+    if (!selfClosing) stack.push({ covered, index });
+  }
+  return out;
+}
+
+// ── 3b. stylesheets a component imports from the published package ───────────────────
+/**
+ * A wrapper can present a published component's visual contract by importing that
+ * component's stylesheet rather than authoring one. `DocCallout` and `DocTabs` both do it,
+ * deliberately, so they cannot drift from the components they represent.
+ *
+ * That put the rows they lay out beyond this gate's reach: the `display: flex` lives in the
+ * package, not in the component file or the theme, so the row was invisible and the check
+ * passed on a component it had not actually read. Resolving the imported constants closes
+ * that hole, and it is the reason the two wrappers can now be judged at all.
+ */
+const PKG_SRC = join(ROOT, 'packages/react/src');
+const styleConstCache = new Map<string, Set<string>>();
+
+function importedStyleClasses(src: string): Set<string> {
+  const out = new Set<string>();
+  const names = new Set<string>();
+  for (const imp of src.matchAll(/import\s*\{([^}]*)\}\s*from\s*'@dizyx\/nockerl-react'/g)) {
+    for (const n of imp[1]!.split(',')) {
+      const name = n.trim();
+      if (/^NOCKERL_[A-Z0-9_]*_STYLES$/.test(name)) names.add(name);
+    }
+  }
+  if (!names.size) return out;
+
+  for (const name of names) {
+    const cached = styleConstCache.get(name);
+    if (cached) {
+      for (const c of cached) out.add(c);
+      continue;
+    }
+    const found = new Set<string>();
+    for (const rel of new Glob('**/*.tsx').scanSync(PKG_SRC)) {
+      const text = readFileSync(join(PKG_SRC, rel), 'utf8');
+      const decl = text.match(new RegExp(`${name}\\s*=\\s*\`([\\s\\S]*?)\``));
+      if (decl) {
+        flexGridClasses(decl[1]!, found);
+        break;
+      }
+    }
+    styleConstCache.set(name, found);
+    for (const c of found) out.add(c);
   }
   return out;
 }
 
 // ── 4. verdict ───────────────────────────────────────────────────────────────────────
-type Fail = { file: string; tag: string; cls: string };
+type Fail = { file: string; tag: string; cls: string; child: string; prev: string };
 const failures: Fail[] = [];
 const skipped: Array<{ file: string; tag: string }> = [];
 let checked = 0;
@@ -183,28 +288,47 @@ for (const rel of [...reachable].sort()) {
   const root = els[0]!;
   const own = new Set<string>();
   flexGridClasses(src, own);
+  for (const c of importedStyleClasses(src)) own.add(c);
   const isFlexGrid = (c: string) => own.has(c) || themeFlexGrid.has(c);
+
+  /** Children of an element, in source order. */
+  const childrenOf = (index: number) => els.filter((e) => e.parent === index);
 
   // The row need not be the root. `.cg__cards` is a flex row three levels down and the
   // cascade reaches it just the same, so every element is considered. An element already
   // covered by a tagged ancestor is exempt, which is what lets a component tag one row and
   // leave a sibling subtree of authored prose in the cascade.
   let dynamicSeen = false;
-  let hit: { tag: string; cls: string } | null = null;
-  for (const el of els) {
+  let hit: Omit<Fail, 'file'> | null = null;
+  for (let i = 0; i < els.length; i++) {
+    const el = els[i]!;
     if (el.covered) continue;
     if (el.classes === null) {
       dynamicSeen = true;
       continue;
     }
     const cls = el.classes.find(isFlexGrid);
-    if (cls) {
-      hit = { tag: el.tag, cls };
+    if (!cls) continue;
+
+    // Being a flex row is not enough to stagger. The flow rule only fires on an item whose
+    // PRECEDING sibling also qualifies, and both sides exclude the same eight tags. So the
+    // question is not "is this a row" but "does this row have an item that would actually
+    // take the margin". Asking the narrower question is what lets a row whose items are
+    // separated by spans pass honestly, instead of being tagged to silence a gate.
+    const kids = childrenOf(i);
+    for (let k = 1; k < kids.length; k++) {
+      const child = kids[k]!;
+      const prev = kids[k - 1]!;
+      if (child.covered) continue;
+      if (FLOW_EXCLUDED.has(child.tag.toLowerCase())) continue;
+      if (FLOW_EXCLUDED.has(prev.tag.toLowerCase())) continue;
+      hit = { tag: el.tag, cls, child: child.tag, prev: prev.tag };
       break;
     }
+    if (hit) break;
   }
 
-  if (hit) failures.push({ file: rel, tag: hit.tag, cls: hit.cls });
+  if (hit) failures.push({ file: rel, ...hit });
   else if (dynamicSeen) skipped.push({ file: rel, tag: root.tag });
 }
 
@@ -238,8 +362,11 @@ if (skipped.length) {
 
 if (failures.length) {
   failed = true;
-  console.log(`\n✗ ${failures.length} component root(s) lay out a flex or grid row inside docs without "${OPT_OUT}":`);
-  for (const f of failures) console.log(`    ${f.file}  <${f.tag}> via .${f.cls}`);
+  console.log(`\n✗ ${failures.length} flex or grid row(s) inside docs will stagger, and none carries "${OPT_OUT}":`);
+  for (const f of failures) {
+    console.log(`    ${f.file}  <${f.tag}> via .${f.cls}`);
+    console.log(`      <${f.prev}> then <${f.child}>: neither tag is excluded, so <${f.child}> takes the margin.`);
+  }
   console.log(`
 The docs prose flow rule adds a top margin to every element that has a preceding sibling,
 and it reaches into your component. Item one stays put, items two onward drop, and the row

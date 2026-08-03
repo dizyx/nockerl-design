@@ -44,6 +44,13 @@
  * subtree and flatten the spacing of every list and paragraph inside every callout on the
  * site. Tag chrome, never prose. Here the chrome needs no tag, so nothing is tagged.
  *
+ * THIS IS ENFORCED, NOT REMEMBERED. `scripts/check-prose-leak.ts` reads the two rows here
+ * (`.nk-co` and `.nk-co__body`, both flex, both from the imported stylesheet) and checks
+ * the tag of every item against the flow rule's exclusion list. Turning any of the three
+ * chrome spans into a div fails the build with the offending pair named. Do not "fix" such
+ * a failure by adding the opt-out: that would silence the gate and flatten the prose. Keep
+ * the chrome span-typed instead.
+ *
  * TONE VOCABULARY
  * The tones are this project's own, not the ones the previous asides used, and the two
  * vocabularies are not aligned. `caution` exists in both and means different things: it was
@@ -130,6 +137,9 @@ const FILL_GLYPH: Partial<Record<Tone, string>> = {
 
 const isQuote = tone === 'quote';
 const isImportant = tone === 'important';
+/** Two of the glyphs are drawn as strokes at the heavier weight; the rest are solid fills. */
+const stroked = Boolean(STROKE_GLYPH[tone]);
+const glyph = STROKE_GLYPH[tone] ?? FILL_GLYPH[tone];
 const eyebrow = title ?? TONE_LABEL[tone];
 const color = TONE_COLOR[tone];
 
@@ -178,26 +188,23 @@ const wrapperProps = isImportant ? { class: 'nk-co-frame', style: `--co-c: ${col
       ) : (
         icon && (
           <span class="nk-disc" aria-hidden="true" style={`--nk-disc-c: ${color}; --nk-disc-nudge: ${LINE_NUDGE}`}>
-            {
-              STROKE_GLYPH[tone] ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d={STROKE_GLYPH[tone]} />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d={FILL_GLYPH[tone]} />
-                </svg>
-              )
-            }
+            {/*
+              ONE svg, with the stroke attributes applied only to the stroked glyphs. Two
+              sibling branches would render the same thing, but they read as two adjacent
+              elements to anything analysing this file statically, including the layout gate.
+              Keeping it to a single element means the markup says exactly what it renders.
+            */}
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              fill={stroked ? 'none' : 'currentColor'}
+              stroke={stroked ? 'currentColor' : undefined}
+              stroke-width={stroked ? '2.6' : undefined}
+              stroke-linecap={stroked ? 'round' : undefined}
+              stroke-linejoin={stroked ? 'round' : undefined}
+            >
+              <path d={glyph} />
+            </svg>
           </span>
         )
       )
