@@ -1,0 +1,327 @@
+---
+/**
+ * DocTabs: the docs-site platform switcher, rendered with the shipped NockerlTabs
+ * visual contract.
+ *
+ * The docs previously used another design system's tabs on 87 pages while this project
+ * publishes its own. This wrapper closes that gap without turning every page into a
+ * client island: the markup is server rendered, the panels are ordinary slots that hold
+ * arbitrary MDX (code blocks included, processed normally by the docs pipeline), and the
+ * only client work is selection, keyboard navigation, and indicator placement.
+ *
+ * WHY A WRAPPER RATHER THAN THE REACT COMPONENT
+ * `NockerlTabs` is a controlled React component: it takes `tabs: TabItemDef[]` with panels
+ * supplied as `ReactNode`. Authored MDX cannot be passed into a data-array prop, and
+ * mounting it on every page would add a client island site wide. This component therefore
+ * reproduces the same DOM and consumes the same stylesheet, so the two cannot drift.
+ *
+ * STYLES ARE IMPORTED, NOT COPIED
+ * `NOCKERL_TABS_STYLES` is the exact stylesheet the React component injects. Importing it
+ * means a change to the component reaches these pages with no second edit. The only CSS
+ * authored here is the small surface base the panel depends on, explained below.
+ *
+ * SELECTION SYNC
+ * Selection syncs across every group on a page and persists across navigation. The storage
+ * contract is deliberately identical to the one the docs already used
+ * (`starlight-synced-tabs__<syncKey>`, holding the visible tab label), so a reader's saved
+ * choice survives this change, and pages migrated in later batches stay in sync with pages
+ * not yet migrated. That compatibility is what makes an incremental rollout safe.
+ *
+ * THE MARGIN OPT-OUT, THE ONE THING TO GET RIGHT
+ * The docs content pipeline gives every element with a preceding sibling a top margin. In a
+ * flex row that pushes items 2..n down and reads as broken alignment. The opt-out class
+ * belongs on the TABLIST, which is the flex row, and must never be placed on the component
+ * root: the panels hold authored prose and need those margins to survive.
+ *
+ * USAGE
+ *   <DocTabs>
+ *     <Fragment slot="typescript"> ...MDX... </Fragment>
+ *     <Fragment slot="kotlin">     ...MDX... </Fragment>
+ *     <Fragment slot="swift">      ...MDX... </Fragment>
+ *   </DocTabs>
+ *
+ * A slot that is omitted is omitted from the tablist, so single-platform pages work without
+ * any extra prop.
+ */
+import { NOCKERL_TABS_STYLES } from '@dizyx/nockerl-react';
+
+interface Props {
+  /** Groups sharing a key select together and persist together. */
+  syncKey?: string;
+  /** Accessible name for the tablist. */
+  label?: string;
+  /** Indicator treatment, matching the component's own variants. */
+  variant?: 'underline' | 'enclosed';
+  /** Tab height, padding, and type role. */
+  size?: 'sm' | 'md';
+  /**
+   * Render the panel on the lifted panel surface, which is what the React component does.
+   * Set false for a bare panel when the content already carries its own frame.
+   */
+  surface?: boolean;
+}
+
+const { syncKey = 'lang', label = 'Platform', variant = 'underline', size = 'md', surface = true } = Astro.props;
+
+/** The platform set the docs actually use. A slot with no content is skipped. */
+const PLATFORMS = [
+  { key: 'typescript', label: 'TypeScript' },
+  { key: 'kotlin', label: 'Kotlin' },
+  { key: 'swift', label: 'Swift' },
+] as const;
+
+const tabs = PLATFORMS.filter((p) => Astro.slots.has(p.key));
+
+/**
+ * Stable ids. A per-request counter rather than a random value, so a page renders the same
+ * markup every time and ids stay unique within it.
+ */
+const COUNTER_SYMBOL = Symbol.for('nockerl:doc-tabs-count');
+const locals = Astro.locals as Record<symbol, unknown>;
+const groupIndex = typeof locals[COUNTER_SYMBOL] === 'number' ? (locals[COUNTER_SYMBOL] as number) : 0;
+locals[COUNTER_SYMBOL] = groupIndex + 1;
+const gid = `nk-dt-${groupIndex}`;
+
+/**
+ * The restore script runs before paint so a persisted selection never flashes the wrong
+ * panel first. It is inlined once per page.
+ */
+const RESTORE_SYMBOL = Symbol.for('nockerl:doc-tabs-restore-rendered');
+const shouldRenderRestore = (Astro.locals as Record<symbol, unknown>)[RESTORE_SYMBOL] !== true;
+if (shouldRenderRestore) (Astro.locals as Record<symbol, unknown>)[RESTORE_SYMBOL] = true;
+---
+
+{
+  shouldRenderRestore && (
+    <script is:inline>
+      {`(() => {
+  // Restore the persisted selection before paint. Reads the same storage entry the docs
+  // used previously, so a saved choice carries over and half-migrated pages stay in sync.
+  class NockerlDocTabsRestore extends HTMLElement {
+    connectedCallback() {
+      const root = this.closest('[data-doc-tabs]');
+      if (!root || typeof localStorage === 'undefined') return;
+      const key = root.getAttribute('data-sync-key');
+      if (!key) return;
+      let label;
+      try { label = localStorage.getItem('starlight-synced-tabs__' + key); } catch { return; }
+      if (!label) return;
+      const tabs = [...root.querySelectorAll('[role="tab"]')];
+      const panels = [...root.querySelectorAll(':scope > [role="tabpanel"]')];
+      const i = tabs.findIndex((t) => (t.textContent || '').trim() === label);
+      if (i < 1 || !tabs[i] || !panels[i]) return;
+      tabs[0].setAttribute('aria-selected', 'false');
+      tabs[0].setAttribute('tabindex', '-1');
+      panels[0].setAttribute('hidden', '');
+      tabs[i].setAttribute('aria-selected', 'true');
+      tabs[i].removeAttribute('tabindex');
+      panels[i].removeAttribute('hidden');
+    }
+  }
+  if (!customElements.get('nockerl-doc-tabs-restore')) {
+    customElements.define('nockerl-doc-tabs-restore', NockerlDocTabsRestore);
+  }
+})()`}
+    </script>
+  )
+}
+
+<div class={`nk-tb nk-tb--${variant} nk-tb--${size}`} data-doc-tabs data-sync-key={syncKey}>
+  {/*
+    The opt-out sits HERE, on the flex row only. Putting it on the component root would
+    strip the margins from every paragraph inside every panel.
+  */}
+  <div class="nk-tb__scroller not-content">
+    <div class="nk-tb__list" role="tablist" aria-label={label}>
+      <span class="nk-tb__ind nk-tb__ind--hidden" aria-hidden="true"></span>
+      {
+        tabs.map((t, i) => (
+          <button
+            class="nk-tb__tab"
+            type="button"
+            role="tab"
+            id={`${gid}-tab-${t.key}`}
+            aria-controls={`${gid}-panel-${t.key}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            <span class="nk-tb__lbl">{t.label}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+  {
+    tabs.map((t, i) => (
+      <div
+        class={surface ? 'nk-surface nk-tb__panel' : 'nk-tb__panel nk-tb__panel--bare'}
+        role="tabpanel"
+        id={`${gid}-panel-${t.key}`}
+        aria-labelledby={`${gid}-tab-${t.key}`}
+        tabindex={0}
+        hidden={i !== 0}
+      >
+        <slot name={t.key} />
+      </div>
+    ))
+  }
+  <nockerl-doc-tabs-restore></nockerl-doc-tabs-restore>
+</div>
+
+{/*
+  The component's own stylesheet, imported rather than reproduced, so the tablist, the
+  sliding indicator, the tab states, and the panel all match the published component and
+  cannot drift from it.
+*/}
+<style is:global set:html={NOCKERL_TABS_STYLES}></style>
+
+<style is:global>
+  /*
+    The panel surface. The published panel composes the surface primitive, whose stylesheet
+    is not exported from the package, so the four declarations it contributes are mirrored
+    here. The sheen custom property matters: the panel's own shadow references it, and an
+    undefined custom property would invalidate the whole shadow declaration.
+  */
+  .nk-tb__panel.nk-surface {
+    background: var(--color-card-surface1);
+    border-radius: var(--radius-card);
+    border: var(--space-px) solid var(--color-card-hairline);
+    --nk-surface-sheen: inset 0 var(--space-px) 0 var(--color-surface-highlight);
+  }
+
+  /* Bare panels carry no frame, for content that already brings its own. */
+  .nk-tb__panel--bare {
+    box-shadow: none;
+    padding: 0;
+    min-height: 0;
+  }
+
+  /* The tablist scroller must not clip the indicator, which sits on the baseline. */
+  .nk-tb [data-doc-tabs] .nk-tb__list {
+    scrollbar-width: none;
+  }
+</style>
+
+<script>
+  // Selection, keyboard navigation, indicator placement, and cross-group sync.
+  // Idempotent: safe to run again after a view transition.
+  const STORAGE_PREFIX = 'starlight-synced-tabs__';
+
+  function initDocTabs() {
+    const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-doc-tabs]'));
+    const byKey = new Map<string, HTMLElement[]>();
+
+    for (const group of groups) {
+      const key = group.dataset.syncKey;
+      if (key) {
+        const peers = byKey.get(key) ?? [];
+        peers.push(group);
+        byKey.set(key, peers);
+      }
+      if (group.dataset.nkReady === 'true') continue;
+      group.dataset.nkReady = 'true';
+      wire(group, byKey);
+    }
+
+    // Place every indicator once the DOM is settled.
+    for (const group of groups) moveIndicator(group);
+  }
+
+  function tabsOf(group: HTMLElement) {
+    return Array.from(group.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+  }
+
+  function panelsOf(group: HTMLElement) {
+    return Array.from(group.querySelectorAll<HTMLElement>(':scope > [role="tabpanel"]'));
+  }
+
+  /**
+   * The indicator hugs the LABEL box rather than the padded tab, matching the published
+   * component. Hidden until measured, so it never flashes at the wrong width.
+   */
+  function moveIndicator(group: HTMLElement) {
+    const ind = group.querySelector<HTMLElement>('.nk-tb__ind');
+    if (!ind) return;
+    const tabs = tabsOf(group);
+    const index = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+    const tab = tabs[index];
+    const lbl = tab?.querySelector<HTMLElement>('.nk-tb__lbl');
+    if (!tab || !lbl) {
+      ind.classList.add('nk-tb__ind--hidden');
+      return;
+    }
+    ind.style.transform = `translateX(${tab.offsetLeft + lbl.offsetLeft}px)`;
+    ind.style.width = `${lbl.offsetWidth}px`;
+    ind.classList.remove('nk-tb__ind--hidden');
+  }
+
+  function select(group: HTMLElement, index: number, opts: { focus?: boolean; sync?: boolean } = {}) {
+    const tabs = tabsOf(group);
+    const panels = panelsOf(group);
+    const newTab = tabs[index];
+    const newPanel = panels[index];
+    if (!newTab || !newPanel) return;
+
+    // Hold the group's position so a panel of a different height does not jump the page.
+    const before = opts.sync ? group.getBoundingClientRect().top : 0;
+
+    tabs.forEach((t) => {
+      t.setAttribute('aria-selected', 'false');
+      t.setAttribute('tabindex', '-1');
+    });
+    panels.forEach((p) => p.setAttribute('hidden', ''));
+
+    newTab.setAttribute('aria-selected', 'true');
+    newTab.removeAttribute('tabindex');
+    newPanel.removeAttribute('hidden');
+    moveIndicator(group);
+
+    if (opts.focus) newTab.focus();
+
+    if (opts.sync) {
+      const key = group.dataset.syncKey;
+      const label = (newTab.textContent || '').trim();
+      if (key && label) {
+        try {
+          localStorage.setItem(STORAGE_PREFIX + key, label);
+        } catch {
+          // Storage can be unavailable. Selection still works for this page.
+        }
+        for (const peer of document.querySelectorAll<HTMLElement>(`[data-doc-tabs][data-sync-key="${key}"]`)) {
+          if (peer === group) continue;
+          const peerIndex = tabsOf(peer).findIndex((t) => (t.textContent || '').trim() === label);
+          if (peerIndex >= 0) select(peer, peerIndex, { focus: false, sync: false });
+        }
+      }
+      window.scrollTo({
+        top: window.scrollY + (group.getBoundingClientRect().top - before),
+        behavior: 'instant' as ScrollBehavior,
+      });
+    }
+  }
+
+  function wire(group: HTMLElement, _byKey: Map<string, HTMLElement[]>) {
+    const tabs = tabsOf(group);
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(group, i, { focus: true, sync: true }));
+      tab.addEventListener('keydown', (event) => {
+        const total = tabs.length;
+        let next: number | null = null;
+        if (event.key === 'ArrowRight') next = (i + 1) % total;
+        else if (event.key === 'ArrowLeft') next = (i - 1 + total) % total;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = total - 1;
+        if (next === null) return;
+        event.preventDefault();
+        select(group, next, { focus: true, sync: true });
+      });
+    });
+  }
+
+  initDocTabs();
+  document.addEventListener('astro:page-load', initDocTabs);
+  // Re-measure when the row reflows, since the indicator is positioned from layout.
+  window.addEventListener('resize', () => {
+    document.querySelectorAll<HTMLElement>('[data-doc-tabs]').forEach(moveIndicator);
+  });
+</script>

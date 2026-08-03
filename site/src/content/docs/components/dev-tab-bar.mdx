@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import DevTabBarDemo from '../../../components/demos/DevTabBarDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -39,8 +40,8 @@ ever needs them inherits the same API).
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs>
+<Fragment slot="typescript">
 
 ```tsx
 import { NockerlTabs } from '@dizyx/nockerl-react';
@@ -55,8 +56,8 @@ import { NockerlTabs } from '@dizyx/nockerl-react';
 />
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DividerDemo from '../../../components/demos/DividerDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -49,8 +50,8 @@ export function SettingsGroup() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). Material 3 HorizontalDivider / VerticalDivider,
@@ -82,8 +83,8 @@ Row(verticalAlignment = Alignment.CenterVertically) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). NockerlVoice/UI uses a hairline Rectangle filled with
@@ -105,18 +106,18 @@ Rectangle().fill(NockerlTheme.accent).frame(height: 1.5)
 Divider()
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlDivider" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 Compose ships Material 3's `HorizontalDivider` / `VerticalDivider`; Nockerl supplies the
 **color token** (`colors.divider` / `altHairline`) and, for the signature line + labeled
@@ -131,8 +132,8 @@ variants, a thin `Box` / `Row`. There is no single wrapper component yet.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI has no parameterized divider component; Nockerl draws a `Rectangle` filled with a
 theme token and sized to the hairline. The native `Divider()` is used only inside menus and
@@ -148,8 +149,8 @@ theme token and sized to the hairline. The native `Divider()` is used only insid
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The hairline tone and the signature cyan line agree; the wrapping does not:
