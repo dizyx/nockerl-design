@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -51,12 +51,12 @@ Compose: `NockerlGrid.gutter` / `.margin` / `.containerMd` / `.containerLg` /
 `.containerXl` (dp). Swift: `NockerlGrid` (pt). Source:
 `tokens/semantic/grid.json`.
 
-<Aside type="caution" title="Not the overlay ladder">
+<DocCallout tone="warning" title="Not the overlay ladder">
 `--size-container-xs…lg` (216 to 360px) is a **different ladder**: the footprints of
 self-clamped overlays (menus, tooltips, popovers, the vertical stepper). Grid containers
 clamp **page shells**; size containers clamp **floating surfaces**. Never substitute one
 for the other.
-</Aside>
+</DocCallout>
 
 Margins **grow by centering, not by token**: past the container clamp the leftover space
 becomes symmetric auto margins. `--grid-margin` only guarantees the floor on small

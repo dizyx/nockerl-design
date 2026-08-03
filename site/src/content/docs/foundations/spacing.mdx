@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -72,15 +72,15 @@ padding), never the fill or the type. It is a per-component behavior today, expr
 the same `--space-*` steps (a dense List row drops to `--space-1` top/bottom padding and a
 `--space-8` min-height).
 
-<Aside type="tip" title="Density tiers are now a foundation">
+<DocCallout tone="tip" title="Density tiers are now a foundation">
 Density is now its own foundation (spacing-only `comfortable` / `compact` tiers applied
 per-component): see the [Density](/foundations/density/) page.
-</Aside>
+</DocCallout>
 
-<Aside type="tip" title="Layout grids are now a foundation">
+<DocCallout tone="tip" title="Layout grids are now a foundation">
 Column / layout grids (breakpoints, gutters, container widths) are now a foundation too:
 see the [Layout grids](/foundations/layout-grids/) page.
-</Aside>
+</DocCallout>
 
 ## Tokens
 

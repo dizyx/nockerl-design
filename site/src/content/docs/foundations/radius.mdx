@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -59,13 +59,13 @@ The web `card → 4px` shadcn default that once diverged was **drift, not a deci
 dropped it, so web now inherits the unified 16. The only genuinely platform-specific shape token
 left is Android's `chamfer`.
 
-<Aside type="note" title="Android-only: chamfer accent">
+<DocCallout tone="note" title="Android-only: chamfer accent">
 `radius-chamfer` (**14dp**) drives Compose's `ChamferedCornerShape`, an angled corner *cut*
 (not a round) used sparingly for **workspace-pill / team-card** accents. It lives in
 `tokens/platform/android/radius.json` because it is the one legitimate per-platform shape delta
 (ADR-0003); every other radius falls through to the shared semantic scale unchanged. Web may
 adopt an equivalent clip later. That is an open, deliberately-deferred option, not a promise.
-</Aside>
+</DocCallout>
 
 ## Tokens
 

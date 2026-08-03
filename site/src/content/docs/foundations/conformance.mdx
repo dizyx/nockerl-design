@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -41,7 +41,7 @@ site whether or not it currently matches.
 Audits before this spec asked *"does it compose the right parts?"*, a **static** check.
 Static checks pass on structure and miss **rendered values**. The canonical failure:
 
-<Aside type="danger" title="The  proof case: 11 green audits, wrong font">
+<DocCallout tone="caution" title="The proof case: 11 green audits, wrong font">
 `NockerlType` declared every role in the **Outfit** family, but the Swift package
 shipped **no font resource and no registration**, so the `"Outfit"` family name never
 resolved and macOS silently fell back to **SF**. Eleven consecutive audits passed: the
@@ -51,7 +51,7 @@ shipped a pilot in the wrong typeface with a clean audit trail. Compounding it: 
 call-sites used `.font(.system(size: NockerlFontSize.x))` (right size, **hand-mirrored**
 family) and zero used `NockerlType`. The path of least resistance lost the family
 exactly where the doctrine predicts drift: hand-mirroring.
-</Aside>
+</DocCallout>
 
 The fix is **L1 value-parity attestation**: an audit must record, for each component,
 the *rendered* value, *where it came from*, and whether it matches canon, not just that
@@ -88,13 +88,13 @@ Rules for filling it:
    and key spacings are the recurring value-parity offenders (they read "close enough"
    by eye and fail measurement). Extend per component.
 
-<Aside type="tip" title="Reference canon values">
+<DocCallout tone="tip" title="Reference canon values">
 Pull the canon column from the source of truth, never from memory:
 [Typography](/foundations/typography/) (sizes/roles), [Spacing](/foundations/spacing/),
 [Radius](/foundations/radius/), [Density](/foundations/density/) (tiers + footprints),
 and each component's page (control heights). On macOS, snap real text-style sizes via
 the [Platform gotchas](/foundations/platform-gotchas/#macos) table first.
-</Aside>
+</DocCallout>
 
 ## The attestation is per-release
 

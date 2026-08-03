@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -85,7 +85,7 @@ per-component nicety. Motion doesn't just speed up; it *stops*:
 The freeze applies to *decorative* motion. Meaning is never carried by animation alone: a
 spinner still announces via `role="status"`, and state changes stay legible with motion off.
 
-<Aside type="note" title="The published motion token set">
+<DocCallout tone="note" title="The published motion token set">
 The set above is **ratified and emitted** from `tokens/core/motion.json` to all three targets:
 
 - **Web** (`@dizyx/nockerl-tokens`): `--motion-duration-instant / fast / base / slow / sheet /
@@ -99,4 +99,4 @@ deliberately remain literal: a handful of genuinely custom curves (a spring over
 ease-out) with no token equivalent, and the primitives' micro-durations (`.12s` / `.16s`), which
 sit below the ratified ladder. Conforming those timings is a motion decision tracked with this
 slice, not a mechanical swap. Treat the token names as the contract.
-</Aside>
+</DocCallout>

@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -43,12 +43,12 @@ not new primitives; density re-selects existing rhythm, it doesn't invent geomet
 Compose: `NockerlDensity.rowHeightCompact` / `.rowHeightComfortable` / `.padYCompact` /
 `.padYComfortable` (dp). Swift: `NockerlDensity` (pt).
 
-<Aside type="caution" title="Compact is a visual height, not a touch target">
+<DocCallout tone="warning" title="Compact is a visual height, not a touch target">
 Android's 48dp touch law (design-laws §13) still applies inside compact surfaces:
 an interactive 32px row exposes a 48dp hit area via expanded touch bounds (the standard
 dense-list technique). Web's 24px floor and macOS's ~44pt pointer comfort are unaffected
 at 32px.
-</Aside>
+</DocCallout>
 
 ## How components opt in
 
