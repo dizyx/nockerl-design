@@ -2076,7 +2076,7 @@
           "type": "boolean",
           "optional": true,
           "default": "false",
-          "description": "Selected state: soft cyan wash + a LEADING check. NOT a glow, not a left-rail."
+          "description": "Selected state: a cyan edge bounding the run, cyan ink, and a LEADING check. NOT a glow, not a left-rail."
         },
         {
           "name": "disabled",
@@ -2125,7 +2125,7 @@
           "type": "boolean",
           "optional": true,
           "default": "false",
-          "description": "Chosen state. Sets aria-selected + a faint cyan wash (single-select check / multi box fill)."
+          "description": "Chosen state. Sets aria-selected + a cyan edge and cyan ink (single-select check / multi box fill)."
         },
         {
           "name": "active",
@@ -2167,7 +2167,7 @@
           "type": "ListboxOptionRun",
           "optional": true,
           "default": "'single'",
-          "description": "Position in a CONTIGUOUS RUN of selected rows. Squares the corners where a selected row TOUCHES its selected neighbor so the run's washes merge into one block (no white notches), rounding only the run's outer corners. Only meaningful on a selected row; defaults to <code>single</code> (all corners rounded for the lone/non-run case, and every single-select consumer). See ."
+          "description": "Position in a CONTIGUOUS RUN of selected rows. Squares the corners where a selected row TOUCHES its selected neighbor so the run's shared edges drop into one block (no white notches), rounding only the run's outer corners. Only meaningful on a selected row; defaults to <code>single</code> (all corners rounded for the lone/non-run case, and every single-select consumer). See ."
         },
         {
           "name": "trailing",

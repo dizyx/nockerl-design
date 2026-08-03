@@ -238,6 +238,13 @@ today, not a defect list.
   leading icon, with **no wash**, no left rail, and no stripe (law §6). The Swift row
   already carries no wash. The web is being conformed to the same position, so the soft
   cyan wash it previously used comes out; the law does not move.
+- **Hover on an already-selected row differs on purpose.** Swift answers nothing: on macOS a
+  selected sidebar row is inert under the pointer, Voice ships that, and it is approved. The
+  web brightens the row's existing cyan edge to full strength instead, because a pointer-first
+  surface that answers nothing on hover reads as disabled. It reuses the channel selection
+  already owns rather than adding a wash, so law §6 still holds, and a border colour is
+  interpolatable, so law §7 does too. This is the platform behaviour honoured per law §9, not
+  drift: the learning transfers, the macOS habit does not.
 - **Android has no side rail.** Voice and web use a vertical sidebar; Android's persistent
   nav is **top chrome** (project + session rows that collapse *up* under the title bar).
   A `NavigationRail` / `PermanentNavigationDrawer` is not used today.

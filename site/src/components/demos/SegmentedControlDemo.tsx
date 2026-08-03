@@ -1,9 +1,9 @@
 /**
  * SegmentedControlDemo: the live Nockerl segmented-control island for the web.
  * The CANONICAL connected single-track view/mode switch: touching segments on
- * one recessed track with ONE sliding cyan pill gliding to the active segment.
- * It makes the inline toggles already shipped in App shell (layout) and Diff
- * viewer (Unified / Split) into one reusable component, now with a sliding pill.
+ * one flat hairline track with ONE sliding cyan outline gliding to the active
+ * segment. It makes the inline toggles already shipped in App shell (layout) and
+ * Diff viewer (Unified / Split) into one reusable component.
  *
  * DELIBERATELY DISTINCT from its neighbours:
  *   • NOT tabs: no associated tabpanels, not page/section wayfinding; it flips a
@@ -13,24 +13,19 @@
  *     per-option description; reach for it for 2 to 5 equal peers, reach for
  *     radio-group when options need descriptions or there are 4+ rich choices.
  *
- * Sourced from the shipped apps, never the web dashboard (see the page drift
- * note: the apps disagree and hard-cut today; the sliding pill is canonical web):
- *   • Android `core/ui/NockerlSegmented.kt`: one muted track (`cardAlt2`,
- *     control radius, 2dp inset); ACTIVE = SOFT-cyan fill (`accentPrimarySoft`) +
- *     a cyan medium label (inner radius one step tighter); inactive transparent +
- *     muted; the whole control dims when disabled.
- *   • Voice/Swift `SettingsComponents.swift` `SegmentedSelector`: inset
- *     `canvasAlt` track (radius 10, 4pt inset); ACTIVE = cyan OUTLINE (1.5pt), NOT
- *     a fill; equal-width segments (`.frame(maxWidth: .infinity)`).
+ * The approved variant is the one the Swift package ships, which is what the macOS
+ * application uses: a flat neutral hairline track with zero fill, and the ACTIVE
+ * segment wearing a cyan border at the selection weight, never a fill. The published
+ * Compose control still fills its active segment, so Android is the platform that
+ * lags and will converge when it migrates.
  *
- * Laws, verbatim: the TRACK is a recessed well (darker ground + inner shadow, so
- * fields sink); the PILL lifts off it (neutral shadow + top catch-light, never a
- * glow). Flash-free: the pill is ONE element whose static cyan fill never tweens.
- * It SLIDES (translateX) + resizes; labels cross-fade color. 12px control radius
+ * Laws, verbatim: which peer is active is a STATE, so it reads by OUTLINE and never
+ * by fill (law 6). The indicator is ONE element whose colour never tweens; it SLIDES
+ * (translateX) and resizes, and labels cross-fade colour (law 7). 12px control radius
  * (a rounded rectangle, not a stadium). Cyan is the selection signal only. Focus
  * is an OUTLINE. A real control: roving tabindex (ONE tab stop), Arrow/Home/End
- * move AND select, Space/Enter select, ≥24px target, a disabled segment is skipped
- * but legible. prefers-reduced-motion: the pill still MOVES, it just teleports.
+ * move AND select, Space/Enter select, >=24px target, a disabled segment is skipped
+ * but legible. prefers-reduced-motion: the indicator still MOVES, it just teleports.
  *
  * The NockerlSegmentedControl recipe (.nk-sg / .nk-sg__pill / .nk-sg__seg, the sizes,
  * icon segments + the reduced-motion freeze) now lives in the primitive
@@ -159,7 +154,7 @@ const TWOUP_SEGMENTS: Segment[] = [
 
 /**
  * The interactive showcase mounted on the Segmented control page. A primary
- * icon+label control whose sliding pill swaps a real preview (list / grid /
+ * icon+label control whose sliding outline swaps a real preview (list / grid /
  * board) to PROVE it switches the view; then text-only (2/3/5 segments),
  * icon-only, sizes (sm / md), a disabled segment, and full-width vs. intrinsic.
  * Every one is keyboard-operable (Tab in, Arrow/Home/End move + select).
@@ -179,7 +174,7 @@ export default function SegmentedControlDemo() {
       <style>{STYLES}</style>
 
       <div className="nk-sg-demo__group">
-        <p className="nk-sg-demo__lbl">View mode: the pill slides; the preview below swaps (Tab in, Arrow keys)</p>
+        <p className="nk-sg-demo__lbl">View mode: the outline slides; the preview below swaps (Tab in, Arrow keys)</p>
         <NockerlSegmentedControl label="Task view" segments={VIEW_SEGMENTS} value={view} onChange={setView} />
         <ViewPreview view={view} />
       </div>
@@ -218,7 +213,7 @@ export default function SegmentedControlDemo() {
       </div>
 
       <p className="nk-sg-demo__count">
-        Viewing <b>{view}</b> · range <b>{range}</b> · diff <b>{diff}</b>. The pill slides to the active segment. The island is live.
+        Viewing <b>{view}</b> · range <b>{range}</b> · diff <b>{diff}</b>. The outline slides to the active segment. The island is live.
       </p>
     </div>
   );

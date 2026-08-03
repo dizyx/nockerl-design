@@ -32,8 +32,8 @@ reveal its message body, tap again to collapse. Key behaviours:
 - **A11y:** the row stays one `<button>` carrying `aria-expanded` + `aria-controls`; the
   region is `aria-labelledby` the primary text and `hidden` while collapsed.
 - **Selection vs expansion:** selection now renders its cyan check in the **leading** slot
-  (a soft cyan wash + a leading mark), so selection and the trailing nav/expand chevron no
-  longer compete for the one trailing slot.
+  (a cyan edge bounding the run, cyan ink, and a leading mark), so selection and the trailing
+  nav/expand chevron no longer compete for the one trailing slot.
 </Aside>
 
 ## Code
@@ -219,10 +219,12 @@ in the [Review queue](/review-queue/):
   18dp; web now renders it **inside the `NockerlListItem` primitive** (pass `status`, get the B20
   icon by default; no wrapper needed). Voice (a colored dot / capsule badge today) is the
   remaining conformance item.
-- **Selection model** *(resolved by [adjudication 2026-07-02 · B20])*: the one selection expression
-  is a **soft cyan wash + trailing check, never a left stripe**. The web row exposes an explicit
-  `selected`; the Compose scaffold (a caller `modifier` background) and Voice (no persistent
-  selection; it toggles *expanded*) conform.
+- **Selection model:** the one selection expression is a **cyan edge bounding the run, cyan
+  ink and a check, never a left stripe and never a wash**. The earlier adjudication set this as a
+  soft cyan wash; design laws §6 (state by outline, not fill) superseded that, and the web row now
+  carries the outline. The web row exposes an explicit `selected`; the Compose scaffold (a caller
+  `modifier` background) still fills, so Android is the platform that lags here, and Voice has no
+  persistent selection at all (it toggles *expanded*).
 - **Trailing control:** web makes the trailing toggle a separate `role="switch"`; Voice uses
   `NockerlIconButton`s; Compose leaves it to the row's `trailing` slot.
 </Aside>

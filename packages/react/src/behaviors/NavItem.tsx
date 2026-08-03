@@ -100,11 +100,16 @@ export const NOCKERL_NAV_ITEM_STYLES = `
 .nk-nav:disabled { cursor: not-allowed; opacity: .55; }
 /* ACTIVE (section 6, reduce-fills): the thin cyan border + cyan icon and label + a medium
    weight, with NO wash and no left rail or stripe. The icon STAYS (no check swap). This is
-   the treatment the Swift nav row already ships, so the two now agree. Hover keeps the
-   neutral raise the inactive row uses, rather than deepening a tint that is no longer there. */
+   the treatment the Swift nav row already ships, so the two now agree.
+   HOVER on an already-selected row answers on the channel selection ALREADY owns: the cyan
+   edge goes to full strength from its resting selection weight. It is one interpolatable
+   property on an edge that is already there, so it adds no second visual channel and no
+   wash (law 6), and it animates rather than swapping a fill (law 7). The neutral wash the
+   inactive row uses is deliberately NOT applied here: on a cyan-edged row it reads as a
+   competing second signal, and a selected row that answers nothing reads as disabled. */
 .nk-nav--on { color: var(--color-accent-primary);
-  border-color: color-mix(in srgb, var(--color-accent-primary) 45%, transparent); font-weight: var(--font-weight-semibold); }
-.nk-nav--on:hover { background: color-mix(in srgb, var(--color-on-chrome) 6%, transparent); }
+  border-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent); font-weight: var(--font-weight-semibold); }
+.nk-nav--on:hover:not(:disabled) { border-color: var(--color-accent-primary); }
 .nk-nav--on .nk-nav__ico, .nk-nav--on .nk-nav__chev { color: var(--color-accent-primary); }
 /* FLAT active is tint only (the bar carries its own selection indicator, e.g. a sliding pill). */
 .nk-nav--flat.nk-nav--on { background: transparent; border-color: transparent; }

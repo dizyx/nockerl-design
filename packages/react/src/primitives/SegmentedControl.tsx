@@ -1,14 +1,14 @@
 /**
  * NockerlSegmentedControl is the Tier-1 segmented-control primitive. ONE home for the
- * recessed-track well, the ONE sliding cyan pill (measured + transformed), the
+ * neutral hairline track, the ONE sliding cyan OUTLINE (measured + transformed), the
  * label cross-fade, the role="radiogroup" + roving-tabindex keyboard model, and
  * the segmented RULE, so a future segmented-control change is ONE edit, not many.
  * Composes ONLY tokens (and the NockerlIcon primitive for its glyphs).
  *
  * The CANONICAL connected single-track view/mode switch: touching segments on one
- * recessed track with ONE sliding cyan pill gliding to the active segment. It makes
- * the inline toggles already shipped in App shell (layout) and Diff viewer (Unified
- * / Split) into one reusable component that now has a sliding pill.
+ * neutral hairline track with ONE sliding cyan outline gliding to the active segment. It
+ * makes the inline toggles already shipped in App shell (layout) and Diff viewer (Unified
+ * / Split) into one reusable component that now has a sliding indicator.
  *
  * DELIBERATELY DISTINCT from its neighbours:
  *   • NOT tabs: no associated tabpanels, not page/section wayfinding; it flips a
@@ -18,25 +18,26 @@
  *     per-option description; reach for it for 2-5 equal peers, reach for
  *     radio-group when options need descriptions or there are 4+ rich choices.
  *
- * Sourced from the shipped apps, never the web dashboard (see the page drift
- * note; the apps disagree and hard-cut today, and the sliding pill is canonical web):
- *   • Android `core/ui/NockerlSegmented.kt`: one muted track (`cardAlt2`,
- *     control radius, 2dp inset); ACTIVE = SOFT-cyan fill (`accentPrimarySoft`) +
- *     a cyan medium label (inner radius one step tighter); inactive transparent +
- *     muted; the whole control dims when disabled.
- *   • Voice/Swift `SettingsComponents.swift` `SegmentedSelector` uses an inset
- *     `canvasAlt` track (radius 10, 4pt inset); ACTIVE = cyan OUTLINE (1.5pt), NOT
- *     a fill; equal-width segments (`.frame(maxWidth: .infinity)`).
+ * The approved variant is the one the Swift package ships, which is what the macOS
+ * application uses. This component carries that exact recipe:
+ *   • Track: a NEUTRAL divider hairline on the control radius, ZERO fill and no recessed
+ *     inset-shade, grouping the segments as connected peers.
+ *   • Indicator: the SELECTED segment wears a thin accent BORDER at the selection weight
+ *     and opacity, with no fill, and it SLIDES between segments as a position-only
+ *     transform. Nothing tweens its colour.
+ *   • Labels: selected is accent ink at medium weight, because with no fill beneath it the
+ *     on-accent pick is moot; unselected stays muted.
+ * The published Compose control still fills its active segment, so Android is the platform
+ * that lags here and will be revisited when it converts.
  *
- * Design laws encoded here (do not re-derive in a demo): the TRACK is a recessed
- * well (darker ground + inner shadow: fields sink); the PILL lifts off it (neutral
- * shadow + top catch-light, never a glow). Flash-free: the pill is ONE element whose
- * static cyan fill never tweens. It SLIDES (translateX) + resizes; labels cross-fade
- * color. 12px control radius (a rounded rectangle, not a stadium). Cyan is the
- * selection signal only. Focus is an OUTLINE. A real control: roving tabindex (ONE
- * tab stop), Arrow/Home/End move AND select, Space/Enter select, ≥24px target, a
- * disabled segment is skipped but legible. prefers-reduced-motion: the pill still
- * MOVES, it just teleports.
+ * Design laws encoded here (do not re-derive in a demo): which peer is active is a STATE,
+ * so it reads by OUTLINE and never by fill (law 6). The indicator is ONE element whose
+ * colour never tweens; it SLIDES (translateX) and resizes, both interpolatable, and labels
+ * cross-fade colour (law 7). 12px control radius (a rounded rectangle, not a stadium). Cyan
+ * is the selection signal only. Focus is an OUTLINE. A real control: roving tabindex (ONE
+ * tab stop), Arrow/Home/End move AND select, Space/Enter select, >=24px target, a disabled
+ * segment is skipped but legible. prefers-reduced-motion: the indicator still MOVES, it
+ * just teleports.
  *
  * Injects the recipe CSS as the LAST child (a leading style node would trip a consumer's
  * first-child / adjacent-sibling selectors); identical injected blocks dedupe in effect.
@@ -143,56 +144,60 @@ export const SEGMENT_ICONS = {
   ),
 } as const;
 
-// Fields sink, so the TRACK is a recessed well (the Swift `canvasAlt` inset value).
-// The PILL is ONE static cyan element lit from above; it SLIDES (transform) and
-// resizes to the active segment. Labels cross-fade color only. No fill ever
-// tweens. All values are tokens; literals are pure geometry / transition curves.
+// The TRACK is a flat neutral hairline container with zero fill: it groups connected peers
+// and nothing more. The INDICATOR is ONE element wearing the selection-weight cyan edge; it
+// SLIDES (transform) and resizes to the active segment. Labels cross-fade colour only, and
+// no fill exists to tween. All values are tokens; literals are pure geometry and curves.
 export const NOCKERL_SEGMENTED_CONTROL_STYLES = `
-/* The TRACK is a recessed single track (darker ground + inner shadow: fields sink;
-   12px rounded rect, never a stadium; inset so the pill nests). No outer glow. */
+/* The TRACK is a FLAT NEUTRAL HAIRLINE container (law 6, reduce-fills): ZERO fill and no
+   recessed inset-shade. It groups the segments as connected peers, and stripping it degrades
+   the control to Tabs. 12px rounded rect, never a stadium; inset so the indicator nests. */
 .nk-sg { position: relative; display: inline-flex; align-items: stretch;
-  background: var(--color-canvas-alt); border: var(--space-px) solid var(--color-card-hairline);
-  border-radius: var(--radius-control); padding: var(--space-0-5);
-  box-shadow: inset 0 var(--space-px) var(--space-0-5) color-mix(in srgb, var(--color-shadow-tint) 45%, transparent); }
+  background: none; border: var(--space-px) solid var(--color-divider);
+  border-radius: var(--radius-control); padding: var(--space-0-5); }
 .nk-sg--full { display: flex; width: 100%; }
 .nk-sg--disabled { opacity: .55; cursor: not-allowed; }   /* dimmed but still legible */
 
-/* The sliding PILL: one element, static cyan fill, lit from above; it SLIDES
-   (transform) + resizes (width), both interpolatable. The FILL never tweens. */
+/* The sliding INDICATOR: one element wearing the selection-weight cyan BORDER and NO fill
+   (law 6: which peer is active is a STATE, so it reads by outline). It SLIDES (transform)
+   and resizes, both interpolatable, and its colour never tweens (law 7). border-box keeps
+   the measured width exact once the border is added. */
 .nk-sg__pill { position: absolute; top: var(--space-0-5); bottom: var(--space-0-5); left: 0;
+  box-sizing: border-box;
   border-radius: calc(var(--radius-control) - var(--space-0-5));   /* nests one step inside */
-  background: linear-gradient(180deg, var(--color-accent-primary-hi), var(--color-accent-primary));
-  box-shadow: 0 var(--elevation-level1) var(--elevation-level3) -3px color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level1) * 100%), transparent), inset 0 var(--space-px) 0 var(--color-surface-highlight);
+  background: none;
+  border: var(--border-width-selection) solid color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent);
   transition: transform .26s var(--motion-easing-standard), width .26s var(--motion-easing-standard), height .26s var(--motion-easing-standard); pointer-events: none; z-index: 0; }
 .nk-sg__pill--hidden { opacity: 0; }   /* before first measure / no selection */
-/* VERTICAL orientation stacks segments (column); the pill spans the track WIDTH (left/right
-   inset) and slides on Y (translateY + height) instead of X. The recessed track, the static
-   cyan fill, the catch-light, and the pre-measure fallback are all axis-agnostic and unchanged. */
+/* VERTICAL orientation stacks segments (column); the indicator spans the track WIDTH
+   (left/right inset) and slides on Y (translateY + height) instead of X. The hairline track,
+   the cyan edge, and the pre-measure fallback are all axis-agnostic and unchanged. */
 .nk-sg--vertical { flex-direction: column; }
 .nk-sg--vertical .nk-sg__pill { top: 0; bottom: auto; left: var(--space-0-5); right: var(--space-0-5); }
 
-/* PRE-MEASURE fallback (flash-free first paint). Before useLayoutEffect measures
-   the active segment (SSR / pre-hydration), the JS pill has no position yet, so
-   paint the SAME static cyan fill directly on the ACTIVE segment. Same gradient +
-   same nested radius as .nk-sg__pill, so the swap to the real measured pill is
-   seamless. Removed the instant data-measured becomes true. Fill never tweens: this
-   is a plain background with no transition, matching the pill law. A no-selection
-   control has no aria-checked segment, so it correctly shows nothing. */
+/* PRE-MEASURE fallback (flash-free first paint). Before useLayoutEffect measures the active
+   segment (SSR / pre-hydration) the indicator has no position yet, so paint the SAME cyan
+   edge directly on the ACTIVE segment. Every segment already reserves a transparent border of
+   the same weight, so this only recolours it and can never shift layout. Retired the instant
+   data-measured becomes true. A no-selection control has no aria-checked segment, so it
+   correctly shows nothing. */
 .nk-sg:not([data-measured="true"]) .nk-sg__seg[aria-checked="true"] {
-  background: linear-gradient(180deg, var(--color-accent-primary-hi), var(--color-accent-primary));
-  border-radius: calc(var(--radius-control) - var(--space-0-5)); }
+  border-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent); }
 
-/* A SEGMENT takes an equal share, label centered on both axes, layered above the pill.
-   Inactive = muted, no cyan; only color/weight cross-fade (no fill swap). */
+/* A SEGMENT takes an equal share, label centered on both axes, layered above the indicator.
+   The transparent border is a RESERVATION: it keeps the box identical whether or not the
+   pre-measure fallback is painting, so nothing reflows on hydration. Inactive = muted ink;
+   only colour and weight cross-fade, never a fill. */
 .nk-sg__seg { position: relative; z-index: 1; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
-  gap: var(--space-2); border: 0; background: transparent; cursor: pointer; white-space: nowrap;
+  gap: var(--space-2); border: var(--border-width-selection) solid transparent; background: transparent; cursor: pointer; white-space: nowrap;
   border-radius: calc(var(--radius-control) - var(--space-0-5)); font-family: inherit;
-  color: var(--color-on-card-alt-muted); font-weight: var(--font-weight-regular); transition: color .2s, font-weight .2s; }
+  color: var(--color-on-card-muted); font-weight: var(--font-weight-regular); transition: color .2s, font-weight .2s, border-color .2s; }
 .nk-sg--full .nk-sg__seg { flex: 1 1 0; }              /* equal-width when stretched */
-.nk-sg__seg[aria-checked="true"] { color: var(--color-on-accent); font-weight: var(--font-weight-semibold); }  /* sits ON the cyan pill */
-.nk-sg__seg:not([aria-checked="true"]):not(:disabled):hover { color: var(--color-on-card-alt); }
+/* Selected ink is CYAN-on-plain: with no fill beneath it, the on-accent pick is moot. */
+.nk-sg__seg[aria-checked="true"] { color: var(--color-accent-primary); font-weight: var(--font-weight-medium); }
+.nk-sg__seg:not([aria-checked="true"]):not(:disabled):hover { color: var(--color-on-card); }
 .nk-sg__seg:focus-visible { outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: var(--space-0-5); }
-.nk-sg__seg:disabled { cursor: not-allowed; color: var(--color-on-card-alt-muted); opacity: .5; }
+.nk-sg__seg:disabled { cursor: not-allowed; color: var(--color-on-card-muted); opacity: .5; }
 
 /* sizes: each one must clear the ≥24px target law */
 .nk-sg--sm .nk-sg__seg { font-size: var(--font-size-12); padding: var(--space-1) var(--space-3); }
@@ -212,9 +217,9 @@ export const NOCKERL_SEGMENTED_CONTROL_STYLES = `
 `;
 
 /**
- * One Nockerl segmented control, the unit the spec documents. A recessed track
- * holds N connected segments; ONE cyan pill SLIDES to the active segment (the
- * fill never tweens; only transform + width animate). role="radiogroup" with roving
+ * One Nockerl segmented control, the unit the spec documents. A neutral hairline track
+ * holds N connected segments; ONE cyan outline SLIDES to the active segment (its colour
+ * never tweens; only transform and width animate). role="radiogroup" with roving
  * tabindex; Arrow/Home/End move AND select; Space/Enter select.
  */
 export const NockerlSegmentedControl = forwardRef<HTMLDivElement, NockerlSegmentedControlProps>(function NockerlSegmentedControl({

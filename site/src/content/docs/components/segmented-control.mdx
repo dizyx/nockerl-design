@@ -168,8 +168,9 @@ Real divergences between the shipped platforms:
 - **The slide.** Settled alongside it: the marker **animates transform + width, never the
   fill**, wherever the control is ours. Compose already slides its indicator; the Swift idiom
   cuts straight to the new stroke and adopts the slide.
-- **Track surface.** Swift uses the inset `canvasAlt` well (radius 10, 4pt
-  inset); Compose uses `cardAlt2` at the control radius (2dp inset). Web sinks the
-  track as a recessed well at the **12px control radius**, which is close, but the
-  inset radius/value should converge on tokens.
+- **Track surface** *(ratified)*: the track is a **flat neutral hairline container with zero
+  fill**, on the 12px control radius with a 2px inset, grouping the segments as connected
+  peers. It carries no recessed inset-shade, because with the active segment reading by
+  outline there is no fill for a well to sit under. Swift and web both draw this. Compose
+  still uses a `cardAlt2` well, which converges when Android does.
 </Aside>

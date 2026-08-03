@@ -20,9 +20,9 @@
  * Design laws encoded here (do not re-derive in a demo):
  *   • SELECTION ≠ STATUS on color: the leading status dot uses STATUS tokens only; cyan is
  *     reserved for the selection (the trailing check / the multi checkbox fill / the active
- *     highlight ring). The selected row is a faint cyan WASH + a check, never a fill swap.
+ *     highlight ring). The selected row is a cyan EDGE + cyan ink + a check, never a fill.
  *   • the ACTIVE (keyboard) row is a neutral highlight + a 1px cyan inset ring; it is
- *     distinct from the SELECTED wash, and a row can be both.
+ *     distinct from the SELECTED edge, and a row can be both.
  *   • flat rows: no per-row shadow; feedback animates a wash + the checkbox tick draw
  *     only, frozen under prefers-reduced-motion.
  *
@@ -43,7 +43,7 @@ export type NockerlListboxOptionStatus = 'success' | 'warning' | 'error' | 'info
 
 /**
  * Where this row sits inside a CONTIGUOUS RUN of selected rows (multi-select).
- * The selection wash of a run must read as ONE block: square corners WHERE rows
+ * The selection edge of a run must read as ONE outline: square corners WHERE rows
  * touch, rounded only at the run's OUTER corners. `single` (the default) rounds
  * all four corners. A lone selection, or any single-select consumer, is unchanged.
  *   • `single`: not adjacent to another selected row → all corners rounded.
@@ -60,7 +60,7 @@ export type ListboxOptionRun = 'single' | 'top' | 'middle' | 'bottom';
  * (the immediately-adjacent RENDERED rows). Consumers walk their ordered visible
  * list and pass, for the row at hand, whether the previous and next rendered rows
  * are also selected. This returns where the row sits in the contiguous run so its
- * touching corners square off and the run's washes merge into one block. Callers
+ * touching corners square off and the run's shared edges drop, leaving one outline. Callers
  * apply the result only to selected rows (it describes a run OF selected rows).
  */
 export function listboxRun(prevSelected: boolean, nextSelected: boolean): ListboxOptionRun {
@@ -87,7 +87,7 @@ export interface NockerlListboxOptionProps
   primary: ReactNode;
   /** Supporting line under the primary (a description / hint). */
   secondary?: ReactNode;
-  /** Chosen state. Sets aria-selected + a faint cyan wash (single-select check / multi box fill). */
+  /** Chosen state. Sets aria-selected + a cyan edge and cyan ink (single-select check / multi box fill). */
   selected?: boolean;
   /** Keyboard-highlighted state (the aria-activedescendant target). Neutral highlight + cyan ring. */
   active?: boolean;
@@ -101,7 +101,7 @@ export interface NockerlListboxOptionProps
   multi?: boolean;
   /**
    * Position in a CONTIGUOUS RUN of selected rows. Squares the corners where a
-   * selected row TOUCHES its selected neighbor so the run's washes merge into one
+   * selected row TOUCHES its selected neighbor so the run's shared edges drop into one
    * block (no white notches), rounding only the run's outer corners. Only meaningful
    * on a selected row; defaults to `single` (all corners rounded for the lone/non-run
    * case, and every single-select consumer). See {@link ListboxOptionRun}.
@@ -122,27 +122,34 @@ export interface NockerlListboxOptionProps
 export const NOCKERL_LISTBOX_OPTION_STYLES = `
 /* the option ROW uses a flat list-item vocabulary: leading mark/icon/checkbox -> primary
    (+secondary) -> trailing check / slot. */
+/* The transparent border is a RESERVATION: selection paints it cyan, so reserving it here
+   keeps every row the same box whether or not it is selected, and nothing reflows. */
 .nk-opt { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3);
-  min-height: var(--space-10); border-radius: var(--radius-control); cursor: pointer; color: var(--color-on-card);
-  transition: background-color .1s, box-shadow .1s; }
+  box-sizing: border-box; min-height: var(--space-10); border-radius: var(--radius-control);
+  border: var(--border-width-selection) solid transparent; cursor: pointer; color: var(--color-on-card);
+  transition: background-color .1s, box-shadow .1s, border-color .1s, color .1s; }
 /* ACTIVE (keyboard) is a neutral highlight + a 1px cyan inset ring (distinct from selected).
    DELIBERATELY UNTOUCHED by : --active is the keyboard CURSOR, not a selection.
    The selection tokens govern "this one is chosen"; borrowing them here would assert the
    cursor IS a selection and collide with the §6/ cursor rule (cursor = ink, no box).
    Migrating this ring to ink-only is tracked follow-up, not bundled into this cut. */
 .nk-opt--active { background: var(--color-surface-highlight); box-shadow: inset 0 0 0 var(--space-px) color-mix(in srgb, var(--color-accent-primary) 55%, transparent); }
-/* SELECTED: a faint cyan WASH (never a fill swap). A row can be both selected + active. */
-.nk-opt--selected { background: color-mix(in srgb, var(--color-accent-primary) 10%, transparent); }
-.nk-opt--selected.nk-opt--active { background: color-mix(in srgb, var(--color-accent-primary) 16%, transparent); }
-/* CONTIGUOUS RUN. Where a selected row TOUCHES a selected neighbor, square that edge so
-   the washes merge into one block (no white notches); round only the run's OUTER corners.
-   The row's radius clips both the wash AND the active ring, so a run reads as one shape.
-   Gated on --selected: inert on unselected rows. --single keeps the default all-round. */
-.nk-opt--selected.nk-opt--run-top { border-end-start-radius: 0; border-end-end-radius: 0; }
-.nk-opt--selected.nk-opt--run-middle { border-radius: 0; }
-.nk-opt--selected.nk-opt--run-bottom { border-start-start-radius: 0; border-start-end-radius: 0; }
+/* SELECTED (law 6, reduce-fills): the cyan EDGE at the selection weight plus cyan ink,
+   alongside the trailing check the row already carries. No wash, so selection never reads as
+   a fill. A row can be both selected and active: the neutral cursor highlight still applies
+   underneath, because the keyboard cursor and the chosen row are different questions. */
+.nk-opt--selected { border-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent);
+  color: var(--color-accent-primary); }
+/* CONTIGUOUS RUN. A wash merged invisibly; an edge does not, so a run must draw ONE outline
+   rather than a stack of them. Where a selected row TOUCHES a selected neighbour, square that
+   corner AND drop the shared edge, so the run's interior seams disappear and only its outer
+   boundary is painted. A single selected row and a run of them then read as the same idea at
+   different heights. Gated on --selected: inert on unselected rows. --single keeps all round. */
+.nk-opt--selected.nk-opt--run-top { border-end-start-radius: 0; border-end-end-radius: 0; border-bottom-color: transparent; }
+.nk-opt--selected.nk-opt--run-middle { border-radius: 0; border-top-color: transparent; border-bottom-color: transparent; }
+.nk-opt--selected.nk-opt--run-bottom { border-start-start-radius: 0; border-start-end-radius: 0; border-top-color: transparent; }
 /* NESTED-RADIUS CAP (r4 clip class): inside a ROUNDED clipping container the first/last row's
-   OUTER corners must match the container curve (inner = outer - inset), or the selection wash /
+   OUTER corners must match the container curve (inner = outer - inset), or the selection edge /
    active ring gets SLICED by the container clip at the corners. Containers OPT IN by declaring
    --nk-nest-cap: calc(<container radius> - <inset to the row>); rows fall back to their own
    control radius, so nothing changes in non-clipping hosts. Corner-DISJOINT from the run
