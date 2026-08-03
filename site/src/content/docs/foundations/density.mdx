@@ -11,7 +11,7 @@ import { Aside } from '@astrojs/starlight/components';
 <StatusBadge status="review" />
 
 Density is a **two-tier** system: **`compact`** and **`comfortable`**. It matches the
-ratified two-density ramp (B10: [Markdown Content](/components/markdown-content/) ships
+ratified two-density ramp ([Markdown Content](/components/markdown-content/) ships
 exactly these two) and the [Table](/components/table/) v1 `density` prop. There is
 deliberately **no third tier**. A `spacious` step only earns its way in with a product
 driver, and none exists.
@@ -27,7 +27,7 @@ The core rule, generalized from Table v1:
 | --- | --- | --- | --- |
 | Min row height | 32px (`{space.8}`) | 48px (`{space.12}`) | `--density-row-height-*` |
 | Cell / row vertical padding | 4px (`{space.1}`) | 12px (`{space.3}`) | `--density-pad-y-*` |
-| Type ramp pairing | chat ramp (B10 compact) | docs ramp (B10 comfortable) | via [Markdown Content](/components/markdown-content/) |
+| Type ramp pairing | chat ramp (compact) | docs ramp (comfortable) | via [Markdown Content](/components/markdown-content/) |
 
 - **Row height is a floor.** Taller rows exceed it legitimately: the two-line List item
   is 56px in *comfortable*. Compact 32px is the documented dense List row.
@@ -78,9 +78,9 @@ the List container is extracted (rhythm values already agree).
 
 | Surface | Tier | Why |
 | --- | --- | --- |
-| Chat / session transcript | `compact` | Conversation is a stream, so maximize visible turns; B10 pairs the chat ramp. |
+| Chat / session transcript | `compact` | Conversation is a stream, so maximize visible turns; this tier pairs the chat ramp. |
 | Consoles, log viewers, dense data tables | `compact` | Scanning many rows beats lingering on one. |
-| Docs / reading surfaces | `comfortable` | Reading measure and breathing room win; B10 docs ramp. |
+| Docs / reading surfaces | `comfortable` | Reading measure and breathing room win; this tier pairs the docs ramp. |
 | Settings, forms | `comfortable` | Fields carry the 44px touch floor anyway; compact forms save nothing. |
 | Dashboards / stat overviews | `comfortable` | Few, glanceable elements; density buys nothing at 4 cards per row. |
 
