@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BadgeDemo from '../../../components/demos/BadgeDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the
@@ -44,8 +45,8 @@ export function InboxBell({ unread }: { unread: number }) {
 <NockerlBadge count={12} tone="accent" ariaLabel="12 items" />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
@@ -70,8 +71,8 @@ Box(contentAlignment = Alignment.TopEnd) {
 NockerlBadge(text = "Research", tone = NockerlBadgeTone.WARNING, variant = NockerlBadgeVariant.SOFT)
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // SwiftUI: the published NockerlDesign SwiftPM package. A first-class NockerlBadge with the
@@ -94,8 +95,8 @@ NockerlBadge("Research", tone: .warning, variant: .soft)
 NockerlBadge("CI", tone: .success, variant: .solid)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Language tag
 
@@ -118,13 +119,13 @@ Voice.
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlBadge" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The published `NockerlBadge` ships as a first-class wrapper with three forms; tones map onto
 semantic palette slots via `NockerlBadgeTone` (never a raw hue).
@@ -139,8 +140,8 @@ semantic palette slots via `NockerlBadgeTone` (never a raw hue).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The published `NockerlBadge` ships the full set on the same `NockerlBadgeTone` ladder as
 Compose: count pill, bare dot, and tonal label pill (soft / solid). It is a passive `View`;
@@ -156,8 +157,8 @@ anchor it with `.overlay(alignment: .topTrailing)`.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (one open item)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**

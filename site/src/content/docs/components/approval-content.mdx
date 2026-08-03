@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ApprovalContentDemo from '../../../components/demos/ApprovalContentDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -69,8 +70,8 @@ Per the component-vs-view rule (task 2653c), the three console approval moments 
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 import { NockerlApprovalActions, NockerlApprovalContent, NockerlBottomSheet } from '@dizyx/nockerl-react';
@@ -96,8 +97,8 @@ import { NockerlApprovalActions, NockerlApprovalContent, NockerlBottomSheet } fr
 />
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Android">
 The Compose mirror (`NockerlApprovalContent` hosted in the canonical

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AppShellDemo from '../../../components/demos/AppShellDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -33,8 +34,8 @@ nav fix propagates here automatically. Two rules are ratified:
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -63,8 +64,8 @@ export function App() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). com.nockerl.app.core.ui.MainScaffold
@@ -85,8 +86,8 @@ NavHost(navController, startDestination = NockerlRoutes.MAIN) {
 //   ChatScreen(modifier = Modifier.weight(1f))                                  // transparent content
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). NockerlVoice/UI/DashboardView.swift
@@ -111,13 +112,13 @@ struct DashboardView: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -133,8 +134,8 @@ struct DashboardView: View {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `MainScaffold()` takes only a `modifier`; it composes the regions internally and
 hoists their view-models. The real parameters live on the region composables it
@@ -152,8 +153,8 @@ calls. Here are the most load-bearing ones:
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `DashboardView` is a self-contained scene root with no parameters: it reads the
 shared `DashboardRouter` + `SettingsStore`. The shape is the configurable surface:
@@ -169,8 +170,8 @@ shared `DashboardRouter` + `SettingsStore`. The shape is the configurable surfac
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 All three shells share one anatomy (a top region, a nav region, and a content

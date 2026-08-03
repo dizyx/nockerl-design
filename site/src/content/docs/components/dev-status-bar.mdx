@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import DevStatusBarDemo from '../../../components/demos/DevStatusBarDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -33,8 +34,8 @@ cross-platform spec needed).
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 import { NockerlDevStatusBar, NockerlDevStatusSegment } from '@dizyx/nockerl-react';
@@ -50,8 +51,8 @@ import { NockerlDevStatusBar, NockerlDevStatusSegment } from '@dizyx/nockerl-rea
 />
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DatePickerDemo from '../../../components/demos/DatePickerDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -46,8 +47,8 @@ export function ScheduleForm() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose, Material 3 (BOM 2026.02.01). The app has no custom
@@ -73,8 +74,8 @@ DatePickerDialog(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. Nockerl Voice has no custom calendar; it formats dates with
@@ -98,13 +99,13 @@ struct ScheduleForm: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -125,8 +126,8 @@ and a matching `onChange`; the two endpoints get the accent fill and the days be
 in-range tint. (The former standalone `DateRangePicker` was merged into this range mode;
 recover its preset-rail / dual-month demo from git history at `7cbf645` if that richer surface is revived.)
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -141,8 +142,8 @@ recover its preset-rail / dual-month demo from git history at `7cbf645` if that 
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the calendar as the standard `DatePicker` with the `.graphical`
 style. State is the bound `selection`; bounds come from the `in:` range. There is
@@ -159,8 +160,8 @@ no separate range component; model a range as two `DatePicker`s.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **No shipped custom calendar.** Neither Android nor Voice draws its own month grid.

@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BottomSheetDemo from '../../../components/demos/BottomSheetDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -28,8 +29,8 @@ Compose guidance below).
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -53,8 +54,8 @@ export function SessionOptions({ open, stage, onDismiss }: SheetProps) {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlBottomSheet
@@ -83,8 +84,8 @@ NockerlBottomSheet(
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 macOS/Swift has no bottom-sheet idiom (use a popover / sheet there), so this component targets **web + Android only**.
 
@@ -109,13 +110,13 @@ anatomy. Its CTA row pins in this sheet's `footer` slot.
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlBottomSheet" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -128,8 +129,8 @@ anatomy. Its CTA row pins in this sheet's `footer` slot.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **macOS / Swift is out of scope.** macOS has no native bottom-sheet idiom. Nockerl

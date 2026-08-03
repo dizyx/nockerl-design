@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import CodeBlockDemo from '../../../components/demos/CodeBlockDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -44,8 +45,8 @@ export function FileViewer({ source }: { source: string }) {
 <CodeBlock filename="backoff.kt" language="kotlin" diff oldCode={before} code={after} />;
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The dedicated viewer body lives in
@@ -68,8 +69,8 @@ FileViewerContent(
 val diffLines = computeDiff(old = before, new = after)   // List<DiffLine>
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlCodeBlock` is a
@@ -96,13 +97,13 @@ NockerlCodeBlock(longLine, wrap: true)
 // web/Android-first follow-ups, not in NockerlDesign yet.
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -119,8 +120,8 @@ NockerlCodeBlock(longLine, wrap: true)
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -134,8 +135,8 @@ NockerlCodeBlock(longLine, wrap: true)
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlCodeBlock` is the recessed well: a filename header (which also hosts the copy
 button), an optional line-number gutter, and horizontal scroll. It renders the
@@ -152,8 +153,8 @@ see drift). The `code` argument is the first positional.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 These are the real divergences:

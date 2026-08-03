@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ChatBubbleDemo from '../../../components/demos/ChatBubbleDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -48,8 +49,8 @@ export function Thread() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The shipped bubble container is
@@ -77,8 +78,8 @@ val shape = rememberBubbleShape(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS (SwiftUI). NOT YET IMPLEMENTED: Nockerl Voice is a dictation/transcription
@@ -97,13 +98,13 @@ ChatBubble(role: .user, delivery: .sent, timestamp: "10:25 AM") { Text("Use back
 ChatBubble(role: .system) { Text("Context compacted") }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -119,8 +120,8 @@ ChatBubble(role: .system) { Text("Context compacted") }
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -133,8 +134,8 @@ ChatBubble(role: .system) { Text("Context compacted") }
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 Not yet implemented. Nockerl Voice is a dictation/transcription surface with no
 chat thread, so no bubble primitive ships on macOS. The signature below is the
@@ -152,8 +153,8 @@ chat thread, so no bubble primitive ships on macOS. The signature below is the
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Primitive vs. composition:** this is the bubble *container* (shape · tail ·

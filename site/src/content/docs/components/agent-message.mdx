@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AgentMessageDemo from '../../../components/demos/AgentMessageDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -27,8 +28,8 @@ reference; the `streaming` prop remains in the spec, unshipped.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -61,8 +62,8 @@ export function Thread() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). com.nockerl.app.chat.ui.MessageBubble
@@ -84,8 +85,8 @@ MessageBubble(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI. NOT YET IMPLEMENTED: Nockerl Voice is a dictation/transcription
@@ -104,13 +105,13 @@ AgentMessage(role: .assistant, model: "Large 2.1", showHeader: false, isStreamin
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -126,8 +127,8 @@ AgentMessage(role: .assistant, model: "Large 2.1", showHeader: false, isStreamin
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -142,8 +143,8 @@ AgentMessage(role: .assistant, model: "Large 2.1", showHeader: false, isStreamin
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 Not yet implemented: Nockerl Voice is a dictation/transcription surface with no
 chat thread. The signature below is the **intended** SwiftUI API (a `ViewBuilder`
@@ -161,8 +162,8 @@ content closure), derived from the laws + the shipped Compose `MessageBubble`.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Swift:** no chat surface ships yet; Voice is transcription-only. The Swift API

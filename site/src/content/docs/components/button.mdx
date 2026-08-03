@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ButtonDemo from '../../../components/demos/ButtonDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="approved" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -41,8 +42,8 @@ export function SessionToolbar() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
@@ -61,8 +62,8 @@ NockerlButton("Cancel", onClick = ::dismiss, variant = NockerlButtonVariant.GHOS
 NockerlButton("Delete", onClick = ::confirmDelete, variant = NockerlButtonVariant.DESTRUCTIVE)
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // SwiftUI: the published NockerlDesign SwiftPM package. `NockerlButton` is a self-contained
@@ -76,18 +77,18 @@ NockerlButton("Cancel", variant: .ghost) { dismiss() }
 NockerlButton("Delete", variant: .destructive) { confirmDelete() }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlButton" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -103,8 +104,8 @@ NockerlButton("Delete", variant: .destructive) { confirmDelete() }
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The published `NockerlButton` is a self-contained `View`: `NockerlButton(_ text:, variant:, action:)`.
 The label is auto-uppercased (buttons are the only uppercase in the type system). State
@@ -120,8 +121,8 @@ dimmed, non-interactive state; there are no explicit state parameters.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Cross-platform parity (published packages)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**

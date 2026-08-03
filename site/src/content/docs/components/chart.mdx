@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ChartDemo from '../../../components/demos/ChartDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. Series colors are tokens: brand cyan
@@ -64,8 +65,8 @@ export function UsagePanel() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android Jetpack Compose (canonical). The shipped Sparkline draws a stroked
@@ -107,8 +108,8 @@ fun UsageRing(ratio: Float, modifier: Modifier = Modifier) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI + Swift Charts (canonical). The shipped chart card lives in
@@ -145,13 +146,13 @@ struct CostChart: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -166,8 +167,8 @@ struct CostChart: View {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -179,8 +180,8 @@ struct CostChart: View {
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `Chart` from Swift Charts is configured by content marks + axis modifiers rather
 than discrete parameters; the data is the input.
@@ -195,8 +196,8 @@ than discrete parameters; the data is the input.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Rendering:** web + Android draw charts **by hand** (SVG / Compose `Canvas`); Swift uses **Swift Charts**. The vocabulary (token colors, hairline grid, cyan→accentDark bars) is unified; the engine differs.

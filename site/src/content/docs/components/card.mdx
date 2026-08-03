@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import CardDemo from '../../../components/demos/CardDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -45,8 +46,8 @@ export function SessionList() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose, canonical). com.nockerl.app.core.theme.NockerlCard
@@ -72,8 +73,8 @@ NockerlCard(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). In NockerlVoice/UI, the lifted-card treatment is
@@ -93,13 +94,13 @@ RoundedRectangle(cornerRadius: NockerlTheme.cardRadius)   // 14pt today; see dri
     .overlay { content.padding(16) }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -113,8 +114,8 @@ RoundedRectangle(cornerRadius: NockerlTheme.cardRadius)   // 14pt today; see dri
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -137,8 +138,8 @@ shipped tool / agent cards do. This keeps the surface and the interaction concer
 separate.
 </Aside>
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI has **no single `Card` view yet**; the lifted-card treatment is composed from the
 `NockerlTheme` tokens (fill + hairline + neutral shadow + top sheen) at the call site. The
@@ -155,8 +156,8 @@ parameters below are those tokens; a wrapper view is the planned reconciliation.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The spec is approved; these are the real divergences between the shipped platforms,
