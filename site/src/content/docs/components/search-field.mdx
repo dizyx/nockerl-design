@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SearchFieldDemo from '../../../components/demos/SearchFieldDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -49,8 +50,8 @@ export function SessionFilter() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlSearchField
@@ -73,8 +74,8 @@ NockerlSearchField(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS / iOS: SwiftUI, from the NockerlDesign package (the parity twin
@@ -99,13 +100,13 @@ let filtered = search.isEmpty ? records
     : records.filter { $0.text.localizedCaseInsensitiveContains(search) }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -125,8 +126,8 @@ let filtered = search.isEmpty ? records
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -146,8 +147,8 @@ let filtered = search.isEmpty ? records
 The magnifier (leading) and the ✕ clear (trailing, shown when the query is non-empty)
 are **built in**. There are no icon slots to pass; the field is self-contained.
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlSearchField` is the packaged twin: the recessed `.nockerlFieldWell()`
 chrome, a decorative leading magnifier, and an interactive trailing clear
@@ -166,8 +167,8 @@ chrome, a decorative leading magnifier, and an interactive trailing clear
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="search-field vs. combobox vs. command-palette">
 Three search-shaped controls, one each per job. **search-field** (this page) filters

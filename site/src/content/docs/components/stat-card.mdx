@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import StatCardDemo from '../../../components/demos/StatCardDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -47,8 +48,8 @@ export function DashboardCluster() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The shipped tile is `StatTile`
@@ -92,8 +93,8 @@ StatTile(icon = Icons.Outlined.Bolt, iconTint = colors.modelType.gpu,
     label = "Tokens", value = formatTokenCount(1_240_000), modifier = Modifier.weight(1f))
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS / iOS: SwiftUI, from the NockerlDesign package (the ratified package canon):
@@ -126,13 +127,13 @@ NockerlStatCard(
 NockerlStatCard(label: "Latency", value: "-")
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -151,8 +152,8 @@ NockerlStatCard(label: "Latency", value: "-")
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -166,8 +167,8 @@ NockerlStatCard(label: "Latency", value: "-")
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlStatCard` is the packaged tile, with `NockerlCard` chrome (surface1 +
 catch-light + hairline + the L2 neutral shadow; Voice's gradient fill retires).
@@ -187,8 +188,8 @@ control-layer metric <em>constants</em> (the 44pt touch floor), not a component.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Stat card vs. chart vs. context-gauge, and cross-platform drift">
 - **Pick the right component.** **Stat card** is the *single-KPI tile* (one number + label + optional delta/sparkline). For a full plot (line/area/bar, multi-series, axes, a usage donut) use [Chart / sparkline](/components/chart/). For the live token-budget meter use [Context gauge](/components/context-gauge/). The tile *borrows* the chart's sparkline + `formatTokenCount` vocabulary, but it is not a chart.

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ToastDemo from '../../../components/demos/ToastDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. NockerlToast ships from
@@ -80,8 +81,8 @@ function SessionActions() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. The canonical app surfaces transient state as inline
@@ -111,8 +112,8 @@ Scaffold(snackbarHost = { NockerlSnackbarHost(snackbar) }) { padding ->
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Voice). The RecordingHUD (NockerlVoice/UI/RecordingHUD.swift)
@@ -134,13 +135,13 @@ ContentView()
     .nockerlToastHost(center: toasts, position: .bottomTrailing)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 `NockerlToast` renders ONE toast from a `NockerlToastProps` object plus an `onClose`
 (timer / Esc / close-X) and an optional `onAction` (the action button). The corner
@@ -149,8 +150,8 @@ want them; the toast owns its own countdown, hover/focus pause, and Esc dismissa
 
 <PropsTable nameLabel="Prop" component="NockerlToast" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `NockerlSnackbarHost` is the proposed Compose host: a corner-anchored stack of
 `NockerlSurface`s (panel radius + the lit-from-above material) washed with the
@@ -170,8 +171,8 @@ driven by `rememberNockerlSnackbarState()`, mirroring `SnackbarHostState`.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlToast` is the proposed SwiftUI generalisation of the shipped `RecordingHUD`:
 a non-activating, focus-safe overlay surface tinted by the intent's `NockerlTheme`
@@ -190,8 +191,8 @@ auto-dismissed on a timer.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Toast vs banner vs dialog">
 Three feedback surfaces, three jobs. Don't reach for the wrong one:

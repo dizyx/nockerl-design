@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ToolbarDemo from '../../../components/demos/ToolbarDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. A toolbar SLOTS the shipped primitives
@@ -67,8 +68,8 @@ export function FormattingToolbar() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose). The canonical action strip is a Row of grouped controls
@@ -108,8 +109,8 @@ fun FormattingToolbar(state: EditorState) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI. The idiomatic API is the native .toolbar modifier with
@@ -140,13 +141,13 @@ fun FormattingToolbar(state: EditorState) {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -162,8 +163,8 @@ fun FormattingToolbar(state: EditorState) {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -179,8 +180,8 @@ fun FormattingToolbar(state: EditorState) {
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI builds the toolbar declaratively with the native `.toolbar` modifier rather than
 a single Nockerl `Toolbar` view. Groups are `ToolbarItemGroup`, separators are `Divider()`,
@@ -198,8 +199,8 @@ toggles are `Toggle`, and the overflow is a `Menu`. State comes from `@State`/`@
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **One strip composed from primitives:** the toolbar is deliberately not a bespoke

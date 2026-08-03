@@ -6,7 +6,8 @@ platforms: [android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/transcriptpanel-shell.png';
 
 <StatusBadge status="review" />
@@ -31,8 +32,8 @@ Same-sender grouping stays in the rows (the bubble grammar) by design.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="Kotlin">
+<DocTabs surface={false}>
+<Fragment slot="kotlin">
 
 ```kotlin
 NockerlAgentTranscriptPanel(
@@ -49,8 +50,8 @@ NockerlAgentTranscriptPanel(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 NockerlAgentTranscriptPanel(
@@ -62,8 +63,8 @@ NockerlAgentTranscriptPanel(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Props
 

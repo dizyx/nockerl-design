@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SpinnerDemo from '../../../components/demos/SpinnerDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -48,8 +49,8 @@ import { NockerlSpinner, NockerlButton } from '@dizyx/nockerl-react';
 <NockerlButton text="Save" loading loadingText="Saving…" />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The spinner IS Material 3's
@@ -81,8 +82,8 @@ CircularProgressIndicator(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Nockerl Voice). The indeterminate circular loader is a plain
@@ -108,13 +109,13 @@ ProgressView()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlSpinner" />
 
@@ -122,8 +123,8 @@ The spinner is presentational (not focusable). It honors `prefers-reduced-motion
 the continuous spin stops and degrades to a static partial arc with a gentle opacity
 pulse, never an infinite fast spin.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The Compose spinner documented here is Material 3 `CircularProgressIndicator` (the
 **indeterminate** overload; omit the `progress` lambda) styled to the Nockerl accent,
@@ -139,8 +140,8 @@ not a bespoke composable: size + stroke are passed at each call site.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The Swift idiom here is a plain `ProgressView()` (no value) tinted to the accent, which
 is the indeterminate circular loader. State is implicit (it always animates); there are
@@ -155,8 +156,8 @@ no explicit parameters beyond the view modifiers below.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The **spinner** is the indeterminate *circular* loader for unknown-length work,

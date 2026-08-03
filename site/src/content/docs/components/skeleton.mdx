@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import SkeletonDemo from '../../../components/demos/SkeletonDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -49,8 +50,8 @@ function SessionList({ loading, sessions }: Props) {
 <Skeleton shape="button" motion="pulse" />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose). This is the INTENDED core/ui skeleton, designed from the
@@ -81,8 +82,8 @@ fun SessionRowSkeleton(modifier: Modifier = Modifier) {
 fun Modifier.skeleton(motion: SkeletonMotion = SkeletonMotion.Shimmer): Modifier
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. The idiom documented here leans on the system primitive rather than
@@ -110,13 +111,13 @@ SessionRow(session: placeholder)
     .accessibilityLabel("Loading session")
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -132,8 +133,8 @@ SessionRow(session: placeholder)
 
 The skeletons are presentational (<code>aria-hidden</code>). Wrap the loading region in one element with <code>aria-busy</code> + <code>aria-live="polite"</code> so assistive tech hears a single "Loading" status, not every empty box.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -145,8 +146,8 @@ The skeletons are presentational (<code>aria-hidden</code>). Wrap the loading re
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The Swift idiom documented here is the **system** redaction API rather than a bespoke
 type. Apply `.redacted(reason: .placeholder)` to the *real* view while data is loading;
@@ -162,8 +163,8 @@ SwiftUI greeks it into placeholder bars at the same footprint.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Skeleton is the **content-shaped** loader, distinct from its three feedback

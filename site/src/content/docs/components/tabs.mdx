@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TabsDemo from '../../../components/demos/TabsDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -49,8 +50,8 @@ export function SessionPanel() {
 <NockerlTabs label="Panel sections" variant="enclosed" value={tab} onChange={setTab} tabs={tabs} renderPanel={renderPanel} />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). Material 3 SecondaryTabRow: a MUTED
@@ -92,8 +93,8 @@ HorizontalPager(state = pagerState) { page -> SectionBody(tabs[page]) }
 // Many tabs → ScrollableTabRow for a horizontally-scrolling, edge-fading row.
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). The bespoke first-class NockerlTabs (v1.15.0): a controlled
@@ -122,18 +123,18 @@ NockerlTabs(
 // onClose: for closable tabs
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlTabs" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -148,8 +149,8 @@ NockerlTabs(
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The bespoke first-class `NockerlTabs` (v1.15.0): a CONTROLLED tablist + a contained
 content panel, a11y-first, ported 1:1 from the web/Compose `NockerlTabs`. (The system
@@ -169,8 +170,8 @@ content panel, a11y-first, ported 1:1 from the web/Compose `NockerlTabs`. (The s
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Tabs are the **sectioned-content switcher**: each tab owns a `tabpanel`

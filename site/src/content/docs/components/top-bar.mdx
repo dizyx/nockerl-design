@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TopBarDemo from '../../../components/demos/TopBarDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -55,8 +56,8 @@ export function AppHeader() {
 <TopBar leading={<NockerlIconButton icon={BackIcon} label="Back" onClick={goBack} />} title="Session settings" />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). com.nockerl.app.core.ui.GlobalTopBar +
@@ -85,8 +86,8 @@ Column {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. Voice is a MENU-BAR app with no title bar
@@ -119,13 +120,13 @@ HStack(spacing: 11) {
 NockerlLockup(product: "Voice", size: 22)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -142,8 +143,8 @@ NockerlLockup(product: "Voice", size: 22)
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `GlobalTopBar` is the title-bar row; `TopChromeBoundary` is the 1.5dp cyan line that
 closes the header chrome. Both are composed by `MainScaffold`.
@@ -162,16 +163,16 @@ closes the header chrome. Both are composed by `MainScaffold`.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 On macOS the header job belongs to a menu-bar window rather than a title bar, so the
 idiom this page documents is the floating **command pill**. That surface (the brand
 anchor, the divider, the capsule + cyan outline, and its phase morphing) is documented
 in full on the [Recording HUD](/components/recording-hud/) page and is not duplicated here.
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Top-bar vs. app-shell vs. toolbar:** the top bar is the *global header row* (brand

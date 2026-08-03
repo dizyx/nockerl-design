@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SegmentedControlDemo from '../../../components/demos/SegmentedControlDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -56,8 +57,8 @@ export function TaskViewSwitch() {
   ]} />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose). PUBLISHED: com.dizyx.nockerl.design.components.NockerlSegmented
@@ -80,8 +81,8 @@ NockerlSegmented(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift
@@ -102,18 +103,18 @@ Picker("Task view", selection: $view) {
 .pickerStyle(.segmented)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlSegmentedControl" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -127,8 +128,8 @@ Picker("Task view", selection: $view) {
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the control as the custom `SegmentedSelector` (cyan outline) or a
 system `Picker(.segmented)`. State is two-way bound; there are no per-segment
@@ -144,8 +145,8 @@ state parameters.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Segmented control is the **connected, single-track view/mode switch**, distinct
