@@ -1,6 +1,6 @@
 ---
 title: Sidebar / nav rail
-description: The persistent, in-layout Nockerl navigation column, with sections, nav items, active state, collapsible rail, nested sub-items, and a pinned footer.
+description: The persistent, in-layout Nockerl navigation column. Nav items, active state, and a pinned footer ship today; sections, the collapsible rail, and nested sub-items are the framework-original web pattern.
 status: review
 platforms: [web, swift]
 ---
@@ -23,8 +23,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 <TabItem label="TypeScript">
 
 ```tsx
-// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
-// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// Web: React, consuming @dizyx/nockerl-tokens. This is the spec plus the live demo above.
+// It is not yet exported from @dizyx/nockerl-react.
 
 export function Shell() {
   const [section, setSection] = useState('chat');
@@ -85,38 +85,64 @@ TopChromeBoundary(                                 // 1.5dp cyan line + grab han
 <TabItem label="Swift">
 
 ```swift
-// macOS SwiftUI. The ROW is now the packaged `NockerlNavRow` (, to the
-// NockerlNavItem canon; Voice's hand-rolled SidebarRow retires on adoption);
-// the sidebar SHELL (fixed 216pt translucent panel, brand top, Settings cog
-// pinned bottom) stays app-side until the Swift nav-surface ships.
+// macOS SwiftUI. The ROW ships as `NockerlNavRow`, built to the NockerlNavItem canon.
+// The sidebar SHELL stays app-side (a translucent panel reading the app's router) until
+// a Swift nav-surface ships. Voice's hand-rolled SidebarRow has been retired.
+//
+// Scope: this sidebar belongs to one window, not to the app. Voice is menu-bar-first, so
+// closing the window leaves a native status-item menu as the always-on navigation. That
+// menu is a macOS affordance the framework deliberately does not model.
 import NockerlDesign
 
-private let sidebarWidth: CGFloat = 216
+// Width is a token, never a literal. `containerXs` resolves to 216pt.
+private let sidebarWidth: CGFloat = NockerlSize.containerXs
+
+// The palette resolves per color scheme rather than reading a global.
+private var palette: NockerlPalette { NockerlPalette.resolve(effectiveScheme) }
 
 private var sidebar: some View {
     VStack(alignment: .leading, spacing: 3) {
-        HStack(spacing: 9) { NockerlLogo(size: 19); Text("Nockerl Voice") }
-            .padding(.horizontal, 16).padding(.top, 50).padding(.bottom, 16)
+        // The brand slot is the packaged lockup at its default mark height, never the
+        // mark plus a separate text run.
+        HStack(spacing: 0) {
+            NockerlLockup(product: "Voice")
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        // macOS only: the window hides its title bar, so the brand clears the traffic
+        // lights that float over the top-left corner. The web inherits none of this.
+        .padding(.top, 50)
+        .padding(.bottom, 16)
 
-        ForEach(DashboardSection.navItems) { section in
+        ForEach(AppSection.navItems) { section in
             NockerlNavRow(section.title, selected: router.section == section) {
                 router.section = section
             } icon: {
                 Image(systemName: section.icon)
             }
+            .padding(.horizontal, NockerlSpace.space2)  // padding rides the row, not the stack
         }
         Spacer(minLength: 0)
-        NockerlNavRow("Settings", selected: router.section == .settings) {
+        // Settings is a peer destination held out of the main list and pinned, not a
+        // separate footer vocabulary: same row component, same selected treatment.
+        NockerlNavRow(AppSection.settings.title, selected: router.section == .settings) {
             router.section = .settings
-        } icon: { Image(systemName: "gearshape") }
-            .padding(.bottom, 14)                       // the footer cog, pinned
+        } icon: { Image(systemName: AppSection.settings.icon) }
+            .padding(.horizontal, NockerlSpace.space2)
+            .padding(.bottom, 14)
     }
-    .padding(.horizontal, 8)
-    .frame(width: sidebarWidth)
-    .background(NockerlTheme.canvas.opacity(0.3))       // translucent: facet field reads through
-    .overlay(alignment: .trailing) { Rectangle().fill(NockerlTheme.hairline).frame(width: 1) }
+    .frame(width: sidebarWidth, alignment: .leading)
+    .background(palette.canvas.opacity(0.3))            // translucent: the facet field reads through
+    .overlay(alignment: .trailing) { Rectangle().fill(palette.cardHairline).frame(width: 1) }
 }
 ```
+
+**Why the panel is translucent.** One background owns the whole window, and the sidebar is
+a translucent plane floating on top of it rather than an opaque panel with its own fill.
+That is the transferable principle. Voice keeps the tint at `canvas` opacity `0.3` and
+deliberately declined the heavier `surface.translucency.sidebar` token, which would thicken
+the veil until the faceted field stopped reading through. The hidden title bar and the
+traffic-light clearance above are macOS-only staging for that same effect.
 
 </TabItem>
 </Tabs>
@@ -129,14 +155,15 @@ private var sidebar: some View {
 <PropsTable
   nameLabel="Prop"
   rows={[
-    { name: 'sections', type: 'NavSection[]', required: true, description: 'Grouped nav: <code>{ label, items }</code>. Each item is <code>{ id, label, icon, badge?, dot?, children? }</code> and renders as one focusable button.' },
-    { name: 'selected', type: 'string', required: true, description: 'Active destination <code>id</code> (a leaf, meaning a child id when a sub-item is active). Drives the cyan indicator + which content shows.' },
+    { name: 'sections', type: 'NavSection[]', required: true, description: 'Grouped nav: <code>{ label, items }</code>. Each item is <code>{ id, label, icon, badge?, dot?, children? }</code> and renders as one focusable button. <strong>Grouping is framework-original</strong> and ships on no platform yet: the Swift sidebar is a flat list.' },
+    { name: 'selected', type: 'string', required: true, description: 'Active destination <code>id</code> (a leaf, meaning a child id when a sub-item is active). Selection reads by outline (law §6): accent border + accent ink + the icon, with <strong>no wash</strong> and never a stripe.' },
     { name: 'onSelect', type: '(id: string) => void', required: true, description: 'Fired when a (leaf) item is activated: click / Enter / Space.' },
-    { name: 'collapsed', type: 'boolean', default: 'false', description: 'Collapses the sidebar to the icon-only <strong>rail</strong>; labels + counts hide and each item exposes its label via tooltip / <code>aria-label</code>.' },
-    { name: 'onToggleCollapse', type: '() => void', description: 'Toggles <code>collapsed</code> from the rail button.' },
-    { name: 'badge', type: "{ count: number; tone?: 'neutral' | 'attention' }", description: 'Per-item trailing count. <code>neutral</code> = mono chip; <code>attention</code> = warm count (status signal). Right-aligned; collapses to a corner dot on the rail.' },
-    { name: 'children', type: 'NavSubItem[]', description: 'Nested sub-items on an item, which turn its row into an expandable disclosure (<code>aria-expanded</code>), indented under the parent.' },
-    { name: 'footer', type: 'ReactNode', description: 'Pinned to the bottom: profile (avatar + name) + a settings cog (its own focusable target).' },
+    { name: 'focus + keyboard', type: 'behavior', required: true, description: 'Every row <strong>stays in the focus chain</strong> and shows a visible focus ring, drawn with <code>outline</code> on <code>:focus-visible</code> (never a colored shadow, law §1). <strong>The shell owns roving <code>tabindex</code></strong>, not the row: one row is tabbable at a time, arrow keys move between rows, <code>Home</code> / <code>End</code> jump to the ends, and <code>Enter</code> / <code>Space</code> activate. Full keyboard operability is law §14, so the macOS focus stance is prohibited here.' },
+    { name: 'collapsed', type: 'boolean', default: 'false', description: 'Collapses the sidebar to the icon-only <strong>rail</strong>; labels + counts hide and each item exposes its label via tooltip / <code>aria-label</code>. <strong>Framework-original, not yet on Swift</strong>, whose panel is a fixed width with no rail.' },
+    { name: 'onToggleCollapse', type: '() => void', description: 'Toggles <code>collapsed</code> from the rail button. <strong>Framework-original, not yet on Swift.</strong>' },
+    { name: 'badge', type: "{ count: number; tone?: 'neutral' | 'attention' }", description: 'Per-item trailing count. <code>neutral</code> = mono chip; <code>attention</code> = warm count (status signal). Right-aligned; collapses to a corner dot on the rail. <strong>Framework-original, not yet on Swift.</strong>' },
+    { name: 'children', type: 'NavSubItem[]', description: 'Nested sub-items on an item, which turn its row into an expandable disclosure (<code>aria-expanded</code>), indented under the parent. <strong>Framework-original, not yet on Swift</strong>: <code>NockerlNavRow</code> is deliberately a strict subset with no children, chevron, or expansion state.' },
+    { name: 'footer', type: 'ReactNode', description: 'Pinned to the bottom. The settings entry is a <strong>peer destination</strong> held out of the main list, rendered by the same row component with the same selected treatment, so no separate footer vocabulary is needed. The profile (avatar + name) is <strong>framework-original</strong> and ships nowhere today.' },
   ]}
 />
 
@@ -162,45 +189,68 @@ honest equivalent of the sidebar's sections + selected-row + collapse).
 </TabItem>
 <TabItem label="Swift">
 
-The ROW ships as `NockerlNavRow`. The sidebar SHELL stays app-side (a
-fixed translucent panel reading the app's router). Canon deltas vs Voice's retired
-`SidebarRow`: hover wash reads `onChrome @ 6%` (not `onSurface`), resting ink is
-`onChromeMuted` at weight <strong>medium</strong> (hover raises it), the selected wash is the
-`accentPrimarySoft` <strong>token</strong> (~16%, theme-governed), rows gain the 0.985 press
-scale and the 22% selected-hover deepen, and the row metrics are the canon's
-(min-height 40, padding 12/8/8, radius `control`).
+The ROW ships as `NockerlNavRow`. The sidebar SHELL stays app-side (a translucent panel
+reading the app's router).
+
+**The state ladder.** `NockerlNavRow` carries **no wash on any state**, which is the
+ratified "state by outline, not fill" position:
+
+- **Rest:** `onChromeMuted` ink at **light** weight, no border.
+- **Hover** (unselected only): the ink raises to `onChrome` and a **neutral gray `divider`
+  hairline** border appears. Never cyan, because cyan is reserved for selection.
+- **Selected:** a thin `accentPrimary` border at **45%**, accent ink, and a **medium**
+  label weight. The leading icon stays, and there is no left rail and no stripe.
+
+Weight is a selection signal here, so the resting weight is light and only the selected row
+steps up. It steps up to medium and no further: the type ramp caps at 500, so `semibold` is
+out of bounds.
+
+Row metrics are the canon's: min-height 40, padding 12/8/8, radius `control`. Press feedback
+is a 0.985 scale, a transform rather than a fill change.
 
 <PropsTable
   nameLabel="Parameter"
   rows={[
     { name: 'label', type: 'String', required: true, description: 'The destination name, also the row&rsquo;s accessible name.' },
-    { name: 'selected', type: 'Bool', default: 'false', description: 'Active destination (law §6): <code>accentPrimarySoft</code> wash + accent <code>@0.45</code> thin border + accent ink + semibold; the icon <strong>stays</strong> (never a check swap), never a left rail.' },
+    { name: 'selected', type: 'Bool', default: 'false', description: 'Active destination (law §6): a thin accent border at <code>@0.45</code> + accent ink + a <strong>medium</strong> label weight, and <strong>no wash</strong>. The icon <strong>stays</strong> (never a check swap). Never a left rail and never a stripe.' },
     { name: 'action', type: '() -> Void', required: true, description: 'Whole-row tap: the row is ONE button with one accessible name.' },
     { name: 'icon', type: '@ViewBuilder', description: 'Leading glyph slot (an SF Symbol <code>Image</code> or any view) in the canonical 20pt slot, tinted with the row&rsquo;s ink. Omit for a label-only row (no phantom slot).' },
-    { name: 'focus (macOS)', type: 'behavior', description: 'Rows leave the focus chain (<code>focusable(false)</code> + <code>focusEffectDisabled</code>, 14+), the ratified stance for mouse-driven sidebars; other platforms keep native behavior.' },
+    { name: 'focus (macOS only)', type: 'behavior', description: 'Rows leave the focus chain (<code>focusable(false)</code> + <code>focusEffectDisabled</code>, macOS 14+). This is a macOS accommodation, not a cross-platform stance: Full Keyboard Access is off by default there, so a mouse-driven sidebar loses nothing. <strong>It must never be carried to the web</strong>, where it would put primary navigation out of reach of keyboard and assistive-technology users and fail law §14. The Swift sidebar also implements no arrow-key traversal; the keyboard route on macOS is the menu bar.' },
   ]}
 />
 
 </TabItem>
 </Tabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<Aside type="caution" title="Cross-platform drift">
 The **sidebar** is the persistent, in-layout nav column, the **`inline` role of the ONE
-nav-surface** ( · D5): `NockerlNavSurface` (= `NockerlDrawer`) is a single edge-anchored
-surface with `mode: inline | overlay`. `inline` is this persistent rail; `overlay` is the
+nav-surface**: `NockerlNavSurface` (= `NockerlDrawer`) is a single edge-anchored surface with
+`mode: inline | overlay`. `inline` is this persistent rail; `overlay` is the
 [drawer](/components/drawer/) (a scrim panel that opens / closes). [App shell](/components/app-shell/)
 composes ONE nav-surface, not two. The sidebar never floats over content and never dims it. Its
-praised rail chrome (grouped sections, collapse-to-rail, footer) is preserved as the reference
-`inline` nav content; the shell-level convergence lands with AppShell .
+rail chrome (grouped sections, collapse-to-rail, footer) is the reference `inline` nav content,
+and the shell-level convergence lands with App shell.
 
-- **Android has no side rail.** Voice + web use a vertical sidebar; Android's persistent
+Platforms are allowed to diverge while the migration runs. What follows is the honest state
+today, not a defect list.
+
+- **Selection reads by outline on every platform.** Accent border, accent ink, and the
+  leading icon, with **no wash**, no left rail, and no stripe (law §6). The Swift row
+  already carries no wash. The web is being conformed to the same position, so the soft
+  cyan wash it previously used comes out; the law does not move.
+- **Android has no side rail.** Voice and web use a vertical sidebar; Android's persistent
   nav is **top chrome** (project + session rows that collapse *up* under the title bar).
   A `NavigationRail` / `PermanentNavigationDrawer` is not used today.
-- **Collapse:** web collapses to an **icon-only rail** (with tooltips); Voice's panel is
-  a **fixed 216pt** with no rail; Android collapses the chrome **upward**, not sideways.
-- **Sub-items + counts:** the **nested expandable sub-items** and **trailing count/badge**
-  are framework-original; Voice's shipped sidebar is a flat list with neither.
-- **Selected treatment is unified**: a left cyan indicator + cyan-soft wash + cyan
-  icon/label (Voice's accent <code>@0.16</code> fill + <code>@0.45</code> border),
-  never a full cyan fill or a glow.
+- **Collapse:** web collapses to an **icon-only rail** (with tooltips). The Swift panel is
+  a fixed `containerXs` width with no rail, and Android collapses the chrome **upward**,
+  not sideways. Collapse is framework-original and has not shipped on Swift.
+- **Grouped sections, sub-items, counts, and the profile footer are framework-original.**
+  None has shipped on Swift, whose sidebar is a flat list of five destinations. They are
+  kept here as the reference web pattern, not reported as harvested from a shipping app.
+- **Scope differs.** The Swift sidebar belongs to one window, not to the app: Voice is
+  menu-bar-first, and a native status-item menu remains after the window closes. That menu
+  is a macOS affordance the framework does not model, and the web has no equivalent.
+- **Keyboard support does not transfer.** The Swift rows leave the focus chain and have no
+  arrow-key traversal, which is defensible on macOS and prohibited on the web. See the
+  Swift `focus` row above.
 </Aside>

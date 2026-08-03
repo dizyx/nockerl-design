@@ -99,16 +99,27 @@ before installing.
    }
    ```
 
-6. **Reference tokens, never raw values** in your own chrome. Bind to the variables:
+6. **Reference tokens, never raw values** in your own chrome. Bind to the variables,
+   including the depth recipe: a neutral drop shadow **plus** the inset top catch-light,
+   never a glow.
 
    ```css
    .card {
      background: var(--color-card-surface1);
      border-radius: var(--radius-card);     /* 16px */
      color: var(--color-on-card);
-     box-shadow: 0 6px 18px -8px var(--color-shadow-tint);
+     box-shadow:
+       /* neutral drop shadow, standard card rung: the rung token is the y offset,
+          the blur is a constant 0, so the shadow is crisp rather than a halo */
+       0 var(--elevation-level2) var(--elevation-blur) 0
+         color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level2) * 100%), transparent),
+       /* top catch-light, lit from above */
+       inset 0 var(--space-px) 0 var(--color-surface-highlight);
    }
    ```
+
+   Swap the `--elevation-level*` and matching alpha token for a different rung; the other
+   three are listed in [Elevation &amp; depth](/foundations/elevation-and-depth/).
 
 </Steps>
 

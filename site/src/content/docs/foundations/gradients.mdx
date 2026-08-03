@@ -76,12 +76,13 @@ near-black canvas. It is a page-level *light*, not a brand color:
 ```css
 background:
   radial-gradient(1100px 600px at 82% -8%, #12161b, transparent 60%),
-  #0a0b0d; /* --color-canvas */
+  var(--color-canvas);
 ```
 
-Applied to `body` in the dark theme only; the light theme is a flat neutral ground
-(`#f3f4f6`). The wash is a barely-lighter neutral (`#12161b` over canvas `#0A0B0D`), again a
-catch-light read, not an emission.
+Applied to `body` in the dark theme only; in the light theme `--color-canvas` resolves to a
+flat neutral ground and no wash is painted. The wash itself is a barely-lighter neutral
+(`#12161b` over the dark `--color-canvas`, `#0A0B0D`), again a catch-light read, not an
+emission.
 
 ### 4. The faceted field: the Nockerl signature backdrop
 

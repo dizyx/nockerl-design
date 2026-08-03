@@ -44,24 +44,27 @@ Neither is an accent hue: depth stays monochrome by construction.
 
 ## The lift tiers
 
-Cards lift off the ground on a four-rung neutral ladder. The `--elevation-level*` tokens are
-the **blur radius**; the vertical offset and the shadow-tint alpha both climb with the tier,
-so a higher card casts a softer, deeper, slightly stronger shadow. The per-rung opacity is
-its own token ladder, `--elevation-shadow-tint-alpha-*` (`shadowTintAlpha`, a unitless
-0 to 1 number, `× 100%` in the web `color-mix`).
+Cards lift off the ground on a four-rung neutral ladder. The drop shadow is **hard-edged**:
+`--elevation-blur` is a constant `0` and the x offset is `0` too, so the only value that
+moves per rung is the **downward y offset**, which is what the `--elevation-level*` tokens
+hold. A higher card sits further off the ground and its shadow deepens, but it never softens
+into a halo. The per-rung opacity is its own token ladder,
+`--elevation-shadow-tint-alpha-*` (`shadowTintAlpha`, a unitless 0 to 1 number, `× 100%` in
+the web `color-mix`).
 
-| Blur token | Blur radius | Offset · alpha token | Use |
+| Offset token | Y offset | Alpha token | Use |
 | --- | --- | --- | --- |
-| `elevation-level1` | 2px | `0 2px … -3px` · `shadow-tint-alpha-level1` @28% | Resting cards, chips, inline rows |
-| `elevation-level2` | 5px | `0 4px … -6px` · `shadow-tint-alpha-level2` @30% | Standard cards, message bubbles, menus |
-| `elevation-level3` | 9px | `0 8px … -8px` · `shadow-tint-alpha-level3` @33% | Input bar, status pills, popovers, dialogs |
-| `elevation-sheet` | 14px | `0 16px … -10px` · `shadow-tint-alpha-sheet` @35% | Bottom sheets, modals |
+| `elevation-level1` | 1px | `shadow-tint-alpha-level1` @28% | Resting cards, chips, inline rows |
+| `elevation-level2` | 1.5px | `shadow-tint-alpha-level2` @30% | Standard cards, message bubbles, menus |
+| `elevation-level3` | 3px | `shadow-tint-alpha-level3` @33% | Input bar, status pills, popovers, dialogs |
+| `elevation-sheet` | 5px | `shadow-tint-alpha-sheet` @35% | Bottom sheets, modals |
 
 ### The lifted-card recipe
 
 This is the exact recipe the [`Surface`](/components/) / `Card` primitive encodes (every
-value is a token, so a depth change is one edit). The offset and blur come from `--space-*`
-and `--elevation-*`; the negative spread keeps the shadow tight under the card:
+value is a token, so a depth change is one edit). The y offset is the rung token, the blur
+is the constant `--elevation-blur`, and the spread stays `0`: a crisp shadow sitting
+directly under the card, never a Gaussian cloud around it.
 
 ```css
 .nk-surface {
@@ -74,25 +77,25 @@ and `--elevation-*`; the negative spread keeps the shadow tight under the card:
 
 /* resting rung (L1) */
 .nk-surface--l1 { box-shadow:
-  0 var(--space-0-5) var(--elevation-level1) -3px
+  0 var(--elevation-level1) var(--elevation-blur) 0
     color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level1) * 100%), transparent),  /* neutral drop */
   var(--nk-surface-sheen); }                                        /* top catch-light */
 
 /* standard card (L2) */
 .nk-surface--l2 { box-shadow:
-  0 var(--space-1) var(--elevation-level2) -6px
+  0 var(--elevation-level2) var(--elevation-blur) 0
     color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level2) * 100%), transparent),
   var(--nk-surface-sheen); }
 
 /* raised (L3) */
 .nk-surface--l3 { box-shadow:
-  0 var(--space-2) var(--elevation-level3) -8px
+  0 var(--elevation-level3) var(--elevation-blur) 0
     color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-level3) * 100%), transparent),
   var(--nk-surface-sheen); }
 
 /* sheet (L4) */
 .nk-surface--l4 { box-shadow:
-  0 var(--space-4) var(--elevation-sheet) -10px
+  0 var(--elevation-sheet) var(--elevation-blur) 0
     color-mix(in srgb, var(--color-shadow-tint) calc(var(--elevation-shadow-tint-alpha-sheet) * 100%), transparent),
   var(--nk-surface-sheen); }
 ```
@@ -100,10 +103,10 @@ and `--elevation-*`; the negative spread keeps the shadow tight under the card:
 Resolving the tokens, the four rungs are (alpha from the `shadowTintAlpha` ladder):
 
 ```css
-/* L1 */ box-shadow: 0 2px  2px -3px  color-mix(in srgb, var(--color-shadow-tint) 28%, transparent), inset 0 1px 0 var(--color-surface-highlight);
-/* L2 */ box-shadow: 0 4px  5px -6px  color-mix(in srgb, var(--color-shadow-tint) 30%, transparent), inset 0 1px 0 var(--color-surface-highlight);
-/* L3 */ box-shadow: 0 8px  9px -8px  color-mix(in srgb, var(--color-shadow-tint) 33%, transparent), inset 0 1px 0 var(--color-surface-highlight);
-/* L4 */ box-shadow: 0 16px 14px -10px color-mix(in srgb, var(--color-shadow-tint) 35%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L1 */ box-shadow: 0 1px   0 0 color-mix(in srgb, var(--color-shadow-tint) 28%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L2 */ box-shadow: 0 1.5px 0 0 color-mix(in srgb, var(--color-shadow-tint) 30%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L3 */ box-shadow: 0 3px   0 0 color-mix(in srgb, var(--color-shadow-tint) 33%, transparent), inset 0 1px 0 var(--color-surface-highlight);
+/* L4 */ box-shadow: 0 5px   0 0 color-mix(in srgb, var(--color-shadow-tint) 35%, transparent), inset 0 1px 0 var(--color-surface-highlight);
 ```
 
 ## The recessed-well recipe

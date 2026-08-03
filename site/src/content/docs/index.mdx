@@ -5,6 +5,14 @@ description: The single source of truth for everything visual across Nockerl (to
 
 import FeatureCards from '../../components/FeatureCards.tsx';
 import Pipeline from '../../components/Pipeline.astro';
+import VoiceMark from '../../../../logos/app-icons/voice.svg';
+import VoiceMarkOnDark from '../../../../logos/app-icons/voice-on-dark.svg';
+import CtxmsMark from '../../../../logos/app-icons/ctxms.svg';
+import CtxmsMarkOnDark from '../../../../logos/app-icons/ctxms-on-dark.svg';
+import SecurityMark from '../../../../logos/app-icons/security.svg';
+import SecurityMarkOnDark from '../../../../logos/app-icons/security-on-dark.svg';
+import DesignMark from '../../../../logos/app-icons/design.svg';
+import DesignMarkOnDark from '../../../../logos/app-icons/design-on-dark.svg';
 
 ## What this is
 
@@ -14,10 +22,34 @@ publisher* of design tokens, components, and this documentation site. Every prod
 Swift. A remodel here ships to every client via a version bump, and no client ever
 re-invents a design value.
 
-The products it dresses today are **Nockerl Voice** (Swift on macOS), **Nockerl CtxMS**,
-and **Nockerl Security**, alongside the framework's own documentation site. Each one has an
-icon in this repository under `logos/app-icons/`, so a product consumes its own brand
-assets from here rather than keeping a private copy.
+These are the products it dresses today. Every mark below is read straight from
+`logos/app-icons/` in this repository, the same source the products themselves consume, so
+none of them keeps a private copy and a brand change ships everywhere at once.
+
+<div class="nk-products not-content">
+  <span class="nk-product"><VoiceMark class="nk-product__mark nk-product__mark--light" /><VoiceMarkOnDark class="nk-product__mark nk-product__mark--dark" />Nockerl Voice</span>
+  <span class="nk-product"><CtxmsMark class="nk-product__mark nk-product__mark--light" /><CtxmsMarkOnDark class="nk-product__mark nk-product__mark--dark" />Nockerl CtxMS</span>
+  <span class="nk-product"><SecurityMark class="nk-product__mark nk-product__mark--light" /><SecurityMarkOnDark class="nk-product__mark nk-product__mark--dark" />Nockerl Security</span>
+  <span class="nk-product"><DesignMark class="nk-product__mark nk-product__mark--light" /><DesignMarkOnDark class="nk-product__mark nk-product__mark--dark" />Nockerl Design</span>
+</div>
+
+<style>{`
+  /* The product row. \`not-content\` above opts the whole row out of the docs
+     vertical-flow rule, which would otherwise give every item after the first a top
+     margin and stagger the row. Spacing here comes from \`gap\`, never from margins. */
+  .nk-products { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: var(--space-5) 0; }
+  .nk-product { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-medium); color: var(--color-on-canvas); }
+  .nk-product__mark { width: var(--icon-2xl); height: var(--icon-2xl); flex: 0 0 auto; }
+  /* Each app icon ships a light and an on-dark cut, so the row follows the page theme
+     instead of recoloring a single file. Dark is the site default. */
+  .nk-product__mark--light { display: none; }
+  .nk-product__mark--dark { display: block; }
+  [data-theme='light'] .nk-product__mark--light { display: block; }
+  [data-theme='light'] .nk-product__mark--dark { display: none; }
+`}</style>
+
+Voice is Swift on macOS, CtxMS and Security are in build, and Nockerl Design is this
+documentation site, which is client number one of its own published packages.
 
 <FeatureCards client:load />
 
