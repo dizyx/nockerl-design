@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import KbdDemo from '../../../components/demos/KbdDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -30,8 +31,8 @@ For a chord, render several caps side by side in a tight flex row.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. NockerlKbd is a shipped leaf primitive in the
@@ -60,8 +61,8 @@ Press <NockerlKbd>Tab</NockerlKbd> to move focus.
 <NockerlButton text="Search commands" variant="secondary" trailingIcon={<NockerlKbd>⌘</NockerlKbd>} />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. There is NO Nockerl keycap component on Compose yet (see the
@@ -80,8 +81,8 @@ Text(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. Voice has NO keycap view (see the drift note); shortcuts are declared with
@@ -96,30 +97,30 @@ Button("Search commands") { openPalette() }
     .keyboardShortcut("k", modifiers: .command)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlKbd" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 No Compose component. Shortcut hints are plain `Text(fontFamily = FontFamily.Monospace)` today.
 A real `NockerlKbd` keycap (the raised surface + catch-light + depress) still needs designing.
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 No SwiftUI component. Shortcuts are bound with the native `.keyboardShortcut` modifier and any
 inline hint is a monospaced `Text`. A real `NockerlKbd` keycap still needs designing.
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Kbd is **web-only today**, an honest coverage gap:
