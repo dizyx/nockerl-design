@@ -49,9 +49,9 @@ export function TaskPrompt() {
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android (Jetpack Compose, canonical). There is no extracted NockerlTextArea yet; a
-// multi-line field is the same OutlinedTextField WITHOUT singleLine, with a maxLines cap
-// (see com.nockerl.app.chat.ui.ChatInputBar, which caps at 5 lines). Flagged in drift.
+// Android (Jetpack Compose, canonical). This documents the multi-line field idiom rather
+// than an extracted component: the same OutlinedTextField WITHOUT singleLine, with a
+// maxLines cap (see com.nockerl.app.chat.ui.ChatInputBar, which caps at 5 lines).
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import com.nockerl.app.core.theme.NockerlControlShape
@@ -104,9 +104,9 @@ Text("\(prompt.count) / \(maxLen)") // character counter (sibling)
 </TabItem>
 <TabItem label="Kotlin">
 
-Compose has **no extracted `NockerlTextArea`** yet; a multi-line field is the same
-`OutlinedTextField` without `singleLine`, with these parameters. The recessed-well
-treatment and the counter are **not** built in (M3 outlined boxes are used; the counter is
+The Kotlin tab documents the **multi-line field idiom** rather than an extracted component:
+the same `OutlinedTextField` without `singleLine`, with these parameters. The recessed-well
+treatment and the counter are not part of that idiom (M3 outlined boxes, and the counter is
 a manual `supportingText`); tracked in drift below.
 
 <PropsTable
@@ -149,10 +149,10 @@ views** (no bundled slots yet).
 The recessed-well spec is the target; these are the real divergences between the shipped
 platforms, tracked in the [Review queue](/review-queue/):
 
-- **No shared component:** there is no `NockerlTextArea` on any platform. Voice has the
-  shared `.nockerlFieldBackground()` modifier (reused for multi-line); Android repeats
-  `OutlinedTextField` inline; web ships the shadcn `textarea.tsx`. An extracted component
-  with a bundled counter is owed.
+- **No single shared component:** each platform reaches the area by its own route. Web exposes
+  `NockerlTextArea` from `@dizyx/nockerl-react`; Voice has the shared
+  `.nockerlFieldBackground()` modifier (reused for multi-line); Android repeats
+  `OutlinedTextField` inline. A common extraction with a bundled counter is still owed.
 - **Recessed vs outlined:** Voice + the spec are **recessed wells**; Android's
   `OutlinedTextField` is an **outlined box** (no inset). It should adopt the inset surface.
 - **Control radius:** Voice hardcodes **8pt**; Android uses the **12dp** token; web's

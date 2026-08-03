@@ -87,10 +87,11 @@ export function SessionsTable({ rows, sort, selected, onSort, onSelect }: Sessio
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android: Jetpack Compose (canonical). There is no NockerlDataTable component;
-// tabular data is a Row of weighted COLUMNS inside a LazyColumn, with mono numeric
-// cells and HorizontalDivider hairlines (the ClusterSheet idiom). Sorting is state
-// the caller owns; the header row carries the clickable sort affordance.
+// Android: Jetpack Compose (canonical). This documents the hand-assembled grid idiom
+// rather than a NockerlDataTable component: tabular data is a Row of weighted COLUMNS
+// inside a LazyColumn, with mono numeric cells and HorizontalDivider hairlines (the
+// ClusterSheet idiom). Sorting is state the caller owns; the header row carries the
+// clickable sort affordance.
 
 @Composable
 fun SessionTable(rows: List<Session>, sort: SortState, onSort: (SortKey) -> Unit) {
@@ -193,9 +194,9 @@ and reports sort intent via `onSortChange`.
 </TabItem>
 <TabItem label="Kotlin">
 
-There is **no `NockerlDataTable`**. The grid is hand-assembled from a header `Row`, weighted
-column cells, and `HorizontalDivider` hairlines (the `ClusterSheet` idiom). These are the
-building blocks you compose.
+The Kotlin tab documents the **hand-assembled grid idiom** rather than the parameter list of a
+single `NockerlDataTable`: a header `Row`, weighted column cells, and `HorizontalDivider`
+hairlines (the `ClusterSheet` idiom). These are the building blocks you compose.
 
 <PropsTable
   nameLabel="Parameter"
@@ -204,7 +205,7 @@ building blocks you compose.
     { name: 'textAlign', type: 'TextAlign', default: 'TextAlign.Start', description: '<code>TextAlign.End</code> right-aligns a numeric cell (and its header) inside its weighted column.' },
     { name: 'fontFamily', type: 'FontFamily', default: 'default', description: '<code>FontFamily.Monospace</code> on numeric / id / metric cells so figures line up, following the in-app convention (LiveModelRow, NodeCard).' },
     { name: 'sort (caller state)', type: 'SortState', description: 'Sorting is caller-owned state; the header cell is <code>clickable</code> and shows an arrow. The body is rendered from the pre-sorted list (<code>rows.sortedBy { … }</code>).' },
-    { name: 'clickable { }', type: 'Modifier', description: 'Row selection / activation: the whole row is one target; a selected row gets a soft cyan wash + trailing check (never a left stripe, Law 6).' },
+    { name: 'clickable { }', type: 'Modifier', description: 'Row selection / activation: the whole row is one target; a selected row gets an accent border + accent ink + a trailing check, with no wash and never a left stripe (Law 6).' },
     { name: 'HorizontalDivider', type: '@Composable', default: 'thickness = 1.dp', description: 'The hairline BETWEEN rows (<code>color = colors.divider</code>). Cyan (1.5dp) is reserved for the chrome boundary, never a row rule.' },
     { name: 'LazyColumn', type: '@Composable', description: 'The scrolling body. A sticky header uses <code>stickyHeader { }</code> (intended; see drift).' },
   ]}
@@ -236,10 +237,10 @@ This page is the multi-**column** grid. The single-column sectioned collection i
 [List](/components/list/); one record's label→value fields are [Key-value](/components/key-value/).
 The real divergences between the shipped platforms, tracked in the [Review queue](/review-queue/):
 
-- **No true grid on mobile.** Neither Android nor Voice ships a `DataTable`. Both lay tabular
-  data out as **column-ish weighted rows** (Compose `Row { Modifier.weight(1f) }`, Voice
-  `LazyVGrid` of cards), with mono numeric cells + hairline rules. macOS SwiftUI is the one
-  platform with a real `Table` (`TableColumn` + `KeyPathComparator`). The web grid was designed
+- **No true grid idiom on mobile.** The mobile pattern is **column-ish weighted rows** rather
+  than a `DataTable` (Compose `Row { Modifier.weight(1f) }`, Voice `LazyVGrid` of cards), with
+  mono numeric cells + hairline rules. macOS SwiftUI is the one platform whose framework hands
+  you a real `Table` (`TableColumn` + `KeyPathComparator`). The web grid was designed
   ORIGINALLY here from the laws + the shared checkbox / divider / pagination / mono vocabulary
   and now **ships** as `NockerlTable` in `@dizyx/nockerl-react` (v1, with virtualization + inline
   cell editing a later slice).
@@ -248,8 +249,8 @@ The real divergences between the shipped platforms, tracked in the [Review queue
   sort header for Compose is the open extraction item.
 - **Sticky header:** the web grid and the SwiftUI `Table` keep the header pinned; Compose has
   `stickyHeader` but no shipped screen uses it yet, so canonizing it is open.
-- **Row selection** *(resolved in [adjudication 2026-07-02 · B20])*: the one selection model is a
-  **soft cyan wash + trailing check, never a left stripe**. The web grid pairs it with a checkbox
-  column; macOS uses the native `Table` selection highlight; Compose (today a per-row `clickable`
-  background) conforms.
+- **Row selection** *(ratified)*: the one selection model is an **accent border + accent ink +
+  the trailing check**, with **no wash** and never a left stripe (Law 6). The web grid pairs it
+  with a checkbox column; macOS uses the native `Table` selection highlight; Compose carries it
+  on the per-row `clickable` target.
 </Aside>

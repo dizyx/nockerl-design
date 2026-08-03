@@ -161,14 +161,7 @@ clamp → beak engine and returns a render-prop. The <em>per-hint</em> text / si
 wrapping are declared on each trigger through <code>triggerProps(cfg)</code>, not on
 <code>Tooltip</code>.
 
-<PropsTable
-  nameLabel="Prop"
-  rows={[
-    { name: 'place', type: "'auto' | 'top' | 'bottom' | 'left' | 'right'", default: "'auto'", description: 'Forced placement for every tip, or <code>auto</code> to use each trigger&apos;s own preferred <code>side</code>. A <em>hint</em> only: the tip flips to the opposite side and clamps inside the stage if it would not fit.' },
-    { name: 'delayMs', type: 'number', default: '600', description: 'Open delay in ms after hover/focus before a tip floats in. Pass <code>0</code> for an immediate tip.' },
-    { name: 'children', type: '(args: TooltipRenderArgs) => ReactNode', required: true, description: 'Render-prop. Receives <code>{ stageRef, triggerProps, tip, shows }</code>: mount your triggers inside the <code>stageRef</code> stage, wire each with <code>triggerProps(cfg)</code>, and render <code>tip</code> as the stage&apos;s LAST child.' },
-  ]}
-/>
+<PropsTable nameLabel="Prop" component="NockerlTooltip" />
 
 Each trigger declares its own hint via `triggerProps(cfg: TooltipConfig)`:
 
@@ -188,7 +181,8 @@ Each trigger declares its own hint via `triggerProps(cfg: TooltipConfig)`:
 
 `PlainTooltip` is shown inside a `TooltipBox`; the trigger is its `content`. The
 position provider, the state (delay/persistence), and the surface colors come from
-`TooltipDefaults`; there is no single tooltip parameter.
+`TooltipDefaults`, so a hint is assembled from those parts rather than configured
+through one tooltip parameter.
 
 <PropsTable
   nameLabel="Parameter"
@@ -233,7 +227,7 @@ tooltip has a fixed ~2s delay and no styling.
   `PlainTooltip` adds long-press for touch.
 - **Surface:** web + Compose render an **inverted/high-contrast** bubble (the one
   place a surface flips); macOS uses the system tooltip surface (not themeable).
-- **Adoption** *(resolved in [adjudication 2026-07-02 · C3])*: **`TooltipBox`** is confirmed for
-  icon-only Android actions (persistent-label a11y). It is the ratified path; icon-only actions
-  rely on `contentDescription` today and adopt `TooltipBox` / `PlainTooltip`.
+- **Adoption** *(ratified)*: **`TooltipBox`** is the confirmed path for icon-only Android
+  actions (persistent-label a11y). Until a surface adopts it, `contentDescription` is what
+  names an icon-only action.
 </Aside>

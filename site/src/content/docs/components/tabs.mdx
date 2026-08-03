@@ -97,8 +97,8 @@ HorizontalPager(state = pagerState) { page -> SectionBody(tabs[page]) }
 
 ```swift
 // macOS: SwiftUI (canonical). The bespoke first-class NockerlTabs (v1.15.0): a controlled
-// tablist + a CONTAINED content panel, the container the native TabView lacked (B12 amended
-// 2026-07-17). The panel is panelStyle-driven (v1.16.0): .well (default) is a recessed
+// tablist + a CONTAINED content panel, the container the native TabView lacked.
+// The panel is panelStyle-driven (v1.16.0): .well (default) is a recessed
 // NockerlWell(.container) GROUND that cards LIFT OFF (matches StylesView); .card is a lifted
 // surface for plain content. a11y-first: roving Arrow/Home/End, typeahead, Delete-to-close,
 // VoiceOver selected state.
@@ -153,7 +153,7 @@ NockerlTabs(
 
 The bespoke first-class `NockerlTabs` (v1.15.0): a CONTROLLED tablist + a contained
 content panel, a11y-first, ported 1:1 from the web/Compose `NockerlTabs`. (The system
-`TabView` was retired for Nockerl surfaces; see B12-amend 2026-07-17.)
+`TabView` was retired for Nockerl surfaces.)
 
 <PropsTable
   nameLabel="Parameter"
@@ -187,14 +187,14 @@ Real divergences between the shipped platforms:
   `HorizontalPager` (the all-cyan `PrimaryTabRow` was deliberately **retired**: muted inactive,
   cyan active + underline; see `InboxSheet.kt`). **Voice/Swift ships the first-class `NockerlTabs`**
   (v1.15.0). The native `TabView` was **retired for Nockerl surfaces** after it failed the
-  contained-panel bar on a real Voice surface (`[adjudication 2026-07-17 · B12-amend]`).
-- **The slide** *(resolved in [adjudication 2026-07-02 · B12], amended 2026-07-17)*: the indicator
+  contained-panel bar on a real Voice surface.
+- **The slide** *(ratified, later amended)*: the indicator
   **slides** (transform + width, never the fill) on all three: web + Compose (its
   `SecondaryIndicator` animates via `tabIndicatorOffset`) + Swift (`matchedGeometryEffect`,
   teleporting under Reduce Motion). No raw system `TabView` remains on a Nockerl surface (Law 9
   honored in spirit, since `NockerlTabs` is built to feel native).
-- **Enclosed variant** *(resolved in [adjudication 2026-07-02 · B12]; option (b) shipped, )*:
-  the enclosed variant is the **same sliding cyan underline seated inside a recessed well**, never
+- **Enclosed variant.** This was a deliberate call and it holds: the enclosed variant is the
+  **same sliding cyan underline seated inside a recessed well**, never
   a filled pill (a fill would ape the segmented control). Web, Compose, **and Swift** ship it
   (`NockerlTabsVariant.enclosed` seats the underline row inside a recessed `NockerlWell`).
 </Aside>

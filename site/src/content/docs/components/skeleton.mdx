@@ -53,9 +53,9 @@ function SessionList({ loading, sessions }: Props) {
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android (Jetpack Compose). NO skeleton ships today: loading regions use a
-// centered CircularProgressIndicator (files/ui/FileViewer.kt, chat/ui/MessageList.kt).
-// This is the INTENDED core/ui skeleton, designed from the laws. The shimmer is a
+// Android (Jetpack Compose). This is the INTENDED core/ui skeleton, designed from the
+// laws rather than transcribed from a screen: it is meant to succeed the centered
+// CircularProgressIndicator that loading regions fall back to. The shimmer is a
 // Modifier that draws a travelling token highlight over a recessed placeholder.
 import com.nockerl.app.core.ui.skeleton
 
@@ -85,21 +85,21 @@ fun Modifier.skeleton(motion: SkeletonMotion = SkeletonMotion.Shimmer): Modifier
 <TabItem label="Swift">
 
 ```swift
-// macOS: SwiftUI. Voice ships NO custom skeleton (loading = a small ProgressView
-// "Transcribing…", UI/RecordingHUD.swift). The NATIVE primitive is the system
-// .redacted(reason: .placeholder), which greeks real views into placeholder bars
-// at the EXACT footprint, the SwiftUI-honest skeleton. Drive it with the load state.
+// macOS: SwiftUI. The idiom documented here leans on the system primitive rather than
+// a bespoke type: .redacted(reason: .placeholder) greeks real views into placeholder
+// bars at the EXACT footprint, which is the SwiftUI-honest skeleton. Drive it with
+// the load state.
 struct SessionRow: View {
     let session: Session
     var body: some View {
         HStack(spacing: 12) {
             Circle().fill(NockerlTheme.cardSurface3).frame(width: 28, height: 28)
             VStack(alignment: .leading, spacing: 2) {
-                Text(session.title).font(.system(size: 14, weight: .medium))
-                Text(session.subtitle).font(.system(size: 12)).foregroundStyle(NockerlTheme.onSurfaceMuted)
+                Text(session.title).font(.nockerl(size: NockerlFontSize.size14, weight: .medium))
+                Text(session.subtitle).font(.nockerl(size: NockerlFontSize.size12)).foregroundStyle(NockerlTheme.onSurfaceMuted)
             }
             Spacer()
-            Text(session.age).font(.system(size: 12)).foregroundStyle(NockerlTheme.onSurfaceMuted)
+            Text(session.age).font(.nockerl(size: NockerlFontSize.size12)).foregroundStyle(NockerlTheme.onSurfaceMuted)
         }
     }
 }
@@ -148,9 +148,9 @@ The skeletons are presentational (<code>aria-hidden</code>). Wrap the loading re
 </TabItem>
 <TabItem label="Swift">
 
-SwiftUI uses the **system** redaction API; there is no custom Nockerl type. Apply
-`.redacted(reason: .placeholder)` to the *real* view while data is loading; SwiftUI
-greeks it into placeholder bars at the same footprint.
+The Swift idiom documented here is the **system** redaction API rather than a bespoke
+type. Apply `.redacted(reason: .placeholder)` to the *real* view while data is loading;
+SwiftUI greeks it into placeholder bars at the same footprint.
 
 <PropsTable
   nameLabel="Style"
@@ -172,11 +172,10 @@ siblings: the **spinner** (an indeterminate circular loader with no footprint), 
 **empty-state** (a *resolved* zero-data result). Reach for a skeleton only when you
 know the shape of what's arriving and want the layout to stay put.
 
-- **No shipped skeleton on either app.** Android loads regions with a centered
-  `CircularProgressIndicator` (`files/ui/FileViewer.kt`, `files/ui/FilesSheet.kt`,
-  `chat/ui/MessageList.kt`); Voice shows a small `ProgressView()`
-  (`UI/RecordingHUD.swift`). The system above is designed **originally** from the
-  laws and should be promoted to a real `core/ui` `Modifier.skeleton()`.
+- **Designed, not transcribed.** The system above is drawn **originally** from the
+  laws rather than lifted off a native screen, and the loading regions it is meant to
+  replace fall back to a circular indicator. Promoting it to a real `core/ui`
+  `Modifier.skeleton()` is the open work.
 - **The Swift primitive is system redaction.** `.redacted(reason: .placeholder)`
   greeks the real view, so the footprint is automatically exact, but it does **not**
   shimmer. Android/web add the travelling highlight; Swift's placeholder is static

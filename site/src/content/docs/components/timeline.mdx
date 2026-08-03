@@ -45,10 +45,10 @@ export function SessionActivity() {
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android: Jetpack Compose. No dedicated NockerlTimeline ships yet; the
-// chronological event feed IS the agent transcript. This is the intended API,
-// designed from AgentTranscriptPanel + AgentTranscriptSegments.groupSegments()
-// (a time-ordered run of events) + NotificationRow's formatTimeAgo. See drift.
+// Android: Jetpack Compose. On Android the chronological event feed IS the agent
+// transcript. This is the intended API, designed from AgentTranscriptPanel +
+// AgentTranscriptSegments.groupSegments() (a time-ordered run of events) +
+// NotificationRow's formatTimeAgo. See drift.
 import com.nockerl.app.core.ui.NockerlTimeline
 import com.nockerl.app.core.ui.TimelineEvent
 import com.nockerl.app.core.ui.EventStatus
@@ -72,9 +72,9 @@ NockerlTimeline(
 <TabItem label="Swift">
 
 ```swift
-// macOS: SwiftUI. No dedicated timeline ships yet; the closest surface is
-// HistorySection (a reverse-chronological list of timestamped rows) in
-// NockerlVoice/UI/HistoryView.swift. This is the intended API. See the drift note.
+// macOS: SwiftUI. The nearest canonical-app surface is HistorySection (a
+// reverse-chronological list of timestamped rows) in NockerlVoice/UI/HistoryView.swift.
+// This is the intended API. See the drift note.
 NockerlTimeline(events: [
     .init(id: "e1", title: "Session completed", description: "done · 1m 48s · 18.2k tok",
           time: "just now", status: .success),
@@ -150,8 +150,8 @@ what happened), distinct from the [Stepper](/components/stepper/) (a *forward pr
 done/current/upcoming flow state) and the [List](/components/list/) (plain rows). These are the
 real divergences:
 
-- **No platform ships a dedicated timeline yet.** The look + API are designed from the shipped
-  event-sequence surfaces: Android's `AgentTranscriptPanel` + `AgentTranscriptSegments` (a
+- **Designed, not extracted.** The look + API are drawn from the event-sequence surfaces
+  the apps already have: Android's `AgentTranscriptPanel` + `AgentTranscriptSegments` (a
   time-ordered run of `session_init` / `tool_use` / `done` / `error` events) and `NotificationRow`
   (`formatTimeAgo`); Swift's `HistorySection` (a reverse-chronological timestamped list). The
   `NockerlTimeline` symbols above are the **intended** components to extract.

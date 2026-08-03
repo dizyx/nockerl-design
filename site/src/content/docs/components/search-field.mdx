@@ -80,7 +80,7 @@ NockerlSearchField(
 // macOS / iOS: SwiftUI, from the NockerlDesign package (the parity twin
 // of this canon; Voice's hand-rolled HistoryView field retires on adoption).
 // Magnifier + recessed field-well + a clear that shows only when non-empty; the
-// query + placeholder render the REAL Outfit face (via .nockerlType, ).
+// query + placeholder render the REAL Outfit face (via .nockerlType).
 import NockerlDesign
 
 NockerlSearchField(
@@ -184,7 +184,7 @@ search-field whenever you are narrowing a visible list, not picking a value or l
   treatment, superseding the per-screen `OutlinedTextField` + Search-icon idiom.
 - **Swift: shipped.** `NockerlSearchField` (`NockerlDesign`) is the parity twin:
   the same contract on the recessed `.nockerlFieldWell()` chrome, the clear via the
-  `NockerlIconButton` icon canon, and the query in real Outfit (`.nockerlType`, ).
+  `NockerlIconButton` icon canon, and the query in real Outfit (`.nockerlType`).
   It **resolves the earlier drift**: the packaged well uses `radius.control` (12), not
   Voice's hand-rolled `8`, and the affordance is one component, not a per-screen
   hand-roll. Voice's `HistoryView` field retires on adoption.

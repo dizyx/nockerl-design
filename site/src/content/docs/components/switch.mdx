@@ -133,12 +133,10 @@ no native case yet).
 </Tabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-- **No shipped web component.** The TypeScript API above is the intended
-  `@dizyx/nockerl-react` surface; today only the design-site island exists.
-- **Track shape:** the web island draws a **recessed well** that lifts to a static
+- **Track shape:** web draws a **recessed well** that lifts to a static
   cyan gradient; Compose + SwiftUI use the **stock platform track** (only the ON
-  color is themed). The catch-light / inset-well treatment should flow into a
-  custom Compose track when web's API ships.
+  color is themed). The catch-light / inset-well treatment is still owed a
+  custom Compose track.
 - **Loading:** only web models a `loading` state (async settings write). Compose
   and SwiftUI gate this at the call site (no in-thumb spinner).
 </Aside>

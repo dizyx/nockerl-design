@@ -1,6 +1,6 @@
 ---
 title: Segmented control
-description: A connected single-track view/mode switch, one sliding cyan pill over equal segments.
+description: A connected single-track view/mode switch, equal segments with one sliding cyan outline on the active peer.
 status: review
 platforms: [web, android, swift]
 nativePublished: [android]
@@ -62,8 +62,9 @@ export function TaskViewSwitch() {
 ```kotlin
 // Android (Jetpack Compose). PUBLISHED: com.dizyx.nockerl.design.components.NockerlSegmented
 // (com.dizyx.nockerl.design on GitHub Packages Maven). One muted track; the ACTIVE
-// segment is filled with SOFT cyan + a cyan medium label; the rest stay transparent +
-// muted. Pass Modifier.fillMaxWidth() for a full-width control.
+// segment still carries a cyan FILL here, where the ratified expression is the sliding
+// OUTLINE (border + ink, see the drift note); the rest stay transparent + muted.
+// Pass Modifier.fillMaxWidth() for a full-width control.
 import com.dizyx.nockerl.design.components.NockerlSegmented
 
 enum class TaskView(val display: String) { LIST("List"), GRID("Grid"), BOARD("Board") }
@@ -118,7 +119,7 @@ Picker("Task view", selection: $view) {
   nameLabel="Parameter"
   rows={[
     { name: 'options', type: 'List<T>', required: true, description: 'The segments, in order (typically an <code>enum</code>). Each gets an equal-weight share of the track.' },
-    { name: 'selected', type: 'T', required: true, description: 'The currently-active option. Its segment gets the soft-cyan fill + cyan medium-weight label.' },
+    { name: 'selected', type: 'T', required: true, description: 'The currently-active option. The published Compose control still marks its segment with a cyan fill; the ratified expression is the sliding outline (see the drift note).' },
     { name: 'onSelect', type: '(T) -> Unit', required: true, description: 'Invoked with the tapped option. No-op while <code>enabled = false</code>.' },
     { name: 'label', type: '(T) -> String', required: true, description: 'Maps an option to its display string (e.g. <code>{ it.display }</code>).' },
     { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'Outer modifier. Pass <code>Modifier.fillMaxWidth()</code> for a full-width control.' },
@@ -158,12 +159,15 @@ descriptions; reach for it for 4+ rich choices, and for the segmented control fo
 
 Real divergences between the shipped platforms:
 
-- **Active-segment treatment** *(resolved by [adjudication 2026-07-02 · B3])*: the **sliding filled
-  cyan pill** (filled, `on-accent` label) wins. Android (today a soft-cyan fill + cyan label) and
-  Voice/Swift (a 1.5pt cyan outline, no fill) conform to the one expression.
-- **The slide** *(resolved by [adjudication 2026-07-02 · B3])*: the pill **animates transform +
-  width, never the fill**, wherever the control is ours. Both apps hard-cut today (Compose swaps
-  the fill, Swift the stroke); they adopt the slide.
+- **Active-segment treatment** *(ratified)*: the selected segment is the **sliding cyan
+  outline**, accent border + accent ink with no wash, per design laws §6 and §7, which name
+  the filled cyan pill as the former treatment. The Swift idiom on this page already draws
+  that outline at the selection weight (`border.width.selection` @ `border.opacity.selection`);
+  the published Compose control still fills its active segment, so Android is the platform
+  that converges here.
+- **The slide.** Settled alongside it: the marker **animates transform + width, never the
+  fill**, wherever the control is ours. Compose already slides its indicator; the Swift idiom
+  cuts straight to the new stroke and adopts the slide.
 - **Track surface.** Swift uses the inset `canvasAlt` well (radius 10, 4pt
   inset); Compose uses `cardAlt2` at the control radius (2dp inset). Web sinks the
   track as a recessed well at the **12px control radius**, which is close, but the

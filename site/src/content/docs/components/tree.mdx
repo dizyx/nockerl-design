@@ -26,9 +26,9 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. NockerlTree ships from
 // @dizyx/nockerl-react: the recursive rows, depth indent + guide-line rails,
-// disclosure chevrons, single-select cyan wash OR multi-select tri-state
-// checkboxes (parent↔child propagation), and the full WAI-ARIA tree keyboard
-// pattern are all in the package.
+// disclosure chevrons, single-select as an accent border + cyan ink (law §6:
+// state by outline, no wash) OR multi-select tri-state checkboxes (parent↔child
+// propagation), and the full WAI-ARIA tree keyboard pattern are all in the package.
 import { useState } from 'react';
 import { NockerlTree, type NockerlTreeNode } from '@dizyx/nockerl-react';
 
@@ -99,7 +99,7 @@ fun FileTree(
 // macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlTree` rides the
 // native hierarchical `List(children:)` (platform disclosure chevrons, indentation,
 // and keyboard/VoiceOver come from the system) and brands each row: folder/file
-// glyph + single-select with the soft-accent wash + cyan ink.
+// glyph + single-select as a thin cyan border + cyan ink (law §6: no wash).
 import NockerlDesign
 
 // The recursive model: `nil` children = a leaf (no chevron); `[]` = an empty,
@@ -166,7 +166,7 @@ and hairline guides come from the platform list.
   nameLabel="Parameter"
   rows={[
     { name: 'nodes', type: '[NockerlTreeNode]', required: true, description: 'The root nodes. Each is <code>{ id, name, kind: .folder | .file, children? }</code>; <code>kind</code> defaults from <code>children</code>.' },
-    { name: 'selected', type: 'String?', default: 'nil', description: 'The selected node id. Draws the soft-accent wash + cyan ink on that row.' },
+    { name: 'selected', type: 'String?', default: 'nil', description: 'The selected node id. Draws a thin cyan border + cyan ink on that row (law §6: state by outline, never a wash).' },
     { name: 'label', type: 'String', required: true, description: 'The REQUIRED accessible name for the whole tree ("Project files"). Empty is a runtime assert (law §13).' },
     { name: 'onSelect', type: '(NockerlTreeNode) -> Void', required: true, description: 'Invoked with the tapped node (folders AND files). The caller decides whether a folder tap navigates or only discloses.' },
   ]}
