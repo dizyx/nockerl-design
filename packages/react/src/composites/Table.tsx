@@ -184,11 +184,28 @@ export const NOCKERL_TABLE_STYLES = `
 .nk-tbl--compact tbody td, .nk-tbl--compact tbody th { padding-top: var(--space-1); padding-bottom: var(--space-1); }
 
 /* Hover / selected treatment. The cell bg paints (td/th, not tr, so the sticky header never
-   inherits it). Selection = the row WASH only (LAW 6: no left rail / vertical stripe). */
+   inherits it). Selection = an OUTLINE, never a fill (LAW 6, reduce-fills): a cyan hairline
+   runs above and below the row across every cell, closed off at the first and last cell, so
+   the row reads as one outlined band with no internal verticals and no left rail. The
+   explicit indicator is the row's own select checkbox. Drawn with inset shadows, so the row
+   geometry is identical selected or not. Hover stays the neutral surface highlight. */
 .nk-tbl-row { transition: background-color .12s; }
 .nk-tbl-row:hover td, .nk-tbl-row:hover th { background: var(--color-surface-highlight); }
-.nk-tbl-row--sel td, .nk-tbl-row--sel th { background: color-mix(in srgb, var(--color-accent-primary) 9%, transparent); }
-.nk-tbl-row--sel:hover td, .nk-tbl-row--sel:hover th { background: color-mix(in srgb, var(--color-accent-primary) 13%, transparent); }
+.nk-tbl-row--sel td, .nk-tbl-row--sel th {
+  box-shadow: inset 0 var(--space-px) 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+              inset 0 calc(-1 * var(--space-px)) 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+}
+.nk-tbl-row--sel td:first-child, .nk-tbl-row--sel th:first-child {
+  box-shadow: inset 0 var(--space-px) 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+              inset 0 calc(-1 * var(--space-px)) 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+              inset var(--space-px) 0 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+}
+.nk-tbl-row--sel td:last-child, .nk-tbl-row--sel th:last-child {
+  box-shadow: inset 0 var(--space-px) 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+              inset 0 calc(-1 * var(--space-px)) 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+              inset calc(-1 * var(--space-px)) 0 0 color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+}
+.nk-tbl-row--sel:hover td, .nk-tbl-row--sel:hover th { background: var(--color-surface-highlight); }
 .nk-tbl-row td:first-child { position: relative; }
 /* The select column checkbox is the NockerlCheckbox primitive (its recipe lives in that
    primitive); the cell only sizes the column. */

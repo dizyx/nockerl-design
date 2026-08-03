@@ -120,11 +120,13 @@ export const NOCKERL_BUTTON_STYLES = `
 .nk-btn--destructive:hover:not(:disabled) { background: color-mix(in srgb, var(--color-status-error) 12%, transparent); transform: translateY(-1px); }
 .nk-btn--destructive:active:not(:disabled) { transform: scale(.985); background: color-mix(in srgb, var(--color-status-error) 6%, transparent); }
 .nk-btn--destructive:disabled { color: var(--color-on-card-muted); border-color: var(--color-card-hairline); }
-/* pressed (toggle ON) = the SELECTION wash (soft cyan + cyan ink), consistent with the
-   selection treatment (design-laws section 6), never a separate control. Sits after the
-   variant rules so it wins the fill for whatever variant hosts the toggle. */
-.nk-btn.is-pressed { background: var(--color-accent-primary-soft); color: var(--color-accent-primary); border-color: color-mix(in srgb, var(--color-accent-primary) 28%, transparent); }
-.nk-btn.is-pressed:hover:not(:disabled) { background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent); filter: none; transform: translateY(-1px); }
+/* pressed (toggle ON) reads by OUTLINE, not fill (design-laws section 6, reduce-fills):
+   the selection-weight cyan border plus cyan ink, with no wash. Toggle ON is a STATE, so it
+   converts, and the border already existed, so the box is unchanged. Sits after the variant
+   rules so it still wins the treatment for whatever variant hosts the toggle. Hover keeps the
+   lift only, rather than deepening a tint that is no longer there. */
+.nk-btn.is-pressed { background: none; color: var(--color-accent-primary); border-color: color-mix(in srgb, var(--color-accent-primary) 45%, transparent); }
+.nk-btn.is-pressed:hover:not(:disabled) { filter: none; transform: translateY(-1px); }
 .nk-btn.is-pressed:active:not(:disabled) { transform: scale(.985); }
 /* two-face width RESERVATION: the resting composition ([icon] text [icon]) and the
    loading composition (spinner + loadingText) BOTH render, stacked in one grid cell; the

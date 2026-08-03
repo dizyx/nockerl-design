@@ -99,19 +99,7 @@ NockerlBanner("Read-only: this workspace is locked.", intent: .neutral, showIcon
 <Tabs syncKey="lang">
 <TabItem label="TypeScript">
 
-<PropsTable
-  nameLabel="Prop"
-  rows={[
-    { name: 'message', type: 'string', required: true, description: 'Body copy: the alert text. Bound to the <code>body.medium</code> role.' },
-    { name: 'intent', type: "'info' | 'success' | 'warning' | 'danger' | 'neutral'", default: "'info'", description: 'Drives the status color, default icon, and ARIA role. <strong>Cyan is used only for <code>info</code></strong> (<code>status.info</code>); <code>neutral</code> uses on-card, never cyan.' },
-    { name: 'title', type: 'string', description: 'Optional bold heading (one short line) above the message, in the status color.' },
-    { name: 'icon', type: 'boolean', default: 'true', description: 'Show the leading status icon (top-aligned to the first text line). <strong>Never color alone</strong>: color + icon + text.' },
-    { name: 'actionLabel', type: 'string', description: 'Optional inline action rendered as a quiet text button in the status color, right-aligned.' },
-    { name: 'onAction', type: '() => void', description: 'Action handler. Ignored when no <code>actionLabel</code> is set.' },
-    { name: 'dismissible', type: 'boolean', default: 'false', description: 'Show a dismiss (X), a <strong>separate</strong> focusable control with its own focus-visible ring.' },
-    { name: 'onDismiss', type: '() => void', description: 'Dismiss handler (the X). The collapse animates opacity + height only (reduced-motion aware).' },
-  ]}
-/>
+<PropsTable nameLabel="Prop" component="NockerlBanner" />
 
 </TabItem>
 <TabItem label="Kotlin">
@@ -155,9 +143,10 @@ shipped `RecordingHUD` error row (status glyph + message) as a reusable inline a
 </Tabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-**No banner ships on any platform yet**. This spec is designed originally from the laws + the
-shipped inline-alert vocabulary. The real divergences to reconcile when it lands, tracked in
-the [Review queue](/review-queue/):
+The banner now **ships on web** as `NockerlBanner` in `@dizyx/nockerl-react`, and on both
+natives as `NockerlBanner`. The web component is the one documented above; the native surfaces
+are on their own migration track, so treat the list below as the reconciliation list rather
+than as a description of one shared API:
 
 - **Source patterns differ:** Android has the inline `ErrorSegment` + the `errorContainer`
   tokens (tonal status fill + status hairline + status icon/text); Voice has only the

@@ -107,15 +107,7 @@ NockerlCallout("Bounded autonomy: autonomy calibrated by task risk.", tone: .quo
 <Tabs syncKey="lang">
 <TabItem label="TypeScript">
 
-<PropsTable
-  nameLabel="Prop"
-  rows={[
-    { name: 'children', type: 'ReactNode', required: true, description: 'The rich body: prose, links, and inline <code>code</code>. Bound to the <code>body.medium</code> role; this is what makes a callout read as embedded content rather than an alert.' },
-    { name: 'tone', type: "'note' | 'tip' | 'important' | 'warning' | 'caution' | 'quote'", default: "'note'", description: 'Editorial tone. Drives the disc / frame color, the default eyebrow, and the icon. <strong>Cyan is used only for <code>important</code></strong> (the one editorial-emphasis tone); <code>tip/warning/caution</code> are warm status tokens; <code>note/quote</code> use on-card, never cyan.' },
-    { name: 'title', type: 'string', default: 'per tone', description: 'The uppercase eyebrow label above the body. Defaults to the tone name (Note / Tip / …). <strong>Never color alone</strong>, because the tone is carried by the disc + icon + label + text.' },
-    { name: 'icon', type: 'boolean', default: 'true', description: 'Show the leading tone icon, top-aligned to the first text line. <code>quote</code> ignores this and shows a quote glyph instead.' },
-  ]}
-/>
+<PropsTable nameLabel="Prop" component="NockerlCallout" />
 
 There is no `dismissible` / `onDismiss` / `action`. A callout is **persistent**
 editorial content. For a dismissible, action-bearing, app-state alert, use the
@@ -167,8 +159,11 @@ persistent in-content aside (no dismiss, no `nockerlElevation()` lift).
 </Tabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-**No callout ships on any platform yet**. This spec is designed originally from the
-laws + the shipped emphasis vocabulary, and is deliberately **distinct from the
+The callout now **ships on web** as `NockerlCallout` in `@dizyx/nockerl-react`, and on both
+natives as `NockerlCallout`. The web component is the one documented above; the native
+surfaces are on their own migration track, so treat the sections below as the reconciliation
+list rather than as a description of one shared API. The callout stays deliberately
+**distinct from the
 [Banner](/components/banner/)**: a banner is a *lifted, transient inline alert*
 (drop shadow + catch-light + status wash + an X + an action, reacting to app
 state); a callout is a *recessed, persistent editorial aside* (an inset tonal well

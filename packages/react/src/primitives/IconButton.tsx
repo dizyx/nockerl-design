@@ -80,9 +80,14 @@ export const NOCKERL_ICON_BUTTON_STYLES = `
 .nk-ico--plain:hover:not(:disabled) { background: color-mix(in srgb, var(--color-on-card) 7%, transparent); }
 .nk-ico--plain:active:not(:disabled) { background: color-mix(in srgb, var(--color-on-card) 4%, transparent); transform: scale(.94); }
 .nk-ico--plain:disabled { opacity: .38; }
-/* pressed (toggle ON) = the SELECTION wash (soft cyan + cyan glyph), design-laws section 6. */
-.nk-ico--plain.is-pressed { background: var(--color-accent-primary-soft); color: var(--color-accent-primary); }
-.nk-ico--plain.is-pressed:hover:not(:disabled) { background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent); }
+/* pressed (toggle ON) reads by OUTLINE, not fill (design-laws section 6, reduce-fills): a
+   selection-weight cyan ring plus the cyan glyph, with no wash. Toggle ON is a STATE, so it
+   converts; the chip keeps its fill because there the fill is identity. The ring is an inset
+   shadow, so the control's box is identical pressed or not. Hover keeps the neutral raise the
+   unpressed button uses, rather than deepening a tint that is no longer there. */
+.nk-ico--plain.is-pressed { color: var(--color-accent-primary);
+  box-shadow: inset 0 0 0 var(--space-px) color-mix(in srgb, var(--color-accent-primary) 45%, transparent); }
+.nk-ico--plain.is-pressed:hover:not(:disabled) { background: color-mix(in srgb, var(--color-on-card) 7%, transparent); }
 /* FILLED_CIRCLE - solid accent circle, lit from above (sheen = catch-light, NOT a glow). */
 .nk-ico--filled-circle {
   border-radius: var(--radius-pill);
