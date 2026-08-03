@@ -22,7 +22,7 @@
  * `MessageBubble.kt` long-press itself copies via combinedClickable(onLongClick).
  * Voice `UI/HistoryView.swift` uses `.contextMenu { NockerlButton("Copy"); NockerlButton("Delete",
  * role: .destructive) }`. Selection look + trigger copy reused from ChatBubbleDemo
- * ("Long-press / tap to select me" → cyan ring + faint wash); scrim + lifted-card +
+ * ("Long-press / tap to select me" → a cyan ring, no wash); scrim + lifted-card +
  * focus-trap vocabulary reused from Dialog / Bottom sheet.
  *
  * Laws: DEPTH = neutral tinted shadow + top catch-light, NEVER a glow. The lifted
@@ -73,11 +73,11 @@ const STYLES = `
 .nk-lp-target--lifted { z-index: 30; cursor: default; --nk-lp-scale: var(--nk-lp-lift, 1.03); outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: var(--space-0-5); box-shadow: 0 var(--elevation-sheet) 40px -10px color-mix(in srgb, var(--color-shadow-tint) 62%, transparent), inset 0 var(--space-px) 0 var(--color-surface-highlight); }
 .nk-lp-target--lifted.nk-lp-target { background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--color-card-alt)); }
 .nk-lp-target--lifted.nk-lp-target--row { background: color-mix(in srgb, var(--color-accent-primary) 10%, var(--color-card-surface1)); }
-/* a persistently-selected target (after Select). LAW 6: NO left rail. Selection reads
-   from a faint full accent WASH mixed into the target's own surface + a trailing cyan
-   check glyph (a mark, never a vertical stripe / halo). */
-.nk-lp-target--selected.nk-lp-target { background: color-mix(in srgb, var(--color-accent-primary) 10%, var(--color-card-alt)); }
-.nk-lp-target--selected.nk-lp-target--row { background: color-mix(in srgb, var(--color-accent-primary) 8%, var(--color-card-surface1)); }
+/* a persistently-selected target (after Select). LAW 6: state reads by OUTLINE, so selection
+   is a cyan ring at the selection weight plus the trailing cyan check glyph, with NO wash,
+   no left rail, and no halo. The ring and the check are the two channels; the target keeps
+   its own surface. */
+.nk-lp-target--selected.nk-lp-target { outline: var(--border-width-selection) solid color-mix(in srgb, var(--color-accent-primary) 45%, transparent); outline-offset: var(--space-0-5); }
 /* the trailing selection check: a cyan mark pinned at the target's trailing edge (mirrors
    NockerlListItem's leading check idiom); sits clear of the reveal-on-hover ⋯ affordance. */
 .nk-lp-check { position: absolute; top: var(--space-2); right: var(--space-2); display: inline-flex; color: var(--color-accent-primary); pointer-events: none; }

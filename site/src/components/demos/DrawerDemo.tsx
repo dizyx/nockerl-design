@@ -60,8 +60,8 @@ const STYLES = `
 .nk-dw-nav__label { font-size: var(--font-size-10); letter-spacing: var(--font-tracking-eyebrow); text-transform: uppercase;
   color: var(--color-on-card-alt-muted); font-weight: var(--font-weight-semibold); padding: var(--space-3) var(--space-2) var(--space-1); }
 /* The nav ROWS are the NockerlNavItem primitive (.nk-nav*): it owns the row grammar, the
-   lit-icon-stays active treatment (soft cyan wash + cyan border + aria-current, no left
-   rail per design-laws section 6), the status dot, the trailing count pill, and the focus
+   lit-icon-stays active treatment (a cyan border + cyan ink + aria-current, with no fill and
+   no left rail per design-laws section 6), the status dot, the trailing count pill, and the focus
    ring. The <nav> container above only stacks them. */
 
 /* DETAIL CONTENT (right inspector): a meta hero + labelled key/value rows + tags. */

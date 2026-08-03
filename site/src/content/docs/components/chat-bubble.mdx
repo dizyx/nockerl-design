@@ -114,8 +114,8 @@ ChatBubble(role: .system) { Text("Context compacted") }
     { name: 'group', type: "'single' | 'first' | 'middle' | 'last'", default: "'single'", description: 'Position in a consecutive same-sender run. The tail stays on the edge bubbles (<code>first</code>/<code>last</code>); interior speaker-side corners square off and spacing tightens.' },
     { name: 'delivery', type: "'sending' | 'sent' | 'failed'", description: 'Own-message delivery state. Adds a warm receipt (clock · check · alert) under the bubble; <code>failed</code> restyles the bubble to the banner inline-alert grammar (inset status disc + whisper-red border + lifted neutral surface) with title, message and Retry. Never color-alone.' },
     { name: 'timestamp', type: 'string', description: 'Short time string shown in the meta line under the bubble (e.g. <code>"10:23 AM"</code>).' },
-    { name: 'selected', type: 'boolean', default: 'false', description: 'Selected / long-pressed: a cyan focus ring + a faint cyan wash (the single brand accent), never a glow.' },
-    { name: 'onSelect', type: '() => void', description: 'Tap-to-select handler for <strong>selection</strong> (a toggle + soft cyan wash), distinct from the <a href="/components/long-press-pop/">long-press pop menu</a> (a menu of actions); the two compose. When set, the whole bubble becomes one focusable button (one accessible name).' },
+    { name: 'selected', type: 'boolean', default: 'false', description: 'Selected / long-pressed: a cyan ring at the selection weight, with <strong>no wash</strong> (law §6, state reads by outline) and never a glow.' },
+    { name: 'onSelect', type: '() => void', description: 'Tap-to-select handler for <strong>selection</strong> (a toggle, marked by the cyan ring), distinct from the <a href="/components/long-press-pop/">long-press pop menu</a> (a menu of actions); the two compose. When set, the whole bubble becomes one focusable button (one accessible name).' },
     { name: 'onRetry', type: '() => void', description: 'Retry handler for a <code>failed</code> bubble; renders a real, focusable Retry button.' },
   ]}
 />

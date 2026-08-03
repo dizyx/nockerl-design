@@ -27,8 +27,8 @@
  *     never cyan, never color-alone, and NEVER a vertical color rail: failed reads
  *     as a red alert glyph + "Failed" text + a real Retry button (status color
  *     lives in the icon/text, not a stripe).
- *   • selection reads via a cyan focus ring + a faint cyan wash (the single brand
- *     accent), never a glow. Retry / select are REAL buttons with a focus-visible
+ *   • selection reads by outline: a cyan ring at the selection weight, with no wash
+ *     (law 6) and never a glow. Retry / select are REAL buttons with a focus-visible
  *     OUTLINE ring; fully keyboard-operable. prefers-reduced-motion freezes the
  *     appear + sending animations.
  *
@@ -58,7 +58,7 @@ export interface ChatBubbleProps {
   delivery?: DeliveryState;
   /** Short time string shown under the bubble (e.g. "10:23 AM"). */
   timestamp?: string;
-  /** Selected / long-pressed: cyan ring + faint wash (the single brand accent), never a glow. */
+  /** Selected / long-pressed: a cyan ring at the selection weight, no wash (law 6), never a glow. */
   selected?: boolean;
   /** Retry handler for a failed bubble. Renders a real, focusable Retry button. */
   onRetry?: () => void;
@@ -138,11 +138,11 @@ export const STYLES = `
 .nk-cb-bubble--user.nk-cb--middle { border-top-right-radius: var(--radius-bubble-tail); border-bottom-right-radius: var(--radius-bubble-tail); }
 .nk-cb-bubble--user.nk-cb--last { border-top-right-radius: var(--radius-bubble-tail); }
 
-/* a SELECTED / long-pressed bubble: cyan ring + faint cyan wash (single brand accent), NOT a glow.
-   The ring OUTLINES a chosen message, so it takes the selection weight at 45%, not the
-   thicker floating weight, which belongs to surfaces that sit ON TOP of the thread. */
+/* a SELECTED / long-pressed bubble: a cyan ring and nothing else, NOT a glow. Selection is a
+   STATE, so law 6 reads it by outline with no wash. The ring OUTLINES a chosen message, so it
+   takes the selection weight at 45%, not the thicker floating weight, which belongs to
+   surfaces that sit ON TOP of the thread. */
 .nk-cb-bubble--selected { outline: var(--border-width-selection) solid color-mix(in srgb, var(--color-accent-primary) 45%, transparent); outline-offset: var(--space-0-5); }
-.nk-cb-bubble--agent.nk-cb-bubble--selected { background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--color-card-alt)); }
 
 /* SENDING: own message in flight, dimmed with a tinted shadow held back (depth recedes) */
 .nk-cb-bubble--sending { filter: brightness(.92); opacity: .82; }
@@ -424,7 +424,7 @@ export default function ChatBubbleDemo() {
       </div>
 
       <div className="nk-cb-demo__group">
-        <p className="nk-cb-demo__lbl">Selected + timestamp: tap a bubble to select (cyan ring + faint wash, not a glow)</p>
+        <p className="nk-cb-demo__lbl">Selected + timestamp: tap a bubble to select (a cyan ring, no wash, not a glow)</p>
         <div className="nk-cb-stage" aria-label="Selection and timestamp">
           <NockerlFacetedBackground bare aria-hidden="true" />
           <ChatBubble
