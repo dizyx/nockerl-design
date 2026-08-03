@@ -281,6 +281,69 @@
         }
       ]
     },
+    "NockerlBanner": {
+      "file": "packages/react/src/composites/Banner.tsx",
+      "propsType": "NockerlBannerProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Body copy: the message. Carries the alert's accessible text."
+        },
+        {
+          "name": "intent",
+          "type": "NockerlBannerIntent",
+          "optional": true,
+          "default": "'info'",
+          "description": "Semantic intent: drives the status color, the default icon, and role."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional bold heading above the message (a single short line)."
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Show the leading status disc. Defaults to on; turn off for a bare banner."
+        },
+        {
+          "name": "actionLabel",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional inline action label (a quiet text button, right-aligned)."
+        },
+        {
+          "name": "onAction",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Action handler. Ignored when no actionLabel is given."
+        },
+        {
+          "name": "dismissible",
+          "type": "boolean",
+          "optional": true,
+          "default": "false",
+          "description": "Show a dismiss (X), a separate focusable control."
+        },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "optional": true,
+          "default": null,
+          "description": "Dismiss handler (the X)."
+        }
+      ]
+    },
     "NockerlBarChart": {
       "file": "packages/react/src/primitives/BarChart.tsx",
       "propsType": "NockerlBarChartProps",
@@ -635,6 +698,41 @@
           "optional": true,
           "default": null,
           "description": "Extra class on the day grid (for a demo's column-width sizing)."
+        }
+      ]
+    },
+    "NockerlCallout": {
+      "file": "packages/react/src/composites/Callout.tsx",
+      "propsType": "NockerlCalloutProps",
+      "extendsClause": null,
+      "props": [
+        {
+          "name": "children",
+          "type": "string",
+          "optional": false,
+          "default": null,
+          "description": "Rich body content (the prose). Accepts a small, trusted HTML string so a callout can carry a link + inline <code>code</code> + emphasis like real body copy."
+        },
+        {
+          "name": "tone",
+          "type": "NockerlCalloutTone",
+          "optional": true,
+          "default": "'note'",
+          "description": "Editorial tone. Drives the disc/frame color, the default eyebrow, the icon."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": null,
+          "description": "Optional eyebrow override (an uppercase lead label). Defaults per tone."
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "optional": true,
+          "default": "true",
+          "description": "Show the leading disc. Defaults on; <code>quote</code> is disc-less (a quote mark instead)."
         }
       ]
     },

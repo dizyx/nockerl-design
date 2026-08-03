@@ -98,11 +98,13 @@ export const NOCKERL_NAV_ITEM_STYLES = `
 .nk-nav:active:not(:disabled) { transform: scale(.985); }
 .nk-nav:focus-visible { outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: -2px; }
 .nk-nav:disabled { cursor: not-allowed; opacity: .55; }
-/* ACTIVE (section 6): soft cyan WASH + thin cyan border + cyan icon/label. The icon
-   STAYS (no check swap); there is NO left-rail / stripe. */
-.nk-nav--on { background: var(--color-accent-primary-soft); color: var(--color-accent-primary);
+/* ACTIVE (section 6, reduce-fills): the thin cyan border + cyan icon and label + a medium
+   weight, with NO wash and no left rail or stripe. The icon STAYS (no check swap). This is
+   the treatment the Swift nav row already ships, so the two now agree. Hover keeps the
+   neutral raise the inactive row uses, rather than deepening a tint that is no longer there. */
+.nk-nav--on { color: var(--color-accent-primary);
   border-color: color-mix(in srgb, var(--color-accent-primary) 45%, transparent); font-weight: var(--font-weight-semibold); }
-.nk-nav--on:hover { background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent); }
+.nk-nav--on:hover { background: color-mix(in srgb, var(--color-on-chrome) 6%, transparent); }
 .nk-nav--on .nk-nav__ico, .nk-nav--on .nk-nav__chev { color: var(--color-accent-primary); }
 /* FLAT active is tint only (the bar carries its own selection indicator, e.g. a sliding pill). */
 .nk-nav--flat.nk-nav--on { background: transparent; border-color: transparent; }

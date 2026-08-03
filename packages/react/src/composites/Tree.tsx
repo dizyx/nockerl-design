@@ -97,10 +97,12 @@ export const NOCKERL_TREE_STYLES = `
 .nk-tree__row:active:not(.nk-tree__row--disabled) { transform: scale(.995);
   background: color-mix(in srgb, var(--color-surface-highlight) 50%, transparent); }
 .nk-tree__row:focus-visible { outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: calc(-1 * var(--space-0-5)); }
-/* SELECTED: faint cyan wash + the selected file's own icon/label cyan. NO left rail
-   (LAW 6: selection is a wash, never a vertical stripe). NOT a glow, NOT a fill swap. */
-.nk-tree__row--selected { background: color-mix(in srgb, var(--color-accent-primary) 10%, transparent); }
-.nk-tree__row--selected:hover:not(.nk-tree__row--disabled) { background: color-mix(in srgb, var(--color-accent-primary) 14%, transparent); }
+/* SELECTED: a thin cyan ring + the selected file's own icon/label cyan. NO wash, no left
+   rail (LAW 6, reduce-fills: selection reads by outline + ink, never a fill and never a
+   vertical stripe). The ring is an INSET box-shadow at the selection weight, so it costs no
+   layout box and the row never shifts. Hover keeps the neutral surface highlight. */
+.nk-tree__row--selected { box-shadow: inset 0 0 0 var(--space-px) color-mix(in srgb, var(--color-accent-primary) 45%, transparent); }
+.nk-tree__row--selected:hover:not(.nk-tree__row--disabled) { background: var(--color-surface-highlight); }
 .nk-tree__row--disabled { cursor: not-allowed; opacity: .5; }    /* inert but still legible */
 
 /* Indent rails: one cell per ancestor depth, each a vertical GUIDE LINE on the divider. */

@@ -199,17 +199,19 @@ export const NOCKERL_RADIO_GROUP_STYLES = `
 /* A chosen card: cyan ring + faint accent-soft wash (a SHAPE, not a halo).
    The ring states a CHOICE, so it carries the SELECTION weight at 45%. The
    thicker floating weight is reserved for surfaces that sit ON TOP of content. */
+/* The chosen card reads by OUTLINE only (LAW 6, reduce-fills): the selection-weight cyan
+   ring plus the filled dot, with no wash behind it. */
 .nk-ro--card:has(.nk-ro__input:checked) {
   border-width: var(--border-width-selection);
   border-color: color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
-  background: color-mix(in srgb, var(--color-accent-primary) 9%, var(--color-card-surface1));
 }
 .nk-ro--card:has(.nk-ro__input:focus-visible) {
   outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: var(--space-0-5);
 }
 .nk-ro--card .nk-ro__input:focus-visible ~ .nk-ro__circle { outline: none; }   /* the card owns the focus ring */
-/* the dot's inner well matches the card it sits on (rest, then chosen-wash) */
-.nk-ro--card:has(.nk-ro__input:checked) .nk-ro__circle::after { background: color-mix(in srgb, var(--color-accent-primary) 9%, var(--color-card-surface1)); }
+/* the dot's inner well matches the card it sits on; the chosen card no longer carries a
+   wash, so the well is the plain card surface in both states */
+.nk-ro--card:has(.nk-ro__input:checked) .nk-ro__circle::after { background: var(--color-card-surface1); }
 .nk-ro--card.nk-ro--disabled { opacity: .55; }
 
 /* ── The group error message: color + icon + text (never color alone) ───────── */
