@@ -43,7 +43,7 @@ function useToasts() {
   const remove = useCallback((id: number) => setToasts((l) => l.filter((t) => t.id !== id)), []);
   const show = useCallback((t: ToastData) => {
     const id = ++idRef.current;
-    setToasts((l) => [...l, { ...t, id }].slice(-4)); // cap the visible stack at 4
+    setToasts((l) => [...l, { ...t, id }].slice(-3)); // cap the visible stack at 3 (the shared max)
   }, []);
   return { toasts, show, remove };
 }
@@ -84,10 +84,10 @@ function SessionActions() {
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android: Jetpack Compose. NO toast/snackbar ships today (the app surfaces
-// transient state as inline connection "pills" + the Inbox sheet). This is the
-// proposed com.nockerl.app.core.ui.NockerlSnackbarHost, built on NockerlSurface +
-// the status tokens: the Material SnackbarHostState shape, Nockerl material.
+// Android: Jetpack Compose. The canonical app surfaces transient state as inline
+// connection "pills" + the Inbox sheet, so this is the PROPOSED
+// com.nockerl.app.core.ui.NockerlSnackbarHost, built on NockerlSurface + the status
+// tokens: the Material SnackbarHostState shape, Nockerl material.
 import com.nockerl.app.core.ui.NockerlSnackbarHost
 import com.nockerl.app.core.ui.NockerlSnackbarIntent
 import com.nockerl.app.core.ui.rememberNockerlSnackbarState
@@ -207,24 +207,24 @@ Three feedback surfaces, three jobs. Don't reach for the wrong one:
 </Aside>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-**Web ships `NockerlToast`** (@dizyx/nockerl-react); the **native** platforms do not
-yet ship a toast/snackbar. The Kotlin/Swift specs above are designed from the laws +
-the shipped transient-message vocabulary. The real divergences to reconcile when they
-land, tracked in the [Review queue](/review-queue/):
+**Web ships `NockerlToast`** (@dizyx/nockerl-react). The Kotlin and Swift tabs document
+the **proposed** native shape, designed from the laws plus the transient-message
+vocabulary the apps already use. The divergences to reconcile when they land, tracked in
+the [Review queue](/review-queue/):
 
-- **Shipped precedent differs sharply:** Voice has a real transient floating overlay
+- **Precedent differs sharply:** Voice has a real transient floating overlay
   (`RecordingHUD`, a non-activating `NSPanel` that auto-hides via `scheduleHide`,
   1.8s for a result / 8.0s for an error, fades 0.22s/0.28s, status-tinted border +
-  neutral shadow, never steals focus). **Android ships nothing**: transient state
-  is inline connection "pills" + the Inbox sheet. This page proposes the shared,
-  stackable component both should adopt.
-- **`info` intent color** *(resolved in [adjudication 2026-07-02 · A1])*: `info` = **cyan**
-  everywhere. Voice's token set gains `status.info` as a cyan **alias** (`NockerlTheme.accent`)
-  so every platform carries the full semantic vocabulary even where the value aliases.
-- **Stacking + position** *(resolved in [adjudication 2026-07-02 · A2])*: stacking = **max 3
-  visible, overflow collapses to "+N", FIFO**. The Voice HUD may keep its one-at-a-time morphing
-  presentation (Law 9) but adopts the shared stack policy where it stacks.
-- **Duration scale** *(resolved in [adjudication 2026-07-02 · A2])*: durations = an enum
-  **`short` / `base` / `long` / `persistent`** backed by ms tokens. Voice's literal seconds and
-  Compose's Material `SHORT/LONG` map onto the shared enum.
+  neutral shadow, never steals focus). Android's transient state is inline connection
+  "pills" plus the Inbox sheet rather than a floating card. This page proposes the
+  shared, stackable component both should adopt.
+- **`info` intent color** *(ratified)*: `info` = **cyan** everywhere. Voice's token set
+  gains `status.info` as a cyan **alias** (`NockerlTheme.accent`) so every platform carries
+  the full semantic vocabulary even where the value aliases.
+- **Stacking + position**: the agreed policy is **max 3 visible, overflow collapses to
+  "+N", FIFO**. The Voice HUD may keep its one-at-a-time morphing presentation (Law 9) but
+  adopts the shared stack policy where it stacks.
+- **Duration scale** *(settled)*: durations = an enum **`short` / `base` / `long` /
+  `persistent`** backed by ms tokens. Voice's literal seconds and Compose's Material
+  `SHORT/LONG` map onto the shared enum.
 </Aside>

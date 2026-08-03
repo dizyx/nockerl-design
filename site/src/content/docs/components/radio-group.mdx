@@ -91,11 +91,11 @@ Column(Modifier.selectableGroup()) {
 <TabItem label="Swift">
 
 ```swift
-// macOS: SwiftUI (canonical). There is NO radio control on macOS. Single
-// choice ships as the custom SegmentedSelector (the active option is a cyan
-// OUTLINE, not a fill). NockerlVoice/UI/SettingsComponents.swift +
-// AppSettingsView.swift. The platform Picker(.inline / .segmented) is the
-// system stand-in. See the drift note below.
+// macOS: SwiftUI. What this tab documents is the canonical-app idiom, not a radio
+// primitive: single choice is expressed with the custom SegmentedSelector, whose
+// active option is a cyan OUTLINE rather than a fill.
+// NockerlVoice/UI/SettingsComponents.swift + AppSettingsView.swift. The platform
+// Picker(.inline / .segmented) is the system stand-in. See the drift note below.
 SegmentedSelector(
     options: SessionEngine.allCases,
     selection: $engine
@@ -138,15 +138,15 @@ Picker("Session engine", selection: $engine) {
 </TabItem>
 <TabItem label="Swift">
 
-macOS has no radio control; single choice is the custom `SegmentedSelector`
-(or a system `Picker`). State is two-way bound. There are no per-option state
-parameters.
+The Swift tab documents the canonical-app idiom: single choice is expressed with the
+custom `SegmentedSelector` (or a system `Picker`) rather than a radio primitive. State
+is two-way bound, so there are no per-option state parameters.
 
 <PropsTable
   nameLabel="Style"
   rows={[
     { name: 'options', type: '[Option]', description: 'The choices (<code>Hashable & Identifiable</code>), rendered left-to-right as equal-width segments.' },
-    { name: 'selection', type: 'Binding<Option>', description: 'Two-way bound chosen option. The active segment gets a cyan <strong>outline</strong> (1.5pt), not a fill.' },
+    { name: 'selection', type: 'Binding<Option>', description: 'Two-way bound chosen option. The active segment gets a cyan <strong>outline</strong> at the selection weight (<code>border.width.selection</code> @ <code>border.opacity.selection</code>), not a fill.' },
     { name: 'label', type: '(Option) -> String', description: 'Maps an option to its visible text (e.g. <code>{ $0.label }</code>).' },
     { name: '.pickerStyle', type: 'PickerStyle', description: 'System stand-in for long lists: <code>.inline</code> (chosen row = checkmark) or <code>.segmented</code>.' },
   ]}
@@ -166,10 +166,11 @@ options need labels **and** descriptions, or for 4+ choices.
 
 Real divergences between the shipped platforms:
 
-- **No radio on macOS.** Voice/SwiftUI has no radio control; single choice is the
-  custom `SegmentedSelector` (cyan outline) or a `Menu`/`Picker` with a checkmark.
+- **Single choice reads differently on macOS.** Voice/SwiftUI expresses it with the
+  custom `SegmentedSelector` (cyan outline) or a `Menu`/`Picker` with a checkmark;
   Compose + web render a true circle-and-dot radio. The web demo’s **radio cards**
-  and the **error/required** group ship on neither app yet (designed here first).
+  and the **error/required** group are designed here first, so this page is their
+  spec rather than a report on either app.
 - **Selection treatment.** Compose/web: a circle with a centered cyan **dot**.
   Swift: a cyan **outline** on the chosen segment. One single-choice expression
   per platform: unified, but the marks differ by platform idiom.

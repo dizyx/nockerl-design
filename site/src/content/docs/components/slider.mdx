@@ -100,8 +100,8 @@ NockerlSlider(
 NockerlSlider("Top-P (nucleus)", value: $topP, in: 0...1, step: 0.01)
     .disabled(!enabled)
 
-// Two-thumb range: SwiftUI has no native range Slider, so NockerlDesign ships none
-// yet. It is a documented follow-up (compose two bound thumbs over one track).
+// Two-thumb range: SwiftUI has no native range Slider, so this page carries it as a
+// documented follow-up rather than an API (compose two bound thumbs over one track).
 ```
 
 </TabItem>
@@ -114,7 +114,7 @@ NockerlSlider("Top-P (nucleus)", value: $topP, in: 0...1, step: 0.01)
 
 <PropsTable nameLabel="Prop" component="NockerlSlider" />
 
-`RangeSlider` swaps `value` for `low` / `high` and takes `onChange={(low, high) => …}`; the two thumbs are bound so they can never cross.
+`NockerlRangeSlider` swaps `value` for `low` / `high` and takes `onChange={(low, high) => …}`; the two thumbs are bound so they can never cross. It takes a subset of the props above (`low`, `high`, `onChange`, `min`, `max`, `step`, `unit`, `label`, `size`), so it accepts neither `disabled` nor `ticks`.
 
 </TabItem>
 <TabItem label="Kotlin">
@@ -157,11 +157,11 @@ Unavailable on tvOS (SwiftUI ships no `Slider` there).
 </Tabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-The single-thumb slider is now **published on Swift** (`NockerlSlider`, NockerlDesign
-SwiftPM) and **shipped on Android** (Material `Slider`, in the sampling sheet); web is
-the laggard (intended API designed here from the laws).
+The single-thumb slider has a settled shape on every platform: the Swift tab documents
+the `NockerlSlider` wrapper from NockerlDesign, and the Kotlin tab the Material `Slider`
+used for the sampling knobs. The two-thumb range is where the platforms still diverge.
 
-- **Range slider:** the two-thumb range is **not shipped on any platform**. Android ships single-thumb only, and `NockerlSlider` documents it as a follow-up (SwiftUI has no native range `Slider`). The value bubble and explicit tick marks are also designed originally here.
+- **Range slider:** the two-thumb range is the least settled surface on this page. The Kotlin tab composes Material's `RangeSlider` for the shape rather than mirroring a screen, and the Swift tab carries it as a follow-up (SwiftUI has no native range `Slider`). The value bubble and explicit tick marks are also designed originally here.
 - **Swift look:** `NockerlSlider` wraps the native `Slider` and tints it cyan (`accentPrimary`) with a persistent Nockerl label; the recessed-well / lifted catch-light disc treatment is still the target the platforms should converge on.
 - **Temperature range:** the real `SAMPLING_KNOB_SPECS` (`Sampling.kt`) uses **0.1 to 2.0 step 0.05**, not the rounder "0 to 2 step 0.1"; the demo + code use the **shipped** values.
 - **Look:** Android uses Material's default thumb/track; the recessed well + lifted catch-light disc is the Nockerl treatment the platforms should converge on.

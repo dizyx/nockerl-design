@@ -25,7 +25,12 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
 // not yet exported from @dizyx/nockerl-react; promotion is tracked.)
-import { NockerlIconButton, NockerlAvatar } from '@dizyx/nockerl-react';
+import { NockerlIconButton, NockerlAvatar, NockerlIcon } from '@dizyx/nockerl-react';
+
+// Glyphs are inline SVG nodes: `icon` takes a ReactNode, not an icon name. The
+// NockerlIcon registry carries only a few named paths, so pass a bespoke path for the rest.
+const SearchIcon = <NockerlIcon><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></NockerlIcon>;
+const BackIcon = <NockerlIcon><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></NockerlIcon>;
 
 export function AppHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -36,7 +41,7 @@ export function AppHeader() {
       align="center"                                     // 'lead' | 'center'
       actions={
         <>
-          <NockerlIconButton icon="search" label="Search" pressed={searchOpen} onClick={() => setSearchOpen((v) => !v)} />
+          <NockerlIconButton icon={SearchIcon} label="Search" pressed={searchOpen} onClick={() => setSearchOpen((v) => !v)} />
           <ClusterStatus online={3} total={4} onClick={openCluster} />
           <InboxButton count={3} onClick={openInbox} />   {/* count → "99+" → unseen dot */}
           <NockerlAvatar src={user.photo} name={user.name} presence="streaming" onClick={openSettings} />
@@ -47,7 +52,7 @@ export function AppHeader() {
 }
 
 // A sub-screen header: a leading back button + title instead of the brand.
-<TopBar leading={<NockerlIconButton icon="back" label="Back" onClick={goBack} />} title="Session settings" />
+<TopBar leading={<NockerlIconButton icon={BackIcon} label="Back" onClick={goBack} />} title="Session settings" />
 ```
 
 </TabItem>
@@ -87,8 +92,8 @@ Column {
 // macOS: SwiftUI. Voice is a MENU-BAR app with no title bar
 // (.windowStyle(.hiddenTitleBar)): the brand instead anchors the sidebar header and
 // the floating command pill (RecordingHUD), built from a NockerlLogo, a Rectangle(divider)
-// separator, and morphing content on chromeSurface, in a capsule with a 1.5pt accent
-// border. This pill is the closest analogue to the global top bar; see the drift note.
+// separator, and morphing content on chromeSurface, in a capsule with a floating-width
+// accent border. This pill is the closest analogue to the global top bar; see the drift note.
 HStack(spacing: 11) {
     NockerlLogo()                                   // the brand anchor, fixed on the left
         .frame(width: 18, height: 16)
@@ -101,15 +106,17 @@ HStack(spacing: 11) {
 .padding(.horizontal, 14)
 .padding(.vertical, 9)
 .background(NockerlTheme.chromeSurface, in: Capsule())
-.overlay(Capsule().strokeBorder(NockerlTheme.accent, lineWidth: 1.5))   // the cyan boundary
-.shadow(color: .black.opacity(0.4), radius: 14, y: 5)
+// The cyan boundary + the floating lift, both read off the token scales (law §11).
+.overlay(Capsule().strokeBorder(NockerlTheme.accent, lineWidth: NockerlBorder.widthFloating))
+.shadow(
+    color: palette.shadowTint.opacity(NockerlShadowTintAlpha.sheet),
+    radius: NockerlElevation.sheet,
+    y: NockerlElevation.sheet / 2
+)
 
-// The dashboard sidebar header (brand lockup, pushed clear of the traffic lights):
-HStack(spacing: 9) {
-    NockerlLogo().frame(width: 22, height: 19)
-    Text("Nockerl Voice").font(.system(size: 14, weight: .semibold))
-    Spacer(minLength: 0)
-}
+// The dashboard sidebar header, pushed clear of the traffic lights. The brand is the
+// ONE lockup (law §11): mark + "Nockerl" at 200 + the product word at 400 in cyan.
+NockerlLockup(product: "Voice", size: 22)
 ```
 
 </TabItem>
@@ -158,10 +165,10 @@ closes the header chrome. Both are composed by `MainScaffold`.
 </TabItem>
 <TabItem label="Swift">
 
-Voice is a menu-bar utility with **no title bar**, so there is no `TopBar` view at all.
-Its analogue is the floating **command pill**; that surface (the brand anchor, the divider,
-the capsule + cyan outline, and its phase morphing) is documented in full on the
-[Recording HUD](/components/recording-hud/) page and is not duplicated here.
+On macOS the header job belongs to a menu-bar window rather than a title bar, so the
+idiom this page documents is the floating **command pill**. That surface (the brand
+anchor, the divider, the capsule + cyan outline, and its phase morphing) is documented
+in full on the [Recording HUD](/components/recording-hud/) page and is not duplicated here.
 
 </TabItem>
 </Tabs>
@@ -175,7 +182,8 @@ the capsule + cyan outline, and its phase morphing) is documented in full on the
   one for another.
 - **Title placement:** Android **centers** the mark to the screen (a `Box`) with the
   account cluster around it; web defaults to a **lead-aligned** title and offers
-  `align="center"`. Voice has **no title bar** at all.
+  `align="center"`. The macOS idiom anchors identity in the command pill instead of a
+  header row.
 - **Boundary:** Android draws the **1.5dp cyan line + a drag handle** that collapses
   the header chrome; web mirrors the 1.5px line (no collapse handle yet); Voice carries
   the 1.5pt cyan boundary as the **command-pill outline**, not a full-width line.

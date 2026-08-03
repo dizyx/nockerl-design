@@ -55,10 +55,10 @@ export function ReminderForm() {
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android: Jetpack Compose, Material 3 (BOM 2026.02.01). The app has no custom
-// time picker: chat/ui/ChatUtils.kt and inbox/ui/NotificationRow.kt only FORMAT
-// times (SimpleDateFormat("h:mm a") / DateTimeFormatter "MMM d, yyyy h:mm a").
-// Use the stock picker, themed by NockerlTheme (cyan accent, 12dp control radius).
+// Android: Jetpack Compose, Material 3 (BOM 2026.02.01). This tab documents the STOCK
+// picker, themed by NockerlTheme (cyan accent, 12dp control radius). The canonical app's
+// own time code (chat/ui/ChatUtils.kt, inbox/ui/NotificationRow.kt) only FORMATS times
+// (SimpleDateFormat("h:mm a") / DateTimeFormatter "MMM d, yyyy h:mm a").
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
@@ -82,9 +82,9 @@ TimeInput(state = state)
 <TabItem label="Swift">
 
 ```swift
-// macOS: SwiftUI. Nockerl Voice has no custom time picker; "clock" is an SF
-// Symbol and it only formats durations (HomeSection.duration). Use the stock
-// DatePicker with .hourAndMinute, tinted to the brand cyan from NockerlTheme.
+// macOS: SwiftUI. This tab documents the stock DatePicker with .hourAndMinute, tinted
+// to the brand cyan from NockerlTheme. In Nockerl Voice "clock" is an SF Symbol and the
+// time code there only formats durations (HomeSection.duration).
 import SwiftUI
 
 struct ReminderForm: View {
@@ -148,7 +148,8 @@ keyboard-first hour/minute fields + AM/PM toggle instead of the dial.
 
 SwiftUI exposes the time picker as the standard `DatePicker` restricted to
 `.hourAndMinute`. State is the bound `selection`; AM/PM vs. 24-hour follows the
-device locale. There is no minute-step or bounds API short of a custom range.
+device locale. Bounds are expressed as an `in:` range, and minute stepping is left to
+the call site.
 
 <PropsTable
   nameLabel="Style"
@@ -165,16 +166,17 @@ device locale. There is no minute-step or bounds API short of a custom range.
 </Tabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-- **No shipped custom time picker.** Neither Android nor Voice draws its own clock.
-  Android only *formats* times (`SimpleDateFormat("h:mm a")`); Voice formats durations.
-  Kotlin/Swift above document the **stock** Material 3 / SwiftUI pickers; the web island is
-  designed originally from the laws (recessed field-trigger + dial face, lifted panel card,
-  cyan selected number + hand, mono digits, segmented AM/PM + 12h/24h toggles) so it pairs
-  with the [date picker](/components/date-picker/) as one date-and-time set.
-- **Dial vs. wheel vs. columns** *(resolved in [adjudication 2026-07-02 · B7])*: the entry mode
-  **defaults to the platform idiom** (Material dial, SwiftUI wheel, the web dial + spinbuttons)
-  under **shared prop names**: one contract, native default per surface.
-- **Minute step + bounds** *(resolved in [adjudication 2026-07-02 · B7])*: a **shared
-  `minuteStep` / `min` / `max` API** everywhere. Web already exposes it; Material 3 (no native
-  step) and SwiftUI (`in:` range only) adopt the shared contract.
+- **Stock native pickers, an original web island.** The Kotlin and Swift tabs document the
+  **stock** Material 3 / SwiftUI pickers, themed with Nockerl tokens. The time code in the
+  canonical apps *formats* rather than picks (`SimpleDateFormat("h:mm a")` on Android,
+  durations in Voice). The web island is designed originally from the laws (recessed
+  field-trigger + dial face, lifted panel card, cyan selected number + hand, mono digits,
+  segmented AM/PM + 12h/24h toggles) so it pairs with the
+  [date picker](/components/date-picker/) as one date-and-time set.
+- **Dial vs. wheel vs. columns** *(settled)*: the entry mode **defaults to the platform
+  idiom** (Material dial, SwiftUI wheel, the web dial + spinbuttons) under **shared prop
+  names**: one contract, native default per surface.
+- **Minute step + bounds**: the standing ruling is a **shared `minuteStep` / `min` / `max`
+  API** everywhere. Web already exposes it; Material 3 (no native step) and SwiftUI (`in:`
+  range only) adopt the shared contract.
 </Aside>

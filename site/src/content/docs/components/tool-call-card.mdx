@@ -26,11 +26,19 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
 // not yet exported from @dizyx/nockerl-react; promotion is tracked.)
 
+import { NockerlIcon } from '@dizyx/nockerl-react';
+
+// `icon` is a ReactNode glyph, not a name: pass the inline SVG node so the tile can tint
+// it via currentColor. These paths mirror the Compose `toolIcon` mapping.
+const IconTerminal = <NockerlIcon path="m5 8 4 4-4 4M12 16h6" />;
+const IconFile = <NockerlIcon path="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6" />;
+const IconEdit = <NockerlIcon path="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z" />;
+
 export function Turn() {
   return (
     <>
       {/* A running shell-fs call: a pulsing dot + elapsed, no body to disclose yet. */}
-      <ToolCallCard name="$ ./gradlew test" family="shell-fs" status="running" elapsedSeconds={6} icon="terminal" />
+      <ToolCallCard name="$ ./gradlew test" family="shell-fs" status="running" elapsedSeconds={6} icon={IconTerminal} />
 
       {/* A finished Read: collapsible key/value params + a recessed code/text well. */}
       <ToolCallCard
@@ -38,7 +46,7 @@ export function Turn() {
         family="shell-fs"
         status="success"
         elapsedSeconds={0.4}
-        icon="file"
+        icon={IconFile}
         params={[{ label: 'file_path', value: 'net/SseClient.kt' }, { label: 'limit', value: '40' }]}
         output={{ lines: readSnippet }}
       />
@@ -48,7 +56,7 @@ export function Turn() {
         name="Edit Backoff.kt"
         family="shell-fs"
         status="success"
-        icon="edit"
+        icon={IconEdit}
         diff={{ path: 'net/Backoff.kt', lines: editDiff }}
       />
     </>
@@ -109,11 +117,11 @@ ToolCallCard(
 <TabItem label="Swift">
 
 ```swift
-// macOS: Nockerl Voice ships NO tool-call card. Voice is a voice-first surface
-// (NockerlVoice/UI) with no chat tool-invocation feed, so there is no `.nockerl…`
-// style or view to document here. The card below is the INTENDED SwiftUI API for
-// when the transcript lands on macOS, modelled on the canonical Compose ToolCallCard.
-// Tracked as cross-platform drift; see the Aside below.
+// macOS: SwiftUI. INTENDED API. Nockerl Voice is a voice-first surface (NockerlVoice/UI)
+// built around the command pill, so the tool-invocation feed is a transcript concern.
+// The card below is the intended SwiftUI API for when that transcript lands on macOS,
+// modelled on the canonical Compose ToolCallCard. Treat it as a design target rather
+// than a reference to shipped code; see the Aside below.
 ToolCallCard(
     name: "Read SseClient.kt",
     family: .shellFs,                 // → familyAccent: cyan · orange · indigo · sky · fuchsia · muted
@@ -129,14 +137,14 @@ ToolCallCard(
 
 ## Harness failure block (a view, no new grammar)
 
-Per the WS4 verdict (task 2655d), a **harness failure** is the whole agent run dying
-(a crashed session, a gateway 500, a budget kill), bigger than one tool error. It is a
-**thin composition** of ratified parts, not a component:
+A **harness failure** is the whole agent run dying (a crashed session, a gateway 500, a
+budget kill), bigger than one tool error. It was settled deliberately as a **thin
+composition** of ratified parts, not a component:
 
-1. **The failure banner.** The r5.2-ratified failure grammar (adjudication
-   2026-07-02, addendum r5.2): an **inset error disc**, a **whisper-red border**
-   (the [`Banner`](/components/banner/) 22% mix, never a red fill), on a **lifted**
-   solid surface. Title = what died ("Harness crashed"); message = the one-line why.
+1. **The failure banner.** The ratified failure grammar: an **inset error disc** and a
+   **whisper-red border** (the [`Banner`](/components/banner/) 22% mix, never a red fill),
+   on a **lifted** solid surface. Title = what died ("Harness crashed"); message = the
+   one-line why.
 2. **The evidence well.** Whatever the failure left behind, in the part that already
    owns it: this card's **error output well** for a tool-level trace, a
    [`CodeBlock`](/components/code-block/) for a stack/log excerpt, a
@@ -181,18 +189,19 @@ the AgentMessage stream-failure, which bind to the same banner grammar.
   ]}
 />
 
-The card is a single composable over the `ToolCall` domain model. There is no `status`,
-`family`, or `icon` parameter: `normalizeName` + `toolFamily` + `toolIcon` resolve them
-from `tool.name`, and the run state from `tool.output` / `tool.isError`. A handful of
+The card is a single composable over the `ToolCall` domain model. The canonical-app
+idiom derives the card's chrome instead of taking it as parameters: `normalizeName` +
+`toolFamily` + `toolIcon` resolve the summary, family, and icon from `tool.name`, and
+the run state comes from `tool.output` / `tool.isError`. A handful of
 gateway tools (`nockerl_web_research`, `ToolSearch`, `nockerl_spawn_agent`) and plan-mode
 markers short out to dedicated cards before the generic mold.
 
 </TabItem>
 <TabItem label="Swift">
 
-Voice ships **no** tool-call card (it has no chat tool-invocation feed), so there is no
-shipped Swift API. The table below is the **intended** surface for when the transcript
-lands on macOS, modelled on the Compose card.
+The table below is the **intended** Swift surface for when the transcript lands on
+macOS, modelled on the Compose card. It documents a design target, not a reference to
+shipped code.
 
 <PropsTable
   nameLabel="Style"
@@ -214,8 +223,8 @@ lands on macOS, modelled on the Compose card.
 - **Family taxonomy:** Android's `ToolFamily` has **six** families
   (`shell-fs · agent · scheduling · planning · external · default`); the inline panel in
   `agent-message` only surfaces four. The card is the full taxonomy.
-- **Swift:** Voice ships **none**. No chat tool feed exists on macOS. The Swift code +
-  params above are the intended API, not a shipped one.
+- **Swift:** the Swift code + params above document the **intended** API, derived from the
+  Compose card for a macOS transcript rather than from shipped code.
 - **Web:** no `@dizyx/nockerl-react` component is published yet; the TypeScript API above is
   the canonical target.
 </Aside>

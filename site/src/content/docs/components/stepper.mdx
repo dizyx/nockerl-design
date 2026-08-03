@@ -62,9 +62,9 @@ export function SetupTracker({ step, onJump }: { step: number; onJump: (i: numbe
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android: Jetpack Compose. INTENDED API (com.nockerl.app.core.ui.NockerlStepper):
-// no formal stepper ships yet. Modeled on NockerlSegmented (muted track, one active
-// stop in cyan) + the depth helpers; the wizard container drives `current`.
+// Android: Jetpack Compose. INTENDED API (com.nockerl.app.core.ui.NockerlStepper).
+// Modeled on NockerlSegmented (muted track, one active stop in cyan) + the depth
+// helpers; the wizard container drives `current`.
 import com.nockerl.app.core.ui.NockerlStep
 import com.nockerl.app.core.ui.NockerlStepper
 import com.nockerl.app.core.ui.NockerlStepperOrientation
@@ -100,9 +100,9 @@ NockerlStepper(
 <TabItem label="Swift">
 
 ```swift
-// macOS: SwiftUI. INTENDED API (NockerlVoice/UI/NockerlStepper.swift): no formal
-// stepper ships yet. The closest precedent is OnboardingView's status checklist
-// (checkmark/x/circle + title + detail); this generalizes it into a tracker.
+// macOS: SwiftUI. INTENDED API (NockerlVoice/UI/NockerlStepper.swift). The closest
+// precedent is OnboardingView's status checklist (checkmark/x/circle + title +
+// detail); this generalizes it into a tracker.
 NockerlStepper(
     current: step,
     orientation: .horizontal,
@@ -157,7 +157,7 @@ NockerlStepper(
 </TabItem>
 <TabItem label="Swift">
 
-SwiftUI exposes the tracker as a `NockerlStepper` view; status comes from `current`
+The Swift tab models the tracker as a `NockerlStepper` view; status comes from `current`
 (+ optional `errorStep`), not per-stop flags. State styling reads from
 `NockerlTheme` (accent, success, error, surface highlight).
 
@@ -184,11 +184,11 @@ The Stepper is the step *indicator* primitive, not a flow and not a bar:
 - **Stepper vs [progress bar](/components/progress-bar/):** the bar is one
   continuous fill for indeterminate / percentage progress; the Stepper is
   discrete, *named* stops with per-step status.
-- **Web ships it; the native platforms don't yet.** `Stepper` is exported from
-  `@dizyx/nockerl-react` (the TypeScript signature above). No formal stepper ships
-  on Android or Swift, so those looks are designed from the laws + the real precedents
-  (Android `NockerlSegmented`'s muted-track / one-cyan-stop treatment; Voice
-  `OnboardingView`'s checkmark / x / circle status checklist), so the Kotlin + Swift
-  signatures above are **intended** APIs pending implementation. A separate numeric
-  **+/- stepper input** is a different control, queued under [Inputs](/components/inputs/).
+- **Web ships it.** `NockerlStepper` is exported from `@dizyx/nockerl-react` (the
+  TypeScript signature above). The Kotlin and Swift tabs document an **intended** API
+  drawn from the laws + the real precedents (Android `NockerlSegmented`'s muted-track /
+  one-cyan-stop treatment; Voice `OnboardingView`'s checkmark / x / circle status
+  checklist); the per-platform note at the foot of this page carries their status. A
+  separate numeric **+/- stepper input** is a different control, queued under
+  [Inputs](/components/inputs/).
 </Aside>

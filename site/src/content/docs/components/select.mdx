@@ -125,8 +125,14 @@ Menu {
     }
     .foregroundStyle(NockerlTheme.accent)
     .padding(.horizontal, 12).padding(.vertical, 8)
-    .background(NockerlTheme.canvasAlt, in: RoundedRectangle(cornerRadius: 12))
-    .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(NockerlTheme.accent, lineWidth: 1.5))
+    .background(NockerlTheme.canvasAlt, in: RoundedRectangle(cornerRadius: NockerlRadius.control))
+    .overlay(
+        RoundedRectangle(cornerRadius: NockerlRadius.control)
+            .strokeBorder(
+                NockerlTheme.accent.opacity(NockerlBorderOpacity.selection),
+                lineWidth: NockerlBorder.widthSelection
+            )
+    )
 }
 .menuStyle(.borderlessButton)
 .menuIndicator(.hidden)
@@ -172,8 +178,9 @@ The single-select is composed from `DropdownAnchor` (the field) + Material3
 <TabItem label="Swift">
 
 SwiftUI builds the picker as a `Menu` whose `label` is the trigger and whose
-content is a `Button` per option. There is no single Nockerl wrapper type; these
-are the load-bearing modifiers + the per-row selection idiom.
+content is a `Button` per option. What this tab documents is that idiom rather than a
+wrapper type: the rows below are the load-bearing modifiers plus the per-row selection
+pattern.
 
 <PropsTable
   nameLabel="Style"
@@ -182,7 +189,7 @@ are the load-bearing modifiers + the per-row selection idiom.
     { name: '.menuStyle(.borderlessButton)', type: 'MenuStyle', description: 'Renders the trigger as a flat field, not a bordered system button.' },
     { name: '.menuIndicator(.hidden)', type: 'View modifier', description: 'Hides the default disclosure chevron so the custom one is the only indicator.' },
     { name: 'Button { select } label: { Label(name, systemImage: "checkmark") }', type: 'View', description: 'One option. The SELECTED row uses <code>Label(_, systemImage: "checkmark")</code>; others are a plain <code>Text</code>.' },
-    { name: '.foregroundStyle(NockerlTheme.accent) + RoundedRectangle(cornerRadius: 12)', type: 'View modifiers', description: 'The recessed accent-outlined field look (control radius 12, accent label + border).' },
+    { name: '.foregroundStyle(NockerlTheme.accent) + RoundedRectangle(cornerRadius: NockerlRadius.control)', type: 'View modifiers', description: 'The recessed accent-outlined field look: an accent label plus a border drawn at <code>NockerlBorder.widthSelection</code> and softened to <code>NockerlBorderOpacity.selection</code>. Both shapes consume the radius token, never a literal (law §11).' },
   ]}
 />
 
@@ -201,13 +208,17 @@ submenus).
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The spec is in review; these are the real divergences between the shipped platforms:
 
-- **Selected-row check** *(resolved in [adjudication 2026-07-02 · C5])*: a **trailing check** on
-  the selected row is the shared expression. Swift + web already stamp it; Compose adds a trailing
-  check to its `DropdownMenuItem` (today the selected value reads only in the anchor).
-- **Control radius:** Compose uses `NockerlControlShape` (**12dp**, the token); Swift's
-  mic picker hardcodes an **8pt** `RoundedRectangle`; it should consume `radius.control`.
+- **Selected-row check** *(settled)*: a **trailing check** on the selected row is the shared
+  expression. The web package stamps it and the Swift idiom here uses
+  `Label(_, systemImage: "checkmark")`; the Compose idiom documented on this page reads the
+  selection in the anchor only, so a trailing check on `DropdownMenuItem` is the piece this
+  page specifies.
+- **Control radius:** the field is the `radius.control` token everywhere, reached through
+  `NockerlControlShape` on Compose and `NockerlRadius.control` in SwiftUI. A literal corner
+  radius on a picker is a law §11 violation rather than a platform difference.
 - **Grouping + secondary text:** web supports `group` headers and a `secondary` line per
-  option; the shipped Android/Swift pickers list flat label-only rows.
+  option. The Android and Swift idioms documented here are flat label-only rows, so grouping
+  and the secondary line are specified on this page rather than mirrored from an app.
 - **Sizing:** web has `size` (sm/md); Compose's anchor is fixed at 48dp; Swift is intrinsic.
 - **Error state:** web has a first-class `errorText` (warm border + icon + message); the
   apps surface validation outside the control today.

@@ -52,8 +52,12 @@ export function CreateSessionWizard({ onFinish }: { onFinish: (v: SessionValues)
           isValid: (v) => v.provider.length > 0,
           render: (v, set) => (
             <>
-              <Select label="Provider" required value={v.provider} onChange={(provider) => set({ provider })} />
-              <Select label="Model" value={v.model} onChange={(model) => set({ model })} />
+              <NockerlSelect label="Provider" value={v.provider} onChange={(provider) => set({ provider })}
+                placeholder="Select a provider"
+                options={[{ value: 'cloud-personal', label: 'cloud-personal' }, { value: 'cloud-work', label: 'cloud-work' }]} />
+              <NockerlSelect label="Model" value={v.model} onChange={(model) => set({ model })}
+                helperText="Leave as provider default to inherit the registry pick."
+                options={[{ value: '', label: 'Provider default' }, { value: 'Large 2.0', label: 'Large 2.0' }]} />
             </>
           ),
         },
@@ -68,10 +72,10 @@ export function CreateSessionWizard({ onFinish }: { onFinish: (v: SessionValues)
 <TabItem label="Kotlin">
 
 ```kotlin
-// Android: Jetpack Compose. INTENDED API (com.nockerl.app.core.ui.NockerlWizard):
-// no formal wizard ships yet; the real "Create session" flow renders as a single
-// SessionCreationSheet (one scroll, not paged). This generalizes those fields into
-// a guided flow that OWNS a NockerlStepper + the step body + the Back/Next/Finish bar.
+// Android: Jetpack Compose. INTENDED API (com.nockerl.app.core.ui.NockerlWizard).
+// The canonical-app idiom for "Create session" is a single SessionCreationSheet (one
+// scroll, not paged); this generalizes those fields into a guided flow that OWNS a
+// NockerlStepper + the step body + the Back/Next/Finish bar.
 import com.nockerl.app.core.ui.NockerlWizard
 import com.nockerl.app.core.ui.NockerlWizardStep
 
@@ -105,10 +109,10 @@ NockerlWizard(
 <TabItem label="Swift">
 
 ```swift
-// macOS: SwiftUI. INTENDED API (NockerlVoice/UI/NockerlWizard.swift): no formal
-// wizard ships yet. The closest precedent is OnboardingView (a status checklist,
-// not a paged Back/Next flow); this generalizes it into a guided container that
-// pairs a NockerlStepper with the active step's content and a Back/Next/Finish bar.
+// macOS: SwiftUI. INTENDED API (NockerlVoice/UI/NockerlWizard.swift). The closest
+// precedent in the canonical app is OnboardingView, a status checklist rather than a
+// paged Back/Next flow; this generalizes it into a guided container that pairs a
+// NockerlStepper with the active step's content and a Back/Next/Finish bar.
 NockerlWizard(label: "Create session", values: $session, onFinish: createSession) {
     NockerlWizardStep("Basics", isValid: { !$0.name.isEmpty }) { values in   // gates Next
         NockerlTextField("Session name", text: values.name)
@@ -192,13 +196,13 @@ The Wizard is the guided *flow*, not the indicator:
   renders the step indicator **plus** each step's content **plus** the
   Back / Next / Finish footer **plus** validation gating. The Stepper is only the
   discs + connectors the Wizard shows at the top; a Wizard *uses* a Stepper.
-- **No formal wizard ships yet** on any platform. The real "Create session" flow
-  renders as a **single page** in web `SessionCreationForm` and Android
-  `SessionCreationSheet` (one bottom sheet, not paged), and Voice's
-  `OnboardingView` is a **status checklist**, not a Back/Next flow. So the demo
-  reproduces those real fields (Name → harness → Provider → Model) but the
-  paged container above is an **intended** API designed from the laws + Stepper +
-  Form-layout vocabulary, pending implementation.
+- **This page documents an intended API.** The canonical "Create session" flow is a
+  **single page**: web `SessionCreationForm` and Android `SessionCreationSheet` (one
+  bottom sheet, not paged), with Voice's `OnboardingView` as a **status checklist**
+  rather than a Back/Next flow. The demo therefore reproduces those real fields
+  (Name → harness → Provider → Model), while the paged container above is designed
+  from the laws + Stepper + Form-layout vocabulary. The note at the foot of this page
+  carries per-platform status.
 - **Step content** is the [Form layout](/components/form-layout/) vocabulary
   (recessed wells, required `*`, inline errors); the Wizard adds only the
   orchestration (indicator + navigation + gating + review).

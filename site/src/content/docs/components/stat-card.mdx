@@ -54,7 +54,7 @@ export function DashboardCluster() {
 // Android: Jetpack Compose (canonical). The shipped tile is `StatTile`
 // (chat/ui/ClusterSheet.kt): a compact surface with a small leading icon + muted
 // label, then a MONOSPACE value and an optional trailing Sparkline. Counts use
-// `formatTokenCount` (1M / 42K). Delta/trend is not yet on the native tile.
+// `formatTokenCount` (1M / 42K). Delta/trend sits outside the API this tab documents.
 import com.nockerl.app.chat.ui.formatTokenCount
 
 @Composable
@@ -96,13 +96,13 @@ StatTile(icon = Icons.Outlined.Bolt, iconTint = colors.modelType.gpu,
 <TabItem label="Swift">
 
 ```swift
-// macOS / iOS: SwiftUI, from the NockerlDesign package (the package
-// canon, to the D6 ruling 70a5f6a): the leading glyph sits MUTED in a NEUTRAL
-// HAIRLINE PLATE (never an accent fill: "we rarely fill", "cyan is earned"),
-// the label is the uppercase muted line, the value is the big mono figure, and
-// the delta is a WARM status color + a direction glyph (never color alone).
+// macOS / iOS: SwiftUI, from the NockerlDesign package (the ratified package canon):
+// the leading glyph sits MUTED in a NEUTRAL HAIRLINE PLATE (never an accent fill:
+// "we rarely fill", "cyan is earned"), the label is the uppercase muted line, the
+// value is the big Outfit figure, and the delta is a WARM status color + a direction
+// glyph (never color alone).
 // Voice's hand-rolled HomeSection StatCard (accent chip + gradient card)
-// normalizes to this on adoption. Sparkline is not yet on the native tile.
+// normalizes to this on adoption. Sparkline sits outside the API documented here.
 import NockerlDesign
 
 // The Home overview grid:
@@ -140,11 +140,11 @@ NockerlStatCard(label: "Latency", value: "-")
     { name: 'label', type: 'string', required: true, description: 'Short metric name. Bound to the muted <code>label.small</code> role.' },
     { name: 'value', type: 'string', required: true, description: 'Headline figure, pre-formatted (e.g. <code>1.2M</code>, <code>$184</code>). Pass a dash for the empty state, never a misleading <code>0</code>.' },
     { name: 'delta', type: '{ value: string; trend: "up" | "down"; goodWhenDown?: boolean }', description: 'Trend chip: a <strong>warm status color</strong> + a direction glyph (▲/▼) + a sign. <strong>Never color alone</strong>. <code>goodWhenDown</code> flips the color for cost/latency (the glyph stays).' },
-    { name: 'icon', type: 'ReactNode', description: 'Optional leading glyph, rendered on the ratified D6 <strong>neutral hairline plate</strong> (muted glyph, transparent fill) by default. Opt into a hue with <code>tint</code>.' },
+    { name: 'icon', type: 'ReactNode', description: 'Optional leading glyph, rendered on the ratified <strong>neutral hairline plate</strong> (muted glyph, transparent fill) by default. Opt into a hue with <code>tint</code>.' },
     { name: 'spark', type: 'number[]', description: 'Optional inline sparkline, normalized to its own min/max with a filled "now" dot. Brand cyan (on-accent when featured).' },
     { name: 'tone', type: "'default' | 'featured'", default: "'default'", description: '<code>featured</code> fills the tile with the cyan gradient (one per cluster); labels use <code>on-accent</code>.' },
-    { name: 'tint', type: "'accent' | 'success' | 'warning' | 'danger'", description: '<strong>Opt-in</strong> icon-plate tint that colors the glyph + plate a soft hue (soft wash + hue border + hue glyph, the Badge-soft recipe). Omit for the neutral D6 plate (<strong>default renders byte-identical</strong>). Ignored on <code>featured</code> tiles.' },
-    { name: 'gradient', type: 'boolean', default: 'false', description: '<strong>EXPERIMENTAL</strong> (task 2763, not ratified canon): a subtle THEME-FOLLOWING surface gradient (a gentle neutral diagonal, not the <code>featured</code> cyan). Default renders the flat surface, byte-identical. Ignored on <code>featured</code>.' },
+    { name: 'tint', type: "'accent' | 'success' | 'warning' | 'danger'", description: '<strong>Opt-in</strong> icon-plate tint that colors the glyph + plate a soft hue (soft wash + hue border + hue glyph, the Badge-soft recipe). Omit for the settled neutral plate (<strong>default renders byte-identical</strong>). Ignored on <code>featured</code> tiles.' },
+    { name: 'gradient', type: 'boolean', default: 'false', description: '<strong>EXPERIMENTAL</strong>, not ratified canon: a subtle THEME-FOLLOWING surface gradient (a gentle neutral diagonal, not the <code>featured</code> cyan). Default renders the flat surface, byte-identical. Ignored on <code>featured</code>.' },
     { name: 'size', type: "'comfortable' | 'compact'", default: "'comfortable'", description: 'Density. <code>compact</code> is the dense ClusterSheet tile; <code>comfortable</code> the Voice card.' },
     { name: 'loading', type: 'boolean', default: 'false', description: 'Skeleton shimmer instead of content; holds the tile height and sets <code>aria-busy</code>.' },
     { name: 'onClick', type: '() => void', description: 'When set, the whole tile becomes one <code>button</code> (hover lift, focus-visible ring, single accessible name).' },
@@ -179,10 +179,10 @@ control-layer metric <em>constants</em> (the 44pt touch floor), not a component.
   nameLabel="Parameter"
   rows={[
     { name: 'label', type: 'String', required: true, description: 'Metric name: uppercase, 12pt medium, <code>onCardMuted</code>.' },
-    { name: 'value', type: 'String', required: true, description: 'Headline figure, pre-formatted in the MONO family at the display-small size (28pt bold, tabular). Pass a dash for the empty state (it mutes), never a misleading <code>0</code>.' },
+    { name: 'value', type: 'String', required: true, description: 'Headline figure, pre-formatted in the Outfit brand family at the display-small size (28pt, light). Pass a dash for the empty state (it mutes), never a misleading <code>0</code>.' },
     { name: 'delta', type: 'NockerlStatDelta?', default: 'nil', description: '<code>(value, trend: .up/.down, goodWhenDown)</code>. A <strong>warm status color</strong> + ▲/▼, never color alone; <code>goodWhenDown</code> flips the color for cost/latency (the glyph stays).' },
-    { name: 'icon', type: '@ViewBuilder', description: 'Leading glyph (SF Symbol <code>Image</code> or any view), muted, inside the ratified D6 <strong>neutral hairline plate</strong> by default (40pt, radius <code>control</code>, transparent + <code>cardHairline</code>). Opt into a hue with <code>tint</code>.' },
-    { name: 'tint', type: 'NockerlStatTint?', default: 'nil', description: '<strong>Opt-in</strong> icon-plate tint. <code>.accent / .success / .warning / .danger</code> color the glyph + plate a soft hue (soft wash 14% + hue border 28% + hue glyph, the Badge-soft recipe). Omit for the neutral D6 plate (<strong>default renders byte-identical</strong>). Warm hues stay status-meaningful; <code>.accent</code> is the earned-cyan case.' },
+    { name: 'icon', type: '@ViewBuilder', description: 'Leading glyph (SF Symbol <code>Image</code> or any view), muted, inside the ratified <strong>neutral hairline plate</strong> by default (40pt, radius <code>control</code>, transparent + <code>cardHairline</code>). Opt into a hue with <code>tint</code>.' },
+    { name: 'tint', type: 'NockerlStatTint?', default: 'nil', description: '<strong>Opt-in</strong> icon-plate tint. <code>.accent / .success / .warning / .danger</code> color the glyph + plate a soft hue (soft wash 14% + hue border 28% + hue glyph, the Badge-soft recipe). Omit for the settled neutral plate (<strong>default renders byte-identical</strong>). Warm hues stay status-meaningful; <code>.accent</code> is the earned-cyan case.' },
     { name: 'density', type: 'NockerlControlDensity', default: '.comfortable', description: 'The rhythm tier (the shared <code>NockerlControlDensity</code>, one density story, not a bespoke knob): <code>.comfortable</code> is the unchanged 40pt-plate / 28pt-value tile; <code>.compact</code> mirrors the web compact tier with <strong>32pt plate, <code>space3</code> padding, <code>space2</code> gap, a 20pt value</strong> (≈88→ a ~26% shorter tile) for dense dashboards and small windows. Legibility + the neutral-plate anatomy hold.' },
   ]}
 />
@@ -192,7 +192,7 @@ control-layer metric <em>constants</em> (the 44pt touch floor), not a component.
 
 <Aside type="caution" title="Stat card vs. chart vs. context-gauge, and cross-platform drift">
 - **Pick the right component.** **Stat card** is the *single-KPI tile* (one number + label + optional delta/sparkline). For a full plot (line/area/bar, multi-series, axes, a usage donut) use [Chart / sparkline](/components/chart/). For the live token-budget meter use [Context gauge](/components/context-gauge/). The tile *borrows* the chart's sparkline + `formatTokenCount` vocabulary, but it is not a chart.
-- **Delta / trend is web-only.** Neither shipped app renders a delta (up/down %). It is designed here from the laws (**warm status color + a direction glyph, never color alone**) and is the intended `@dizyx/nockerl-react` API, not yet on Android `StatTile` or Voice `StatCard`.
+- **Delta / trend leads on web.** The trend chip is designed here from the laws (**warm status color + a direction glyph, never color alone**) and is the intended `@dizyx/nockerl-react` API. The Kotlin and Swift tabs document tiles built without it, so the delta is the clearest place the platforms have yet to meet.
 - **Same idea, two builds.** Voice `StatCard` = an **accent icon chip + big bold mono number + muted label** (the comfortable tile here). Android `StatTile` = a **compact** mono tile (small inline icon + label, value + trailing sparkline). The web tile unifies both as `size`.
 - **Radius drift.** Voice hardcodes **10pt**, Android **6dp**; the tile here uses `radius.card` (**16**). The native tiles should consume `radius.card`.
 - **Count format.** Android `formatTokenCount` is integer (`1M` / `42K`); Voice's header uses one decimal (`8.4k`). One compact-number policy needs to win.

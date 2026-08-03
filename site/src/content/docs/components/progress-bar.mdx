@@ -24,28 +24,44 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 <TabItem label="TypeScript">
 
 ```tsx
-// Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
-// not yet exported from @dizyx/nockerl-react; promotion is tracked.)
+// Web: React, consuming @dizyx/nockerl-tokens. Progress ships as THREE primitives
+// from @dizyx/nockerl-react, and the live demo above runs on all three. There is no
+// single `ProgressBar` wrapper: the label and the % readout are the caller's row, so
+// the accessible name rides in on `aria-label`.
+import {
+  NockerlCircularProgress,
+  NockerlProgressSegments,
+  NockerlProgressTrack,
+} from '@dizyx/nockerl-react';
 
-// Determinate: a value 0 to 100 drives the cyan fill width. The bar is the GENERAL
+// Determinate: a value 0 to 100 drives the cyan fill width. The track is the GENERAL
 // progress primitive: plain cyan, NO threshold banding (that is the ContextGauge).
-<ProgressBar value={64} label="Exporting session…" size="thick" />
+<NockerlProgressTrack
+  value={64}
+  size="thick"
+  role="progressbar"
+  aria-label="Exporting session"
+  aria-valuenow={64}
+  aria-valuemin={0}
+  aria-valuemax={100}
+/>
 
-// Indeterminate: omit `value` for work of unknown length (a sliding track).
-<ProgressBar label="Connecting to gateway…" indeterminate />
+// Indeterminate: omit `value` for work of unknown length (a sliding segment).
+<NockerlProgressTrack indeterminate role="progressbar" aria-label="Connecting to gateway" aria-busy="true" />
 
 // Buffer: a lighter secondary track behind the primary fill.
-<ProgressBar value={48} buffer={70} label="Streaming response" />
+<NockerlProgressTrack value={48} buffer={70} role="progressbar" aria-label="Streaming response" />
 
-// Segmented / stepped: discrete cells, `value` of `max`.
-<ProgressBar value={3} max={5} variant="segmented" label="Deploy pipeline" />
+// Segmented / stepped: discrete cells, `filled` of `total`.
+<NockerlProgressSegments total={5} filled={3} role="progressbar" aria-label="Deploy pipeline" />
 
 // Completion + failure. Color is never the only signal (icon + text follow).
-<ProgressBar value={100} tone="success" label="Snapshot uploaded" />
-<ProgressBar value={80} tone="error" label="Build artifacts" />
+<NockerlProgressTrack value={100} tone="success" role="progressbar" aria-label="Snapshot uploaded" />
+<NockerlProgressTrack value={80} tone="error" role="progressbar" aria-label="Build artifacts" />
 
 // Determinate ring with a center % (indeterminate circular = the NockerlSpinner).
-<ProgressBar value={64} variant="ring" label="Export" />
+// The ring owns its own accessible name, so `label` is required here.
+<NockerlCircularProgress value={64} label="Export" showValue />
 ```
 
 </TabItem>
@@ -118,19 +134,25 @@ NockerlProgressRing(value: fraction, label: "Export")
 <Tabs syncKey="lang">
 <TabItem label="TypeScript">
 
-<PropsTable
-  nameLabel="Prop"
-  rows={[
-    { name: 'value', type: 'number', description: 'Current progress (0 to <code>max</code>). Drives the cyan fill width / filled segments / ring sweep. Omit for <code>indeterminate</code>.' },
-    { name: 'max', type: 'number', default: '100', description: 'Upper bound. Use a small integer (e.g. <code>5</code>) with the <code>segmented</code> variant for stepped progress.' },
-    { name: 'label', type: 'string', required: true, description: 'Accessible name; rendered left of the % readout. Bound to the <code>body.small</code> type role.' },
-    { name: 'variant', type: "'linear' | 'segmented' | 'ring'", default: "'linear'", description: 'Continuous bar, discrete cells, or a determinate ring with a center %.' },
-    { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Unknown-length work: a sliding track. Omits <code>aria-valuenow</code>, sets <code>aria-busy</code>; the slide freezes under reduced-motion.' },
-    { name: 'buffer', type: 'number', description: 'Optional secondary progress (0 to <code>max</code>) shown as a lighter track behind the primary fill (e.g. received vs. played).' },
-    { name: 'size', type: "'thin' | 'thick'", default: "'thin'", description: 'Track height. <code>thin</code> matches the app (3 to 4dp); <code>thick</code> is the chunkier readout form.' },
-    { name: 'tone', type: "'accent' | 'success' | 'error'", default: "'accent'", description: 'Fill color. <code>accent</code> is the plain cyan (no banding); <code>success</code>/<code>error</code> pair with an icon + message (never color alone).' },
-  ]}
-/>
+Three primitives cover the forms: `NockerlProgressTrack` is the linear bar (determinate,
+indeterminate, and buffer), `NockerlProgressSegments` is the stepped form, and
+`NockerlCircularProgress` is the determinate ring. The two linear primitives render no
+text of their own, so the label and the % readout live in the row you wrap them in and
+you pass `role="progressbar"` plus the `aria-*` values straight through. Both also
+forward any other `div` attribute. The ring is the exception: it draws its own centered
+figure and takes a required `label`.
+
+**`NockerlProgressTrack`**, the linear bar:
+
+<PropsTable nameLabel="Prop" component="NockerlProgressTrack" />
+
+**`NockerlProgressSegments`**, the stepped cells:
+
+<PropsTable nameLabel="Prop" component="NockerlProgressSegments" />
+
+**`NockerlCircularProgress`**, the determinate ring:
+
+<PropsTable nameLabel="Prop" component="NockerlCircularProgress" />
 
 </TabItem>
 <TabItem label="Kotlin">

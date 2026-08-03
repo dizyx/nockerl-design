@@ -97,7 +97,7 @@ HStack(spacing: 10) {
         .controlSize(.small)
         .tint(NockerlTheme.accent)
     Text("Transcribing…")
-        .font(.system(size: 12, weight: .medium))
+        .font(.nockerl(size: NockerlFontSize.size12, weight: .medium))
         .foregroundStyle(NockerlTheme.onSurface)
 }
 
@@ -125,9 +125,9 @@ pulse, never an infinite fast spin.
 </TabItem>
 <TabItem label="Kotlin">
 
-The spinner is Material 3 `CircularProgressIndicator` (the **indeterminate**
-overload; omit the `progress` lambda) styled to the Nockerl accent. There is no
-bespoke `NockerlSpinner` composable; size + stroke are passed at each call site.
+The Compose spinner documented here is Material 3 `CircularProgressIndicator` (the
+**indeterminate** overload; omit the `progress` lambda) styled to the Nockerl accent,
+not a bespoke composable: size + stroke are passed at each call site.
 
 <PropsTable
   nameLabel="Parameter"
@@ -142,9 +142,9 @@ bespoke `NockerlSpinner` composable; size + stroke are passed at each call site.
 </TabItem>
 <TabItem label="Swift">
 
-Nockerl Voice uses a plain `ProgressView()` (no value) tinted to the accent, the
-shipped indeterminate circular loader. State is implicit (it always animates);
-there are no explicit parameters beyond the view modifiers below.
+The Swift idiom here is a plain `ProgressView()` (no value) tinted to the accent, which
+is the indeterminate circular loader. State is implicit (it always animates); there are
+no explicit parameters beyond the view modifiers below.
 
 <PropsTable
   nameLabel="Style"
@@ -167,12 +167,12 @@ intentionally left circular-indeterminate to the spinner); the
 and the [skeleton](/components/skeleton/) is a content-shaped placeholder. The
 spinner has **no value, no %, and no track number**.
 
-- **Android (canonical):** the spinner is Material's `CircularProgressIndicator`
-  used everywhere. There is no bespoke `NockerlSpinner`; size + stroke are set per
-  call site (12.dp/1.5.dp inline, 20 to 24.dp/2.dp in buttons, larger when centered).
-- **Swift:** Nockerl Voice ships only the small, label-paired `ProgressView()`
-  (RecordingHUD). No centered/overlay or in-button form is shipped yet. Those are
-  designed here from the laws + the Android treatment.
+- **Android (canonical):** the spinner documented here is Material's
+  `CircularProgressIndicator` rather than a bespoke composable; size + stroke are set
+  per call site (12.dp/1.5.dp inline, 20 to 24.dp/2.dp in buttons, larger when centered).
+- **Swift:** the small, label-paired `ProgressView()` is the form the Swift tab
+  mirrors; the centered/overlay and in-button variants are designed here from the laws
+  plus the Android treatment.
 - **Track:** the apps ship a **trackless** arc (transparent track); the web `track`
   prop is an opt-in recessed ring, off by default to match.
 </Aside>

@@ -84,7 +84,7 @@ NockerlTextField(
 ```swift
 // macOS: SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift exposes the
 // recessed chrome as a .nockerlFieldBackground() modifier applied to a plain TextField.
-// The label is a sibling Text/Card title (there is no bundled label slot yet).
+// In this idiom the label is a sibling Text/Card title rather than a bundled slot.
 TextField("https://your-server:port", text: $localEndpoint)
     .textFieldStyle(.plain)
     .foregroundStyle(NockerlTheme.onSurface)
@@ -139,8 +139,9 @@ line (error is text, never color alone, per law §14).
 
 SwiftUI applies the field chrome as a **`.nockerlFieldBackground()` view modifier** on a
 plain `TextField` / `SecureField`. State (focus, editing) comes from the SwiftUI
-environment. There are no explicit state parameters, and there is no bundled label or
-error slot yet (the title is a sibling view; errors are shown as a sibling `Text`).
+environment, so the modifier takes no explicit state parameters. Label and error are
+sibling views in this idiom: the title is a sibling `Text`, and an error is shown as one
+too.
 
 <PropsTable
   nameLabel="Style"
@@ -159,12 +160,12 @@ error slot yet (the title is a sibling view; errors are shown as a sibling `Text
 The recessed-well spec is the target; these are the real divergences between the shipped
 platforms, tracked in the [Review queue](/review-queue/):
 
-- **Shared component:** Android now **ships** `NockerlTextField`
-  (`com.dizyx.nockerl.design.components`), the extracted recessed-well field. Voice has a
-  reusable field modifier (`.nockerlFieldBackground()`) but no bundled component; web still
-  ships the shadcn `input.tsx`. An extracted field is now owed on **web + Voice**, and the
-  app screens that still recolor `OutlinedTextField` inline should migrate to the published
-  component.
+- **Shared component:** the Kotlin tab documents `NockerlTextField`
+  (`com.dizyx.nockerl.design.components`), the extracted recessed-well field. The Swift tab
+  documents the chrome as a reusable modifier (`.nockerlFieldBackground()`) on a plain field
+  rather than a bundled component, and web still ships the shadcn `input.tsx`. The target is
+  one extracted field on every surface, with the app screens that recolor `OutlinedTextField`
+  inline moving onto it.
 - **Recessed vs outlined:** Voice + the published Kotlin `NockerlTextField` + the spec are
   **recessed wells**; the app's older inline `OutlinedTextField` call-sites are still
   **outlined boxes** (no inset) until they adopt the shipped component.
@@ -173,6 +174,6 @@ platforms, tracked in the [Review queue](/review-queue/):
   radius everywhere (the pill is reserved for chips + the input bar).
 - **Focus treatment:** web shadcn uses a 1px `ring` (a shadow); the law wants a 2px
   `outline`. Voice/Android rely on a border-color change.
-- **Label + error slots:** web + Compose bundle label / error / helper; Voice does not
-  (siblings). One bundled API should win.
+- **Label + error slots:** web + Compose bundle label / error / helper; the Swift idiom
+  documented here keeps them as siblings. One bundled API should win.
 </Aside>

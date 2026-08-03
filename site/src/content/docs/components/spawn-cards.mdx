@@ -6,17 +6,19 @@ platforms: [android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
+import PropsTable from '../../../components/PropsTable.astro';
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/spawncards-block-children.png';
 
 <StatusBadge status="review" />
 
-<img src={goldenDark.src} alt="Spawn block card with three children across the lifecycle ladder, plus a completed standalone block" style="border-radius: 12px;" />
+<img src={goldenDark.src} alt="Spawn block card with three children across the lifecycle ladder, plus a completed standalone block" style="border-radius: var(--radius-panel);" />
 
-The spawn surfaces are **tool-card-family siblings** (WS1 #2652a): the agent-family
-**tile** leads (the spawn glyph knocked out of a filled `family.agent` square; color
-rides a filled tile, never bare), the **lifecycle chip** trails (dot + label + elapsed, so
-color never stands alone), and spawned children stack inside at the card rhythm.
+The spawn surfaces are **tool-card-family siblings**, and that classification is
+settled: the agent-family **tile** leads (the spawn glyph knocked out of a filled
+`family.agent` square; color rides a filled tile, never bare), the **lifecycle chip**
+trails (dot + label + elapsed, so color never stands alone), and spawned children stack
+inside at the card rhythm.
 
 The lifecycle ladder is shared with the [Agent widget](/components/agent-widget/):
 `RUNNING` (info-cyan, pulsing dot), `SUCCESS`, `ERROR`. Pass `animate = false` to freeze
@@ -69,24 +71,30 @@ NockerlSpawnBlockCard(
 
 ### NockerlSpawnBlockCard
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `String` | n/a | The spawn block's name. |
-| `status` | `NockerlSpawnStatus` | n/a | `RUNNING` / `SUCCESS` / `ERROR`, drives the chip. |
-| `subtitle` | `String?` | `null` | Supporting line (model, task id). |
-| `elapsed` | `String?` | `null` | Elapsed label in the chip. |
-| `animate` | `Boolean` | `true` | `false` freezes the RUNNING pulse. |
-| `children` | slot | none | Spawned-children slot (stack child cards). |
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'title', type: 'String', description: "The spawn block's name." },
+    { name: 'status', type: 'NockerlSpawnStatus', description: "<code>RUNNING</code> / <code>SUCCESS</code> / <code>ERROR</code>, drives the chip." },
+    { name: 'subtitle', type: 'String?', default: 'null', description: "Supporting line (model, task id)." },
+    { name: 'elapsed', type: 'String?', default: 'null', description: "Elapsed label in the chip." },
+    { name: 'animate', type: 'Boolean', default: 'true', description: "<code>false</code> freezes the RUNNING pulse." },
+    { name: 'children', type: 'slot', default: 'none', description: "Spawned-children slot (stack child cards)." },
+  ]}
+/>
 
 ### NockerlSpawnChildCard
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | `String` | n/a | The child agent's name. |
-| `status` | `NockerlSpawnStatus` | n/a | The child's lifecycle state. |
-| `model` | `String?` | `null` | Mono model badge text. |
-| `elapsed` | `String?` | `null` | Trailing muted elapsed label. |
-| `animate` | `Boolean` | `true` | `false` freezes the RUNNING pulse. |
+<PropsTable
+  nameLabel="Prop"
+  rows={[
+    { name: 'name', type: 'String', description: "The child agent's name." },
+    { name: 'status', type: 'NockerlSpawnStatus', description: "The child's lifecycle state." },
+    { name: 'model', type: 'String?', default: 'null', description: "Mono model badge text." },
+    { name: 'elapsed', type: 'String?', default: 'null', description: "Trailing muted elapsed label." },
+    { name: 'animate', type: 'Boolean', default: 'true', description: "<code>false</code> freezes the RUNNING pulse." },
+  ]}
+/>
 
 <Aside type="note" title="Web">
   The react half rides the adoption lane: the dashboard's spawn UI adopts these as the

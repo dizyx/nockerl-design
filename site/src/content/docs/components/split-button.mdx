@@ -175,10 +175,11 @@ SwiftUI environment; styling is the shared `.nockerl*` `ButtonStyle`.
 </Tabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-Neither shipped app has a literal split button yet. This is designed from the
-button + menu vocabulary, so the platforms diverge:
+This page designs the split button from the button + menu vocabulary rather than
+transcribing a packaged native surface, so the platform tabs differ in how close each
+one gets:
 
-- **Compose:** the app hand-rolls `Row(NockerlButton + NockerlIconButton) + DropdownMenu`; Material 3’s `SplitButtonLayout` (the canonical target above) is **not adopted yet**.
-- **Swift:** Voice ships plain `Menu { … }`; `Menu(primaryAction:)`, the actual split-button idiom, is **not used yet** (no default-action segment).
+- **Compose:** the Kotlin tab shows Material 3’s `SplitButtonLayout` as the canonical target; the app-side idiom it supersedes is a hand-rolled `Row(NockerlButton + NockerlIconButton) + DropdownMenu`.
+- **Swift:** the Swift tab documents `Menu(primaryAction:)`, the actual split-button idiom, where a plain `Menu { … }` carries no default-action segment.
 - **vs. its neighbours:** use **Button** for a single action, **Menu** when there is *no* default action (the trigger only opens a popover), and **Fab** for the floating circular action + speed-dial. Split button is the JOIN: a default action welded to a menu of variants.
 </Aside>
