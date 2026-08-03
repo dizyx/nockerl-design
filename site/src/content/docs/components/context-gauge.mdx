@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ContextGaugeDemo from '../../../components/demos/ContextGaugeDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -42,8 +43,8 @@ export function SessionContext({ tokens, contextWindow }: ContextState) {
 <ContextGauge form="chip" used={null} total={contextWindow} label="docs" />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The gauge ships as the per-chip context
@@ -72,8 +73,8 @@ val line = "${formatTokenCount(contextUsage.totalTokens)} / " +
     "${formatTokenCount(contextUsage.contextWindow)} · $pct%"
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Nockerl Voice). NOT YET SHIPPED. Voice has no context gauge
@@ -86,13 +87,13 @@ ContextGauge(used: state.tokens, total: state.contextWindow, form: .ring)
 // >= 0.85 .error. Readout uses the shared formatTokenCount → "82K / 200K · 41%".
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -106,8 +107,8 @@ ContextGauge(used: state.tokens, total: state.contextWindow, form: .ring)
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The gauge is not a standalone composable: it is the **context line** rendered
 inside `SessionChipsBar`. These are the relevant `SessionChipsBar` parameters; the
@@ -124,8 +125,8 @@ thresholds + colors are file-level constants in the same file.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 Not shipped in Nockerl Voice. This is the **intended** SwiftUI API (a `View`
 initialized with the usage figures), designed from the laws + the Android
@@ -140,8 +141,8 @@ thresholds so it round-trips with the other platforms when it lands.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Swift:** Nockerl Voice has **no context gauge** today (no token budget surfaced). The Swift API above is intended, not shipped.

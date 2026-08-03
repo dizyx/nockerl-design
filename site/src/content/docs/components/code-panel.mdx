@@ -8,7 +8,8 @@ platforms: [web]
 import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import CodePanelDemo from '../../../components/demos/CodePanelDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -38,8 +39,8 @@ native surfaces read code through the cross-platform CodeBlock.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 import { EditorView, lineNumbers } from '@codemirror/view';
@@ -56,5 +57,5 @@ new EditorView({
 });
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>

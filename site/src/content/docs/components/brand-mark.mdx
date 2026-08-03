@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BrandMarkDemo from '../../../components/demos/BrandMarkDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -43,8 +44,8 @@ export function TopBar() {
 <div className="cta cta--cyan"><BrandMark lockup="stacked" tone="knockout" size={40} /></div>
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The mark ships as vector drawables
@@ -72,8 +73,8 @@ Icon(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS / iOS: SwiftUI, from the NockerlDesign package (the packaged canon;
@@ -97,13 +98,13 @@ NockerlLogo(size: 20, tone: .onDark)
 MenuBarExtra { /* … */ } label: { Image(nsImage: NockerlLogo.statusItemImage()) }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -116,8 +117,8 @@ MenuBarExtra { /* … */ } label: { Image(nsImage: NockerlLogo.statusItemImage()
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 There is no `NockerlBrandMark` composable yet. The mark is the
 `ic_nockerl_logo_{light,dark}` vector drawables rendered via `Icon`. These are
@@ -133,8 +134,8 @@ the relevant inputs.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlLogo` is a SwiftUI `View` on the native 8:7 mark ratio (`16 20 64 56`
 viewBox). `size` is the mark HEIGHT. `NockerlLogo.statusItemImage(size:)` is the
@@ -150,8 +151,8 @@ menu-bar template image (macOS).
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The geometry is unified: the same three-peaks mark on `viewBox="16 20 64 56"` (peaks

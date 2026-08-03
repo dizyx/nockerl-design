@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AccordionDemo from '../../../components/demos/AccordionDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -49,8 +50,8 @@ export function SessionAdvanced() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose, canonical). The packaged NockerlAccordion: trailing
@@ -79,8 +80,8 @@ NockerlAccordion(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS / iOS: SwiftUI, from the NockerlDesign package (the parity twin;
@@ -109,13 +110,13 @@ NockerlAccordion(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -136,8 +137,8 @@ NockerlAccordion(
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 Compose ships the disclosure as a composed pattern (a clickable header `Row` + an
 `AnimatedVisibility` body), not a single `NockerlAccordion` component. These are the
@@ -156,8 +157,8 @@ real parameters of that pattern.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI ships the disclosure as a header `Button` toggling a single `@State expandedID`
 with a `withAnimation` spring, the body gated by `if expandedID == id`
@@ -175,8 +176,8 @@ style yet.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Header accessory + controlled binding (, cross-platform)">
 A header **trailing-accessory** slot renders always-visible controls (a delete button, a

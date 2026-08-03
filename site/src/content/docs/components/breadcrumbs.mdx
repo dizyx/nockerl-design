@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import BreadcrumbsDemo from '../../../components/demos/BreadcrumbsDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -27,8 +28,8 @@ can use back-navigation or a tree instead, prefer that.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. Breadcrumbs are a web-leaning
@@ -52,8 +53,8 @@ export function FilePathTrail() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. There is NO breadcrumb component: the app wayfinds
@@ -77,8 +78,8 @@ private fun ViewerHeader(filePath: String, onBack: -> Unit) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. There is NO breadcrumb component in Nockerl Voice: hierarchy
@@ -94,13 +95,13 @@ NavigationStack {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -113,8 +114,8 @@ NavigationStack {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 No breadcrumb component ships on Android, so the table documents the **path-aware
 back-nav** that stands in for it (`FilesSheet.kt`). Flagged as drift below.
@@ -128,8 +129,8 @@ back-nav** that stands in for it (`FilesSheet.kt`). Flagged as drift below.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 No breadcrumb component ships in Nockerl Voice. `NavigationStack` supplies the
 title + system back that stand in for a trail. Flagged as drift below.
@@ -143,8 +144,8 @@ title + system back that stand in for a trail. Flagged as drift below.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Breadcrumbs are a **web-only** pattern today. The shipped natives wayfind differently,

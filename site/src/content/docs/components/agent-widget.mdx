@@ -6,7 +6,8 @@ platforms: [android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/agentwidget-lifecycle.png';
 
 <StatusBadge status="review" />
@@ -21,8 +22,8 @@ ladder; an optional one-line `detail` carries the current step or last output.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="Kotlin">
+<DocTabs surface={false}>
+<Fragment slot="kotlin">
 
 ```kotlin
 NockerlAgentWidget(
@@ -34,8 +35,8 @@ NockerlAgentWidget(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 NockerlAgentWidget(
@@ -47,8 +48,8 @@ NockerlAgentWidget(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Props
 

@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AvatarDemo from '../../../components/demos/AvatarDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -43,8 +44,8 @@ export function SessionHeader() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlAvatar
@@ -67,8 +68,8 @@ NockerlAvatar(name = "Alex Rivera", size = NockerlAvatarSize.MD)  // initials fa
 NockerlAvatar(name = "", size = NockerlAvatarSize.SM)             // blank → "?" placeholder
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical look). Nockerl Voice ships NO avatar component yet;
@@ -83,20 +84,20 @@ NockerlAvatar(name: "Alex Rivera").avatarSize(.md)             // initials fallb
 NockerlAvatarStack(people: members, max: 4).avatarSize(.sm)    // overlap + "+N"
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlAvatar" />
 
 `AvatarStack` takes `people: { name; src? }[]`, `max` (default `4`), and `size`. It overlaps the first `max` avatars and appends a `+N` overflow chip.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -112,8 +113,8 @@ NockerlAvatarStack(people: members, max: 4).avatarSize(.sm)    // overlap + "+N"
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the avatar as a `View` plus chained modifiers; presence and size
 come from the view modifiers rather than a flat parameter list.
@@ -129,8 +130,8 @@ come from the view modifiers rather than a flat parameter list.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The look is approved off the shipped Android avatar; the rest is designed here and

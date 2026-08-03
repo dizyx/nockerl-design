@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ClusterGridDemo from '../../../components/demos/ClusterGridDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -40,8 +41,8 @@ consoles have no equivalent. Web-first on the shared tokens and laws.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 import { NockerlClusterGrid, NockerlNodeCell, NockerlBadge } from '@dizyx/nockerl-react';
@@ -62,8 +63,8 @@ import { NockerlClusterGrid, NockerlNodeCell, NockerlBadge } from '@dizyx/nocker
 </NockerlClusterGrid>
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ChatInputDemo from '../../../components/demos/ChatInputDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -49,8 +50,8 @@ Three things make it read as the signature it is:
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: @dizyx/nockerl-react. Controlled value; the action circle auto-picks
@@ -74,8 +75,8 @@ export function Composer({ onSend, onMic, onAttach }: ComposerProps) {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (CANONICAL source: chat/ui/ChatInputBar.kt, shipped as
@@ -90,26 +91,26 @@ NockerlChatInput(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlChatInput" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The Compose signature mirrors the web props: `value`, `onValueChange`, `onSend`, `onMic`,
 `placeholder`, `disabled`, optional `onAttach` + `attachIcon`. Long-press routes through
 `Modifier.longPressPop` (pop feedback + haptics); the morph runs on `AnimatedContent`
 with the fast/standard motion tokens.
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Attachment popover
 
@@ -128,8 +129,8 @@ remove the attachment; the row scrolls horizontally on overflow.
 The component owns only the frame (float + edge + badge). The caller supplies each
 image src and keeps the pick/decode/upload plumbing outside.
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 import { NockerlAttachmentPopover } from '@dizyx/nockerl-react';
@@ -140,8 +141,8 @@ import { NockerlAttachmentPopover } from '@dizyx/nockerl-react';
 />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Compose (CANONICAL). One Painter per pending attachment.
@@ -151,22 +152,22 @@ NockerlAttachmentPopover(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlAttachmentPopover" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `attachments: List<Painter>` · `onRemove: (Int) -> Unit` · `modifier` · `enabled`. The
 same frame; images arrive as Painters instead of src URLs.
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## The integrated flow
 

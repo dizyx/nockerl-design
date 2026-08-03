@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import CalloutDemo from '../../../components/demos/CalloutDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. No Callout ships yet on ANY
@@ -55,8 +56,8 @@ export function InstallNotes() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. No NockerlCallout ships yet; this is the proposed
@@ -79,8 +80,8 @@ NockerlCallout("Destructive actions cannot be undone.", tone = NockerlCalloutTon
 NockerlCallout("Bounded autonomy: autonomy calibrated by task risk.", tone = NockerlCalloutTone.QUOTE)
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Voice). No callout ships; the closest shipped patterns are the
@@ -99,13 +100,13 @@ NockerlCallout("Destructive actions cannot be undone.", tone: .caution)
 NockerlCallout("Bounded autonomy: autonomy calibrated by task risk.", tone: .quote)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlCallout" />
 
@@ -113,8 +114,8 @@ There is no `dismissible` / `onDismiss` / `action`. A callout is **persistent**
 editorial content. For a dismissible, action-bearing, app-state alert, use the
 [Banner](/components/banner/).
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `NockerlCallout` is the proposed Compose component: a recessed `Box` (panel
 radius) with a tonal wash over `canvasAlt`, a tone hairline, an inner top shadow
@@ -135,8 +136,8 @@ page like body content. The body is markdown via the shared `MarkdownBody`.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlCallout` is the proposed SwiftUI view: a recessed `RoundedRectangle`
 (panel radius) tinted by the tone, with a **filled leading tone disc** (an SF Symbol
@@ -155,8 +156,8 @@ persistent in-content aside (no dismiss, no `nockerlElevation()` lift).
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The callout now **ships on web** as `NockerlCallout` in `@dizyx/nockerl-react`, and on both

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import CheckboxDemo from '../../../components/demos/CheckboxDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -50,8 +51,8 @@ export function ScopePicker() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). Material3 Checkbox, brand-tinted via
@@ -85,8 +86,8 @@ TriStateCheckbox(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). The native checkbox is Toggle + .toggleStyle(.checkbox),
@@ -104,18 +105,18 @@ Toggle(isOn: parentBinding) { Text("Grant repository access") }
     .tint(NockerlTheme.accent)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlCheckbox" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -130,8 +131,8 @@ Toggle(isOn: parentBinding) { Text("Grant repository access") }
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI renders the checkbox via the standard `Toggle` with `.toggleStyle(.checkbox)`:
 a **square box** with a checkmark, tinted by the app accent (never the radio circle).
@@ -150,8 +151,8 @@ gate `disabled` at the binding / view level.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The checkbox is the **multi-selection** control, a **square box** with a check fill,

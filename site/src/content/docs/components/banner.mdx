@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BannerDemo from '../../../components/demos/BannerDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. No Banner ships yet on ANY
@@ -46,8 +47,8 @@ export function SessionBanners() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. No NockerlBanner ships yet; this is the proposed
@@ -71,8 +72,8 @@ NockerlBanner("Build failed: the container exited 1.", intent = NockerlBannerInt
 NockerlBanner("Read-only: this workspace is locked.", intent = NockerlBannerIntent.NEUTRAL, showIcon = false)
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Voice). No banner component ships; the RecordingHUD error row
@@ -91,18 +92,18 @@ NockerlBanner("Build failed: the container exited 1.", intent: .danger)
 NockerlBanner("Read-only: this workspace is locked.", intent: .neutral, showIcon: false)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlBanner" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `NockerlBanner` is the proposed Compose component: a `NockerlSurface` (panel radius +
 the shared lit-from-above material) washed with the intent's status color and bordered with
@@ -121,8 +122,8 @@ its hairline, exactly the shipped `errorContainer` / `ErrorSegment` treatment ge
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlBanner` is the proposed SwiftUI view: a rounded-rect surface tinted by the intent's
 `NockerlTheme` status token (`error` / `warning` / `success` / `accent` for info), echoing the
@@ -139,8 +140,8 @@ shipped `RecordingHUD` error row (status glyph + message) as a reusable inline a
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The banner now **ships on web** as `NockerlBanner` in `@dizyx/nockerl-react`, and on both

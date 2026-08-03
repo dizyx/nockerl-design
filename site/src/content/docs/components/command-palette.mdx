@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import CommandPaletteDemo from '../../../components/demos/CommandPaletteDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -52,8 +53,8 @@ export function App() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. No physical ⌘K; the launcher is a modal that
@@ -78,8 +79,8 @@ NockerlCommandPalette(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. The trigger is a real .keyboardShortcut("k", modifiers: .command)
@@ -108,13 +109,13 @@ struct RootView: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -128,8 +129,8 @@ struct RootView: View {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -145,8 +146,8 @@ struct RootView: View {
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the palette as a `View` presented in a `.sheet`; the ⌘K trigger is a
 standard `.keyboardShortcut("k", modifiers: .command)`. State lives in `@State`
@@ -162,8 +163,8 @@ bindings; there is no explicit `open` parameter on the view itself.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The palette is a **first-class surface on web + macOS** and an **adapted idiom on Android**:
