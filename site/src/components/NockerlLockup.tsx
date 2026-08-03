@@ -13,11 +13,19 @@
  * sits on (set the surrounding `color`); the product word is always the cyan
  * accent token.
  */
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import NockerlLogo, { type NockerlLogoTone } from './NockerlLogo';
 import { type ComposeContract } from '@dizyx/nockerl-react';
 
 export interface NockerlLockupProps {
+  /**
+   * Replaces the three-peaks mark, for a surface that belongs to ONE product and should
+   * lead with that product's own icon rather than the parent mark. Omit everywhere else:
+   * the default is the parent mark, which is the lockup law §11 describes, and this slot
+   * does not change it. Sized by the caller, since a product icon is square where the
+   * peaks mark is not.
+   */
+  children?: ReactNode;
   /** Mark height in px; the wordmark is optically sized from it. Default 28. */
   size?: number;
   /** Optional product word (e.g. "Voice", "Dashboard", "Security"), set in cyan. */
@@ -55,6 +63,7 @@ const STYLES = `
  * <NockerlLockup size={56} product="Security" stacked />
  */
 export function NockerlLockup({
+  children,
   size = 28,
   product,
   stacked = false,
@@ -70,7 +79,7 @@ export function NockerlLockup({
   return (
     <span className={rootClass} style={styleVar}>
       <style>{STYLES}</style>
-      <NockerlLogo size={size} tone={tone} decorative={decorative} title="Nockerl" />
+      {children ?? <NockerlLogo size={size} tone={tone} decorative={decorative} title="Nockerl" />}
       <span className="nk-lock__wm">
         <span className="nk-lock__name">Nockerl</span>
         {product ? <span className="nk-lock__prod">{product}</span> : null}
