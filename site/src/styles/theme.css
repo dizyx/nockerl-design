@@ -5,20 +5,20 @@
  * from ITS variables, the `--sl-color-*` family. Those are its public API and it does not
  * read ours, so this file has to populate them. That part is not optional.
  *
- * What IS a known cost: the values below are literal hexes that duplicate the token
- * palette, so a token change does not reach the docs chrome until someone edits this file
- * too. Do not "fix" that by deleting the block. Deleting it leaves the framework with no
+ * Eight of those variables now REFERENCE our tokens rather than restating them, so a token
+ * change reaches the docs chrome for those eight. Seventeen still hold literals, and that is
+ * deliberate rather than unfinished: eight have no token in the design system at all, and
+ * nine match a token in one theme while diverging in the other, so pointing them at it would
+ * restyle a theme instead of single-sourcing it. Each group is listed with its reason beside
+ * the palette blocks below. Do not delete those blocks; the framework would be left with no
  * palette at all.
  *
- * An earlier note here claimed the duplication was forced, because our `--color-*` tokens
- * only fired under a `.dark` class while the framework toggles `[data-theme]`. That is no
- * longer true: the published token package emits `.dark, :root[data-theme='dark']`, so our
- * tokens DO respond to the framework's toggle. Component-level rules in this file
- * accordingly consume `var(--color-*)` directly and switch correctly.
- *
- * That makes single-sourcing possible: these could become `var(--color-*)` references
- * rather than literals. It is a real change with real theme-switching risk, so it wants
- * its own change and its own visual check rather than riding along with something else.
+ * The constraint that stops this going further is a polarity mismatch, not the reason an
+ * older note here gave. That note said our tokens only fired under a `.dark` class the
+ * framework never sets; the package emits `.dark, :root[data-theme='dark']`, so they have
+ * responded to the framework's toggle for some time. The live constraint is that the
+ * framework and this file are dark-first at `:root` while the token package is light-first,
+ * which only matters when no theme attribute is set. See the no-script note below.
  *
  * Dark is the brand default. Cyan #0CC0DF accent. Outfit (thin-forward type system; 500
  * is the bold cap; hierarchy from size). Neutral shadows only:
@@ -29,8 +29,12 @@
    (Previously a Google Fonts @import lived here; self-hosting removes the runtime CDN dep.) */
 
 :root {
-  --sl-font: 'Outfit', system-ui, sans-serif;
-  --sl-font-mono: 'Space Mono', ui-monospace, monospace;
+  /* Single-sourced, and safe to state once: unlike the palette these two are declared
+     identically in every theme block of the token package, so there is no polarity to get
+     wrong and no no-script fallback to keep. The mono token carries one extra fallback ahead
+     of generic monospace, which only matters if the self-hosted face fails to load. */
+  --sl-font: var(--font-family-sans);
+  --sl-font-mono: var(--font-family-mono);
   /* Suppress the browser's default SQUARE tap-highlight on touch (it ignores border-radius,
      so rounded controls flashed a squared fill on press). Web press feedback is each control's
      own rounded :active (brightness / scale / wash); native platforms handle press themselves
@@ -72,21 +76,42 @@
    clear air below (it's an inline-flex pill, so the margin extends its line box). */
 .sl-markdown-content > .nk-status { margin-bottom: var(--space-5); }
 
+/* == SINGLE-SOURCED: the values that ARE ours ==================================
+   These eight docs-theme variables hold exactly the value of a design token, in BOTH
+   themes, so they reference the token instead of restating it. A token change now
+   reaches the site here; before, it did not.
+
+   One declaration covers both themes on purpose. A custom property resolves against the
+   element it is declared on, and the token it points at is itself theme-scoped on that
+   same element, so the reference re-resolves whenever the theme flips. There is nothing
+   to duplicate per theme.
+
+   The remaining docs-theme variables stay literal below, and the reason is in the
+   REMAINDER note under the light block. Do not convert one without checking its value in
+   BOTH themes first: several are close to a token without being equal to it, and swapping
+   those would silently restyle the site rather than single-source it. */
+:root {
+  --sl-color-accent: var(--color-accent-primary);
+  --sl-color-gray-3: var(--color-on-canvas-muted);
+  --sl-color-gray-5: var(--color-canvas-edge);
+  --sl-color-bg: var(--color-canvas);
+  --nk-card: var(--color-chrome-surface);
+  --nk-card-2: var(--color-chrome-active);
+  --nk-muted: var(--color-on-canvas-muted);
+  --nk-on: var(--color-on-canvas);
+}
+
 /* == DARK (default): Nockerl near-black + cyan ==== */
 :root,
 :root[data-theme='dark'] {
   --sl-color-accent-low: #0a3a44;
-  --sl-color-accent: #0cc0df;
   --sl-color-accent-high: #9be7f3;
   --sl-color-white: #f5f5f5;
   --sl-color-gray-1: #e8e8e8;
   --sl-color-gray-2: #cfd2d6;
-  --sl-color-gray-3: #a0a0a0;
   --sl-color-gray-4: #6b7178;
-  --sl-color-gray-5: #2a2d33;
   --sl-color-gray-6: #15171a;
   --sl-color-black: #0a0b0d;
-  --sl-color-bg: #0a0b0d;
   --sl-color-bg-nav: #0e1014;
   --sl-color-bg-sidebar: #0e1014;
   --sl-color-bg-inline-code: #1d2024;
@@ -95,12 +120,8 @@
   --sl-color-text: #cfd2d6;
   --sl-color-text-accent: #5ed4e8;
   /* card/surface + well tones used by the doc components below */
-  --nk-card: #15171a;
-  --nk-card-2: #1d2024;
   --nk-well: #0e1014;
   --nk-hairline: rgba(255, 255, 255, 0.08);
-  --nk-muted: #a0a0a0;
-  --nk-on: #e8e8e8;
   /* Code surface: a subtly-raised card, distinct from the near-black ground (dark is close
      to Starlight's default already; this ties it to our tokens). */
   --nk-code-bg: var(--nk-card-2);
@@ -109,18 +130,14 @@
 /* == LIGHT: Nockerl off-white + deep cyan ==== */
 :root[data-theme='light'] {
   --sl-color-accent-low: #cdedf5;
-  --sl-color-accent: #0891b2;
   --sl-color-accent-high: #06414c;
   --sl-color-white: #1a1a1a;
   --sl-color-gray-1: #262626;
   --sl-color-gray-2: #3a3a3a;
-  --sl-color-gray-3: #5a5a5a;
   --sl-color-gray-4: #8a8a8a;
-  --sl-color-gray-5: #d7dae0;
   --sl-color-gray-6: #eef0f3;
   --sl-color-gray-7: #f7f8fa;
   --sl-color-black: #ffffff;
-  --sl-color-bg: #f3f4f6;
   --sl-color-bg-nav: #ffffff;
   --sl-color-bg-sidebar: #ffffff;
   --sl-color-bg-inline-code: #e9ebee;
@@ -128,16 +145,60 @@
   --sl-color-hairline: rgba(26, 26, 26, 0.1);
   --sl-color-text: #3a3a3a;
   --sl-color-text-accent: #0a7f9c;
-  --nk-card: #ffffff;
-  --nk-card-2: #f0f2f5;
   --nk-well: #eef0f3;
   --nk-hairline: rgba(26, 26, 26, 0.1);
-  --nk-muted: #5a5a5a;
-  --nk-on: #1a1a1a;
   /* Code surface: WHITE card on the grey page: the light-mode code block was grey-on-grey;
      lifting it to card-white gives the clear differentiation the review asked for. */
   --nk-code-bg: var(--nk-card);
 }
+
+/* == NO-SCRIPT COHERENCE, and the reason the rest cannot follow ================
+   The docs framework and this file are DARK-first at `:root`, with light as the override.
+   The token package is the opposite: LIGHT at `:root`, with dark under
+   `[data-theme='dark']`. That polarity mismatch is the live constraint on single-sourcing,
+   and it replaces the older note here, which claimed our tokens were scoped to a `.dark`
+   class the framework never sets. They are not, and the package emits both selectors.
+
+   With scripting on this never shows: the framework's theme script is inlined in the head
+   and always sets `data-theme` before first paint, so every reference above resolves against
+   a theme that is already decided. With scripting OFF no attribute is ever set, the
+   references above resolve to the LIGHT token values while the literals above them stay
+   dark, and the page would render a mixed palette: a light canvas under dark-mode text.
+   This block pins those eight back to their dark values for that one case, so the
+   no-script page stays coherent and dark-first exactly as it was.
+
+   It is a fallback, not a second palette. It carries only the eight single-sourced names,
+   and the attribute selector outranks the plain `:root` above it. */
+:root:not([data-theme]) {
+  --sl-color-accent: #0cc0df;
+  --sl-color-gray-3: #a0a0a0;
+  --sl-color-gray-5: #2a2d33;
+  --sl-color-bg: #0a0b0d;
+  --nk-card: #15171a;
+  --nk-card-2: #1d2024;
+  --nk-muted: #a0a0a0;
+  --nk-on: #e8e8e8;
+}
+
+/* == THE REMAINDER: what stays literal, and why ================================
+   Seventeen docs-theme variables are still restated here, in two groups.
+
+   NO TOKEN EXISTS, in either theme (eight): `--sl-color-accent-high`,
+   `--sl-color-gray-2`, `--sl-color-gray-4`, `--sl-color-hairline-shade`,
+   `--sl-color-hairline`, `--sl-color-text`, `--nk-well`, `--nk-hairline`. These are
+   docs-chrome tones the design system does not model: the framework's grey ramp is finer
+   than ours, and its hairlines are alpha-on-white rather than a resolved colour. Giving
+   the system tokens for them would be inventing design-system vocabulary to serve one
+   consumer, which is the wrong direction.
+
+   CLOSE TO A TOKEN BUT NOT EQUAL (nine): `--sl-color-accent-low`, `--sl-color-white`,
+   `--sl-color-gray-1`, `--sl-color-gray-6`, `--sl-color-black`, `--sl-color-bg-nav`,
+   `--sl-color-bg-sidebar`, `--sl-color-bg-inline-code`, `--sl-color-text-accent`. Each
+   matches a token in ONE theme and diverges in the other, usually by a step or two of
+   lightness. Pointing them at that token would single-source one theme and restyle the
+   other, which is a visual change wearing a refactor's clothes. Closing those gaps is a
+   real decision about whether the site should adopt the token value; it belongs in a change
+   that says so and shows the before and after, not in this one. */
 
 /* Radial top-light on the dark ground (lit-from-above; not a glow). Dark only. */
 :root body,
