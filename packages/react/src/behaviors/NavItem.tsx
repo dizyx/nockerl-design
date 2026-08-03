@@ -2,7 +2,7 @@
  * NockerlNavItem: the Tier-2 NAVIGATION-DESTINATION primitive. ONE home for the nav-row
  * grammar the shells were each hand-rolling (AppShell destinations + rail + bottom-nav,
  * Sidebar rows + sub-rows): a leading icon that STAYS lit on the active row, a label, an
- * optional trailing count, an optional disclosure chevron, the chrome-context wash/press
+ * optional trailing count, an optional disclosure chevron, the chrome-context edge/press
  * feedback, the focus ring, and the three layouts (row / rail / stack). Composes ONLY
  * tokens + the NockerlIcon primitive.
  *
@@ -19,8 +19,9 @@
  *   - depth is flat: nav rows carry no shadow; the chrome panel they sit on carries it.
  *   - chrome context: text/hover read from --color-on-chrome*, not the card tokens.
  *   - status marks (the icon-corner dot) use STATUS colors, never the brand cyan.
- *   - feedback animates a neutral wash + a subtle scale + the chevron rotation only. The
- *     fill never tweens; everything freezes under prefers-reduced-motion.
+ *   - feedback animates a neutral EDGE + a subtle scale + the chevron rotation only: hover
+ *     raises the ink and brings in a gray `divider` hairline, and no state paints a fill.
+ *     Everything freezes under prefers-reduced-motion.
  *   - the whole row is ONE tap target with ONE accessible name; focus is an OUTLINE ring.
  *
  * Roving is a CONTAINER concern: the shell owns the ref list + arrow-key handler and
@@ -96,7 +97,14 @@ export const NOCKERL_NAV_ITEM_STYLES = `
   font-size: var(--font-size-14); font-weight: var(--font-weight-medium);
   transition: background-color .12s, color .12s, transform .12s var(--motion-easing-standard), border-color .12s;
 }
-.nk-nav:hover:not(.nk-nav--on):not(:disabled) { background: color-mix(in srgb, var(--color-on-chrome) 6%, transparent); color: var(--color-on-chrome); }
+/* HOVER on an unselected row is the Swift nav row's ladder exactly: the ink raises from
+   on-chrome-muted to on-chrome AND a NEUTRAL GRAY divider hairline appears. No wash, because
+   reduce-fills applies to hover as much as to selection (law 6). The token is the DIVIDER
+   one, deliberately a step stronger than the card hairline, and it is never cyan, because
+   cyan is what tells you which row is selected. The resting rule above already reserves this
+   border at the same width in transparent, so the edge appears without moving the row.
+   Keep this comment free of backticks: it lives inside the styles template literal. */
+.nk-nav:hover:not(.nk-nav--on):not(:disabled) { border-color: var(--color-divider); color: var(--color-on-chrome); }
 .nk-nav:active:not(:disabled) { transform: scale(.985); }
 .nk-nav:focus-visible { outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: -2px; }
 .nk-nav:disabled { cursor: not-allowed; opacity: .55; }
@@ -106,16 +114,20 @@ export const NOCKERL_NAV_ITEM_STYLES = `
    HOVER on an already-selected row answers on the channel selection ALREADY owns: the cyan
    edge goes to full strength from its resting selection weight. It is one interpolatable
    property on an edge that is already there, so it adds no second visual channel and no
-   wash (law 6), and it animates rather than swapping a fill (law 7). The neutral wash the
-   inactive row uses is deliberately NOT applied here: on a cyan-edged row it reads as a
-   competing second signal, and a selected row that answers nothing reads as disabled. */
+   wash (law 6), and it animates rather than swapping a fill (law 7). The neutral gray edge
+   the unselected row takes is deliberately NOT reused here: on an already-cyan edge it would
+   read as a downgrade, and a selected row that answers nothing at all reads as disabled. */
 .nk-nav--on { color: var(--color-accent-primary);
   border-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent); font-weight: var(--font-weight-semibold); }
 .nk-nav--on:hover:not(:disabled) { border-color: var(--color-accent-primary); }
 .nk-nav--on .nk-nav__ico, .nk-nav--on .nk-nav__chev { color: var(--color-accent-primary); }
-/* FLAT active is tint only (the bar carries its own selection indicator, e.g. a sliding pill). */
+/* FLAT active carries no row-level mark at all: the bar owns the selection indicator (a
+   sliding pill), so the row suppresses the cyan edge rather than competing with it.
+   Its hover therefore cannot brighten a cyan edge the way the bordered row does, and it must
+   not paint a wash either. It takes the same neutral divider edge every other hover uses,
+   which reads purely as a pointer affordance and leaves selection to the bar. */
 .nk-nav--flat.nk-nav--on { background: transparent; border-color: transparent; }
-.nk-nav--flat.nk-nav--on:hover { background: color-mix(in srgb, var(--color-on-chrome) 6%, transparent); }
+.nk-nav--flat.nk-nav--on:hover:not(:disabled) { border-color: var(--color-divider); }
 
 /* leading icon slot (width 20, matching the canonical nav frame) */
 .nk-nav__ico { position: relative; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 20px; }
