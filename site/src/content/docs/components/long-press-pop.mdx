@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import LongPressPopDemo from '../../../components/demos/LongPressPopDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -163,11 +163,11 @@ SwiftUI exposes the pattern as the system `.contextMenu { … }` modifier on a v
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The trigger and treatment are unified; the real divergences between shipped platforms:
 
 - **Composition:** Android ships the **reusable `Modifier.longPressPop`** (dip + accent ripple + haptic) and pairs it with a `DropdownMenu`; Swift uses the **system `.contextMenu`** (its own lift + dim, no custom ripple); web composes scrim + lifted target + anchored menu in one `LongPressPop` island.
 - **Today's bubble action:** the Android chat `MessageBubble` long-press currently **copies directly** (`combinedClickable(onLongClick)` + haptic) rather than opening the multi-action menu. The menu is the target state this spec documents.
 - **Backdrop:** web + Android dim with the `--color-scrim` token; Swift inherits the **system** context-menu dim.
 - **Haptics:** Android fires `HapticFeedbackType.LongPress`; web has no haptic channel; macOS relies on the system menu feedback.
-</Aside>
+</DocCallout>

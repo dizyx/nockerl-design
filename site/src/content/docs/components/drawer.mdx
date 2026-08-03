@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import DrawerDemo from '../../../components/demos/DrawerDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -175,7 +175,7 @@ bindings below.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Distinct from its catalog siblings: **bottom-sheet** rises from the bottom edge,
 **dialog** is a centered card, and **app-shell / sidebar** are the *permanent* rail.
 A drawer is the *overlay* (or push panel) anchored to a vertical edge. The shipped
@@ -193,4 +193,4 @@ apps don't yet use a true overlay drawer. These are the real divergences:
 - **Selection treatment:** Voice's selected row is `accent @ 16%` fill + `accent @
   45%` border (mirrored in the web demo). Compose's `NavigationDrawerItem` uses
   Material's own selected container. One selection expression needs to win.
-</Aside>
+</DocCallout>

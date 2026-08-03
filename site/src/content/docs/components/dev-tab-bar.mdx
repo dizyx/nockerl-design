@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import DevTabBarDemo from '../../../components/demos/DevTabBarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -32,11 +32,10 @@ extend-never-fork rule):
 - **Overflow** needs nothing new: Tabs' own scrollable tablist + edge fades take over
   when the strip outgrows its container.
 
-<Aside type="note" title="Web-only by scope">
-Per the de-phantom verdict on the agent-console epic: editor tabs are console chrome with
-no native equivalent. The extensions live in the shared `NockerlTabs` (any platform that
+<DocCallout tone="note" title="Web-only by scope">
+Editor tabs are console chrome with no native equivalent. The extensions live in the shared `NockerlTabs` (any platform that
 ever needs them inherits the same API).
-</Aside>
+</DocCallout>
 
 ## Code
 

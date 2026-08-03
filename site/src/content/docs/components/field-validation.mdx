@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FieldValidationDemo from '../../../components/demos/FieldValidationDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -177,7 +177,7 @@ an SF Symbol so it is never color alone.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The bundled status layer (one `status` + `message` + glyph, four tones) is the
 target; these are the real divergences between the shipped platforms:
 
@@ -193,4 +193,4 @@ target; these are the real divergences between the shipped platforms:
   app ships a character counter or a rule checklist yet.
 - **Required indicator:** the `*` mark is web-only so far; Android marks required in
   copy ("required" in the label string), Voice not at all.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FileExplorerDemo from '../../../components/demos/FileExplorerDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <FileExplorerDemo client:visible />
 </Example>
 
-The web console's **file explorer** is, per the de-phantom verdict, a deliberately THIN
+The web console's **file explorer** is a deliberately THIN
 SHELL that invents nothing: the forest is the shipped [`Tree`](/components/tree/)
 (file-type tints, full WAI-ARIA keyboard semantics, controlled expand/select), the
 header is an eyebrow title plus an **open `actions` slot** (drop
@@ -26,12 +26,12 @@ header is an eyebrow title plus an **open `actions` slot** (drop
 the shell owns no controls), and an empty forest renders the packaged recessed Well
 with your message + optional action.
 
-<Aside type="note" title="Scope notes">
+<DocCallout tone="note" title="Scope notes">
 **Web-first chrome over a cross-platform core:** Compose + Swift already ship
 `NockerlTree`; only this shell is console-specific. **Per-node context menus** stay with
-the host for now: wiring `Menu` per row needs a Tree anchor extension (tracked on the
-epic), not shell scope.
-</Aside>
+the host for now: wiring `Menu` per row needs a Tree anchor extension, which is tracked
+separately and is not shell scope.
+</DocCallout>
 
 ## Code
 

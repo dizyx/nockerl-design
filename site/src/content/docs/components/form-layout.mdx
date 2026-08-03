@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FormLayoutDemo from '../../../components/demos/FormLayoutDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -165,8 +165,8 @@ ScrollView {
     { name: 'FormSection · title', type: 'string', required: true, description: 'Section header, rendered uppercase + tracked in the muted token (the Voice <code>SettingsCard</code> idiom).' },
     { name: 'FormSection · description', type: 'string', description: 'One muted help line under the header.' },
     { name: 'FormSection · optional', type: 'boolean', default: 'false', description: 'Marks a whole section optional with an <code>Optional</code> tag beside the title.' },
-    { name: 'FormSection · headerAccessory', type: 'ReactNode', description: 'Optional slot trailing the header, center-aligned: the ⓘ <b>InfoTip seat</b> (settings grammar, task 2657). Empty → the header renders exactly as before.' },
-    { name: 'FormSection · footer', type: 'ReactNode', description: 'Optional card footer INSIDE the section under a full-bleed hairline, for muted hints or quiet section actions (settings grammar, task 2657).' },
+    { name: 'FormSection · headerAccessory', type: 'ReactNode', description: 'Optional slot trailing the header, center-aligned: the ⓘ <b>InfoTip seat</b> (settings grammar). Empty → the header renders exactly as before.' },
+    { name: 'FormSection · footer', type: 'ReactNode', description: 'Optional card footer INSIDE the section under a full-bleed hairline, for muted hints or quiet section actions (settings grammar).' },
     { name: 'FormRow · columns', type: '1 | 2', default: '1', description: 'Single-column (stacked) or two-column grid. Fields stay aligned to the grid; collapses to one column when narrow.' },
     { name: 'field · span', type: 'boolean', default: 'false', description: 'In a two-column row, makes a field span both columns (e.g. email, bio).' },
     { name: 'field · required', type: 'boolean', default: 'false', description: 'Adds a status-colored <code>*</code> and sets the control <code>required</code>. Paired with a form-level legend, never color alone.' },
@@ -179,7 +179,7 @@ ScrollView {
 </Fragment>
 <Fragment slot="kotlin">
 
-**Update (task 2657):** Compose now ships the extracted scaffold
+**Update:** Compose now ships the extracted scaffold
 `NockerlFormSection(title, description?, headerAccessory?, footer?, content)`, the
 ratified lifted-card section with the same settings-grammar slots as the web
 `FormSection` (the ⓘ seat + the hairline footer). The rows below remain as the
@@ -219,11 +219,11 @@ SwiftUI assembles the form from `SettingsComponents`. There is **no** `Form` /
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The scaffold (a `Form` of `FormSection`s + `FormRow`/`SettingRow` + `FormActions`)
 is the target; these are the real divergences between the shipped platforms:
 
-- **Section grouping** *(resolved in [adjudication 2026-07-02 · B8 / C3])*: grouping is the
+- **Section grouping** *(resolved)*: grouping is the
   **lifted section card** everywhere (cards lift, per Law 2 applied to forms); the divider + header
   on a flat surface is retired. Voice's `SettingsCard` already matches; Android's flat
   `HorizontalDivider` + header conforms to the card.
@@ -231,7 +231,7 @@ is the target; these are the real divergences between the shipped platforms:
   Both hand-assemble the `Column` / `VStack`, the spacing, and the footer per screen.
   An extracted scaffold is owed on all three (it follows the text-field drift; there
   is no `NockerlTextField` / `NockerlForm` yet).
-- **Required / optional markers** *(resolved in [adjudication 2026-07-02 · B8 / C3])*: the
+- **Required / optional markers** *(resolved)*: the
   required `*` / Optional markers are part of the **shared contract on all platforms**. The
   web `*` + legend + `Optional` tag port to Android (today required-in-copy) and Voice.
 - **Two-column layout:** designed here (and shown live). Android forms are
@@ -239,4 +239,4 @@ is the target; these are the real divergences between the shipped platforms:
   responsive two-column grid yet.
 - **Sticky footer:** web-only. Android keeps Save inline at the end of the scroll;
   Voice places it inline in/after the card.
-</Aside>
+</DocCallout>

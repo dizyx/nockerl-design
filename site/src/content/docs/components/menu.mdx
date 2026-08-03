@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import MenuDemo from '../../../components/demos/MenuDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -204,14 +204,14 @@ structure comes from `Section`, `Divider`, nested `Menu`, and `Button(role:)`.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Menu vs. long-press-pop vs. command-palette">
+<DocCallout tone="note" title="Menu vs. long-press-pop vs. command-palette">
 Three sibling surfaces, three triggers. Don't mix them:
 - **Menu** (this page) is **click-triggered** and **anchored to a control** (a kebab ⋯ or actions button). Non-modal, no dim, positioned under/beside its trigger.
 - **[Long-press pop](/components/long-press-pop/)** is **press-and-hold ON content** (a bubble, a row): it dims the ground, lifts the target, and pops the same item vocabulary beside it.
 - **[Command palette](/components/command-palette/)** is the **modal ⌘K** centered overlay with **type-to-search**, a global launcher, not a per-control action list. (The [combobox](/components/combobox/) is the type-to-filter *select*, not a menu.)
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The item grammar is shared; the real divergences between the shipped platforms:
 
 - **Surface ownership:** web draws the menu surface itself (the canon overlay card: surface +
@@ -224,4 +224,4 @@ The item grammar is shared; the real divergences between the shipped platforms:
   checkbox/radio item variant in use. Adopting the richer row kinds natively is the open item.
 - **Point anchoring:** web's `openAt(x, y)` (context-menu positioning) has no shipped native
   counterpart yet; Android/Voice menus anchor to their trigger control only.
-</Aside>
+</DocCallout>

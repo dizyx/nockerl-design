@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import KbdDemo from '../../../components/demos/KbdDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -122,7 +122,7 @@ inline hint is a monospaced `Text`. A real `NockerlKbd` keycap still needs desig
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Kbd is **web-only today**, an honest coverage gap:
 
 - **No native keycap.** Only web ships a dimensional `Kbd`. Compose renders shortcut hints as
@@ -132,4 +132,4 @@ Kbd is **web-only today**, an honest coverage gap:
 - **Where it is used on web.** The command palette (trigger chord + per-row hints + the footer /
   esc caps), and the Menu / Tooltip / Popover shortcut legends all now compose this one primitive
   instead of hand-rolled flat mono chips, so a keycap-look change is one edit, not many.
-</Aside>
+</DocCallout>

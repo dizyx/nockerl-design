@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DividerDemo from '../../../components/demos/DividerDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -152,7 +152,7 @@ theme token and sized to the hairline. The native `Divider()` is used only insid
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The hairline tone and the signature cyan line agree; the wrapping does not:
 
 - **No shared component.** Web exposes one `Divider` (orientation + tone + label); Compose
@@ -164,4 +164,4 @@ The hairline tone and the signature cyan line agree; the wrapping does not:
   ~50% alpha in places. That should resolve to the `divider` token.
 - **Signature line weight is a literal.** Both apps hardcode the cyan boundary at
   **1.5dp/1.5pt**; it should become a token (`divider.signature`) alongside the standard 1.
-</Aside>
+</DocCallout>

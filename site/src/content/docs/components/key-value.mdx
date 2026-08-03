@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import KeyValueDemo from '../../../components/demos/KeyValueDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -161,8 +161,8 @@ struct KeyValueRow: View {
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **No shipped component yet.** All three platforms render this pattern inline (Compose in `ClusterSheet` / `ToolCallCard`; Swift in `HomeSection` / `HistoryView`); none has a reusable `KeyValue` API. The signatures above are the intended extraction.
 - **SwiftUI ignores `LabeledContent`.** The native `LabeledContent` (which exists and does exactly this) is **not** used. Voice hand-builds `HStack { label · Spacer · value }`. It should adopt `LabeledContent` for free platform alignment.
 - **Copy affordance is web + Android + Swift, but not uniform:** Compose's `CopyableCodeSurface` and Voice's copy icon both flip to a check on success; the web reveals the button on row hover/focus. Reconcile the reveal + confirm timing.
-</Aside>
+</DocCallout>

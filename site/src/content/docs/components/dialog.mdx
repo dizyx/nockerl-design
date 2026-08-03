@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DialogDemo from '../../../components/demos/DialogDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -150,16 +150,16 @@ with parameters. Voice uses the stock presenters; buttons carry semantics via
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Dialog vs. bottom sheet">
+<DocCallout tone="note" title="Dialog vs. bottom sheet">
 Reach for a **dialog** when the choice is short, blocking, and platform-neutral: a
 confirm, an alert, or a one-field prompt that wants the user's full attention,
 centered over a scrim. Reach for the [bottom sheet](/components/bottom-sheet/) when
 the surface is a longer, scrollable, thumb-reachable list of actions or settings on
 mobile. Same scrim + focus-trap + Esc/scrim-dismiss vocabulary; different anchor
 (centered card vs. bottom edge) and posture (decision vs. browse).
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Custom vs. stock:** Android centers a custom-styled Material `AlertDialog`
   filled with `NockerlButton`s; **Voice uses the stock SwiftUI `.alert` /
   `.confirmationDialog`** (no bespoke card), so the macOS scrim, radius, and button
@@ -168,4 +168,4 @@ mobile. Same scrim + focus-trap + Esc/scrim-dismiss vocabulary; different anchor
   alerts have no icon slot.
 - **Button order:** web + Compose place Cancel ← Confirm (confirm trailing);
   SwiftUI orders role-tagged buttons itself.
-</Aside>
+</DocCallout>
