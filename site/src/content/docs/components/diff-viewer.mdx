@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DiffViewerDemo from '../../../components/demos/DiffViewerDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -40,8 +41,8 @@ export function ReviewDiff({ before, after }: { before: string; after: string })
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The diff surface lives in chat/ui as
@@ -64,8 +65,8 @@ DiffView(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (Nockerl Voice). No diff viewer ships yet; Voice has no
@@ -78,13 +79,13 @@ DiffView(
 // Today, a before/after is shown as two raw .monospaced Text blocks, ad hoc.
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -103,8 +104,8 @@ The header shows a `+N / -M` add/remove stat (warm status), each hunk gets an
 highlight** on the changed span. Added = `status.success` wash, removed =
 `status.error` wash, context = muted, never the brand cyan, never color-alone.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -117,8 +118,8 @@ highlight** on the changed span. Added = `status.success` wash, removed =
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI ships **no diff viewer**. Voice has no Edit/Write tool surface yet, so there
 is nothing to diff; a before/after would be two raw `.monospaced` `Text` blocks.
@@ -130,8 +131,8 @@ is nothing to diff; a before/after would be two raw `.monospaced` `Text` blocks.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Sourced from the shipped Android `DiffView` + `computeLineDiff`; these are the real divergences:

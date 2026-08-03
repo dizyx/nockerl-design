@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import KeyValueDemo from '../../../components/demos/KeyValueDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -47,8 +48,8 @@ export function SessionInspector({ session }) {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The shipped pattern is a per-row
@@ -79,8 +80,8 @@ fun KeyValueRow(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical, Nockerl Voice). Built manually as an HStack
@@ -107,13 +108,13 @@ struct KeyValueRow: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -128,8 +129,8 @@ struct KeyValueRow: View {
 
 <p><code>KeyValueList</code> wraps the rows in the lifted card + semantic <code>&lt;dl&gt;</code>. Props: <code>title?</code>, <code>labelWidth?</code> (aligned column, px), <code>variant?: 'aligned' | 'stacked'</code> (stacked puts the label above the value for narrow panes).</p>
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -143,8 +144,8 @@ struct KeyValueRow: View {
 
 <p>The shipped rows live inside <code>ClusterSheet</code> / <code>ToolCallCard</code> on a card; <code>Spacer(Modifier.weight(1f))</code> pushes the value to the trailing edge. Status values reuse <code>colors.statusSuccess / statusWarning / statusError / statusInfo</code>, never the brand cyan.</p>
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 <PropsTable
   nameLabel="Parameter"
@@ -157,8 +158,8 @@ struct KeyValueRow: View {
 
 <p>The value is pushed right by <code>Spacer()</code> inside an <code>HStack</code>. A status value uses a <code>ProviderBadge</code>-style capsule; a copyable value pairs a <code>NockerlIconButton</code> that flips <code>doc.on.doc → checkmark</code> and <code>accent → success</code> on copy.</p>
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **No shipped component yet.** All three platforms render this pattern inline (Compose in `ClusterSheet` / `ToolCallCard`; Swift in `HomeSection` / `HistoryView`); none has a reusable `KeyValue` API. The signatures above are the intended extraction.

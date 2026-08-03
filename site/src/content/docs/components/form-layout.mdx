@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FormLayoutDemo from '../../../components/demos/FormLayoutDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the intended API,
@@ -60,8 +61,8 @@ export function AccountForm() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). A form is a scrolling Column: each SECTION is
@@ -109,8 +110,8 @@ Column(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). The form is a VStack(spacing: 16) of SettingsCards capped
@@ -148,13 +149,13 @@ ScrollView {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -175,8 +176,8 @@ ScrollView {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 **Update (task 2657):** Compose now ships the extracted scaffold
 `NockerlFormSection(title, description?, headerAccessory?, footer?, content)`, the
@@ -196,8 +197,8 @@ building blocks the pre-scaffold screens used inline.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI assembles the form from `SettingsComponents`. There is **no** `Form` /
 `Section` type. The section is `SettingsCard`; the form is a `VStack` of cards.
@@ -215,8 +216,8 @@ SwiftUI assembles the form from `SettingsComponents`. There is **no** `Form` /
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The scaffold (a `Form` of `FormSection`s + `FormRow`/`SettingRow` + `FormActions`)

@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import FileUploadDemo from '../../../components/demos/FileUploadDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -39,8 +40,8 @@ export function AttachPanel() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android Jetpack Compose (canonical). The shipped app attaches IMAGES only via
@@ -64,8 +65,8 @@ NockerlIconButton(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI (canonical). Nockerl Voice ships NO file affordance today; this
@@ -83,13 +84,13 @@ NockerlIconButton(
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -103,8 +104,8 @@ NockerlIconButton(
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The shipped app uses the platform photo picker (`PickMultipleVisualMedia`), an
 **image-only attach**, not a file dropzone. The parameters below are that
@@ -121,8 +122,8 @@ now (see the drift note).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 Not shipped in Nockerl Voice. The table is the intended native API: SwiftUI's
 `.fileImporter` plus a `.dropDestination` on the recessed dropzone surface.
@@ -138,8 +139,8 @@ Not shipped in Nockerl Voice. The table is the intended native API: SwiftUI's
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The dropzone, file list, per-file progress, and success / error / rejected states

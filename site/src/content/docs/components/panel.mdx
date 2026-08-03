@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import PanelDemo from '../../../components/demos/PanelDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -28,8 +29,8 @@ it lands here as a Panel extension, never a fork.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -62,8 +63,8 @@ export function Inspector() {
 </PanelGroup>
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). There is no single NockerlPanel yet;
@@ -96,8 +97,8 @@ NockerlCard(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). The titled content panel is SettingsCard
@@ -118,13 +119,13 @@ HStack(spacing: 0) {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -146,8 +147,8 @@ group accepts `minSize` / `maxSize` / `defaultSize` (percent), and
 `PanelResizeHandle` is the draggable, keyboard-operable
 (`role="separator"`, Arrow keys) splitter.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 A panel is composed from [`NockerlCard`](/components/card/). These are its
 panel-relevant parameters; the header / body / footer / collapse are built in the
@@ -165,8 +166,8 @@ content lambda (icon tile, title `Row`, `AnimatedVisibility`).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The titled panel is `SettingsCard` (NockerlVoice/UI). The parameters below are its
 real signature; the split-pane region is hand-built from layout primitives + the
@@ -185,8 +186,8 @@ theme tokens (no panel wrapper).
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Panel vs. card vs. drawer: a **panel** is a persistent, in-layout region defined

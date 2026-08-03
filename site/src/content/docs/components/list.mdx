@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ListDemo from '../../../components/demos/ListDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -25,8 +26,8 @@ hairlines / selection / hover). **Experimental**: the design lead is evaluating;
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -60,8 +61,8 @@ export function SessionList({ groups, activeId, onSelect, density }: SessionList
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android Jetpack Compose (canonical). The list container is a LazyColumn; the
@@ -98,8 +99,8 @@ LazyColumn(
 ) { items(notifications, key = { "n-${it.id}" }) { NotificationCard(it) } }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS SwiftUI (Voice). The GROUPED-CARD container: a scrolling LazyVStack of
@@ -130,13 +131,13 @@ VStack(alignment: .leading, spacing: 14) {
 // .listStyle(.inset)` is the platform-native alternative (see drift note).
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 `List` is the container; `ListSection` groups rows under a header; the row itself is
 [`ListItem`](/components/list-item/). Selection, density, and the card-vs-plain surface
@@ -156,8 +157,8 @@ are **list-level** concerns set on `List`.
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 There is **no `NockerlList` wrapper component**. The container IS a `LazyColumn`, configured
 per the two ratified identities (Decision 4). These are the container-level knobs you set on it.
@@ -173,8 +174,8 @@ per the two ratified identities (Decision 4). These are the container-level knob
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI (Voice) has **no extracted list component**. The container is composed **inline**:
 a `ScrollView { LazyVStack(spacing: 0) { ForEach { row } } }` wrapped in one elevated card,
@@ -191,8 +192,8 @@ with a `SectionTitle` header and a per-row bottom hairline. These are the buildi
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (list container vs list item)">
 This page documents the **container** that arranges rows; the individual row (leading mark,

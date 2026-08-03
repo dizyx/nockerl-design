@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import JobRowDemo from '../../../components/demos/JobRowDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -42,8 +43,8 @@ views: presentation contexts are configs.
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 import { NockerlJobRow } from '@dizyx/nockerl-react';
@@ -61,8 +62,8 @@ import { NockerlJobRow } from '@dizyx/nockerl-react';
 />
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Android">
 The Compose mirror (the same ListItem-grammar row for the app inbox) rides the compose
