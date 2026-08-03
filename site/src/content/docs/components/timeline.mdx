@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TimelineDemo from '../../../components/demos/TimelineDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -41,8 +42,8 @@ export function SessionActivity() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. On Android the chronological event feed IS the agent
@@ -68,8 +69,8 @@ NockerlTimeline(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. The nearest canonical-app surface is HistorySection (a
@@ -89,13 +90,13 @@ NockerlTimeline(events: [
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -112,8 +113,8 @@ NockerlTimeline(events: [
 gutter label (`"2m"`); `datetime` is the absolute ISO for the `<time>` element. `live` pulses the
 node; `mono` renders a tool-call title; `hollow` is a quieter routine node; `meta` is an inline chip.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -128,8 +129,8 @@ node; `mono` renders a tool-call title; `hollow` is a quieter routine node; `met
 `EventStatus` enum: `SUCCESS · WARNING · ERROR · INFO · NEUTRAL · ACCENT`. Status is never color
 alone: the node also carries a glyph (a check on done, a close on error) and a content description.
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 <PropsTable
   nameLabel="Style"
@@ -141,8 +142,8 @@ alone: the node also carries a glyph (a check on done, a close on error) and a c
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Timeline is the **chronological event feed** (each node is a *moment in time*: timestamp +

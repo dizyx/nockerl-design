@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SelectDemo from '../../../components/demos/SelectDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. NockerlSelect ships from
@@ -61,8 +62,8 @@ export function SessionConfig() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose, canonical). The shipped single-select dropdown is a
@@ -101,8 +102,8 @@ fun ProviderDropdown(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). The shipped single-select is a Menu of Buttons; the
@@ -144,18 +145,18 @@ func micMenuLabel(_ name: String, selected: Bool) -> some View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlSelect" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The single-select is composed from `DropdownAnchor` (the field) + Material3
 `DropdownMenu` / `DropdownMenuItem` (the list). Parameters are those of
@@ -174,8 +175,8 @@ The single-select is composed from `DropdownAnchor` (the field) + Material3
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI builds the picker as a `Menu` whose `label` is the trigger and whose
 content is a `Button` per option. What this tab documents is that idiom rather than a
@@ -193,8 +194,8 @@ pattern.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Pick the right picker">
 Select is the **plainest** picker: one value from a fixed list, no typing. Reach for a

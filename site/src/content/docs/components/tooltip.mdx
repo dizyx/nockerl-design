@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TooltipDemo from '../../../components/demos/TooltipDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -94,8 +95,8 @@ export function SessionToolbar() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose, Material 3 (BOM 2026.02.01). The plain tooltip is the
@@ -124,8 +125,8 @@ fun CopyAction(onClick: -> Unit) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). The native `.help(_:)` modifier IS the macOS
@@ -148,13 +149,13 @@ Toggle("Input Monitoring", isOn: $monitoring)
     .help("Needed for Input Monitoring to take effect.")
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 `Tooltip` is <strong>headless</strong>: it owns the open delay + the anchor → flip →
 clamp → beak engine and returns a render-prop. The <em>per-hint</em> text / side /
@@ -176,8 +177,8 @@ Each trigger declares its own hint via `triggerProps(cfg: TooltipConfig)`:
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `PlainTooltip` is shown inside a `TooltipBox`; the trigger is its `content`. The
 position provider, the state (delay/persistence), and the surface colors come from
@@ -196,8 +197,8 @@ through one tooltip parameter.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The macOS tooltip is the native `.help(_:)` view modifier, a single string. The
 ~2s open delay, the dark high-contrast surface, and positioning are all
@@ -211,8 +212,8 @@ system-owned; there are no styling or timing parameters.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="note" title="Tooltip vs. Popover (and cross-platform drift)">
 A **tooltip** is a brief, non-interactive *hint* shown on hover/focus after a

@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SliderDemo from '../../../components/demos/SliderDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -48,8 +49,8 @@ export function SamplingControls() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). androidx.compose.material3.Slider.
@@ -72,8 +73,8 @@ RangeSlider(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlSlider` WRAPS the
@@ -104,20 +105,20 @@ NockerlSlider("Top-P (nucleus)", value: $topP, in: 0...1, step: 0.01)
 // documented follow-up rather than an API (compose two bound thumbs over one track).
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlSlider" />
 
 `NockerlRangeSlider` swaps `value` for `low` / `high` and takes `onChange={(low, high) => …}`; the two thumbs are bound so they can never cross. It takes a subset of the props above (`low`, `high`, `onChange`, `min`, `max`, `step`, `unit`, `label`, `size`), so it accepts neither `disabled` nor `ticks`.
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -132,8 +133,8 @@ NockerlSlider("Top-P (nucleus)", value: $topP, in: 0...1, step: 0.01)
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlSlider` wraps the native `Slider` over a `Binding<Double>` and snaps to
 `step`. The `label` is required (persistent above the track + the a11y name). State
@@ -153,8 +154,8 @@ Unavailable on tvOS (SwiftUI ships no `Slider` there).
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The single-thumb slider has a settled shape on every platform: the Swift tab documents

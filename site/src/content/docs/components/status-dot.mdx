@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import StatusDotDemo from '../../../components/demos/StatusDotDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is the
@@ -47,8 +48,8 @@ import { NockerlStatusDot } from '@dizyx/nockerl-react';
 <NockerlStatusDot status="info" outline ariaLabel="Idle" />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: the published Compose package com.dizyx.nockerl.design.components (GitHub Packages Maven).
@@ -72,8 +73,8 @@ NockerlStatusDot(color = colors.dotStreaming, contentDescription = "Streaming", 
 NockerlStatusDot(color = colors.dotUnread, contentDescription = "Unread")
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // SwiftUI: the published NockerlDesign SwiftPM package. A first-class NockerlStatusDot with
@@ -95,18 +96,18 @@ NockerlStatusDot(status: .info, label: "Streaming…", pulse: true)
 NockerlStatusDot(color: palette.dotStreaming, label: "Streaming", pulse: true)
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlStatusDot" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The published `NockerlStatusDot` ships as a first-class wrapper with two overloads: a
 semantic status ladder and a raw palette color (the session-dot idiom).
@@ -121,8 +122,8 @@ semantic status ladder and a raw palette color (the session-dot idiom).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The published `NockerlStatusDot` ships the full semantic ladder + optional label + live
 pulse, with two inits mirroring Compose: a semantic status and a raw palette color.
@@ -137,8 +138,8 @@ pulse, with two inits mirroring Compose: a semantic status and a raw palette col
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (one open item)">
 This is the dedicated semantic **state** dot, distinct from [badge](/components/badge/),

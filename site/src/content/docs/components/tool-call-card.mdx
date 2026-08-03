@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ToolCallCardDemo from '../../../components/demos/ToolCallCardDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -64,8 +65,8 @@ export function Turn() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). com.nockerl.app.chat.ui.ToolCallCard
@@ -113,8 +114,8 @@ ToolCallCard(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. INTENDED API. Nockerl Voice is a voice-first surface (NockerlVoice/UI)
@@ -132,8 +133,8 @@ ToolCallCard(
 )
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Harness failure block (a view, no new grammar)
 
@@ -160,8 +161,8 @@ the AgentMessage stream-failure, which bind to the same banner grammar.
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -178,8 +179,8 @@ the AgentMessage stream-failure, which bind to the same banner grammar.
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -196,8 +197,8 @@ the run state comes from `tool.output` / `tool.isError`. A handful of
 gateway tools (`nockerl_web_research`, `ToolSearch`, `nockerl_spawn_agent`) and plan-mode
 markers short out to dedicated cards before the generic mold.
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 The table below is the **intended** Swift surface for when the transcript lands on
 macOS, modelled on the Compose card. It documents a design target, not a reference to
@@ -213,8 +214,8 @@ shipped code.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **`tool-call-card` vs `agent-message`:** the tool-call card is the **standalone, reusable**

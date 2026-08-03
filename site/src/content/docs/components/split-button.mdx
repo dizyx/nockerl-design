@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SplitButtonDemo from '../../../components/demos/SplitButtonDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
@@ -47,8 +48,8 @@ export function ComposeBar() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android (Jetpack Compose). Material 3 ships SplitButtonLayout (experimental):
@@ -90,8 +91,8 @@ DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS (SwiftUI). Menu(primaryAction:) IS the split-button idiom: the label fires
@@ -116,13 +117,13 @@ Menu {
 func run(_ id: String) { current = id; send(id) } // a picked item becomes the new default
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -138,8 +139,8 @@ func run(_ id: String) { current = id; send(id) } // a picked item becomes the n
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -153,8 +154,8 @@ func run(_ id: String) { current = id; send(id) } // a picked item becomes the n
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `Menu(primaryAction:)` is the native split button: the label fires `primaryAction`,
 the attached caret opens the menu. State (`isEnabled`, pressed) comes from the
@@ -171,8 +172,8 @@ SwiftUI environment; styling is the shared `.nockerl*` `ButtonStyle`.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 This page designs the split button from the button + menu vocabulary rather than

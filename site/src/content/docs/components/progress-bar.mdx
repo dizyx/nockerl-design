@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ProgressBarDemo from '../../../components/demos/ProgressBarDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. Progress ships as THREE primitives
@@ -64,8 +65,8 @@ import {
 <NockerlCircularProgress value={64} label="Export" showValue />
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The determinate linear bar is Material's
@@ -99,8 +100,8 @@ LinearProgressIndicator(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlProgressBar` is a
@@ -126,13 +127,13 @@ NockerlProgressRing(value: fraction, label: "Export")
 // Buffer + segmented forms are not in NockerlDesign yet (web/Android-first follow-ups).
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 Three primitives cover the forms: `NockerlProgressTrack` is the linear bar (determinate,
 indeterminate, and buffer), `NockerlProgressSegments` is the stepped form, and
@@ -154,8 +155,8 @@ figure and takes a required `label`.
 
 <PropsTable nameLabel="Prop" component="NockerlCircularProgress" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The bar is Material 3 `LinearProgressIndicator` styled to the Nockerl track. There
 is no bespoke `NockerlProgressBar` composable yet (segmented / buffer / ring are
@@ -171,8 +172,8 @@ not shipped; see drift).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlProgressBar` is determinate when `value` is set, indeterminate when it is
 `nil`. `NockerlProgressRing` is determinate-only (indeterminate-circular is the
@@ -192,8 +193,8 @@ package enums below.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 Use the **progress bar** for general determinate/indeterminate progress with the

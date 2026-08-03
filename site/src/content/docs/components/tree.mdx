@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TreeDemo from '../../../components/demos/TreeDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. NockerlTree ships from
@@ -61,8 +62,8 @@ export function FileTree() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). The recursive FileTreeNode is flattened
@@ -92,8 +93,8 @@ fun FileTree(
 // (chevron is its own hit area; a "done/total" subtask badge rides the accent).
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI, from the NockerlDesign SwiftPM package. `NockerlTree` rides the
@@ -126,13 +127,13 @@ struct FileTree: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 `NockerlTree` takes the recursive `nodes` forest + controlled expand/select state. Auto-expand
 root folders on first load to match the canonical behaviour. A `NockerlTreeNode` is
@@ -140,8 +141,8 @@ root folders on first load to match the canonical behaviour. A `NockerlTreeNode`
 
 <PropsTable nameLabel="Prop" component="NockerlTree" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -154,8 +155,8 @@ root folders on first load to match the canonical behaviour. A `NockerlTreeNode`
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 `NockerlTree` rides the native hierarchical `List(children:)` over a recursive
 `NockerlTreeNode` model and brands the rows. Single-select via `selected` +
@@ -175,8 +176,8 @@ and hairline guides come from the platform list.
 `NockerlTreeNode.children` is `nil` for a leaf (no chevron) and `[]` for an empty,
 expandable folder.
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **The recursive tree ships on all three platforms.** Web **publishes** `NockerlTree`

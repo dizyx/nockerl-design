@@ -10,7 +10,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TextFieldDemo from '../../../components/demos/TextFieldDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -20,8 +21,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform; this is
@@ -54,8 +55,8 @@ export function SessionForm() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose. PUBLISHED: com.dizyx.nockerl.design.components.NockerlTextField
@@ -78,8 +79,8 @@ NockerlTextField(
 )
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift exposes the
@@ -96,18 +97,18 @@ SecureField("Deepgram API key", text: $keyInput)
     .nockerlFieldBackground()
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable nameLabel="Prop" component="NockerlTextField" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 `NockerlTextField` is the published recessed-well field. The 12dp control shape and the
 `canvasAlt` well / hairline-border / accent-focus / status-error color mapping are baked
@@ -134,8 +135,8 @@ line (error is text, never color alone, per law §14).
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI applies the field chrome as a **`.nockerlFieldBackground()` view modifier** on a
 plain `TextField` / `SecureField`. State (focus, editing) comes from the SwiftUI
@@ -153,8 +154,8 @@ too.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 The recessed-well spec is the target; these are the real divergences between the shipped

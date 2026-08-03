@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import TimePickerDemo from '../../../components/demos/TimePickerDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -19,8 +20,8 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform;
@@ -51,8 +52,8 @@ export function ReminderForm() {
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose, Material 3 (BOM 2026.02.01). This tab documents the STOCK
@@ -78,8 +79,8 @@ TimeInput(state = state)
 // Read back: state.hour (0..23) + state.minute (0..59).
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI. This tab documents the stock DatePicker with .hourAndMinute, tinted
@@ -102,13 +103,13 @@ struct ReminderForm: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 <PropsTable
   nameLabel="Prop"
@@ -125,8 +126,8 @@ struct ReminderForm: View {
   ]}
 />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 <PropsTable
   nameLabel="Parameter"
@@ -143,8 +144,8 @@ struct ReminderForm: View {
 `TimeInput(state = state)` shares the same `TimePickerState` but renders the
 keyboard-first hour/minute fields + AM/PM toggle instead of the dial.
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 SwiftUI exposes the time picker as the standard `DatePicker` restricted to
 `.hourAndMinute`. State is the bound `selection`; AM/PM vs. 24-hour follows the
@@ -162,8 +163,8 @@ the call site.
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
 - **Stock native pickers, an original web island.** The Kotlin and Swift tabs document the

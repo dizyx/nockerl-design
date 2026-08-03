@@ -9,7 +9,8 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TableDemo from '../../../components/demos/TableDemo.tsx';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 
 <StatusBadge status="review" />
 
@@ -32,8 +33,8 @@ footer total sits under, and aligned to, its own column (the label left, the num
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 ```tsx
 // Web: React, consuming @dizyx/nockerl-tokens. NockerlTable ships from
@@ -83,8 +84,8 @@ export function SessionsTable({ rows, sort, selected, onSort, onSelect }: Sessio
 }
 ```
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 ```kotlin
 // Android: Jetpack Compose (canonical). This documents the hand-assembled grid idiom
@@ -134,8 +135,8 @@ fun SessionTable(rows: List<Session>, sort: SortState, onSort: (SortKey) -> Unit
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 // macOS: SwiftUI (canonical). AppKit-backed `Table` is the real multi-column grid:
@@ -173,13 +174,13 @@ struct SessionsTable: View {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Parameters
 
-<Tabs syncKey="lang">
-<TabItem label="TypeScript">
+<DocTabs surface={false}>
+<Fragment slot="typescript">
 
 `NockerlTable` takes a `rows` array, a typed `columns` definition, and the cross-cutting
 concerns (sort, selection, density, sticky, footer, loading, empty) as props. Each `NockerlTableColumn`
@@ -191,8 +192,8 @@ and reports sort intent via `onSortChange`.
 
 <PropsTable nameLabel="Prop" component="NockerlTable" />
 
-</TabItem>
-<TabItem label="Kotlin">
+</Fragment>
+<Fragment slot="kotlin">
 
 The Kotlin tab documents the **hand-assembled grid idiom** rather than the parameter list of a
 single `NockerlDataTable`: a header `Row`, weighted column cells, and `HorizontalDivider`
@@ -211,8 +212,8 @@ hairlines (the `ClusterSheet` idiom). These are the building blocks you compose.
   ]}
 />
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 macOS SwiftUI ships a **real `Table`** (AppKit-backed). You declare `TableColumn`s with a
 sort `value:` key path; `Table` drives click-to-sort through `sortOrder` + selection through a
@@ -229,8 +230,8 @@ bound `Set`. State comes from the bindings, so there are no Nockerl-specific par
   ]}
 />
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 <Aside type="caution" title="Cross-platform drift (table vs list vs key-value)">
 This page is the multi-**column** grid. The single-column sectioned collection is

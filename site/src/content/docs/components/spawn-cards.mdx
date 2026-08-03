@@ -7,7 +7,8 @@ platforms: [android, swift]
 
 import StatusBadge from '../../../components/StatusBadge.astro';
 import PropsTable from '../../../components/PropsTable.astro';
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import DocTabs from '../../../components/DocTabs.astro';
+import { Aside } from '@astrojs/starlight/components';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/spawncards-block-children.png';
 
 <StatusBadge status="review" />
@@ -26,8 +27,8 @@ the pulse (reduced motion, deterministic snapshots).
 
 ## Code
 
-<Tabs syncKey="lang">
-<TabItem label="Kotlin">
+<DocTabs surface={false}>
+<Fragment slot="kotlin">
 
 ```kotlin
 NockerlSpawnBlockCard(
@@ -45,8 +46,8 @@ NockerlSpawnBlockCard(
 }
 ```
 
-</TabItem>
-<TabItem label="Swift">
+</Fragment>
+<Fragment slot="swift">
 
 ```swift
 NockerlSpawnBlockCard(
@@ -64,8 +65,8 @@ NockerlSpawnBlockCard(
 }
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+</DocTabs>
 
 ## Props
 
