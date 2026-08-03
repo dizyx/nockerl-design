@@ -22,7 +22,7 @@
  * Design laws encoded here (do not re-derive in a demo):
  *   - the trigger SINKS / the popover LIFTS (one light source); depth = neutral drop shadow
  *     + top catch-light ONLY (no glow / colored shadow).
- *   - a SELECTED option = faint cyan wash + trailing check (never a fill swap) while the
+ *   - a SELECTED option = a cyan EDGE + cyan ink + a trailing check, never a fill, while the
  *     ACTIVE keyboard row = neutral wash + cyan ring (selection != activation).
  *   - error = a warm border + icon + message (color + icon + text, never color alone).
  *   - fills are STATIC: only brightness / transform / opacity animate; the popover open +

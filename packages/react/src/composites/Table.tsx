@@ -27,7 +27,8 @@
  * Design laws encoded here (do not re-derive in a demo):
  *   - depth lives in the CARD (neutral shadow + catch-light, never a glow); the header band,
  *     rows + hairlines inside are FLAT; row separators bind to --color-divider.
- *   - a SELECTED row reads via a faint cyan wash (NOT a glow / fill-swap / left rail, per LAW 6);
+ *   - a SELECTED row reads via a cyan hairline bounding the row, with no fill (NOT a glow /
+ *     fill-swap / left rail, per LAW 6);
  *     the tick ON the cyan box uses --color-on-accent.
  *   - fills are STATIC: hover = neutral wash, press = transform + neutral shadow only; focus is
  *     an OUTLINE ring (from the composed NockerlButton / NockerlCheckbox).
