@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import CalloutDemo from '../../../components/demos/CalloutDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -159,7 +159,7 @@ persistent in-content aside (no dismiss, no `nockerlElevation()` lift).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The callout now **ships on web** as `NockerlCallout` in `@dizyx/nockerl-react`, and on both
 natives as `NockerlCallout`. The web component is the one documented above; the native
 surfaces are on their own migration track, so treat the sections below as the reconciliation
@@ -180,4 +180,4 @@ divergences to reconcile when it lands, tracked in the [Review queue](/review-qu
   should be canonized so callout and banner stay legibly different.
 - **Quote treatment:** the `quote` tone reuses Android's italic + muted reasoning style;
   Voice/web would need a matching italic prose style + a quote glyph token.
-</Aside>
+</DocCallout>

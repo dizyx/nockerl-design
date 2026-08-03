@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import CardDemo from '../../../components/demos/CardDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -131,12 +131,12 @@ RoundedRectangle(cornerRadius: NockerlTheme.cardRadius)   // 14pt today; see dri
   ]}
 />
 
-<Aside type="note" title="No onClick parameter on NockerlCard">
+<DocCallout tone="note" title="No onClick parameter on NockerlCard">
 `NockerlCard` is a pure surface. To make it tappable you compose `Modifier.clickable { }`
 (with `onClickLabel` for the accessible name) onto the `modifier`, exactly as the
 shipped tool / agent cards do. This keeps the surface and the interaction concerns
 separate.
-</Aside>
+</DocCallout>
 
 </Fragment>
 <Fragment slot="swift">
@@ -159,7 +159,7 @@ parameters below are those tokens; a wrapper view is the planned reconciliation.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The spec is approved; these are the real divergences between the shipped platforms,
 tracked in the [Review queue](/review-queue/):
 
@@ -169,11 +169,11 @@ tracked in the [Review queue](/review-queue/):
 - **Elevation ladder:** Compose ships **L1 to L3** presets (`NockerlElevation`, no `Level4`);
   the L4 rung is the `elevation.sheet` token (14px) used by bottom sheets. Swift has **no
   preset ladder**; shadows are per-call. Web exposes the full **L1 to L4** scale.
-- **Interactive API** *(resolved in [adjudication 2026-07-02 · A3])*: a tappable card is **one
+- **Interactive API** *(resolved)*: a tappable card is **one
   declared `interactive` / onClick prop on the Card API** on all three platforms (pressed =
   elevation dip + focus ring). Web already exposes `interactive`; natives may implement via
   `clickable` internally (Compose today) or a `Button` wrap (Swift), but the prop is the shared
   contract.
 - **Card component:** Swift has **no `Card` view** yet (composed from tokens inline). A
   wrapper to match Compose's `NockerlCard` is the planned step.
-</Aside>
+</DocCallout>

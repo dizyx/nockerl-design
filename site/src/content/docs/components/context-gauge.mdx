@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ContextGaugeDemo from '../../../components/demos/ContextGaugeDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -144,8 +144,8 @@ thresholds so it round-trips with the other platforms when it lands.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Swift:** Nockerl Voice has **no context gauge** today (no token budget surfaced). The Swift API above is intended, not shipped.
 - **Token formatting:** Android `formatTokenCount` is **integer-only** (`1M`, `42K`, `512`); there is no `1.2M` decimal form anywhere in the source, so the readout shows `82K / 200K · 41%`, never `82.0K`. The web demo mirrors this exactly.
 - **Numeric readout:** Android draws the chip line with **no number** (just the colored line); the `used / total · pct%` readout lives above the chat input, not on the chip. The web bar/ring forms surface the figure inline.
-</Aside>
+</DocCallout>

@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import CodeBlockDemo from '../../../components/demos/CodeBlockDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -112,7 +112,7 @@ NockerlCodeBlock(longLine, wrap: true)
     { name: 'filename', type: 'string', description: 'Shown in the header bar. Omit → the block renders with no header.' },
     { name: 'language', type: "'typescript' | 'kotlin' | 'swift' | 'json' | 'shell'", description: 'Drives the cyan-soft language pill + the file-type tint dot.' },
     { name: 'showLineNumbers', type: 'boolean', default: 'false', description: 'Right-aligned, muted line-number gutter (sticky under horizontal scroll).' },
-    { name: 'highlightLines', type: 'number[]', default: '[]', description: 'Lines to emphasize: a faint cyan wash + a left cyan rail (a shape, not a glow). This inset rail is the <strong>one sanctioned Law 6 carve-out</strong> (adjudication B18): editorial emphasis inside a code surface only, always paired with a wash, never status, never selection, and never outside code.' },
+    { name: 'highlightLines', type: 'number[]', default: '[]', description: 'Lines to emphasize: a faint cyan wash + a left cyan rail (a shape, not a glow). This inset rail is the <strong>one sanctioned Law 6 carve-out</strong>: editorial emphasis inside a code surface only, always paired with a wash, never status, never selection, and never outside code.' },
     { name: 'wrap', type: 'boolean', default: 'false', description: 'Soft-wrap long lines. Off → lines scroll horizontally (the app default).' },
     { name: 'diff', type: 'boolean', default: 'false', description: 'Unified-diff mode: a <code>+/-</code> gutter with warm added/removed washes.' },
     { name: 'oldCode', type: 'string', description: 'The pre-change source, diffed against <code>code</code> when <code>diff</code> is set.' },
@@ -156,7 +156,7 @@ see drift). The `code` argument is the first positional.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 These are the real divergences:
 
 - **Swift now ships the well.** `NockerlCodeBlock` (NockerlDesign) provides the recessed
@@ -173,4 +173,4 @@ These are the real divergences:
 - **Language pill:** `NockerlCodeBlock` takes **no** `language` (no pill), and there is also no
   `file-type.swift` token. Add both when the language affordance lands on Swift.
 - **Diff** ships on **Android** (`DiffView`) and is specified for web; **Swift** has none.
-</Aside>
+</DocCallout>

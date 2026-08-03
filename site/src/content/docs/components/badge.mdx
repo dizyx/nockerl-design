@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BadgeDemo from '../../../components/demos/BadgeDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -107,13 +107,13 @@ Markdown code fence, so the tag reads identically everywhere. The label runs thr
 `nockerlLanguageLabel` contract (trim + lowercase, blank → nothing). It is byte-identical to
 the native rails, so `'TypeScript'` renders `typescript` on every surface.
 
-<Aside type="tip" title="App-configurable color (ratified r5 relaxation)">
+<DocCallout tone="tip" title="App-configurable color (ratified r5 relaxation)">
 The **framework default stays hue-free** and ships no per-language color map. Apps *may*
 differentiate languages via the optional `color` prop (their own mapping: TS ≠ Kotlin ≠
 Swift), and **for this one case a status hue is permitted**: a language color reads as
 identity metadata, not state. Unset, the tag is the quiet neutral canon matching Android +
 Voice.
-</Aside>
+</DocCallout>
 
 <PropsTable nameLabel="Prop" component="NockerlLanguageBadge" />
 
@@ -160,14 +160,14 @@ anchor it with `.overlay(alignment: .topTrailing)`.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (one open item)">
+<DocCallout tone="warning" title="Cross-platform drift (one open item)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
 (`NockerlDesign`) packages now both ship a first-class `NockerlBadge` with the **full set**:
 count pill, bare dot, and tonal label pill (soft / solid) on the same `NockerlBadgeTone`
 ladder. The earlier coverage gap and "no shared wrapper" drift are resolved. What remains:
 
-- **Default count hue** *(resolved in [adjudication 2026-07-02 · B5])*: the unread-count badge hue
+- **Default count hue** *(resolved)*: the unread-count badge hue
   is **danger-red**; the orange agent-family token was a categorical misuse. The web demo already
   defaults the inbox to danger-red; both native packages (today defaulting the count / dot to the
   `.agent` / `AGENT` orange) conform.
-</Aside>
+</DocCallout>

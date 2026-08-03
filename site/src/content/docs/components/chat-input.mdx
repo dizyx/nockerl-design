@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ChatInputDemo from '../../../components/demos/ChatInputDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -40,13 +40,13 @@ Three things make it read as the signature it is:
   legible morph on interpolatable props (§4), never a same-color hard swap. Frozen under
   `prefers-reduced-motion`.
 
-<Aside type="tip" title="What composes AROUND the pill">
+<DocCallout tone="tip" title="What composes AROUND the pill">
   The pill is the design grammar only. Pending attachments
   ([`AttachmentPopover`](/components/chat-input/#attachment-popover)) and the live
   [`Recording HUD`](/components/recording-hud/) ride **above** the pill as siblings on the
   same floating layer. The app's voice state machine and attachment plumbing stay in the
   app, not in this component.
-</Aside>
+</DocCallout>
 
 ## Code
 

@@ -9,7 +9,7 @@ import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import CodePanelDemo from '../../../components/demos/CodePanelDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -30,12 +30,12 @@ The chrome reuses the code-block **header grammar verbatim**: filename ·
 live document). Focus reads on the panel (an inner accent outline), never a CodeMirror
 default.
 
-<Aside type="note" title="The liftable deliverable">
+<DocCallout tone="note" title="The liftable deliverable">
 The design deliverable for the dashboard is **`nockerlCodeMirrorTheme()`**
 (`_codeMirrorTheme.ts`), an `Extension[]` built ONLY from `var(--token)` strings, so it
-theme-flips for free and never forks a hue. Web-only by scope (the de-phantom verdict);
+theme-flips for free and never forks a hue. Web-only by scope;
 native surfaces read code through the cross-platform CodeBlock.
-</Aside>
+</DocCallout>
 
 ## Code
 

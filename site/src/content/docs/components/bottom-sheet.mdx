@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BottomSheetDemo from '../../../components/demos/BottomSheetDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -19,13 +19,13 @@ import { Aside } from '@astrojs/starlight/components';
   <BottomSheetDemo client:visible />
 </Example>
 
-<Aside type="tip" title="No X by default (Material canon)">
+<DocCallout tone="tip" title="No X by default (Material canon)">
 A bottom sheet has **no close (X) button** by default. The canonical dismissal is the
 **drag handle** (the grabber at the top) plus a **scrim tap** plus <kbd>Esc</kbd>. The X is
 **opt-in** via `showClose`. Reserve it for the rare case that genuinely needs a persistent,
 always-visible dismiss affordance. Every platform follows the same rule (see the Kotlin /
 Compose guidance below).
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -91,7 +91,7 @@ macOS/Swift has no bottom-sheet idiom (use a popover / sheet there), so this com
 
 ## Session-management views (configs, not components)
 
-Per the component-vs-view rule on the agent-console epic (task 2654), the session
+Per the component-vs-view rule, the session
 sheets are **pure configurations** of this sheet + shipped parts; none of them is a
 new component. Native cites them as `NockerlBottomSheet` call-sites already
 (`AvatarSettingsSheet`, `SamplingAdvancedSettings`); the settings form in the demo
@@ -132,14 +132,14 @@ anatomy. Its CTA row pins in this sheet's `footer` slot.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **macOS / Swift is out of scope.** macOS has no native bottom-sheet idiom. Nockerl
   Voice (a menu-bar macOS app) uses windows / popovers (`RecordingHUD`, `InfoTip`)
   instead. Use a popover / sheet there. This component targets **web + Android only**.
-- **Detents** *(resolved in [adjudication 2026-07-02 · B16])*: the API name is **`detent`**,
+- **Detents** *(resolved)*: the API name is **`detent`**,
   chosen to avoid a collision with Compose's `SheetState`. Compose (today `SheetState` +
   `skipPartiallyExpanded`) adopts the shared `detent` vocabulary.
 - **Grip (drag handle):** Compose hosts a custom `NockerlSheetGrip` inside the body
   (`dragHandle = null`) so the gradient backs it; web renders the bar in CSS. It, not
   an X, is the primary dismissal affordance on both platforms.
-</Aside>
+</DocCallout>

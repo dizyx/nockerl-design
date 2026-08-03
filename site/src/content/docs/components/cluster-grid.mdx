@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ClusterGridDemo from '../../../components/demos/ClusterGridDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <ClusterGridDemo client:visible />
 </Example>
 
-**The fleet at a glance** (WS4, agent-console epic): `NockerlClusterGrid` is a pure
+**The fleet at a glance**: `NockerlClusterGrid` is a pure
 layout shell (a responsive auto-fill mosaic), and `NockerlNodeCell` is the tile, a
 composition of shipped parts with **no new visual grammar**:
 
@@ -34,10 +34,10 @@ composition of shipped parts with **no new visual grammar**:
 - **Roles and counts ride soft [`Badges`](/components/badge/)** in the header and the
   open `footer` slot.
 
-<Aside type="note" title="Web-only by scope">
+<DocCallout tone="note" title="Web-only by scope">
 The cluster wall is a web surface. Native
 consoles have no equivalent. Web-first on the shared tokens and laws.
-</Aside>
+</DocCallout>
 
 ## Code
 

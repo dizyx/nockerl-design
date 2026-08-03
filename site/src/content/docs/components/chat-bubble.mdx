@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ChatBubbleDemo from '../../../components/demos/ChatBubbleDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -156,7 +156,7 @@ chat thread, so no bubble primitive ships on macOS. The signature below is the
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Primitive vs. composition:** this is the bubble *container* (shape · tail ·
   role alignment · grouping · delivery/selection). The full assistant turn
   (identity header, markdown, tool-call panels, streaming) is
@@ -170,13 +170,12 @@ chat thread, so no bubble primitive ships on macOS. The signature below is the
   **6.dp**, while `bubbleShape` (and the web demo) default to the token **20** /
   **6** (`radius.bubble` / `radius.bubble-tail`). The bubble call-site should
   consume the token.
-- **Grouping seams** *(resolved in [adjudication 2026-07-02 · B9])*: the **web grouping
+- **Grouping seams** *(resolved)*: the **web grouping
   model wins**: interior speaker-side corners of a same-sender run square off, one tail
   per run. Compose (today collapses only the header, keeping every bubble's full tail)
   conforms.
-- **Delivery receipts** *(resolved in [adjudication 2026-07-02 · B9]; failed treatment
-  restated by the [r5.2 addendum · task 2673])*: the sending / sent / failed lane + the
+- **Delivery receipts** *(resolved)*: the sending / sent / failed lane + the
   **in-thread failed bubble** built on the **Banner inline-alert grammar** (inset status
   disc + whisper-red border + lifted neutral surface + Retry) is the ratified model. Android
   moves stream errors off the floating status pill and per-bubble.
-</Aside>
+</DocCallout>

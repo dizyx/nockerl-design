@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ChipDemo from '../../../components/demos/ChipDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -112,11 +112,11 @@ NockerlChip("local") { pickFilter(.local) }
   ]}
 />
 
-<Aside type="note" title="Selectable only, no removable variant">
+<DocCallout tone="note" title="Selectable only, no removable variant">
 The published `NockerlChip` is **selectable only** on both native platforms. There is no
 trailing-✕ / `onRemove` parameter. A removable/tag chip is a web-only capability today; on
 Android or Swift it would be a custom composition. Tracked in the drift note.
-</Aside>
+</DocCallout>
 
 </Fragment>
 <Fragment slot="swift">
@@ -137,7 +137,7 @@ It has no leading slot and no `onRemove`; honor `.disabled(_:)` for the dimmed s
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Cross-platform parity (published packages)">
+<DocCallout tone="note" title="Cross-platform parity (published packages)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
 (`NockerlDesign`) `NockerlChip` now share the selectable idiom and the pill token, and the
 earlier drift is resolved:
@@ -157,4 +157,4 @@ Remaining, intentional differences:
   Both are token-driven static fills, a deliberate per-platform read of the selection wash.
 - **Leading content.** Compose exposes a `leadingContent` slot (e.g. a status dot); web has
   `leadingIcon`; the published Swift `NockerlChip` has no leading slot yet.
-</Aside>
+</DocCallout>

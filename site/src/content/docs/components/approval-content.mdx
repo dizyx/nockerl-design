@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ApprovalContentDemo from '../../../components/demos/ApprovalContentDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <ApprovalContentDemo client:visible />
 </Example>
 
-The **one shared approval shape** for the agent console (WS2, agent-console epic): every
+The **one shared approval shape** for the agent console: every
 moment an agent stops and asks (a tool call, a plan, an `AskUserQuestion`) renders this
 same anatomy, top-down:
 
@@ -47,19 +47,19 @@ and the actions migrate to whatever chrome the host owns:
 | [`Dialog`](/components/dialog/) | the dialog header | the dialog's own CTA row (same grammar) |
 | Inline panel | the content's own `title` prop | the `actions` slot, inline at the end |
 
-<Aside type="note" title="Ratified (2026-07-05): one anatomy, platform-idiomatic hosts">
-The host wiring is settled (adjudication addendum 2026-07-05): **web desktop/pointer**
+<DocCallout tone="note" title="Ratified (2026-07-05): one anatomy, platform-idiomatic hosts">
+The host wiring is settled: **web desktop/pointer**
 presents approvals in **inline panels** (the Panel/Dialog grammar, never a desktop
 bottom sheet); **compact/touch web widths** are sheet-idiomatic and host the same
 anatomy in the shipped [`BottomSheet`](/components/bottom-sheet/); **Android** rides
 `NockerlBottomSheet` (the ApprovalSheet shell). The HOST is interaction idiom (law §9);
 the ANATOMY is the drift-guard (§12) and never changes across hosts. The demo above
 derives the host from the context switch exactly per this rule.
-</Aside>
+</DocCallout>
 
 ## The approval views are configs, not components
 
-Per the component-vs-view rule (task 2653c), the three console approval moments are
+Per the component-vs-view rule, the three console approval moments are
 **pure slot configurations** of this one anatomy. They introduce **no new components**:
 
 | View | `preview` | `options` | `riskNote` | Confirm |
@@ -100,11 +100,11 @@ import { NockerlApprovalActions, NockerlApprovalContent, NockerlBottomSheet } fr
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Android">
+<DocCallout tone="note" title="Android">
 The Compose mirror (`NockerlApprovalContent` hosted in the canonical
-`NockerlBottomSheet`, matching `ToolApprovalSheet`) rides the compose lane of the
-agent-console epic. Same anatomy, same slot names.
-</Aside>
+`NockerlBottomSheet`, matching `ToolApprovalSheet`) is the Compose lane.
+Same anatomy, same slot names.
+</DocCallout>
 
 ## Parameters
 
