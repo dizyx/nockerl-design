@@ -244,7 +244,7 @@ export default function FloatingPillsDemo() {
         <div className="nk-fp__feed" ref={feedRef}>
           <ChatBubble role="agent">Pulled the SessionChipsBar concept: a flat LazyRow of keycaps.</ChatBubble>
           <ChatBubble role="user">Make the active one lift higher, no glow.</ChatBubble>
-          <ChatBubble role="agent">Done. A soft cyan selection wash + a higher shadow tier.</ChatBubble>
+          <ChatBubble role="agent">Done. A cyan selection ring + a higher shadow tier.</ChatBubble>
           <ChatBubble role="user">And the context line under each chip?</ChatBubble>
           <ChatBubble role="agent">Cyan → amber → red by usage. No number, just the line.</ChatBubble>
           <div className="nk-fp__ghost">

@@ -246,7 +246,7 @@ export const NockerlTabs = forwardRef<HTMLDivElement, NockerlTabsProps>(function
 
   // Measure the active tab so the indicator aligns EXACTLY: the sliding cyan underline hugs the
   // LABEL box in BOTH variants. Enclosed is the same underline seated inside a recessed well
-  // (, never a filled pill). Re-measure on resize / size / variant / value / tab changes.
+  // and never a filled pill. Re-measure on resize / size / variant / value / tab changes.
   useLayoutEffect(() => {
     const measure = () => {
       const tab = tabRefs.current[selIdx];
