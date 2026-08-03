@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SearchFieldDemo from '../../../components/demos/SearchFieldDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -170,16 +170,16 @@ chrome, a decorative leading magnifier, and an interactive trailing clear
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="search-field vs. combobox vs. command-palette">
+<DocCallout tone="note" title="search-field vs. combobox vs. command-palette">
 Three search-shaped controls, one each per job. **search-field** (this page) filters
 content **in place**: magnifier + clear + optional submit, no value to commit.
 **[Combobox](/components/combobox/)** is a type-to-filter **selector**; it commits an
 option (trailing check, fills the field). **[Command palette](/components/command-palette/)**
 is the modal **⌘K launcher**, a sheet that runs actions, not an inline field. Reach for
 search-field whenever you are narrowing a visible list, not picking a value or launching a command.
-</Aside>
+</DocCallout>
 
-<Aside type="note" title="Cross-platform parity (all three shipped)">
+<DocCallout tone="note" title="Cross-platform parity (all three shipped)">
 - **Android: shipped.** `NockerlSearchField` (`com.dizyx.nockerl.design.components`) is
   a self-contained field with a built-in magnifier + ✕ clear on the shared recessed-well
   treatment, superseding the per-screen `OutlinedTextField` + Search-icon idiom.
@@ -193,4 +193,4 @@ search-field whenever you are narrowing a visible list, not picking a value or l
   enablement flows from the environment (`.disabled(_:)`), the idiomatic forms of the
   canon's `value` / `onChange` + `enabled`. `.searchable` remains the system option for a
   toolbar / sidebar search bar bound to the same query.
-</Aside>
+</DocCallout>

@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SegmentedControlDemo from '../../../components/demos/SegmentedControlDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -85,14 +85,16 @@ NockerlSegmented(
 <Fragment slot="swift">
 
 ```swift
-// macOS SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift
-// The active option is a cyan OUTLINE (the 1pt @0.45 selection weight), not a fill;
-// equal-width segments
-// on an inset `canvasAlt` track.
-SegmentedSelector(
+// macOS SwiftUI (canonical). Nockerl Voice consumes the published NockerlSegmented
+// (see its Appearance row in NockerlVoice/UI/AppSettingsView.swift). The active option
+// is a cyan OUTLINE (the 1pt @0.45 selection weight), not a fill; equal-width segments
+// sit on a flat neutral hairline track with zero fill.
+NockerlSegmented(
     options: TaskView.allCases,
-    selection: $view
-) { $0.label }
+    selected: view,
+    label: { $0.label },
+    onSelect: { view = $0 }
+)
 
 // System stand-in (more segments / native feel), the platform segmented picker:
 Picker("Task view", selection: $view) {
@@ -131,24 +133,27 @@ Picker("Task view", selection: $view) {
 </Fragment>
 <Fragment slot="swift">
 
-SwiftUI exposes the control as the custom `SegmentedSelector` (cyan outline) or a
-system `Picker(.segmented)`. State is two-way bound; there are no per-segment
-state parameters.
+SwiftUI exposes the control as the published `NockerlSegmented`, which Nockerl Voice
+consumes, or a system `Picker(.segmented)` as a stand-in. Selection is passed as a value
+with an `onSelect` callback rather than a two-way binding.
 
 <PropsTable
-  nameLabel="Style"
+  nameLabel="Parameter"
   rows={[
-    { name: 'options', type: '[Option]', description: 'The segments (<code>Hashable & Identifiable</code>), rendered left-to-right as equal-width segments.' },
-    { name: 'selection', type: 'Binding<Option>', description: 'Two-way bound active option. The active segment gets a cyan <strong>outline</strong> at the selection weight (<code>border.width.selection</code> @ <code>border.opacity.selection</code>), not a fill.' },
-    { name: 'label', type: '(Option) -> String', description: 'Maps an option to its visible text (e.g. <code>{ $0.label }</code>).' },
-    { name: '.pickerStyle', type: 'PickerStyle', description: 'System stand-in: <code>.segmented</code> for the native segmented look on a standard <code>Picker</code>.' },
+    { name: 'options', type: '[T]', required: true, description: 'The segments (<code>T: Hashable</code>), rendered left-to-right as equal-width segments.' },
+    { name: 'selected', type: 'T', required: true, description: 'The active option. Its segment gets a cyan <strong>outline</strong> at the selection weight (<code>border.width.selection</code> @ <code>border.opacity.selection</code>), not a fill.' },
+    { name: 'label', type: '(T) -> String', required: true, description: 'Maps an option to its visible text (e.g. <code>{ $0.label }</code>).' },
+    { name: 'icon', type: '((T) -> String?)?', default: 'nil', description: 'Optional SF Symbol name per segment, leading the label.' },
+    { name: 'segmentEnabled', type: '(T) -> Bool', default: '{ _ in true }', description: 'Per-segment enablement. A disabled segment dims but stays legible.' },
+    { name: 'size', type: 'NockerlSegmentedSize', default: '.md', description: 'Segment height, padding, and type role.' },
+    { name: 'onSelect', type: '(T) -> Void', required: true, description: 'Fired with the chosen option. The caller owns the state.' },
   ]}
 />
 
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Segmented control is the **connected, single-track view/mode switch**, distinct
 from its neighbours: [tabs](/components/tabs/) navigate **page/section content**
 (each tab owns a tabpanel; `role="tablist"`), whereas a segmented control just
@@ -174,4 +179,4 @@ Real divergences between the shipped platforms:
   peers. It carries no recessed inset-shade, because with the active segment reading by
   outline there is no fill for a well to sit under. Swift and web both draw this. Compose
   still uses a `cardAlt2` well, which converges when Android does.
-</Aside>
+</DocCallout>

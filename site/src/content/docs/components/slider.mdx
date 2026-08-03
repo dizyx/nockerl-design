@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SliderDemo from '../../../components/demos/SliderDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -157,7 +157,7 @@ Unavailable on tvOS (SwiftUI ships no `Slider` there).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The single-thumb slider has a settled shape on every platform: the Swift tab documents
 the `NockerlSlider` wrapper from NockerlDesign, and the Kotlin tab the Material `Slider`
 used for the sampling knobs. The two-thumb range is where the platforms still diverge.
@@ -166,4 +166,4 @@ used for the sampling knobs. The two-thumb range is where the platforms still di
 - **Swift look:** `NockerlSlider` wraps the native `Slider` and tints it cyan (`accentPrimary`) with a persistent Nockerl label; the recessed-well / lifted catch-light disc treatment is still the target the platforms should converge on.
 - **Temperature range:** the real `SAMPLING_KNOB_SPECS` (`Sampling.kt`) uses **0.1 to 2.0 step 0.05**, not the rounder "0 to 2 step 0.1"; the demo + code use the **shipped** values.
 - **Look:** Android uses Material's default thumb/track; the recessed well + lifted catch-light disc is the Nockerl treatment the platforms should converge on.
-</Aside>
+</DocCallout>

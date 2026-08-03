@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import StatusDotDemo from '../../../components/demos/StatusDotDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -141,7 +141,7 @@ pulse, with two inits mirroring Compose: a semantic status and a raw palette col
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (one open item)">
+<DocCallout tone="warning" title="Cross-platform drift (one open item)">
 This is the dedicated semantic **state** dot, distinct from [badge](/components/badge/),
 which is a passive **count / notification** overlay. The published **Compose**
 (`com.dizyx.nockerl.design.components`) and **Swift** (`NockerlDesign`) packages now both
@@ -153,4 +153,4 @@ duration mismatch, and "no shared wrapper" drift are all resolved. What remains:
 - **The `ping` ring** *(settled)*: the expanding concentric
   **ping ring is dropped**. One attention expression everywhere: an **800ms opacity pulse**
   (1 → ~0.3), which every native platform already animates. The web-only `ping` is retired.
-</Aside>
+</DocCallout>

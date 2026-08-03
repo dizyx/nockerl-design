@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import StepperDemo from '../../../components/demos/StepperDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -176,7 +176,7 @@ The Swift tab models the tracker as a `NockerlStepper` view; status comes from `
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The Stepper is the step *indicator* primitive, not a flow and not a bar:
 
 - **Stepper vs [Wizard](/components/wizard/):** the Wizard is the full guided
@@ -192,4 +192,4 @@ The Stepper is the step *indicator* primitive, not a flow and not a bar:
   checklist); the per-platform note at the foot of this page carries their status. A
   separate numeric **+/- stepper input** is a different control, queued under
   [Inputs](/components/inputs/).
-</Aside>
+</DocCallout>

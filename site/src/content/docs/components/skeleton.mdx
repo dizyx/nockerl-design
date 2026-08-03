@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import SkeletonDemo from '../../../components/demos/SkeletonDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -166,7 +166,7 @@ SwiftUI greeks it into placeholder bars at the same footprint.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Skeleton is the **content-shaped** loader, distinct from its three feedback
 siblings: the **spinner** (an indeterminate circular loader with no footprint), the
 **progress-bar** (determinate/indeterminate progress against a known total), and the
@@ -184,4 +184,4 @@ know the shape of what's arriving and want the layout to stay put.
 - **Block radius.** Web/Compose match each block's radius to the component it
   replaces (avatar pill, thumb card, line track); Swift's redaction inherits the
   view's own shape. Behaviour converges; the source differs.
-</Aside>
+</DocCallout>

@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TextFieldDemo from '../../../components/demos/TextFieldDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -83,18 +83,19 @@ NockerlTextField(
 <Fragment slot="swift">
 
 ```swift
-// macOS: SwiftUI (canonical). NockerlVoice/UI/SettingsComponents.swift exposes the
-// recessed chrome as a .nockerlFieldBackground() modifier applied to a plain TextField.
+// macOS: SwiftUI (canonical). The package publishes the recessed chrome as the
+// .nockerlFieldWell() modifier, applied to a plain TextField. Nockerl Voice consumes
+// it that way in NockerlVoice/UI/SettingsView.swift.
 // In this idiom the label is a sibling Text/Card title rather than a bundled slot.
 TextField("https://your-server:port", text: $localEndpoint)
     .textFieldStyle(.plain)
     .foregroundStyle(NockerlTheme.onSurface)
-    .nockerlFieldBackground()   // canvasAlt inset surface + hairline, rounded rect
+    .nockerlFieldWell()   // canvasAlt inset surface + hairline, rounded rect
 
 // A masked variant for secrets uses SecureField with the same modifier:
 SecureField("Deepgram API key", text: $keyInput)
     .textFieldStyle(.plain)
-    .nockerlFieldBackground()
+    .nockerlFieldWell()
 ```
 
 </Fragment>
@@ -138,7 +139,7 @@ line (error is text, never color alone, per law §14).
 </Fragment>
 <Fragment slot="swift">
 
-SwiftUI applies the field chrome as a **`.nockerlFieldBackground()` view modifier** on a
+SwiftUI applies the field chrome as a **`.nockerlFieldWell()` view modifier** on a
 plain `TextField` / `SecureField`. State (focus, editing) comes from the SwiftUI
 environment, so the modifier takes no explicit state parameters. Label and error are
 sibling views in this idiom: the title is a sibling `Text`, and an error is shown as one
@@ -147,7 +148,7 @@ too.
 <PropsTable
   nameLabel="Style"
   rows={[
-    { name: '.nockerlFieldBackground()', type: 'ViewModifier', description: 'The recessed input chrome: <code>NockerlTheme.canvasAlt</code> inset surface + a hairline stroke, in a rounded rectangle. Wrap a <code>.textFieldStyle(.plain)</code> field with it.' },
+    { name: '.nockerlFieldWell()', type: 'ViewModifier', description: 'The published recessed input chrome: the <code>canvasAlt</code> plane, an inner top shade, the control radius, and the <code>cardHairline</code> edge. Wrap a <code>.textFieldStyle(.plain)</code> field with it.' },
     { name: '.textFieldStyle(.plain)', type: 'TextFieldStyle', description: 'Strips the native bezel so the Nockerl well chrome is the only container.' },
     { name: '.foregroundStyle(NockerlTheme.onSurface)', type: 'modifier', description: 'Binds the typed-text color to the on-surface token.' },
     { name: 'TextField / SecureField', type: 'View', description: 'The host control. <code>SecureField</code> is the masked variant for secrets; both take the same modifier.' },
@@ -157,13 +158,13 @@ too.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The recessed-well spec is the target; these are the real divergences between the shipped
 platforms, tracked in the [Review queue](/review-queue/):
 
 - **Shared component:** the Kotlin tab documents `NockerlTextField`
   (`com.dizyx.nockerl.design.components`), the extracted recessed-well field. The Swift tab
-  documents the chrome as a reusable modifier (`.nockerlFieldBackground()`) on a plain field
+  documents the chrome as a reusable modifier (`.nockerlFieldWell()`) on a plain field
   rather than a bundled component, and web still ships the shadcn `input.tsx`. The target is
   one extracted field on every surface, with the app screens that recolor `OutlinedTextField`
   inline moving onto it.
@@ -177,4 +178,4 @@ platforms, tracked in the [Review queue](/review-queue/):
   `outline`. Voice/Android rely on a border-color change.
 - **Label + error slots:** web + Compose bundle label / error / helper; the Swift idiom
   documented here keeps them as siblings. One bundled API should win.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import TextAreaDemo from '../../../components/demos/TextAreaDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -79,13 +79,13 @@ OutlinedTextField(
 
 ```swift
 // macOS: SwiftUI (canonical). A multi-line field is a TextField with a vertical axis
-// (macOS 13+) wrapped in the same recessed .nockerlFieldBackground() modifier from
-// NockerlVoice/UI/SettingsComponents.swift. The counter is a sibling Text view.
+// (macOS 13+) wrapped in the same recessed .nockerlFieldWell() modifier from
+// NockerlVoice/UI/SettingsView.swift. The counter is a sibling Text view.
 TextField("Describe what the agent should do…", text: $prompt, axis: .vertical)
     .textFieldStyle(.plain)
     .lineLimit(3...12)              // grows between 3 and 12 lines, then scrolls
     .foregroundStyle(NockerlTheme.onSurface)
-    .nockerlFieldBackground()       // canvasAlt inset surface + hairline, rounded rect
+    .nockerlFieldWell()       // canvasAlt inset surface + hairline, rounded rect
 
 Text("\(prompt.count) / \(maxLen)") // character counter (sibling)
     .font(.caption)
@@ -128,7 +128,7 @@ a manual `supportingText`); tracked in drift below.
 </Fragment>
 <Fragment slot="swift">
 
-SwiftUI applies the area chrome as the **`.nockerlFieldBackground()` view modifier** on a
+SwiftUI applies the area chrome as the **`.nockerlFieldWell()` view modifier** on a
 vertical-axis `TextField`. State (focus, editing) comes from the SwiftUI environment.
 There are no explicit state parameters, and the label, counter, and error are **sibling
 views** (no bundled slots yet).
@@ -136,7 +136,7 @@ views** (no bundled slots yet).
 <PropsTable
   nameLabel="Style"
   rows={[
-    { name: '.nockerlFieldBackground()', type: 'ViewModifier', description: 'The recessed input chrome: <code>NockerlTheme.canvasAlt</code> inset surface + a hairline stroke, in a rounded rectangle. Wrap a <code>.textFieldStyle(.plain)</code> field with it.' },
+    { name: '.nockerlFieldWell()', type: 'ViewModifier', description: 'The published recessed input chrome: the <code>canvasAlt</code> plane, an inner top shade, the control radius, and the <code>cardHairline</code> edge. Wrap a <code>.textFieldStyle(.plain)</code> field with it.' },
     { name: 'axis: .vertical', type: 'TextField init arg', description: 'Makes the <code>TextField</code> multi-line (macOS 13+) so it can grow.' },
     { name: '.lineLimit(min...max)', type: 'modifier', description: 'Auto-grow bounds: grows between the two line counts, then scrolls.' },
     { name: '.foregroundStyle(NockerlTheme.onSurface)', type: 'modifier', description: 'Binds the typed-text color to the on-surface token.' },
@@ -146,13 +146,13 @@ views** (no bundled slots yet).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The recessed-well spec is the target; these are the real divergences between the shipped
 platforms, tracked in the [Review queue](/review-queue/):
 
 - **No single shared component:** each platform reaches the area by its own route. Web exposes
   `NockerlTextArea` from `@dizyx/nockerl-react`; Voice has the shared
-  `.nockerlFieldBackground()` modifier (reused for multi-line); Android repeats
+  `.nockerlFieldWell()` modifier (reused for multi-line); Android repeats
   `OutlinedTextField` inline. A common extraction with a bundled counter is still owed.
 - **Recessed vs outlined:** Voice + the spec are **recessed wells**; Android's
   `OutlinedTextField` is an **outlined box** (no inset). It should adopt the inset surface.
@@ -163,4 +163,4 @@ platforms, tracked in the [Review queue](/review-queue/):
   Android/Voice render it manually (or omit it). It should be a first-class prop.
 - **Auto-grow:** web (JS), Compose (`maxLines`), and Swift (`.lineLimit`) each auto-grow,
   but via three different mechanisms; behavior is aligned, implementation is not.
-</Aside>
+</DocCallout>

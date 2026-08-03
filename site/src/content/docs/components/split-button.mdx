@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import SplitButtonDemo from '../../../components/demos/SplitButtonDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -175,7 +175,7 @@ SwiftUI environment; styling is the shared `.nockerl*` `ButtonStyle`.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 This page designs the split button from the button + menu vocabulary rather than
 transcribing a packaged native surface, so the platform tabs differ in how close each
 one gets:
@@ -183,4 +183,4 @@ one gets:
 - **Compose:** the Kotlin tab shows Material 3’s `SplitButtonLayout` as the canonical target; the app-side idiom it supersedes is a hand-rolled `Row(NockerlButton + NockerlIconButton) + DropdownMenu`.
 - **Swift:** the Swift tab documents `Menu(primaryAction:)`, the actual split-button idiom, where a plain `Menu { … }` carries no default-action segment.
 - **vs. its neighbours:** use **Button** for a single action, **Menu** when there is *no* default action (the trigger only opens a popover), and **Fab** for the floating circular action + speed-dial. Split button is the JOIN: a default action welded to a menu of variants.
-</Aside>
+</DocCallout>

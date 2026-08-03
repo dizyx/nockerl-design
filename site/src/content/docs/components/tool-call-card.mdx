@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ToolCallCardDemo from '../../../components/demos/ToolCallCardDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -122,7 +122,7 @@ ToolCallCard(
 // built around the command pill, so the tool-invocation feed is a transcript concern.
 // The card below is the intended SwiftUI API for when that transcript lands on macOS,
 // modelled on the canonical Compose ToolCallCard. Treat it as a design target rather
-// than a reference to shipped code; see the Aside below.
+// than a reference to shipped code; see the callout below.
 ToolCallCard(
     name: "Read SseClient.kt",
     family: .shellFs,                 // → familyAccent: cyan · orange · indigo · sky · fuchsia · muted
@@ -217,7 +217,7 @@ shipped code.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **`tool-call-card` vs `agent-message`:** the tool-call card is the **standalone, reusable**
   tool-invocation panel; `agent-message` is the whole assistant turn and **embeds** these
   cards inline. Document the card here, the turn there.
@@ -228,4 +228,4 @@ shipped code.
   Compose card for a macOS transcript rather than from shipped code.
 - **Web:** no `@dizyx/nockerl-react` component is published yet; the TypeScript API above is
   the canonical target.
-</Aside>
+</DocCallout>

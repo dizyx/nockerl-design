@@ -7,7 +7,7 @@ platforms: [android, swift]
 
 import StatusBadge from '../../../components/StatusBadge.astro';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/transcriptpanel-shell.png';
 
 <StatusBadge status="review" />
@@ -76,7 +76,7 @@ NockerlAgentTranscriptPanel(
 | `dayLabel` | `(Long) -> String` | day index | Formats a day marker from that day's first millis. |
 | `contentPadding` | `PaddingValues` (Compose) | 12dp vertical | List padding. |
 
-<Aside type="note" title="Web">
+<DocCallout tone="note" title="Web">
   The web feed currently hand-rolls per demo page; a react shell mirroring this API is
   the flagged web-lane follow-up.
-</Aside>
+</DocCallout>

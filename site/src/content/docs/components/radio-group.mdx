@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import RadioGroupDemo from '../../../components/demos/RadioGroupDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -92,15 +92,17 @@ Column(Modifier.selectableGroup()) {
 <Fragment slot="swift">
 
 ```swift
-// macOS: SwiftUI. What this tab documents is the canonical-app idiom, not a radio
-// primitive: single choice is expressed with the custom SegmentedSelector, whose
-// active option is a cyan OUTLINE rather than a fill.
-// NockerlVoice/UI/SettingsComponents.swift + AppSettingsView.swift. The platform
+// macOS: SwiftUI (canonical). Nockerl Voice consumes the published NockerlRadio for a
+// single choice inside a list row (see NockerlVoice/UI/StylesView.swift). The ring plus
+// centered dot is the same circle-and-dot the other platforms draw. Where the choice is
+// a short set of peers instead, Voice reaches for NockerlSegmented, and the platform
 // Picker(.inline / .segmented) is the system stand-in. See the drift note below.
-SegmentedSelector(
-    options: SessionEngine.allCases,
-    selection: $engine
-) { $0.label }
+NockerlRadio(
+    selected: engine == .cloud,
+    onSelect: { engine = .cloud },
+    label: "Cloud",
+    description: "Runs on the hosted engine"
+)
 
 // Native alternative for long lists, an inline Picker (chosen row = checkmark):
 Picker("Session engine", selection: $engine) {
@@ -139,24 +141,25 @@ Picker("Session engine", selection: $engine) {
 </Fragment>
 <Fragment slot="swift">
 
-The Swift tab documents the canonical-app idiom: single choice is expressed with the
-custom `SegmentedSelector` (or a system `Picker`) rather than a radio primitive. State
-is two-way bound, so there are no per-option state parameters.
+The Swift tab documents the published `NockerlRadio`, which Nockerl Voice consumes for a
+single choice inside a list row. Each radio owns its own selected state, so a group is
+built by rendering one per option and writing the choice in `onSelect`.
 
 <PropsTable
-  nameLabel="Style"
+  nameLabel="Parameter"
   rows={[
-    { name: 'options', type: '[Option]', description: 'The choices (<code>Hashable & Identifiable</code>), rendered left-to-right as equal-width segments.' },
-    { name: 'selection', type: 'Binding<Option>', description: 'Two-way bound chosen option. The active segment gets a cyan <strong>outline</strong> at the selection weight (<code>border.width.selection</code> @ <code>border.opacity.selection</code>), not a fill.' },
-    { name: 'label', type: '(Option) -> String', description: 'Maps an option to its visible text (e.g. <code>{ $0.label }</code>).' },
-    { name: '.pickerStyle', type: 'PickerStyle', description: 'System stand-in for long lists: <code>.inline</code> (chosen row = checkmark) or <code>.segmented</code>.' },
+    { name: 'selected', type: 'Bool', required: true, description: 'Whether this option is the chosen one. Draws the ring with a centered dot; unselected is the bare ring.' },
+    { name: 'onSelect', type: '(() -> Void)?', default: 'nil', description: 'Fired when the row is chosen. Omit for a presentational radio inside an already-tappable row.' },
+    { name: 'label', type: 'String?', default: 'nil', description: 'Visible text beside the ring. Pass <code>nil</code> when the surrounding row already carries the name.' },
+    { name: 'description', type: 'String?', default: 'nil', description: 'Optional secondary line under the label, in the muted ink.' },
+    { name: 'enabled', type: 'Bool', default: 'true', description: 'Disabled dims the row but keeps it legible, and it stops firing <code>onSelect</code>.' },
   ]}
 />
 
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Radio group is the **mutually-exclusive single choice**, distinct from its
 selection-control siblings: a [checkbox](/components/checkbox/) is **multi-select**
 (box + tick, with a tri-state *mixed*), a [switch](/components/switch/) is an
@@ -167,15 +170,16 @@ options need labels **and** descriptions, or for 4+ choices.
 
 Real divergences between the shipped platforms:
 
-- **Single choice reads differently on macOS.** Voice/SwiftUI expresses it with the
-  custom `SegmentedSelector` (cyan outline) or a `Menu`/`Picker` with a checkmark;
-  Compose + web render a true circle-and-dot radio. The web demo’s **radio cards**
-  and the **error/required** group are designed here first, so this page is their
-  spec rather than a report on either app.
+- **All three platforms draw the circle and dot.** Voice consumes the published
+  `NockerlRadio`, so macOS is no longer the odd one out; where the choice is a short set
+  of peers it reaches for `NockerlSegmented` instead, and a long list still falls back to
+  a `Menu` or `Picker` with a checkmark. The web demo's **radio cards** and the
+  **error/required** group are designed here first, so this page is their spec rather
+  than a report on either app.
 - **Selection treatment.** Compose/web: a circle with a centered cyan **dot**.
   Swift: a cyan **outline** on the chosen segment. One single-choice expression
   per platform: unified, but the marks differ by platform idiom.
 - **Roving focus.** Web uses roving `tabindex` (one tab stop, Arrow keys move +
   select); Compose gets this free from `Modifier.selectableGroup()`; Swift’s
   segmented buttons are individually focusable.
-</Aside>
+</DocCallout>
