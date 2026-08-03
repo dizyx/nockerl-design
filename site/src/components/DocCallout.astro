@@ -1,0 +1,229 @@
+---
+/**
+ * DocCallout: the docs-site editorial aside, rendered with the shipped NockerlCallout
+ * visual contract.
+ *
+ * The docs used another design system's aside on 100 pages while this project publishes
+ * its own callout. This wrapper closes that gap without turning every page into a client
+ * island: the markup is server rendered, the body is an ordinary slot holding arbitrary
+ * MDX (lists, links, inline code, several paragraphs), and there is no client script at
+ * all, because a callout has no interactive state.
+ *
+ * WHY A WRAPPER RATHER THAN THE REACT COMPONENT
+ * `NockerlCallout` takes its body as a trusted HTML STRING and renders it through
+ * `dangerouslySetInnerHTML`. Authored MDX cannot be handed to a string prop, and it would
+ * bypass the docs pipeline that renders links, code blocks and headings. This component
+ * therefore reproduces the same DOM and consumes the same stylesheets, so the two cannot
+ * drift, and passes the body through as a slot so the pipeline still owns it.
+ *
+ * STYLES ARE IMPORTED, NOT COPIED
+ * `NOCKERL_CALLOUT_STYLES` and `NOCKERL_STATUS_DISC_STYLES` are the exact stylesheets the
+ * React components inject. Importing them means a change to either component reaches these
+ * pages with no second edit. No CSS is authored here.
+ *
+ * THE MARGIN OPT-OUT, AND WHY THIS COMPONENT DELIBERATELY CARRIES NONE
+ * The docs content pipeline gives an element a top margin when it has a preceding sibling,
+ * and in a flex row that reads as broken alignment. `.nk-co` IS a flex row, so the rule
+ * would normally apply. It does not here, and the reason is worth stating because it looks
+ * like an omission.
+ *
+ * The pipeline's selector is:
+ *
+ *   .sl-markdown-content
+ *     :not(a, strong, em, del, span, input, code, br)
+ *     + :not(a, strong, em, del, span, input, code, br, :where(.not-content *))
+ *
+ * It only fires when the PRECEDING sibling also qualifies, and `span` is excluded on both
+ * sides. In this DOM every element that precedes a content element is a span: the status
+ * disc is a span, the quote mark is a span, and the eyebrow is a span. So `.nk-co__body`
+ * (which follows the disc) and `.nk-co__prose` (which follows the eyebrow) are never
+ * matched, and the row cannot stagger.
+ *
+ * That immunity is what lets the body stay in the cascade, which it must. The slot holds
+ * authored prose, and tagging any ancestor of it with the opt-out would exempt the whole
+ * subtree and flatten the spacing of every list and paragraph inside every callout on the
+ * site. Tag chrome, never prose. Here the chrome needs no tag, so nothing is tagged.
+ *
+ * TONE VOCABULARY
+ * The tones are this project's own, not the ones the previous asides used, and the two
+ * vocabularies are not aligned. `caution` exists in both and means different things: it was
+ * an amber heads-up, and here it is the destructive red. The migration therefore remaps
+ * rather than renames. See the tone table below.
+ *
+ * USAGE
+ *   <DocCallout tone="warning" title="Not the warning amber">
+ *     Authored **MDX** body, including lists and `code`.
+ *   </DocCallout>
+ *
+ * `title` overrides the eyebrow; omit it for the tone's default label.
+ */
+import { NOCKERL_CALLOUT_STYLES, NOCKERL_STATUS_DISC_STYLES, ALERT_INTENT } from '@dizyx/nockerl-react';
+
+type Tone = 'note' | 'tip' | 'important' | 'warning' | 'caution' | 'notice' | 'quote';
+
+interface Props {
+  /** Editorial tone. Drives the disc colour, the default eyebrow, and the glyph. */
+  tone?: Tone;
+  /** Eyebrow override. Defaults to the tone's label. */
+  title?: string;
+  /** Show the leading disc. `quote` renders a quote mark instead and ignores this. */
+  icon?: boolean;
+}
+
+const { tone = 'note', title, icon = true } = Astro.props;
+
+/**
+ * Tone colour. Mirrors the component's own map: the tones with an alert-family peer are
+ * single-sourced from ALERT_INTENT so the three alert surfaces cannot drift, and the two
+ * quiet tones stay on-card and never take cyan.
+ */
+const TONE_COLOR: Record<Tone, string> = {
+  note: 'var(--color-on-card)',
+  tip: ALERT_INTENT.success.color,
+  important: ALERT_INTENT.info.color,
+  warning: ALERT_INTENT.warning.color,
+  caution: ALERT_INTENT.error.color,
+  notice: ALERT_INTENT.notice.color,
+  quote: 'var(--color-on-card)',
+};
+
+/** Default eyebrow per tone, overridable with `title`. */
+const TONE_LABEL: Record<Tone, string> = {
+  note: 'Note',
+  tip: 'Tip',
+  important: 'Important',
+  warning: 'Warning',
+  caution: 'Caution',
+  notice: 'Notice',
+  quote: 'Quote',
+};
+
+/** Whether the eyebrow takes the tone colour or stays muted. The quiet tones stay muted. */
+const TONE_LABEL_COLORED: Record<Tone, boolean> = {
+  note: false,
+  tip: true,
+  important: true,
+  warning: true,
+  caution: true,
+  notice: true,
+  quote: false,
+};
+
+/**
+ * The knockout glyphs, matching the component one for one. The two stroke glyphs are drawn
+ * with the icon primitive's attributes (24 grid, no fill, currentColor, round caps) at the
+ * heavier 2.6 weight the component sets for them.
+ */
+const STROKE_GLYPH: Partial<Record<Tone, string>> = {
+  tip: 'm7.5 12.4 3 3 6-6.8',
+  caution: 'm15 9-6 6M9 9l6 6',
+};
+
+const FILL_GLYPH: Partial<Record<Tone, string>> = {
+  note: 'M12 6.4a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Zm-1.05 4.3a1.05 1.05 0 0 1 2.1 0v6a1.05 1.05 0 0 1-2.1 0Z',
+  important: 'M12 4.2 13.9 9l5.1.4-3.9 3.3 1.2 5L12 15.2 7.7 17.7l1.2-5L5 9.4 10.1 9Z',
+  warning:
+    'M10.95 7.2a1.05 1.05 0 0 1 2.1 0v5.4a1.05 1.05 0 0 1-2.1 0Zm1.05 8.1a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z',
+  notice:
+    'M12 4.5c.35 2.1.9 3.4 1.75 4.25C14.6 9.6 15.9 10.15 18 10.5c-2.1.35-3.4.9-4.25 1.75-.85.85-1.4 2.15-1.75 4.25-.35-2.1-.9-3.4-1.75-4.25C9.4 11.4 8.1 10.85 6 10.5c2.1-.35 3.4-.9 4.25-1.75C11.1 7.9 11.65 6.6 12 4.5Z',
+};
+
+const isQuote = tone === 'quote';
+const isImportant = tone === 'important';
+const eyebrow = title ?? TONE_LABEL[tone];
+const color = TONE_COLOR[tone];
+
+/**
+ * A stable id so the callout can name itself from its own visible eyebrow. A per-request
+ * counter rather than a random value, so a page renders identical markup every time.
+ */
+const COUNTER_SYMBOL = Symbol.for('nockerl:doc-callout-count');
+const locals = Astro.locals as unknown as Record<symbol, unknown>;
+const index = typeof locals[COUNTER_SYMBOL] === 'number' ? (locals[COUNTER_SYMBOL] as number) : 0;
+locals[COUNTER_SYMBOL] = index + 1;
+const eyebrowId = `nk-co-${index}-eyebrow`;
+
+/**
+ * The disc nudge the component always passed: it centres the coin on the first line box of
+ * a multi-line body, one half step tighter than the banner's.
+ */
+const LINE_NUDGE = 'calc((var(--font-line-height-20) - var(--space-6)) / 2 - var(--space-0-5))';
+
+/**
+ * Only the emphasised tone is wrapped. Every other tone renders the bare recessed card, so
+ * the DOM matches the component exactly rather than carrying a spare element.
+ */
+const Wrapper = isImportant ? 'div' : Fragment;
+const wrapperProps = isImportant ? { class: 'nk-co-frame', style: `--co-c: ${color}` } : {};
+---
+
+{/*
+  `role="note"` matches the shipped component. The accessible name comes from the visible
+  eyebrow via aria-labelledby rather than a duplicated aria-label, so the name can never
+  drift from what is on screen. The asides this replaces were labelled by their title, so
+  this is parity rather than a regression.
+*/}
+<Wrapper {...wrapperProps}>
+  <div
+    role="note"
+    aria-labelledby={eyebrowId}
+    class={isQuote ? 'nk-co nk-co--quote' : 'nk-co'}
+    style={`--co-c: ${color}`}
+  >
+    {
+      isQuote ? (
+        <span class="nk-co__quotemark" aria-hidden="true">
+          &ldquo;
+        </span>
+      ) : (
+        icon && (
+          <span class="nk-disc" aria-hidden="true" style={`--nk-disc-c: ${color}; --nk-disc-nudge: ${LINE_NUDGE}`}>
+            {
+              STROKE_GLYPH[tone] ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={STROKE_GLYPH[tone]} />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d={FILL_GLYPH[tone]} />
+                </svg>
+              )
+            }
+          </span>
+        )
+      )
+    }
+    <div class="nk-co__body">
+      <span
+        id={eyebrowId}
+        class={TONE_LABEL_COLORED[tone] ? 'nk-co__eyebrow nk-co__eyebrow--colored' : 'nk-co__eyebrow nk-co__eyebrow--muted'}
+      >
+        {eyebrow}
+      </span>
+      {/*
+        The authored body. It stays in the content cascade on purpose: no ancestor of this
+        slot carries the opt-out, so lists and paragraphs inside a callout space normally.
+      */}
+      <div class="nk-co__prose">
+        <slot />
+      </div>
+    </div>
+  </div>
+</Wrapper>
+
+{/*
+  The components' own stylesheets, imported rather than reproduced, so the recessed well,
+  the tone disc, the nested emphasis frames and the prose treatment all match the published
+  components and cannot drift from them.
+*/}
+<style is:global set:html={NOCKERL_CALLOUT_STYLES}></style>
+<style is:global set:html={NOCKERL_STATUS_DISC_STYLES}></style>

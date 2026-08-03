@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -60,13 +60,13 @@ background: linear-gradient(180deg, var(--color-card-surface2), var(--color-card
 | top | `--color-card-surface2` | `#333942` |
 | bottom | `--color-card-surface1` | `#2C313A` |
 
-<Aside type="note" title="The base card is a flat fill, not a gradient">
+<DocCallout tone="note" title="The base card is a flat fill, not a gradient">
 A resting [Surface / Card](/components/card/) fills with a **flat** `--color-card-surface1`:
 lift comes from the shadow + top catch-light, not a gradient. The `surface2 → surface1`
 gradient is reserved for **floating** surfaces ([Menu](/components/menu/),
 [Popover](/components/popover/)), where it out-specifies the flat `.nk-surface` fill to give a
 raised panel its extra sheen.
-</Aside>
+</DocCallout>
 
 ### 3. The ground top-light: a dark-only radial wash
 
@@ -140,10 +140,10 @@ All four gradients obey [design law 7](/foundations/design-laws/) (motion):
 - **The faceted field re-tints, it does not tween.** Its motion is a per-frame luminance shift
   on fixed geometry, a static field that breathes, not an animated gradient.
 
-<Aside type="caution">
+<DocCallout tone="warning">
 A colored glow or neon emission is **not** how Nockerl signals state or depth. See
 [Design laws](/foundations/design-laws/) and [Elevation &amp; depth](/foundations/elevation-and-depth/).
-</Aside>
+</DocCallout>
 
 ## Not gradients
 

@@ -5,7 +5,7 @@ status: review
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -24,12 +24,12 @@ load-bearing of the [design laws](/foundations/design-laws/).
 - **The fill is static; the shadow grows.** Moving a card up a tier deepens the shadow. It
   never lightens the surface. `--color-card-surface1` is the resting fill at every rung.
 
-<Aside type="caution" title="The law">
+<DocCallout tone="warning" title="The law">
 Depth = a **neutral (or tinted-black) drop shadow** + a **1px top catch-light**, and
 nothing else. A colored `box-shadow`, a blurred halo, or any glow/neon is a **defect**.
 Focus is an `outline` (or an inset ring), never a colored shadow. See
 [Design laws](/foundations/design-laws/) rules 1 to 3.
-</Aside>
+</DocCallout>
 
 ## The two tints
 
@@ -155,11 +155,11 @@ Error / warning / success swap the **border** color (never the only signal, alwa
 with an icon + helper text); disabled and read-only flatten the inner shadow but stay
 visible at ≥ 3:1. The sink shadow is present in every state: a field never lifts.
 
-<Aside type="note" title="Focus rings, not colored shadows">
+<DocCallout tone="note" title="Focus rings, not colored shadows">
 The cyan ring above is an `outline`-shaped `box-shadow` at a fixed alpha that hugs the
 control. It is a *ring*, not a blurred halo. Depth stays neutral; the only color a shadow
 ever carries is a focus/validation ring, and even that is an outline, not a drop shadow.
-</Aside>
+</DocCallout>
 
 ## Per-platform
 

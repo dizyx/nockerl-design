@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -83,7 +83,7 @@ icon library; filled is a compositing decision, not a glyph variant.
 
 ## Illustrations vs utility glyphs
 
-<Aside type="note" title="Ratified split">
+<DocCallout tone="note" title="Ratified split">
 There are **two** classes of mark, and they source differently:
 
 - **Illustrations:** the larger, brand-expressive art in **empty states** (an empty inbox, a
@@ -98,7 +98,7 @@ There are **two** classes of mark, and they source differently:
 The line is **size and role**, not taste: a functional control glyph is native; a brand
 illustration is ours. Iconography never forks the brand on the small stuff and never cedes the
 brand on the big stuff.
-</Aside>
+</DocCallout>
 
 ## Interactivity reads from treatment
 

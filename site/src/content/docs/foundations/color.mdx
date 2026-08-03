@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -55,11 +55,11 @@ per-theme value lives in **one** token (`accentWarm` in `color.{dark,light}.json
 the two themes identical later is a one-line change. (Named `accent.warm`, not
 `accent.secondary`, because that token name is already taken by a cool categorical accent.)
 
-<Aside type="caution" title="Not the warning amber">
+<DocCallout tone="warning" title="Not the warning amber">
 The warm accent is **not** a status color. Warning amber (`#FFC107`) stays a *functional*
 signal; the orange is a *brand* accent for emphasis. They are deliberately different colors
 and must not be conflated.
-</Aside>
+</DocCallout>
 
 **Restraint is the whole point. Cyan stays forward.** The orange is a *seasoning, not an
 ingredient*: aim for **at most one** orange element in view, and reach for it as a **line or
@@ -111,12 +111,12 @@ introduced above for emphasis.
   <div class="nk-swatch"><div class="nk-swatch__chip" style="background:#0cc0df"></div><div class="nk-swatch__meta"><div class="nk-swatch__name">info</div><div class="nk-swatch__val">#0CC0DF · cyan</div></div></div>
 </div>
 
-<Aside type="note" title="Future: brand-flexed status (exploration, deferred)">
+<DocCallout tone="note" title="Future: brand-flexed status (exploration, deferred)">
 We may revisit the default red / amber / green status trio to feel more *us*, leaning on
 **grayscale + cyan + (possibly) the warm orange** as a smaller, more theme-native signal set,
 without sacrificing comprehension (status stays color **+ icon + text**). Open question,
 intentionally deferred. Captured here so it isn't lost, not yet decided.
-</Aside>
+</DocCallout>
 
 ## The AA contrast rule
 
@@ -129,11 +129,11 @@ light themes**:
   disabled must read as *clearly inert*, not invisible.
 - **Never color alone.** Errors are color + icon + text; status dots pair with a label.
 
-<Aside type="caution">
+<DocCallout tone="warning">
 A colored glow or neon emission is **not** how Nockerl signals state or depth. Status is
 hue + icon + text on a static surface; depth is a neutral shadow + catch-light. See
 [Design laws](/foundations/design-laws/) and [Elevation &amp; depth](/foundations/elevation-and-depth/).
-</Aside>
+</DocCallout>
 
 ## Tokens
 

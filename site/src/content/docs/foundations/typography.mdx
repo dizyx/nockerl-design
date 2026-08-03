@@ -8,15 +8,15 @@ platforms: [web, android, swift]
 import StatusBadge from '../../../components/StatusBadge.astro';
 import Example from '../../../components/Example.astro';
 import TypeSpecimen from '../../../components/TypeSpecimen.tsx';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
-<Aside type="tip" title="Migrating a macOS app?">
+<DocCallout tone="tip" title="Migrating a macOS app?">
 Apple reuses text-style names across iOS and macOS at **different sizes**. Read the
 [macOS text-style → token snap table](/foundations/platform-gotchas/#macos) before
 mapping any `title2` / `headline` / `body` to this ramp.
-</Aside>
+</DocCallout>
 
 The Nockerl typeface is **Outfit** (a clean geometric sans) for all UI text, and
 **Space Mono** for code, ticket IDs, and technical metadata. The system is **thin-forward**:
@@ -88,10 +88,10 @@ positive value anywhere:
 | `font.tracking.snug` | -0.02em | large lowercase display + headings (a whisper of optical tightening) |
 | `font.tracking.normal` | 0 | body, prose, mono - the default, and the loosest caps ever go |
 
-<Aside type="note" title="Decided and shipped">
+<DocCallout tone="note" title="Decided and shipped">
 This replaced ~197 inline `letter-spacing` literals: **167** swept to the three tokens, every
 uppercase label pulled in from a wide spread (`.1em` / `.08em`) to `-0.03em`.
-</Aside>
+</DocCallout>
 
 ## The ramp
 
@@ -132,11 +132,11 @@ on how the text is read.
 All line-heights are **quantized to the 4px grid** (14, 16, 20, 24, 26, 28, 32, 36, 40, 44)
 so text rhythm stays aligned with the spacing system.
 
-<Aside type="tip">
+<DocCallout tone="tip">
 Bind to a <em>role</em> (<code>type.body.large</code>), not a raw size. The role carries the
 matched family + weight + size + line-height as one unit, so a tier-wide change stays
 internally consistent, and the thin-forward weights flow with it.
-</Aside>
+</DocCallout>
 
 ## A note on italic
 

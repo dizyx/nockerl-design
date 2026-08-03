@@ -6,7 +6,7 @@ platforms: [web, android, swift]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -19,11 +19,11 @@ Proving your app *matches* canon (not just avoids traps) is the
 [Conformance](/foundations/conformance/) spec. Run its L1 value-parity attestation
 as you adopt.
 
-<Aside type="tip" title="Found a new one?">
+<DocCallout tone="tip" title="Found a new one?">
 This page is the extensible home for per-platform traps. Hit something that cost you an
 hour? File it (`nockerl report -p nockerl-design`) with the symptom and the fix. It
 becomes an entry here, and the next app inherits the hour.
-</Aside>
+</DocCallout>
 
 ## macOS
 
@@ -50,13 +50,13 @@ Validated against Voice's shipped views. Note how the "ramp holes" people
 report at 17pt and 22pt mostly dissolve once the *real macOS sizes* are used. The
 holes were iOS sizes that never belonged on this platform.
 
-<Aside type="caution" title="11pt / 13pt intermediates: not yet settled">
+<DocCallout tone="warning" title="11pt / 13pt intermediates: not yet settled">
 Whether the ramp gains intermediate steps for the two *true* macOS residuals (11pt
 badge-scale, 13pt mono field-scale) is **still open**. Ramp granularity is a canon change,
 so no step is added until the question is decided. **Interim, per the
 table's own logic:** snap **11 → `size-10`** and **13 → `size-14`** (or the mono ramp
 for mono fields). Do not mint local intermediates while the question is open.
-</Aside>
+</DocCallout>
 
 Also ratified for macOS migrators: mouse-driven **sidebar rows disable the focus
 ring** (`focusable(false)` + `focusEffectDisabled`, gated 14+), platform-idiomatic,
