@@ -266,7 +266,7 @@ export function NockerlCallout({ children, tone = 'note', title, icon = true }: 
             // the rest bind the shared ALERT_INTENT via the mapped AlertIntent. Either
             // path resolves to the same --co-c token, so the coin is pixel-identical.
             intent={tone === 'note' ? 'info' : DISC_INTENT[tone]}
-            color={tone === 'note' ? TONE_COLOR.note : undefined}
+            {...(tone === 'note' ? { color: TONE_COLOR.note } : {})}
             // the first-line-box centring nudge Callout's disc always carried (one
             // half-step tighter than the banner's, kept verbatim).
             lineNudge="calc((var(--font-line-height-20) - var(--space-6)) / 2 - var(--space-0-5))"

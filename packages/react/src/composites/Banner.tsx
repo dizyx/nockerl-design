@@ -206,7 +206,7 @@ export function NockerlBanner({
           // bind the shared ALERT_INTENT via the mapped AlertIntent. Either path
           // resolves to the same --bn-c token, so the coin is pixel-identical.
           intent={intent === 'neutral' ? 'info' : DISC_INTENT[intent]}
-          color={intent === 'neutral' ? INTENT_COLOR.neutral : undefined}
+          {...(intent === 'neutral' ? { color: INTENT_COLOR.neutral } : {})}
           // INSET (ratified): the banner sinks its status coin into a recessed
           // well. The intent color moves to the glyph + a soft wash + a whisper border.
           // Informational + non-interactive (D7); status still lives in a disc (Law 6).
