@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import MultiSelectDemo from '../../../components/demos/MultiSelectDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -188,7 +188,7 @@ field) with a `checkmark` option list. State is a `Set<String>` toggled per row.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Multi-select vs. Combobox: pick by emphasis">
+<DocCallout tone="note" title="Multi-select vs. Combobox: pick by emphasis">
 Both can multi-select, but they emphasize different jobs. The
 [**Combobox**](/components/combobox/) leads with **type-to-filter autocomplete**, a
 text-field well you type in, results filter live. **Multi-select** leads with
@@ -196,9 +196,9 @@ text-field well you type in, results filter live. **Multi-select** leads with
 count and **select-all / clear-all**, token chips with `+N more` overflow, and an
 optional `max`. Reach for the Combobox when finding the item is the hard part; reach for
 multi-select when managing the chosen set is.
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **No shipped component on Android or Swift.** Web is the only platform with an intended
   `MultiSelect` component. Android ships the pattern (checkbox rows + `MutableSet<String>`
   in `AskUserQuestionSheet.kt`); Swift composes `Chip` + `FlowLayout` + a `checkmark` list.
@@ -207,4 +207,4 @@ multi-select when managing the chosen set is.
   trailing **`checkmark` glyph**. One selected-state expression should win.
 - **Bulk actions + count summary + `max`** exist only in the web spec so far. Android’s
   sheet and Swift’s assembly have no select-all / clear-all header or count mode yet.
-</Aside>
+</DocCallout>

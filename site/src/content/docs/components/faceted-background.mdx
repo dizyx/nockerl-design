@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FacetedBackgroundDemo from '../../../components/demos/FacetedBackgroundDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -118,7 +118,7 @@ from `NockerlTheme.facetBaseDark` / `facetBaseLight`.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (this surface lives natively in Voice + Android)">
+<DocCallout tone="warning" title="Cross-platform drift (this surface lives natively in Voice + Android)">
 The faceted field is **canonical on Android** (`ChatFeedBackground.kt`, behind the
 chat feed) and a faithful **Swift port** in Voice (`FacetBackground.swift`). Web is
 **derived**: the demo re-implements the exact same mesh on a token-colored `<canvas>`.
@@ -133,4 +133,4 @@ Honest divergences:
   to one `canvas-edge` token at one alpha.
 - **Base tone:** both read the **`chat-bg`** token (`#181B20` dark); the per-facet
   shift is a neutral per-channel luminance add (no hue, no glow) on all three.
-</Aside>
+</DocCallout>

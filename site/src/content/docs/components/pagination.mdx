@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import PaginationDemo from '../../../components/demos/PaginationDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -147,7 +147,7 @@ lazily on scroll. These are the knobs that exist, listed honestly (see drift).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Numbered pagination is a **web/dashboard pattern**. Neither shipped app has it,
 so the numbered control is designed originally here from the laws + the button
 vocabulary (current page = the button-primary cyan selected fill).
@@ -159,4 +159,4 @@ vocabulary (current page = the button-primary cyan selected fill).
 - The web `total` / `pageSize` map cleanly onto the apps' `total` / `limit`; only
   the **numbered + page-size UI** is web-specific. A shared "load more" control is
   the closest cross-platform primitive.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FabDemo from '../../../components/demos/FabDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <FabDemo client:visible />
 </Example>
 
-<Aside type="note" title="Why the speed-dial isn't a Popover or Menu">
+<DocCallout tone="note" title="Why the speed-dial isn't a Popover or Menu">
 The speed-dial is a distinct **idiom**, not a surface variant. It deliberately does not fold
 onto the Popover / Menu surface. A Popover or Menu is **one overlay surface** holding a list of
 text rows; a speed-dial is a stack of **individual floating mini-actions**, each a real
@@ -30,7 +30,7 @@ neutral drop shadow + a top catch-light + the `card-surface` fill + a hairline, 
 radius. That is the chip-scale of the very same Popover recipe (no glow, no colored shadow), and
 the open / close behavior is the shared **NockerlOverlay** (scrim, focus-trap, Esc). Same laws,
 the right idiom.
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -189,8 +189,8 @@ comes from the environment + the style `Configuration`. There are no state param
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
-- **Fill** *(resolved in [adjudication 2026-07-02 · B13])*: the FAB fill is a **solid accent cyan**
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
+- **Fill** *(resolved)*: the FAB fill is a **solid accent cyan**
   circle. The tonal and outline treatments are retired. The shipped Android FAB (today a tonal
   `surfaceContainerHighest` circle with a cyan outline + icon) conforms to the solid accent.
 - **No FAB wrapper:** Android has no `NockerlFab`, so call sites compose
@@ -201,4 +201,4 @@ comes from the environment + the style `Configuration`. There are no state param
   are the intended styles, not yet implemented.
 - **Sizes:** web exposes `size` (small/standard/large); Compose uses distinct builders;
   Swift is fixed.
-</Aside>
+</DocCallout>

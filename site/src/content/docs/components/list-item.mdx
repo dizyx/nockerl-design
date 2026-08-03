@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ListItemDemo from '../../../components/demos/ListItemDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -19,7 +19,7 @@ import { Aside } from '@astrojs/starlight/components';
   <ListItemDemo client:visible />
 </Example>
 
-<Aside type="tip" title="Collapsible / accordion variant">
+<DocCallout tone="tip" title="Collapsible / accordion variant">
 Pass `expandable` (with `expanded` + `onToggle` + a `details` body) to turn a row into a
 collapsible accordion, the pattern the native Android messages list uses: tap a row to
 reveal its message body, tap again to collapse. Key behaviours:
@@ -35,7 +35,7 @@ reveal its message body, tap again to collapse. Key behaviours:
 - **Selection vs expansion:** selection now renders its cyan check in the **leading** slot
   (a cyan edge bounding the run, cyan ink, and a leading mark), so selection and the trailing
   nav/expand chevron no longer compete for the one trailing slot.
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -207,7 +207,7 @@ building blocks the shipped `HistoryView` row uses. Tracked as a conformance ite
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The grammar is shared; these are the real divergences between the shipped platforms, tracked
 in the [Review queue](/review-queue/):
 
@@ -215,17 +215,17 @@ in the [Review queue](/review-queue/):
   there is no `NockerlListItemRow` equivalent. Status, spacing, and the leading mark are
   re-implemented per row, exactly the drift the Compose grammar exists to prevent. Extracting
   a shared Swift row is the open conformance item.
-- **Leading mark shape** *(resolved by [adjudication 2026-07-02 · B20])*: the leading mark is an
+- **Leading mark shape** *(resolved)*: the leading mark is an
   **icon** (shape + color dual-coding), **never a bare colored dot**. Compose ships the icon at
   18dp; web now renders it **inside the `NockerlListItem` primitive** (pass `status`, get the B20
   icon by default; no wrapper needed). Voice (a colored dot / capsule badge today) is the
   remaining conformance item.
 - **Selection model:** the one selection expression is a **cyan edge bounding the run, cyan
-  ink and a check, never a left stripe and never a wash**. The earlier adjudication set this as a
-  soft cyan wash; design laws §6 (state by outline, not fill) superseded that, and the web row now
+  ink and a check, never a left stripe and never a wash**. An earlier draft used a soft cyan
+  wash; design law 6 (state by outline, not fill) superseded that, and the web row now
   carries the outline. The web row exposes an explicit `selected`; the Compose scaffold (a caller
   `modifier` background) still fills, so Android is the platform that lags here, and Voice has no
   persistent selection at all (it toggles *expanded*).
 - **Trailing control:** web makes the trailing toggle a separate `role="switch"`; Voice uses
   `NockerlIconButton`s; Compose leaves it to the row's `trailing` slot.
-</Aside>
+</DocCallout>

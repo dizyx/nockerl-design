@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DiffViewerDemo from '../../../components/demos/DiffViewerDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -134,18 +134,18 @@ is nothing to diff; a before/after would be two raw `.monospaced` `Text` blocks.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Sourced from the shipped Android `DiffView` + `computeLineDiff`; these are the real divergences:
 
 - **Split view, hunk `@@` headers, `+N/-M` stats, intra-line word highlight, and
-  collapse/expand** *(resolved in [adjudication 2026-07-02 · B11])*: these are **web-only
+  collapse/expand** *(resolved)*: these are **web-only
   (documented)**. Android's `DiffView` stays a single unified column (one gutter, `+/-` prefix,
   warm washes); the richer affordances are the dedicated web viewer's, not a drift to reconcile.
 - **Swift has no component.** Voice ships no diff (no tool-call surface). The web/Compose
   API is the target; Swift is queued.
-- **Line numbers** *(resolved in [adjudication 2026-07-02 · B11])*: line numbering **unifies on
+- **Line numbers** *(resolved)*: line numbering **unifies on
   the dual `oldNo` / `newNo` shape** everywhere. Android (today one `DiffLine.lineNumber`) adopts
   the dual-number model the web `computeLineDiff` already carries.
 - **Language pill:** there is no `file-type` token for **Swift**, so its pill falls back
   to a categorical violet. Add `file-type.swift` when Voice gains a real surface.
-</Aside>
+</DocCallout>

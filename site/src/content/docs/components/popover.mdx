@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import PopoverDemo from '../../../components/demos/PopoverDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -156,16 +156,16 @@ SwiftUI exposes the popover as the native `.popover` view modifier driven by a
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Popover vs. menu vs. tooltip vs. dialog">
+<DocCallout tone="note" title="Popover vs. menu vs. tooltip vs. dialog">
 Four anchored/floating siblings. Pick by content and modality:
 - **Popover** (this page) is a **non-modal anchored panel of free-form content**: a profile card, a small form, a filter panel. Opens on click/focus, points a beak at its trigger, never dims the ground.
 - **[Menu](/components/menu/)** is the same anchor + beak machinery but holds a **list of action items** (icons, shortcuts, checks), not arbitrary content.
 - **[Tooltip](/components/tooltip/)** is a **tiny, non-interactive hover hint** (one line, no controls, no focus). When you need a field or a button inside, it's a popover.
 - **[Dialog](/components/dialog/)** is **modal and centered**: it dims the ground and traps focus until resolved, and is *not* anchored to a trigger.
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Android has no shipped popover.** `NockerlSurface.kt` reserves tier-3 elevation for "popovers", but no `NockerlPopover` exists yet; the Kotlin sample is the intended API on Material `Popup` (`RichTooltip` / `TooltipBox` are the nearest stock substrate). Drift until built.
 - **Beak:** web + macOS draw a beak; the intended Android `Popup` would need a custom one (Material `Popup` has none).
 - **Width:** macOS `InfoTip` fixes `width: 250`; web sizes per content. Tokenize a shared popover width when Android lands.
-</Aside>
+</DocCallout>

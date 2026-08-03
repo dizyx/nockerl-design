@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import LinkDemo from '../../../components/demos/LinkDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -140,7 +140,7 @@ component. These are the intended bindings.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The treatment is unified (cyan accent + underline); the implementations differ:
 
 - **No shared link component yet.** Web documents the intended `@dizyx/nockerl-react`
@@ -151,4 +151,4 @@ The treatment is unified (cyan accent + underline); the implementations differ:
   on Android should pin `TextDecoration.Underline` so links never read as plain accent text.
 - **Link color token.** Bind every platform to the single accent (`accent.primary`), with no
   per-platform link hue.
-</Aside>
+</DocCallout>

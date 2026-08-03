@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import MarkdownContentDemo from '../../../components/demos/MarkdownContentDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -149,15 +149,15 @@ Nockerl Voice has **no markdown component**; transcripts render as plain
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Swift has no markdown surface.** Nockerl Voice is a dictation app; transcripts
   are plain `Text(record.text)`. There is no styled-prose renderer to mirror. The
   Swift code/params above are the *intended* API, flagged here.
-- **Heading scale** *(resolved in [adjudication 2026-07-02 · B10])*: markdown ships a **shared
+- **Heading scale** *(resolved)*: markdown ships a **shared
   two-density ramp**: compact (chat) + comfortable (docs). Android (today the compact ramp only:
   h1 → `title.medium`, h2 → `title.small`, h3/h4 → `label.large`) gains the comfortable ramp; the
   demo's docs density is that shared second density, not a web-only extension.
-- **Code well** *(resolved in [adjudication 2026-07-02 · B10])*: code wells use the **`canvas-alt`
+- **Code well** *(resolved)*: code wells use the **`canvas-alt`
   recessed token, one definition shared with [Code block](/components/code-block/)**. Android's
   alpha-washed inline (10%) / fenced (7%) backgrounds give way to the shared recessed-well token.
-</Aside>
+</DocCallout>

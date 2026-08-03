@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import FloatingPillsDemo from '../../../components/demos/FloatingPillsDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -24,7 +24,7 @@ import { Aside } from '@astrojs/starlight/components';
 <Fragment slot="typescript">
 
 ```tsx
-// Web: SHIPPED in @dizyx/nockerl-react (promoted from this page's canon, task 2654).
+// Web: SHIPPED in @dizyx/nockerl-react, promoted from this page's canon.
 // NockerlSessionChipsBar floats a scroll-fading cluster of keycaps OVER content,
 // distinct from the inline NockerlChip. Positioning is HOST-owned (place it
 // absolutely over the feed, top or bottom, exactly like native).
@@ -160,7 +160,7 @@ suggestion-pill type on this platform yet (see drift note).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 These are the real divergences between the shipped platforms:
 
 - **Different scope per platform.** **Android** ships the full surface: a scrolling row of
@@ -179,4 +179,4 @@ These are the real divergences between the shipped platforms:
   do). Swift should consume the token.
 - **Context line.** The per-keycap usage line (cyan → amber → red) is **Android + web**; Swift’s
   pill has none.
-</Aside>
+</DocCallout>

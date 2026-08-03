@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import PanelDemo from '../../../components/demos/PanelDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,14 +18,14 @@ import { Aside } from '@astrojs/starlight/components';
   <PanelDemo client:visible />
 </Example>
 
-<Aside type="tip" title="The dev-console SIDE PANEL is a view, not a component">
-Per the agent-console de-phantom verdict (task 2656): the web console's dockable side
+<DocCallout tone="tip" title="The dev-console SIDE PANEL is a view, not a component">
+The web console's dockable side
 panel (inspector, outline, agent details) is a **composition of this Panel** (with its
 working splitter) beside the main surface, optionally inside a
 [`Drawer`](/components/drawer/) on narrow widths. It ships as an app VIEW; no
 `DevSidePanel` component exists or is planned. If drag-to-dock behavior is ever needed,
 it lands here as a Panel extension, never a fork.
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -189,7 +189,7 @@ theme tokens (no panel wrapper).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Panel vs. card vs. drawer: a **panel** is a persistent, in-layout region defined
 by a header bar + body (+ footer). It is larger than a [card](/components/card/) (a
 content tile) and, unlike a [drawer](/components/drawer/), it stays in the layout
@@ -209,4 +209,4 @@ rather than overlaying as an edge-anchored sheet. The real divergences:
   opaque sidebar fights the facet background). Compose has no split-pane idiom yet.
 - **Collapse:** web animates grid height; Compose uses `AnimatedVisibility`; Swift
   `SettingsCard` has no collapse. One collapse affordance needs to win.
-</Aside>
+</DocCallout>

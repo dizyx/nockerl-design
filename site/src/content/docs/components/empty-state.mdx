@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import EmptyStateDemo from '../../../components/demos/EmptyStateDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -180,14 +180,14 @@ title/description; the actions/label come from view-builder closures.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The web spec is in review; the shipped platforms diverge on the empty-state primitive:
 
 - **No shared component.** Android hand-rolls a centered `Column` per screen (no
   `NockerlEmptyState` yet); Voice uses the **system** `ContentUnavailableView`;
   web is unshipped. The Compose pattern above should be promoted to a real
   `core/ui` composable so all empties match.
-- **Icon language** *(resolved in [adjudication 2026-07-02 · B17])*: empty-state illustrations are
+- **Icon language** *(resolved)*: empty-state illustrations are
   **our stroke-SVG brand set on all platforms** (the web's token-colored inline strokes); utility
   glyphs stay platform-native (Material / SF). Android's `ImageVector` tint and Voice's SF Symbols
   give way to the shared brand set for the illustration slot.
@@ -197,4 +197,4 @@ The web spec is in review; the shipped platforms diverge on the empty-state prim
 - **Title role.** Web/Android settle on `title.medium/large`; the chat/no-session
   arm on Android still uses `displayMedium` + a wordmark, which is out of scope for
   the generic empty state.
-</Aside>
+</DocCallout>

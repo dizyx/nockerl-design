@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import IconButtonDemo from '../../../components/demos/IconButtonDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -146,7 +146,7 @@ pressed) flows from the SwiftUI environment; honor `.disabled(_:)` for the dimme
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Cross-platform parity (published packages)">
+<DocCallout tone="note" title="Cross-platform parity (published packages)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
 (`NockerlDesign`) packages now share both idioms and the a11y contract. The earlier drift
 is resolved:
@@ -166,4 +166,4 @@ Remaining, minor differences:
 - **Sizing knob:** Compose/web expose an explicit `size` (and Compose `iconSize`); Swift's
   visual is fixed at 40pt (the shared control height). Disabled state is honored via
   `.disabled(_:)` on Swift rather than an `enabled` parameter.
-</Aside>
+</DocCallout>

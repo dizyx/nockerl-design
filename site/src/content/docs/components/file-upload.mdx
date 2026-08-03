@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import FileUploadDemo from '../../../components/demos/FileUploadDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -142,7 +142,7 @@ Not shipped in Nockerl Voice. The table is the intended native API: SwiftUI's
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The dropzone, file list, per-file progress, and success / error / rejected states
 are **web-only** today, designed originally from the laws + the Button / TextField
 / progress vocabulary, since the apps don't ship them:
@@ -155,4 +155,4 @@ are **web-only** today, designed originally from the laws + the Button / TextFie
 - The signature **dropzone** reuses the recessed-well + dashed-border look from the
   text field; the **progress bar** reuses the gauge track; **browse/upload** reuse
   the button ladder, so when the apps adopt it, it already matches.
-</Aside>
+</DocCallout>
