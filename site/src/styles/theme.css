@@ -1,9 +1,24 @@
 /*
  * Nockerl Design: Starlight theme.
- * Drives Starlight's OWN CSS variables (`--sl-color-*`) directly, per color mode, so
- * dark/light actually switch. (We do NOT route through tokens.css's `--color-*`, which
- * is scoped to a `.dark` class; Starlight toggles `[data-theme]`, so those never fire.
- * That was the "dark doesn't work / it's all light" bug.)
+ *
+ * The docs framework paints its own chrome (nav, sidebar, page background, code surface)
+ * from ITS variables, the `--sl-color-*` family. Those are its public API and it does not
+ * read ours, so this file has to populate them. That part is not optional.
+ *
+ * What IS a known cost: the values below are literal hexes that duplicate the token
+ * palette, so a token change does not reach the docs chrome until someone edits this file
+ * too. Do not "fix" that by deleting the block. Deleting it leaves the framework with no
+ * palette at all.
+ *
+ * An earlier note here claimed the duplication was forced, because our `--color-*` tokens
+ * only fired under a `.dark` class while the framework toggles `[data-theme]`. That is no
+ * longer true: the published token package emits `.dark, :root[data-theme='dark']`, so our
+ * tokens DO respond to the framework's toggle. Component-level rules in this file
+ * accordingly consume `var(--color-*)` directly and switch correctly.
+ *
+ * That makes single-sourcing possible: these could become `var(--color-*)` references
+ * rather than literals. It is a real change with real theme-switching risk, so it wants
+ * its own change and its own visual check rather than riding along with something else.
  *
  * Dark is the brand default. Cyan #0CC0DF accent. Outfit (thin-forward type system; 500
  * is the bold cap; hierarchy from size). Neutral shadows only:
@@ -402,93 +417,43 @@ site-search .dialog-frame {
   flex: 0 0 auto;
 }
 
-.nk-tabs {
-  margin: 1rem 0;
-}
-.nk-tabs__list {
-  display: flex;
-  gap: 4px;
-  border-bottom: 1px solid var(--nk-hairline);
-  padding: 0;
-  list-style: none;
-}
-.nk-tabs__tab {
-  appearance: none;
-  background: transparent;
-  border: 1px solid transparent;
-  border-bottom: none;
-  color: var(--nk-muted);
-  font-family: var(--sl-font);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 10px 10px 0 0;
-  cursor: pointer;
-  transition:
-    color 0.12s,
-    background-color 0.12s;
-}
-.nk-tabs__tab:hover {
-  color: var(--nk-on);
-  background: color-mix(in srgb, var(--nk-on) 6%, transparent);
-}
-/*  + design-laws §11: this rule was hardcoded hexes: dark-theme values that never
-   followed the light theme, now resolved from the accent tokens.
-   NO selection border here, deliberately: this tab states its choice with a SOLID accent
-   FILL, and a 45% accent edge painted over that same accent fill is a visual no-op. The
-   base rule's `1px solid transparent` still holds the layout, so the box doesn't shift. */
-.nk-tabs__tab[aria-selected='true'] {
-  color: var(--color-on-accent);
-  background: var(--color-accent-primary);
-}
-/* §11: the focus ring's WIDTH and behaviour are deliberately unchanged (a11y); only the
-   hardcoded hex is resolved to the accent token, so the ring follows the light theme too. */
-.nk-tabs__tab:focus-visible {
-  outline: var(--space-0-5) solid var(--color-accent-primary);
-  outline-offset: var(--space-0-5);
-}
-.nk-tabs__panel {
-  border: 1px solid var(--nk-hairline);
-  border-radius: 0 16px 16px 16px;
-  padding: 20px;
-  background: var(--nk-card);
-}
-.nk-tabs__panel[hidden] {
-  display: none;
-}
-
 .nk-props code {
   font-family: var(--sl-font-mono);
   font-size: 0.85em;
 }
 .nk-props .nk-props__name {
   color: var(--sl-color-text-accent);
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
 }
 .nk-props .nk-props__required {
-  color: #ef5350;
-  font-weight: 700;
+  color: var(--color-status-error);
+  font-weight: var(--font-weight-medium);
 }
 
 .nk-example {
   margin: 1.25rem 0;
 }
+/* The demo frame is a card, so it uses the card depth recipe rather than restating one:
+   a NEUTRAL drop shadow off the elevation ladder plus a top catch-light. It previously
+   mixed its own black and white alphas, which is the exact shape of the thing the depth
+   law bans, and it drifted from every other lifted surface on the site. */
 .nk-example__frame {
   background: var(--nk-card);
-  border: 1px solid var(--nk-hairline);
-  border-radius: 16px;
-  padding: 28px 24px;
+  border: var(--space-px) solid var(--nk-hairline);
+  border-radius: var(--radius-card);
+  padding: var(--space-6) var(--space-5);
   box-shadow:
-    0 6px 18px -8px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 var(--space-1) var(--elevation-level2) calc(var(--space-2) * -1)
+      color-mix(in srgb, var(--color-shadow-tint) 60%, transparent),
+    inset 0 var(--space-px) 0 var(--color-surface-highlight);
 }
 .nk-example__caption {
-  font-size: 11px;
+  font-size: var(--font-size-10);
   letter-spacing: var(--font-tracking-tight);
   text-transform: uppercase;
   color: var(--nk-muted);
-  font-weight: 600;
-  margin-bottom: 14px;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-3);
 }
 
 .nk-swatches {
@@ -502,11 +467,11 @@ site-search .dialog-frame {
      lines its meta text wraps to. */
   align-items: start;
 }
-/* : swatch cards inherit a vertical-flow top-margin from the prose (Starlight spaces
-   consecutive content), which inside this grid pushes every non-first swatch DOWN so the
-   first rides higher. The grid spaces via `gap`; neutralize the leaked flow margin. Same
-   systemic class as the Select-row / Checkbox alignment fixes (see api-conventions.md). */
-.nk-swatches > .nk-swatch { margin-top: 0; }
+/* The swatch grid carries `not-content` on its root in the page markup, which exempts the
+   whole subtree from the docs prose flow cascade. The local `margin-top: 0` patch that used
+   to live here is gone with it: the grid spaces via `gap` alone. Note this also closes a
+   16px gap the cascade was injecting between `__name` and `__val` inside `__meta`, which is
+   the correct spacing, not a regression. */
 /* Each swatch IS a real card, built from the SAME tokens the Surface/Card primitive
    composes (see components/primitives/Surface.tsx): the card-surface1 fill, the
    card-hairline border at --space-px, the --radius-card radius, and the depth recipe =
@@ -537,7 +502,7 @@ site-search .dialog-frame {
   min-height: 78px;
 }
 .nk-swatch__name {
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
   color: var(--nk-on);
 }
 .nk-swatch__val {

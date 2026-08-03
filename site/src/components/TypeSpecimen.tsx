@@ -55,7 +55,6 @@ const STYLES = `
 
 /* ── Prose ──────────────────────────────────────────────────────────────────── */
 .nk-ts__prose { font: var(--type-body-large-font-weight) var(--type-body-large-font-size)/1.62 var(--font-family-sans); }
-.nk-ts__prose > :first-child { margin-top: 0; }
 .nk-ts__prose h3 { font: var(--type-headline-small-font-weight) var(--type-headline-small-font-size)/1.25 var(--font-family-sans);
   letter-spacing: var(--font-tracking-snug); margin: var(--space-6) 0 var(--space-2); }
 .nk-ts__prose h3 strong { font-weight: var(--font-weight-thin); }    /* heading emphasis inverts to thin */
@@ -103,7 +102,7 @@ const WEIGHTS: Array<{ tag: string; var: string }> = [
 /** The live type specimen mounted on /foundations/typography/. */
 export default function TypeSpecimen() {
   return (
-    <div className="nk-ts">
+    <div className="nk-ts not-content">
       <style>{STYLES}</style>
 
       {/* Brand lockup */}

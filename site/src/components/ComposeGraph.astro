@@ -34,7 +34,7 @@ const slotStr = (slots: Record<string, Slot> | null): string =>
 const vByType = Object.entries(g.counts.byType).sort();
 ---
 
-<div class="cg">
+<div class="cg not-content">
   <div class="cg__cards">
     <div class="cg__card"><span class="cg__n">{g.counts.components}</span><span class="cg__l">components</span></div>
     <div class="cg__card"><span class="cg__n">{g.counts.withContract}</span><span class="cg__l">with a contract</span></div>
@@ -81,17 +81,30 @@ const vByType = Object.entries(g.counts.byType).sort();
 </div>
 
 <style>
-  .cg__cards { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0 1.5rem; }
-  .cg__card { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.75rem 1rem; border: 1px solid var(--sl-color-gray-5); border-radius: 0.6rem; background: var(--sl-color-gray-7, var(--sl-color-black)); min-width: 8rem; }
+  /* This subtree opts out of the docs prose cascade via `not-content` on the root, so it
+     no longer inherits the 16px flow margin that was staggering `.cg__cards`. That cascade
+     was also the ONLY thing spacing the headings, paragraphs and tables below, so their
+     margins are declared here explicitly. Leaving them implicit is what made the opt-out
+     look unsafe; owning them is what makes it safe. */
+  .cg h2 { margin: var(--space-8) 0 var(--space-3); }
+  .cg p { margin: 0 0 var(--space-3); }
+  .cg .cg__t { margin: 0 0 var(--space-6); }
+
+  .cg__cards { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-4) 0 var(--space-6); }
+  .cg__card { display: flex; flex-direction: column; gap: var(--space-0-5); padding: var(--space-3) var(--space-4);
+    border: var(--space-px) solid var(--color-card-hairline); border-radius: var(--radius-card);
+    background: var(--color-card-surface1); min-width: 8rem; }
   .cg__card--warn { border-color: var(--color-status-warning); }
   .cg__card--ok { border-color: var(--color-status-success); }
-  .cg__n { font-size: 1.5rem; font-weight: var(--font-weight-bold); line-height: 1; }
-  .cg__l { font-size: 0.75rem; color: var(--sl-color-gray-3); }
-  .cg__by { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .cg__pill { font-size: 0.8rem; padding: 0.15rem 0.55rem; border-radius: 1rem; background: var(--sl-color-gray-6); border: 1px solid var(--sl-color-gray-5); }
-  .cg__t { display: table; width: 100%; font-size: 0.82rem; }
-  .cg__t th, .cg__t td { text-align: left; vertical-align: top; padding: 0.3rem 0.5rem; }
-  .cg__where { font-family: var(--sl-font-mono, monospace); font-size: 0.72rem; color: var(--sl-color-gray-3); white-space: nowrap; }
-  .cg__dim { color: var(--sl-color-gray-2); }
-  .cg__note { font-size: 0.82rem; color: var(--sl-color-gray-3); }
+  .cg__n { font-size: var(--font-size-24); font-weight: var(--font-weight-bold); line-height: 1; }
+  .cg__l { font-size: var(--font-size-12); color: var(--color-on-card-muted); }
+  .cg__by { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  /* Counters, not chips, so they take the control radius. The full stadium is reserved. */
+  .cg__pill { font-size: var(--font-size-12); padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-control);
+    background: var(--color-card-surface2); border: var(--space-px) solid var(--color-card-hairline); }
+  .cg__t { display: table; width: 100%; font-size: var(--font-size-12); }
+  .cg__t th, .cg__t td { text-align: left; vertical-align: top; padding: var(--space-1) var(--space-2); }
+  .cg__where { font-family: var(--font-family-mono); font-size: var(--font-size-12); color: var(--color-on-card-muted); white-space: nowrap; }
+  .cg__dim { color: var(--color-on-card-muted); }
+  .cg__note { font-size: var(--font-size-12); color: var(--color-on-card-muted); }
 </style>

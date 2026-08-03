@@ -30,7 +30,7 @@ const STAGES = [
 ];
 ---
 
-<div class="nk-pipe" role="img" aria-label="Design tokens are built by Style Dictionary into web, Android and Swift outputs, then published as versioned packages on one version line.">
+<div class="nk-pipe not-content" role="img" aria-label="Design tokens are built by Style Dictionary into web, Android and Swift outputs, then published as versioned packages on one version line.">
   {STAGES.map((s, i) => (
     <>
       <div class="nk-pipe__stage">
@@ -51,25 +51,27 @@ const STAGES = [
     align-items: stretch;
     gap: 0;
     flex-wrap: wrap;
-    margin: 1.5rem 0;
+    margin: var(--space-6) 0;
   }
   .nk-pipe__stage {
     flex: 1 1 12rem;
     min-width: 11rem;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid var(--sl-color-gray-5);
-    border-radius: 12px;
-    background: var(--sl-color-black);
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: var(--space-px) solid var(--color-card-hairline);
+    border-radius: var(--radius-control);
+    background: var(--color-canvas);
   }
+  /* The stage caption is the system's uppercase eyebrow: size-10, eyebrow tracking,
+     semibold. Same construction the specimen and the demos use. */
   .nk-pipe__label {
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
+    font-size: var(--font-size-10);
+    letter-spacing: var(--font-tracking-eyebrow);
     text-transform: uppercase;
-    font-weight: 500;
-    color: var(--sl-color-accent-high, #0cc0df);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent-primary);
   }
   .nk-pipe__items {
     list-style: none;
@@ -77,18 +79,18 @@ const STAGES = [
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--space-1);
   }
   .nk-pipe__items li {
-    font-family: 'Space Mono', ui-monospace, monospace;
-    font-size: 0.74rem;
-    line-height: 1.45;
-    color: var(--sl-color-white);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-12);
+    line-height: var(--font-line-height-16);
+    color: var(--color-on-canvas);
   }
   .nk-pipe__note {
-    font-size: 0.72rem;
-    line-height: 1.4;
-    color: var(--sl-color-gray-3);
+    font-size: var(--font-size-12);
+    line-height: var(--font-line-height-16);
+    color: var(--color-on-canvas-muted);
     margin-top: auto;
   }
   /* The connector between stages. A caret rather than a drawn line, so it stays
@@ -96,10 +98,13 @@ const STAGES = [
   .nk-pipe__arrow {
     flex: 0 0 1.6rem;
     align-self: center;
-    height: 1px;
-    background: var(--sl-color-gray-5);
+    height: var(--space-px);
+    background: var(--color-divider);
     position: relative;
   }
+  /* The caret head is drawn geometry (a rotated corner), so its 7px box and -3px seat are
+     literal on purpose: they centre the glyph on the 1px rule, and no spacing step lands
+     on the half-pixel this needs. */
   .nk-pipe__arrow::after {
     content: '';
     position: absolute;
@@ -107,8 +112,8 @@ const STAGES = [
     top: -3px;
     width: 7px;
     height: 7px;
-    border-top: 1px solid var(--sl-color-gray-5);
-    border-right: 1px solid var(--sl-color-gray-5);
+    border-top: var(--space-px) solid var(--color-divider);
+    border-right: var(--space-px) solid var(--color-divider);
     transform: rotate(45deg);
   }
   @media (max-width: 60rem) {
