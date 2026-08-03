@@ -147,7 +147,7 @@ are **list-level** concerns set on `List`.
   rows={[
     { name: 'variant', type: "'card' | 'plain'", default: "'card'", description: '<strong>Surface treatment.</strong> <code>card</code> = a lifted, inset grouped card (depth on the container; inset hairlines). <code>plain</code> = full-bleed, no card or shadow, edge-to-edge rules (the dense tree).' },
     { name: 'density', type: "'comfortable' | 'dense'", default: "'comfortable'", description: 'Row height + padding only, never the fill. <code>dense</code> tightens spacing and drops the supporting line.' },
-    { name: 'selection', type: "'none' | 'single' | 'multi'", default: "'none'", description: 'List-level selection. <code>single</code> renders a <code>listbox</code> with arrow-key roving focus + the selected-row soft cyan wash + trailing check (never a stripe, Law 6); <code>multi</code> adds leading checkboxes.' },
+    { name: 'selection', type: "'none' | 'single' | 'multi'", default: "'none'", description: 'List-level selection. <code>single</code> renders a <code>listbox</code> with arrow-key roving focus + the selected-row cyan edge + cyan ink + trailing check (never a stripe, never a wash, Law 6); <code>multi</code> adds leading checkboxes.' },
     { name: 'children', type: 'ReactNode', required: true, description: '<code>ListSection</code> groups or bare <code>ListItem</code> rows.' },
     { name: 'label (ListSection)', type: 'string', required: true, description: 'Section header text, a muted uppercase label on the surface.' },
     { name: 'count (ListSection)', type: 'number', description: 'Optional trailing count shown beside the section label.' },
@@ -209,8 +209,11 @@ The real divergences between the shipped platforms, tracked in the [Review queue
 - **Grouped-card vs full-bleed:** Voice always uses the inset grouped card; Compose's dense tree
   (`TaskTreeList`) is full-bleed with no card. Both are valid (Decision 4), so the container must expose
   the choice (`variant: 'card' | 'plain'`) rather than bake one in.
-- **List-level selection** *(resolved by [adjudication 2026-07-02 · B20])*: the one selection
-  expression is a **soft cyan wash + trailing check, never a left stripe**. The web container
-  owns selection (`listbox` + arrow keys / multi checkboxes); Compose (today a per-row
-  `modifier` background) and Voice (its history toggles *expansion*) conform to it.
+- **List-level selection:** the one selection expression is a **cyan edge bounding the run,
+  cyan ink and a check, never a left stripe and never a wash**. The earlier adjudication set this
+  as a soft cyan wash; design laws §6 (state by outline, not fill) superseded that, and the web
+  container now carries the outline, drawing ONE edge around a contiguous run rather than a stack
+  of them. The web container owns selection (`listbox` + arrow keys / multi checkboxes); Compose
+  (today a per-row `modifier` background) still fills and lags here; Voice toggles *expansion* and
+  has no persistent selection.
 </Aside>

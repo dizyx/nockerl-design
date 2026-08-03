@@ -14,7 +14,7 @@
  *     on (lit-from-above: neutral shadow + top catch-light, never a glow).
  *   - flash-free feedback: the row fill is STATIC; hover/press animate a neutral
  *     wash + a subtle scale only, never a fill swap.
- *   - a SELECTED row reads via a faint cyan wash + a LEADING cyan check (in the
+ *   - a SELECTED row reads via a cyan EDGE bounding the run, cyan ink, and a LEADING cyan check (in the
  *     leading slot, so it never fights the trailing chevron), NOT a glow, NOT a left
  *     rail, and NOT a brand fill swap.
  *   - an EXPANDABLE row is an accordion: the trailing chevron points DOWN at rest and
@@ -68,7 +68,7 @@ export interface NockerlListItemProps
   onToggle?: () => void;
   /** The body of an expandable row, revealed when the row expands. */
   details?: React.ReactNode;
-  /** Selected state: soft cyan wash + a LEADING check. NOT a glow, not a left-rail. */
+  /** Selected state: a cyan edge bounding the run, cyan ink, and a LEADING check. NOT a glow, not a left-rail. */
   selected?: boolean;
   /** Inert + clearly-seen (never invisible) state. */
   disabled?: boolean;
@@ -123,18 +123,31 @@ export const NOCKERL_LIST_ITEM_STYLES = `
 .nk-li:hover:not(.nk-li--disabled) { background: var(--color-surface-highlight); }
 .nk-li:active:not(.nk-li--disabled) { background: color-mix(in srgb, var(--color-surface-highlight) 50%, transparent); transform: scale(.992); }
 .nk-li:focus-visible { outline: var(--space-0-5) solid var(--color-accent-primary); outline-offset: -2px; }
-/* SELECTED rows get a soft cyan wash + a leading check (LAW 6 / adjudication B20). No left rail, no glow. */
-.nk-li--selected { background: color-mix(in srgb, var(--color-accent-primary) 10%, transparent); }
-/* NESTED-RADIUS CAP (r4 clip class): rows are square, so a selected FIRST/LAST row's wash gets
+/* SELECTED (LAW 6, reduce-fills): cyan INK plus the leading check the row already carries,
+   and a cyan EDGE bounding the run. No wash, so selection never reads as a fill. Hover keeps
+   the same neutral highlight every other row uses: unlike the nav row, a list row does not own
+   its own edge (the hairline belongs to the row below it), so there is no edge here to
+   brighten, and inventing one would be a second selection channel. */
+/* The primary line sets its own colour, so the accent has to be applied to it directly
+   rather than inherited from the row, exactly as the danger row does below. */
+.nk-li--selected { color: var(--color-accent-primary); }
+.nk-li--selected .nk-li__primary { color: var(--color-accent-primary); }
+/* NESTED-RADIUS CAP (r4 clip class): rows are square, so a selected FIRST/LAST row's edge gets
    sliced by a rounded clipping container. Containers opt in via --nk-nest-cap (= container
    radius - inset); default keeps rows square exactly as before. */
 .nk-li:nth-child(1 of .nk-li) { border-start-start-radius: var(--nk-nest-cap, var(--radius-none)); border-start-end-radius: var(--nk-nest-cap, var(--radius-none)); }
 .nk-li:nth-last-child(1 of .nk-li) { border-end-start-radius: var(--nk-nest-cap, var(--radius-none)); border-end-end-radius: var(--nk-nest-cap, var(--radius-none)); }
-.nk-li--selected:hover:not(.nk-li--disabled) { background: color-mix(in srgb, var(--color-accent-primary) 14%, transparent); }
-/* No left rail (LAW 6): selection reads from the soft cyan wash + the leading check,
-   never a vertical stripe. Drop the hairline at the selected row's own top/bottom so the
-   wash reads as one clean block (kills the seam/gap). */
-.nk-li--selected, .nk-li--selected + .nk-li { border-top-color: transparent; }
+/* No left rail (LAW 6): selection reads from the cyan edge, the cyan ink and the leading
+   check, never a vertical stripe.
+   CONTIGUOUS RUN. Rows are square and full bleed, and the hairline between two rows belongs
+   to the LOWER one, so the run's boundary is drawn by promoting exactly two of those shared
+   hairlines to cyan: the one where the run opens, and the one where it closes. Interior seams
+   go transparent, so three adjacent selected rows read as ONE outlined block rather than three
+   stacked edges, which is the same idea a single selected row shows. A run that starts at the
+   first row or ends at the last simply takes the container edge as its boundary. */
+.nk-li:not(.nk-li--selected) + .nk-li--selected { border-top-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent); }
+.nk-li--selected + .nk-li:not(.nk-li--selected) { border-top-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent); }
+.nk-li--selected + .nk-li--selected { border-top-color: transparent; }
 .nk-li--disabled { cursor: not-allowed; opacity: .55; }   /* inert but still legible */
 /* the leading slot holds the status mark OR the selection check (selection lives here,
    so it never fights the trailing nav/expand chevron for one slot). */
@@ -207,7 +220,7 @@ export const NOCKERL_LIST_ITEM_STYLES = `
  * trailing value + a trailing chevron. The trailing chevron is EITHER a static
  * right-pointing NAV chevron (`chevron`) OR a down/up rotating EXPAND affordance
  * (`expandable`). Selection now lives in the LEADING slot so it never fights the
- * trailing chevron for one place. A selected row reads via a soft cyan wash + the
+ * trailing chevron for one place. A selected row reads via a cyan edge, cyan ink and the
  * leading check, never a glow, never a left-rail.
  */
 export const NockerlListItem = forwardRef<HTMLButtonElement, NockerlListItemProps>(function NockerlListItem({

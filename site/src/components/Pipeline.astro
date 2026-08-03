@@ -31,27 +31,40 @@ const STAGES = [
 ---
 
 <div class="nk-pipe not-content" role="img" aria-label="Design tokens are built by Style Dictionary into web, Android and Swift outputs, then published as versioned packages on one version line.">
-  {STAGES.map((s, i) => (
-    <>
-      <div class="nk-pipe__stage">
-        <span class="nk-pipe__label">{s.label}</span>
-        <ul class="nk-pipe__items">
-          {s.items.map((it) => <li>{it}</li>)}
-        </ul>
-        <span class="nk-pipe__note">{s.note}</span>
-      </div>
-      {i < STAGES.length - 1 && <div class="nk-pipe__arrow" aria-hidden="true"></div>}
-    </>
-  ))}
+  <div class="nk-pipe__track">
+    {STAGES.map((s, i) => (
+      <>
+        <div class="nk-pipe__stage">
+          <span class="nk-pipe__label">{s.label}</span>
+          <ul class="nk-pipe__items">
+            {s.items.map((it) => <li>{it}</li>)}
+          </ul>
+          <span class="nk-pipe__note">{s.note}</span>
+        </div>
+        {i < STAGES.length - 1 && <div class="nk-pipe__arrow" aria-hidden="true"></div>}
+      </>
+    ))}
+  </div>
 </div>
 
 <style>
+  /* The stacked fallback has to answer "does the row fit the space this component was
+     given", not "how wide is the window". In the docs shell those are nowhere near the
+     same number: a sidebar on the left and the page outline on the right cap the content
+     column at 45rem, so at a 1920px window the diagram is still handed only 720px and a
+     viewport query reads a width it never actually gets. Containment makes the real figure
+     queryable. The row itself sits one level in because a size container cannot be
+     restyled by its own query, and the switch is a flex-direction change on the row. */
   .nk-pipe {
+    container-type: inline-size;
+    container-name: nk-pipe;
+    margin: var(--space-6) 0;
+  }
+  .nk-pipe__track {
     display: flex;
     align-items: stretch;
     gap: 0;
     flex-wrap: wrap;
-    margin: var(--space-6) 0;
   }
   .nk-pipe__stage {
     flex: 1 1 12rem;
@@ -116,8 +129,20 @@ const STAGES = [
     border-right: var(--space-px) solid var(--color-divider);
     transform: rotate(45deg);
   }
-  @media (max-width: 60rem) {
-    .nk-pipe { flex-direction: column; }
+  /* The threshold is the row's own arithmetic, not a guess. A flex line breaks on the
+     items' basis rather than on the width they would shrink to, so the row needs four
+     stages at their 12rem basis plus three 1.6rem connectors: 52.8rem. Sweeping the built
+     page confirms it, holding one row at 845px and wrapping at 844, which is 52.8rem at a
+     16px root. 53rem is the first round step clear of that, and staying in rem keeps the
+     trigger locked to the basis it is derived from at any root size. */
+  @container nk-pipe (max-width: 53rem) {
+    .nk-pipe__track { flex-direction: column; }
+    /* The 12rem basis is a COLUMN width. Once the track turns vertical the same number
+       becomes a minimum HEIGHT, so every stage inflated to 192px and the note, which is
+       pushed down by `margin-top: auto`, left a dead gap under short stages. Stacked is the
+       only branch the docs shell ever reaches, so this is what the page actually shows: let
+       each stage size to its own content instead. */
+    .nk-pipe__stage { flex: 0 0 auto; }
     .nk-pipe__arrow {
       flex: 0 0 1.1rem;
       width: 1px;
