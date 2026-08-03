@@ -20,6 +20,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
 
+      # The icon geometry gate rasterises to measure what actually paints, so it needs a
+      # renderer. The runner image does not carry one. Installed here rather than letting
+      # the gate skip, because a geometry gate that quietly does nothing reports success
+      # while checking nothing.
+      - name: Install the icon rasteriser
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin python3-pil
+
       - name: Install root deps
         run: bun install
       - name: Install site deps
@@ -44,6 +51,8 @@ jobs:
         run: bun run compose:graph:strict
       - name: Docs imports honesty (every doc @dizyx/nockerl-react import must be a real barrel export)
         run: bun run check:docs
+      - name: Icon geometry (full bleed, centred, and nothing clipped by its own viewBox)
+        run: bun run check:icons
       - name: Props tables fresh (re-extract from code; fail if props.json drifted)
         run: |
           bun run props:extract

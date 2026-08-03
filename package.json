@@ -23,10 +23,11 @@
     "check:hand-roll": "bun run scripts/check-hand-roll.ts",
     "check:prose-leak": "bun run scripts/check-prose-leak.ts",
     "bump": "bun run scripts/bump-version.ts",
-    "harness": "bun run lint:tokens && bun run check:deps && bun run compose:graph:strict && bun run props:extract && bun run check:docs && bun run check:hand-roll && bun run check:prose-leak && bun run check:dashes",
+    "harness": "bun run lint:tokens && bun run check:deps && bun run compose:graph:strict && bun run props:extract && bun run check:docs && bun run check:hand-roll && bun run check:prose-leak && bun run check:icons && bun run check:dashes",
     "lint:react": "cd packages/react && eslint src --max-warnings 0",
     "check": "bun run typecheck && bun run build && bun run verify && bun run check:dashes",
-    "check:dashes": "bun run scripts/check-dashes.ts"
+    "check:dashes": "bun run scripts/check-dashes.ts",
+    "check:icons": "python3 scripts/measure-icon-geometry.py"
   },
   "dependencies": {},
   "devDependencies": {

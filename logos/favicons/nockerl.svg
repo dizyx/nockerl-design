@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20.1792 20.3022 55.6416 55.6416" width="512" height="512" role="img" aria-label="Nockerl">
+  <title>Nockerl</title>
+  <style>
+    .nk-fav--dark { display: none; }
+    @media (prefers-color-scheme: dark) {
+      .nk-fav--light { display: none; }
+      .nk-fav--dark { display: inline; }
+    }
+  </style>
+  <g class="nk-fav--light">
+  <title>Nockerl</title>
+  <path d="M26.16 65.60 L38.64 37.52 L51.12 65.60 Z" fill="#555555"/>
+  <path d="M35.52 65.60 L48.00 28.16 L60.48 65.60 Z" fill="#222222"/>
+  <path d="M44.88 65.60 L57.36 34.40 L69.84 65.60 Z" fill="#777777"/>
+  <path d="M22 66.5 L74 66.5" fill="none" stroke="#0891b2" stroke-width="3.2" stroke-linecap="round"/>
+</g>
+  <g class="nk-fav--dark">
+  <title>Nockerl</title>
+  <path d="M26.16 65.60 L38.64 37.52 L51.12 65.60 Z" fill="#e5e5e5"/>
+  <path d="M35.52 65.60 L48.00 28.16 L60.48 65.60 Z" fill="#ffffff"/>
+  <path d="M44.88 65.60 L57.36 34.40 L69.84 65.60 Z" fill="#cccccc"/>
+  <path d="M22 66.5 L74 66.5" fill="none" stroke="#0cc0df" stroke-width="3.2" stroke-linecap="round"/>
+</g>
+</svg>

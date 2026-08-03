@@ -12,7 +12,7 @@
  *     transparent content below; the content sees the field through it.
  *   • Voice (desktop), in UI/DashboardView.swift: a ZStack with one full-window
  *     FacetBackground, a TRANSLUCENT floating sidebar (216pt: brand top, nav
- *     items; selected = cyan label + thin cyan border, with no fill) and a
+ *     items; selected = cyan label + cyan-soft fill + thin cyan border) and a
  *     full-bleed detail pane over the same field.
  *
  * Design laws, verbatim:
@@ -21,8 +21,8 @@
  *   • the facet field is the signature ANIMATED surface: it animates an
  *     interpolatable prop (per-triangle BRIGHTNESS via a drifting sine wave),
  *     never a fill swap, and freezes under prefers-reduced-motion.
- *   • a SELECTED destination reads via a cyan BORDER + a cyan icon + cyan label, with no
- *     fill (LAW 6). Never a left rail / stripe, never a glow, never a brand fill swap.
+ *   • a SELECTED destination reads via a soft cyan WASH + a cyan icon + cyan label
+ *     (LAW 6). Never a left rail / stripe, never a glow, never a brand fill swap.
  *   • cyan is the only brand accent; status lives only on the signal dots.
  *   • controls use the 12px control radius; panels/cards use panel/card radius.
  *   • nav destinations are real <button>s (one tap target each) with a

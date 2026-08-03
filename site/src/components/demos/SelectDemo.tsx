@@ -21,7 +21,7 @@
  * `chevron.up.chevron.down` trigger, `.menuStyle(.borderlessButton)`.
  *
  * The Select's design laws (the trigger SINKS / the popover LIFTS, neutral drop shadow +
- * top catch-light, the SELECTED cyan edge + trailing check, the ACTIVE neutral wash +
+ * top catch-light, the SELECTED cyan wash + trailing check, the ACTIVE neutral wash +
  * cyan ring, the warm error border + icon + message, the flash-free static fills, and the
  * full keyboard model) are ENCODED IN THE PACKAGE now; see
  * packages/react/src/composites/Select.tsx. This harness only supplies the option DATA

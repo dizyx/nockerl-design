@@ -5,7 +5,7 @@
  * (@dizyx/nockerl-react → NockerlTree); this file is only the showcase harness that
  * CONSUMES it. NockerlTree is a RECURSIVE, multi-level hierarchy (file tree / task subtree)
  * with per-node expand/collapse, depth indentation + guide lines, disclosure chevrons, and
- * either single-select (a cyan ring + cyan ink, no wash) or multi-select tri-state checkboxes that
+ * either single-select (soft cyan wash + cyan ink) or multi-select tri-state checkboxes that
  * propagate parent↔child. It is DISTINCT from list (flat rows), accordion (a few stacked
  * sections), and sidebar (nav). The full WAI-ARIA tree keyboard pattern (roving tabindex, one
  * tab stop) + the laws (card depth, flat rows, cyan-wash selection, file-type-ramp icons,

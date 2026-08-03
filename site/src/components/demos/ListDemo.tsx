@@ -31,9 +31,9 @@
  *     content start (they clear the leading column): structure, not decoration.
  *   • section headers ride muted-on-surface label type; sticky headers keep the
  *     surface token under them so rows never bleed through.
- *   • SELECTION is a list-level concern: a selected row reads via cyan ink and a cyan
- *     edge + a trailing check / leading checkbox, with no wash, NEVER a left stripe,
- *     NOT a glow, NOT a fill swap. Cyan is the only brand accent; the
+ *   • SELECTION is a list-level concern: a selected row reads via a soft cyan wash
+ *     + a trailing check / leading checkbox, NEVER a left stripe, NOT a glow, NOT a
+ *     fill swap (adjudication 2026-07-02 · B20). Cyan is the only brand accent; the
  *     leading STATUS mark is a status-colored ICON (shape + color dual-coding, never a
  *     bare dot).
  *   • density changes spacing only (row min-height + padding), never the fill.
