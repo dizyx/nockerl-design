@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AgentMessageDemo from '../../../components/demos/AgentMessageDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,13 +18,13 @@ import { Aside } from '@astrojs/starlight/components';
   <AgentMessageDemo client:visible />
 </Example>
 
-<Aside type="note" title="Design status: not shipped">
+<DocCallout tone="note" title="Design status: not shipped">
 The bottom-of-chat **streaming / typing indicator** (the "Streaming…" dots shown while
 tokens arrive) is documented here for the design system of record, but is **not currently
 implemented in the products**: live bottom-of-chat streaming indicators proved inconsistent
 and hard to get right, so the apps have moved away from them. The design stays as
 reference; the `streaming` prop remains in the spec, unshipped.
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -165,20 +165,19 @@ content closure), derived from the laws + the shipped Compose `MessageBubble`.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Swift:** no chat surface ships yet; Voice is transcription-only. The Swift API
   above is intended, not implemented.
 - **Bubble radius:** Compose hardcodes the bubble at **18.dp** with a **6.dp** tail
   via `rememberBubbleShape`; the tokens are **20** / **6** (`radius.bubble` /
   `radius.bubble-tail`, used by the web demo). Compose should consume the token.
-- **Copy affordance** *(resolved in [adjudication 2026-07-02 · C4])*: each platform keeps
+- **Copy affordance** *(resolved)*: each platform keeps
   its interaction idiom. Android's bubble **long-press opens the multi-action menu** (Copy
   becomes an item); web exposes an explicit, focusable **Copy** button (no hover / long-press
   on a pointer-less keyboard path).
-- **Failed turn** *(resolved in [adjudication 2026-07-02 · B9]; treatment restated by the
-  [r5.2 addendum · task 2673])*: the **in-thread failed bubble** wins on every platform,
+- **Failed turn** *(resolved)*: the **in-thread failed bubble** wins on every platform,
   styled to the **Banner inline-alert grammar** of an **inset status-error disc**, the intent
   whispered into the border, a **lifted** neutral surface (never a red/pink fill, never a
   bare inset well), text + Retry. Android moves stream errors off the floating status pill
   and into the thread.
-</Aside>
+</DocCallout>

@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AvatarDemo from '../../../components/demos/AvatarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -133,7 +133,7 @@ come from the view modifiers rather than a flat parameter list.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The look is approved off the shipped Android avatar; the rest is designed here and
 awaits sign-off:
 
@@ -151,4 +151,4 @@ awaits sign-off:
   platform yet.
 - **Shape:** only `circle` is shipped (the published Kotlin default). `rounded` is
   proposed.
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import BreadcrumbsDemo from '../../../components/demos/BreadcrumbsDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,13 +18,13 @@ import { Aside } from '@astrojs/starlight/components';
   <BreadcrumbsDemo client:visible />
 </Example>
 
-<Aside type="tip" title="Mobile: auto-collapse (task 2640)">
+<DocCallout tone="tip" title="Mobile: auto-collapse">
 Breadcrumbs are a **desktop pattern**; on a phone-narrow container the trail
 **auto-collapses to first + “…” + current** (see the Mobile stage above). Every hidden
 ancestor stays reachable through the same keyboard-operable overflow menu, and the
 current crumb keeps its ellipsis. The desktop render is untouched; if a mobile surface
 can use back-navigation or a tree instead, prefer that.
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -147,7 +147,7 @@ title + system back that stand in for a trail. Flagged as drift below.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 Breadcrumbs are a **web-only** pattern today. The shipped natives wayfind differently,
 which is correct for those surfaces:
 
@@ -158,4 +158,4 @@ which is correct for those surfaces:
   **chrome surface + 1.5dp cyan signature line** (the apps' header treatment), the **house
   chevron** as the separator, and the **root/folder/task/file** leading glyphs. It reads
   as Nockerl without inventing anything mobile doesn't have.
-</Aside>
+</DocCallout>

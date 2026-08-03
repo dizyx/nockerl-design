@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AccordionDemo from '../../../components/demos/AccordionDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -179,7 +179,7 @@ style yet.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Header accessory + controlled binding (, cross-platform)">
+<DocCallout tone="note" title="Header accessory + controlled binding, cross-platform">
 A header **trailing-accessory** slot renders always-visible controls (a delete button, a
 count badge) in the header, collapsed or expanded, pinned left of the chevron and
 **outside** the toggle target so interactive controls fire independently and never toggle
@@ -188,21 +188,21 @@ accessory is a sibling). Expansion is **controlled** (`expanded` + `onExpandedCh
 **uncontrolled** (`defaultExpanded`, self-managed). One shared contract: Compose (a
 sibling in the header `Row`) and Swift (a sibling in the header `HStack`) mirror the same
 shape; group single/multi-open coordination stays host-owned as before.
-</Aside>
+</DocCallout>
 
-<Aside type="tip" title="Experimental: row zebra (task 2763, not ratified)">
+<DocCallout tone="tip" title="Experimental: row zebra, not ratified">
 An opt-in **zebra** wash tones alternating rows (even rows a whisper of neutral `on-card` @
 4%, odd rows plain) on the accordion **container**, theme-following, default off, resting
 surface only (beneath hairlines / selection / hover). **Experimental**: the design lead is
 evaluating; not canon. Mirror lives on all three platforms via the same container opt-in.
-</Aside>
+</DocCallout>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The intended spec is unified; these are the real divergences between the shipped platforms:
 
-- **Disclosure indicator** *(resolved in [adjudication 2026-07-02 · B4 / C1])*: a **rotating chevron** wins (interpolatable, reduced-motion-safe). Compose (today swaps `KeyboardArrowDown`↔`KeyboardArrowUp`) and Swift (swaps `chevron.right`↔`chevron.down`) conform to rotation, not icon-swap.
-- **Chevron position** *(resolved in [adjudication 2026-07-02 · B4 / C1])*: **trailing** wins (leading is content's seat, trailing is the affordance's). Swift (today leading) conforms.
-- **Open policy** *(resolved in [adjudication 2026-07-02 · B4])*: a **`mode` param, default `single`, `multiple` opt-in**. Voice (single-open `expandedID`) and Android (multi-open stacked sections) both adopt the shared `mode`.
+- **Disclosure indicator** *(resolved)*: a **rotating chevron** wins (interpolatable, reduced-motion-safe). Compose (today swaps `KeyboardArrowDown`↔`KeyboardArrowUp`) and Swift (swaps `chevron.right`↔`chevron.down`) conform to rotation, not icon-swap.
+- **Chevron position** *(resolved)*: **trailing** wins (leading is content's seat, trailing is the affordance's). Swift (today leading) conforms.
+- **Open policy** *(resolved)*: a **`mode` param, default `single`, `multiple` opt-in**. Voice (single-open `expandedID`) and Android (multi-open stacked sections) both adopt the shared `mode`.
 - **Reveal motion:** web animates `grid-rows` height + opacity; Compose `expandVertically + fadeIn`; Swift a `.spring` layout change. Same intent, three engines.
 - **Packaging:** neither native app ships a reusable `Accordion`; both inline the header+body pattern. Web's `@dizyx/nockerl-react` `Accordion`/`AccordionItem` is the intended canonical surface.
-</Aside>
+</DocCallout>

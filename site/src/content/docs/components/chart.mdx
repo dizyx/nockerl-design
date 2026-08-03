@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import ChartDemo from '../../../components/demos/ChartDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -199,9 +199,9 @@ than discrete parameters; the data is the input.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **Rendering:** web + Android draw charts **by hand** (SVG / Compose `Canvas`); Swift uses **Swift Charts**. The vocabulary (token colors, hairline grid, cyan→accentDark bars) is unified; the engine differs.
 - **Series count:** the shipped Android `Sparkline` and Voice `BarChart` are **single-series**; the multi-series line + legend toggle shown here is the intended web API, not yet on the native apps.
 - **Bar radius:** native bars hardcode **2** / Swift `.cornerRadius(2)`; should consume `radius.track`.
 - **Usage bands:** Android `SessionChipsBar` hardcodes the amber/red band hexes; they should resolve to `status.warning` / `status.error`.
-</Aside>
+</DocCallout>

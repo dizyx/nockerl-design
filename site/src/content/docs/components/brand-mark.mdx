@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import BrandMarkDemo from '../../../components/demos/BrandMarkDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -27,7 +27,7 @@ import { Aside } from '@astrojs/starlight/components';
 // Web: React, consuming @dizyx/nockerl-tokens. (Web is the laggard platform. Spec + live demo,
 // not yet exported from @dizyx/nockerl-react; promotion is tracked.)
 // The mark is a single-ink SVG silhouette. It inherits currentColor and recolors per
-// theme. MONOCHROME everywhere (the cyan prism was rejected in adjudication B19); cyan
+// theme. MONOCHROME everywhere (the cyan prism was rejected); cyan
 // lives only in the product word of the lockup.
 
 export function TopBar() {
@@ -110,7 +110,7 @@ MenuBarExtra { /* … */ } label: { Image(nsImage: NockerlLogo.statusItemImage()
   nameLabel="Prop"
   rows={[
     { name: 'lockup', type: "'mark' | 'horizontal' | 'stacked'", default: "'mark'", description: 'Mark only · mark + wordmark in a row (wordmark baseline-aligned) · mark over wordmark.' },
-    { name: 'tone', type: "'mono' | 'knockout'", default: "'mono'", description: 'Single-ink silhouette that inherits <code>currentColor</code> (matches the apps, MONOCHROME per adjudication B19; the faceted cyan prism is retired) · <code>knockout</code> = one flat <code>--color-on-accent</code> for sitting ON a cyan / photo fill.' },
+    { name: 'tone', type: "'mono' | 'knockout'", default: "'mono'", description: 'Single-ink silhouette that inherits <code>currentColor</code> (matches the apps, MONOCHROME; the faceted cyan prism is retired) · <code>knockout</code> = one flat <code>--color-on-accent</code> for sitting ON a cyan / photo fill.' },
     { name: 'size', type: 'number', default: '40', description: 'Rendered mark <strong>height</strong> in px; the wordmark scales from it. The one geometry knob.' },
     { name: 'title', type: 'string', default: "'Nockerl'", description: 'Accessible name (and the link text / aria-label when <code>asLink</code>).' },
     { name: 'asLink', type: 'boolean', default: 'false', description: 'Render as a real <code>&lt;a&gt;</code> home link: focus-visible cyan ring, keyboard-operable, gentle press. Otherwise decorative (<code>aria-hidden</code>).' },
@@ -154,11 +154,11 @@ menu-bar template image (macOS).
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The geometry is unified: the same three-peaks mark on `viewBox="16 20 64 56"` (peaks
 at apex y = 36 / 24 / 32) ships on Android, Voice, and web. The divergences:
 
-- **Color** *(resolved in [adjudication 2026-07-02 · B19])*: the brand mark is **MONOCHROME
+- **Color** *(resolved)*: the brand mark is **MONOCHROME
   everywhere**, a single-ink silhouette that adapts to context (light ink on dark, dark ink on
   light, luminance-picked). The **cyan prism direction is rejected**; cyan lives only in the
   lockup's product word (Law 11), never the mark itself. All three shipped platforms already
@@ -168,4 +168,4 @@ at apex y = 36 / 24 / 32) ships on Android, Voice, and web. The divergences:
 - **No shared mark component:** web would expose `<BrandMark>` (`@dizyx/nockerl-react`, not
   yet shipped); Voice has `NockerlLogo`; Android has only the drawables + `Icon`. One named
   component should win.
-</Aside>
+</DocCallout>

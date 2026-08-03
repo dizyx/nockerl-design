@@ -6,16 +6,16 @@ platforms: [web, android]
 ---
 
 import StatusBadge from '../../../components/StatusBadge.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="draft" />
 
-<Aside type="caution" title="Stub, pending design">
+<DocCallout tone="warning" title="Stub, pending design">
 Reserved for one-by-one review. The live demo, code (TypeScript / Kotlin / Swift), and
 parameters land when we design this, sourced from the **Android** + **Nockerl Voice** apps
 (never a web surface). Family theory lives on the
 [Inputs & forms](/components/inputs/) page.
-</Aside>
+</DocCallout>
 
 ## Demo
 

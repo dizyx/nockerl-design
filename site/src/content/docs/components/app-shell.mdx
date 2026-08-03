@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import AppShellDemo from '../../../components/demos/AppShellDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <AppShellDemo client:visible />
 </Example>
 
-<Aside type="tip" title="Brand placement + platform presets (ratified)">
+<DocCallout tone="tip" title="Brand placement + platform presets (ratified)">
 The app shell is a **pure composition of the corrected components** (the real brand
 [lockup](/components/brand-mark/), the nav items, and the facet field), so every top-bar /
 nav fix propagates here automatically. Two rules are ratified:
@@ -30,7 +30,7 @@ nav fix propagates here automatically. Two rules are ratified:
   left nav ONLY, no title bar · **web** = the mix (top bar + expanded nav). Switch them live above.
 - **Bottom navigation is retired.** The shell has two nav layouts (expanded sidebar or icon
   rail), never a bottom bar.
-</Aside>
+</DocCallout>
 
 ## Code
 
@@ -173,7 +173,7 @@ shared `DashboardRouter` + `SettingsStore`. The shape is the configurable surfac
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 All three shells share one anatomy (a top region, a nav region, and a content
 region over the pinned animated facet field), but the form genuinely diverges:
 
@@ -187,4 +187,4 @@ region over the pinned animated facet field), but the form genuinely diverges:
   and content; Voice/web separate regions with a hairline only.
 - **The facet field is unified:** the same low-poly triangle mesh + ~18s
   diagonal tone-wave on all three (`ChatFeedBackground.kt` / `FacetBackground.swift`).
-</Aside>
+</DocCallout>

@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import DatePickerDemo from '../../../components/demos/DatePickerDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -124,7 +124,7 @@ struct ScheduleForm: View {
 **Range mode** (`range`) swaps `value`/`onChange` for `value: { start: Date | null; end: Date | null }`
 and a matching `onChange`; the two endpoints get the accent fill and the days between get the
 in-range tint. (The former standalone `DateRangePicker` was merged into this range mode;
-recover its preset-rail / dual-month demo from git history at `7cbf645` if that richer surface is revived.)
+recover its preset-rail / dual-month demo from git history if that richer surface is revived.)
 
 </Fragment>
 <Fragment slot="kotlin">
@@ -163,7 +163,7 @@ no separate range component; model a range as two `DatePicker`s.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 - **No shipped custom calendar.** Neither Android nor Voice draws its own month grid.
   Android stores `dueDate` as an ISO string and only *formats* it; Voice formats a chart
   axis. Kotlin/Swift above document the **stock** Material 3 / SwiftUI pickers; the web
@@ -172,7 +172,7 @@ no separate range component; model a range as two `DatePicker`s.
 - **Range:** web ships range as a **mode of `DatePicker`** (the standalone `DateRangePicker` was
   merged in, ); SwiftUI has no range picker (model it as two `DatePicker`s); Material 3 has
   `DateRangePicker` but the apps don't use it yet.
-- **Week start** *(resolved in [adjudication 2026-07-02 · B7])*: `weekStartsOn` **defaults to the
+- **Week start** *(resolved)*: `weekStartsOn` **defaults to the
   device locale**, with an explicit prop override. The Nockerl web demo (Monday-first) and the
   stock pickers converge on that shared default + prop.
-</Aside>
+</DocCallout>

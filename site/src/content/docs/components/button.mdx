@@ -11,7 +11,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ButtonDemo from '../../../components/demos/ButtonDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="approved" />
 
@@ -124,7 +124,7 @@ dimmed, non-interactive state; there are no explicit state parameters.
 </Fragment>
 </DocTabs>
 
-<Aside type="note" title="Cross-platform parity (published packages)">
+<DocCallout tone="note" title="Cross-platform parity (published packages)">
 The published **Compose** (`com.dizyx.nockerl.design.components`) and **Swift**
 (`NockerlDesign`) packages now share one API, and the earlier drift is resolved:
 
@@ -141,4 +141,4 @@ Remaining, intentional expression differences:
   per-platform expression, not a token drift.
 - **Sizing:** web exposes `size` (sm/md/lg); Compose uses `contentPadding`; Swift is a fixed
   content padding + 40pt min height. Same visual weight, different knob per platform.
-</Aside>
+</DocCallout>

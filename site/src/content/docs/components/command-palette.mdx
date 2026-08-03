@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 import PropsTable from '../../../components/PropsTable.astro';
 import CommandPaletteDemo from '../../../components/demos/CommandPaletteDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -166,7 +166,7 @@ bindings; there is no explicit `open` parameter on the view itself.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The palette is a **first-class surface on web + macOS** and an **adapted idiom on Android**:
 
 - **No shipped Android palette.** The nearest live idiom is the modal **bottom sheet**
@@ -177,4 +177,4 @@ The palette is a **first-class surface on web + macOS** and an **adapted idiom o
   `GlobalTopBar` search affordance, and per-row shortcut hints are decorative there.
 - **Presentation differs.** Web + macOS float a **top-centered panel** over a scrim; Android
   presents the same content **bottom-anchored** as a sheet (the platform-native modal).
-</Aside>
+</DocCallout>

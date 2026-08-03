@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import DevStatusBarDemo from '../../../components/demos/DevStatusBarDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -18,7 +18,7 @@ import { Aside } from '@astrojs/starlight/components';
   <DevStatusBarDemo client:visible />
 </Example>
 
-The **web console's ambient strip** (WS5, agent-console epic): branch, agent/job state,
+The **web console's ambient strip**: branch, agent/job state,
 cursor position, keyboard hints. All of it is reading-scale CHROME, deliberately **not**
 the [`Toolbar`](/components/toolbar/)'s control-scale grammar. Segments are quiet spans by
 default; give one `onSelect` and it becomes a real button (hover wash + ink + focus
@@ -26,11 +26,10 @@ outline); nothing looks pressable unless it is. State rides the shared
 [`StatusDot`](/components/status-dot/) ladder; hints are real [`Kbd`](/components/kbd/)
 keycaps.
 
-<Aside type="note" title="Web-only by scope">
-Per the de-phantom verdict on the agent-console epic: native consoles have no
-equivalent surface, so this ships web-only (on the shared tokens and laws, no
-cross-platform spec needed).
-</Aside>
+<DocCallout tone="note" title="Web-only by scope">
+Native consoles have no equivalent surface, so this ships web-only (on the shared
+tokens and laws, no cross-platform spec needed).
+</DocCallout>
 
 ## Code
 

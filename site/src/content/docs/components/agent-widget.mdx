@@ -7,14 +7,14 @@ platforms: [android, swift]
 
 import StatusBadge from '../../../components/StatusBadge.astro';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 import goldenDark from '../../../../../packages/compose/nockerl-design-gallery/src/test/screenshots/gallery/dark/agentwidget-lifecycle.png';
 
 <StatusBadge status="review" />
 
 <img src={goldenDark.src} alt="Three agent-run widgets: running with detail, done, and failed" style="border-radius: 12px;" />
 
-The compact "an agent is working" card (WS1 #2652b), a tool-card-family sibling that is
+The compact "an agent is working" card, a tool-card-family sibling that is
 **identity-led** (avatar initials + name + mono model badge) where the
 [Spawn block](/components/spawn-cards/) is mechanism-led (family tile). Siblings, not
 twins. The **lifecycle chip** (dot + label + elapsed) is the same `NockerlSpawnStatus`
@@ -62,8 +62,8 @@ NockerlAgentWidget(
 | `detail` | `String?` | `null` | One-line status detail under the name. |
 | `animate` | `Boolean` | `true` | `false` freezes the RUNNING pulse. |
 
-<Aside type="caution" title="Swift avatar">
+<DocCallout tone="warning" title="Swift avatar">
   The Swift widget currently renders an interim initials disc. The full
   `NockerlAvatar` (image + presence) is a flagged Swift bring-up; Compose and react
   ship the real avatar today.
-</Aside>
+</DocCallout>

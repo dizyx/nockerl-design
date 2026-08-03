@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import ComboboxDemo from '../../../components/demos/ComboboxDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -221,11 +221,11 @@ bound to a `.filter` (`HistorySection`) and the fixed-select pattern is a `Menu`
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The combobox is **web-led**. Only web ships the full type-to-filter + popover +
 multi-select-token control. The native deltas:
 
-- **Filtering** *(resolved in [adjudication 2026-07-02 · C5])*: the combobox **gains type-to-filter**
+- **Filtering** *(resolved)*: the combobox **gains type-to-filter**
   everywhere. Android’s shipped selector (`DropdownMenu` + `DropdownAnchor`) is a fixed-list select
   today; type-ahead (`ExposedDropdownMenuBox` + a query-filtered list) is the ratified target.
 - **One control vs. composed:** Swift has the **pieces** (a `TextField`+`.filter`
@@ -235,4 +235,4 @@ multi-select-token control. The native deltas:
   field; Android/Swift have no token-in-field idiom for this yet.
 - **Container radius:** Swift’s wells/menus hardcode **8pt**; the token is **12**
   (`radius.control`). Swift should consume `radius.control`.
-</Aside>
+</DocCallout>

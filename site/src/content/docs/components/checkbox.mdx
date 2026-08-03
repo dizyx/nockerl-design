@@ -10,7 +10,7 @@ import PropsTable from '../../../components/PropsTable.astro';
 import Example from '../../../components/Example.astro';
 import CheckboxDemo from '../../../components/demos/CheckboxDemo.tsx';
 import DocTabs from '../../../components/DocTabs.astro';
-import { Aside } from '@astrojs/starlight/components';
+import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
@@ -154,7 +154,7 @@ gate `disabled` at the binding / view level.
 </Fragment>
 </DocTabs>
 
-<Aside type="caution" title="Cross-platform drift (tracked for reconciliation)">
+<DocCallout tone="warning" title="Cross-platform drift (tracked for reconciliation)">
 The checkbox is the **multi-selection** control, a **square box** with a check fill,
 deliberately distinct from its selection-control siblings: a
 [radio](/components/radio-group/) is a **circle** with a centered dot for
@@ -177,4 +177,4 @@ deliberately distinct from its selection-control siblings: a
   Compose box when web's API ships.
 - **Invalid state:** only web models an `invalid` checkbox (warm border + `!` +
   message). Compose and SwiftUI surface validation at the form level today.
-</Aside>
+</DocCallout>
