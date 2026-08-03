@@ -564,7 +564,7 @@
           "type": "boolean",
           "optional": true,
           "default": null,
-          "description": "TOGGLE mode: when set, the button HOLDS state: it renders <code>aria-pressed</code> and, when true, the pressed VISUAL is the selection wash (soft cyan + cyan ink, design-laws section 6), NOT a separate control. Omit it for a plain command button."
+          "description": "TOGGLE mode: when set, the button HOLDS state: it renders <code>aria-pressed</code> and, when true, the pressed VISUAL is the selection outline (a selection-weight cyan border plus cyan ink, and no fill, design-laws section 6), NOT a separate control. Omit it for a plain command button."
         }
       ]
     },
@@ -1712,7 +1712,7 @@
           "type": "boolean",
           "optional": true,
           "default": null,
-          "description": "TOGGLE mode: when set, the icon button HOLDS state: renders <code>aria-pressed</code> and, when true, the pressed VISUAL is the selection wash (soft cyan + cyan glyph, design-laws section 6). The primary home for icon toggles (toolbar toggles, wrap, etc.). Omit for a plain command icon button."
+          "description": "TOGGLE mode: when set, the icon button HOLDS state: renders <code>aria-pressed</code> and, when true, the pressed VISUAL is the selection outline (a selection-weight cyan ring plus a cyan glyph, and no fill, design-laws section 6). The primary home for icon toggles (toolbar toggles, wrap, etc.). Omit for a plain command icon button."
         }
       ]
     },
@@ -2321,21 +2321,21 @@
           "type": "boolean",
           "optional": true,
           "default": "false",
-          "description": "Active destination: soft cyan wash + cyan tint + aria-current=\"page\" (icon stays; no check, no rail)."
+          "description": "Active destination: a thin cyan border + cyan icon and label at medium weight, with no fill, plus aria-current=\"page\" (the icon stays; no check, no rail)."
         },
         {
           "name": "current",
           "type": "boolean",
           "optional": true,
           "default": null,
-          "description": "aria-current override, independent of the active VISUAL (e.g. a parent row that shows the wash because a child is selected, but is not itself the current page). Defaults to <code>active</code>."
+          "description": "aria-current override, independent of the active VISUAL (e.g. a parent row that shows the active outline because a child is selected, but is not itself the current page). Defaults to <code>active</code>."
         },
         {
           "name": "flat",
           "type": "boolean",
           "optional": true,
           "default": "false",
-          "description": "Tint-only active (no wash / no border), for a bar that carries its OWN selection indicator (a bottom-nav's sliding pill). The active row still tints cyan + aria-current."
+          "description": "Tint-only active (no border either), for a bar that carries its OWN selection indicator (a bottom-nav's sliding pill). The active row still tints cyan + aria-current."
         },
         {
           "name": "status",
@@ -4155,7 +4155,7 @@
           "type": "NockerlTreeSelectable",
           "optional": true,
           "default": "'single'",
-          "description": "<code>single</code>: one selected node (soft cyan wash). <code>multi</code>: tri-state checkboxes that propagate parent↔child."
+          "description": "<code>single</code>: one selected node (a cyan ring + cyan ink, no fill). <code>multi</code>: tri-state checkboxes that propagate parent↔child."
         },
         {
           "name": "ariaLabel",

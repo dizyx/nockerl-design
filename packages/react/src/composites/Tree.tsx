@@ -2,7 +2,7 @@
  * NockerlTree: the Tier-3 recursive TREE-VIEW composite. ONE home for the multi-level
  * hierarchy (file tree / task subtree) the dashboard + any nested-list surface needs, so a
  * tree can never drift: recursive nesting with per-node expand/collapse, depth indentation +
- * guide-line rails, disclosure chevrons, single-select (soft cyan wash + cyan ink) OR
+ * guide-line rails, disclosure chevrons, single-select (a cyan ring + cyan ink, no fill) OR
  * multi-select tri-state checkboxes that propagate parent↔child, and the full WAI-ARIA tree
  * keyboard pattern (roving tabindex, one tab stop).
  *
@@ -25,7 +25,8 @@
  *   - the CARD lifts (neutral shadow + catch-light, never a glow); rows are FLAT (depth = card
  *     + indentation).
  *   - feedback animates a neutral wash + scale + the chevron rotation only (no fill swap).
- *   - a SELECTED node = faint cyan wash + cyan ink (NOT a glow, NOT a left rail, per LAW 6).
+ *   - a SELECTED node = a selection-weight cyan ring + cyan ink, with no fill (NOT a glow,
+ *     NOT a left rail, per LAW 6).
  *   - guide lines + chevron + file icons ride the divider + muted tokens; file-type icons use
  *     the categorical file-type ramp (data color, never the brand cyan).
  *   - focus is an OUTLINE ring on the active row, never a colored shadow.
@@ -321,7 +322,7 @@ function PlaceholderRow({ depth, label, spinner }: { depth: number; label: strin
 export interface NockerlTreeProps {
   /** The recursive forest. Auto-expand root folders on first load to match the canonical behaviour. */
   nodes: NockerlTreeNode[];
-  /** `single`: one selected node (soft cyan wash). `multi`: tri-state checkboxes that propagate parent↔child. */
+  /** `single`: one selected node (a cyan ring + cyan ink, no fill). `multi`: tri-state checkboxes that propagate parent↔child. */
   selectable?: NockerlTreeSelectable;
   /** REQUIRED accessible name for the `role="tree"` container. */
   ariaLabel: string;

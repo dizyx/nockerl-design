@@ -37,7 +37,7 @@
  *     CROSS-FADES by opacity and the DOT SCALES in (transform); only opacity /
  *     transform / brightness move, so nothing hard-cuts.
  *   • the radio CARD is the same idea at card scale: a flat card that, when
- *     chosen, gains a cyan ring + a faint accent-soft wash (a shape, not a halo).
+ *     chosen, gains a cyan ring and nothing behind it (a shape, not a halo, and not a fill).
  *     Cards share equal width + height in their row.
  *   • focus is an OUTLINE (focus-visible cyan ring), never a colored shadow.
  *   • cyan is the SELECTION signal only; warm tones appear only as the error mark.
@@ -196,7 +196,7 @@ export const NOCKERL_RADIO_GROUP_STYLES = `
 }
 .nk-ro--card:hover:not(.nk-ro--disabled) { filter: brightness(1.04); transform: translateY(-1px); }
 .nk-ro--card:active:not(.nk-ro--disabled) { transform: translateY(0) scale(.99); }
-/* A chosen card: cyan ring + faint accent-soft wash (a SHAPE, not a halo).
+/* A chosen card: the cyan ring alone (a SHAPE, not a halo, and not a fill).
    The ring states a CHOICE, so it carries the SELECTION weight at 45%. The
    thicker floating weight is reserved for surfaces that sit ON TOP of content. */
 /* The chosen card reads by OUTLINE only (LAW 6, reduce-fills): the selection-weight cyan

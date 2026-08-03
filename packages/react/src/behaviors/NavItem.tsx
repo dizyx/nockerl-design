@@ -12,9 +12,10 @@
  * the leading slot for a check. Do not conflate them.
  *
  * Design laws encoded here (do not re-derive in a shell):
- *   - SELECTION (active) = a soft cyan WASH + a thin cyan border + a cyan icon/label +
- *     `aria-current="page"`. The icon STAYS (never a check swap), and there is NEVER a
- *     left-rail / stripe (design-laws section 6). Mirrors Voice's accent fill/border.
+ *   - SELECTION (active) = a thin cyan BORDER + a cyan icon/label at medium weight +
+ *     `aria-current="page"`, with NO fill behind it. The icon STAYS (never a check swap),
+ *     and there is NEVER a left-rail / stripe (design-laws section 6). This is the
+ *     treatment Voice ships, which reads selection as border plus ink plus weight.
  *   - depth is flat: nav rows carry no shadow; the chrome panel they sit on carries it.
  *   - chrome context: text/hover read from --color-on-chrome*, not the card tokens.
  *   - status marks (the icon-corner dot) use STATUS colors, never the brand cyan.
@@ -54,13 +55,14 @@ export interface NockerlNavItemProps
   icon?: ReactNode;
   /** row (sidebar, default) · rail (icon-only + tooltip) · stack (icon-over-label, bottom-nav). */
   layout?: NockerlNavItemLayout;
-  /** Active destination: soft cyan wash + cyan tint + aria-current="page" (icon stays; no check, no rail). */
+  /** Active destination: a thin cyan border + cyan icon and label at medium weight, with no
+   *  fill, plus aria-current="page" (the icon stays; no check, no rail). */
   active?: boolean;
   /** aria-current override, independent of the active VISUAL (e.g. a parent row that
-   *  shows the wash because a child is selected, but is not itself the current page).
-   *  Defaults to `active`. */
+   *  shows the active outline because a child is selected, but is not itself the current
+   *  page). Defaults to `active`. */
   current?: boolean;
-  /** Tint-only active (no wash / no border), for a bar that carries its OWN selection
+  /** Tint-only active (no border either), for a bar that carries its OWN selection
    *  indicator (a bottom-nav's sliding pill). The active row still tints cyan + aria-current. */
   flat?: boolean;
   /** Status dot riding the icon corner (status colors only, never cyan). */

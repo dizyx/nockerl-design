@@ -56,8 +56,9 @@ export interface NockerlButtonProps
   ariaLabel?: string;
   /**
    * TOGGLE mode: when set, the button HOLDS state: it renders `aria-pressed` and, when
-   * true, the pressed VISUAL is the selection wash (soft cyan + cyan ink, design-laws
-   * section 6), NOT a separate control. Omit it for a plain command button.
+   * true, the pressed VISUAL is the selection outline (a selection-weight cyan border plus
+   * cyan ink, and no fill, design-laws section 6), NOT a separate control. Omit it for a
+   * plain command button.
    */
   pressed?: boolean;
 }

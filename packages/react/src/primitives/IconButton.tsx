@@ -40,9 +40,9 @@ export interface NockerlIconButtonProps
   size?: number;
   /**
    * TOGGLE mode: when set, the icon button HOLDS state: renders `aria-pressed` and, when
-   * true, the pressed VISUAL is the selection wash (soft cyan + cyan glyph, design-laws
-   * section 6). The primary home for icon toggles (toolbar toggles, wrap, etc.). Omit for
-   * a plain command icon button.
+   * true, the pressed VISUAL is the selection outline (a selection-weight cyan ring plus a
+   * cyan glyph, and no fill, design-laws section 6). The primary home for icon toggles
+   * (toolbar toggles, wrap, etc.). Omit for a plain command icon button.
    */
   pressed?: boolean;
 }
