@@ -163,7 +163,7 @@ parameters below are those tokens; a wrapper view is the planned reconciliation.
 The spec is approved; these are the real divergences between the shipped platforms,
 tracked in the [Review queue](/review-queue/):
 
-- **Card radius:** the token `radius.card` is **16px** (unified, ADR-0003), but Compose
+- **Card radius:** the token `radius.card` is **16px** (unified across platforms), but Compose
   hardcodes `NockerlCardRadius` = **18dp** and Swift `NockerlTheme.cardRadius` = **14pt**.
   Both should consume the token; web keeps its sharper container override.
 - **Elevation ladder:** Compose ships **L1 to L3** presets (`NockerlElevation`, no `Level4`);

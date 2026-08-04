@@ -196,7 +196,7 @@ fun GalleryComboboxes() {
     }
 }
 
-/** ADR-0012 pickers: a fixed-past month + a fixed time keep the goldens stable. */
+/** Pickers: a fixed-past month + a fixed time keep the goldens stable. */
 @ShowkaseComposable(name = "DatePicker · Contract", group = GROUP)
 @Preview
 @Composable
@@ -212,7 +212,7 @@ fun GalleryDatePicker() {
     }
 }
 
-/** ADR-0012 range MODE: a FIXED past range (2025-06-10 → 2025-06-20) for determinism. */
+/** The range MODE: a FIXED past range (2025-06-10 → 2025-06-20) for determinism. */
 @ShowkaseComposable(name = "DatePicker · Range mode", group = GROUP)
 @Preview
 @Composable

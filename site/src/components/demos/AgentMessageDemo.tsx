@@ -288,8 +288,8 @@ export default function AgentMessageDemo() {
           <NockerlFacetedBackground bare aria-hidden="true" />
           <AgentMessage role="assistant" model="Large 2.1" timestamp="10:21 AM">
             <p>
-              The Gateway routes every session through <code className="nk-am-inline">the credential store</code> for
-              credentials. Want me to wire the retry/backoff next?
+              The Gateway routes every session through the <code className="nk-am-inline">credential-store</code> proxy
+              for credentials. Want me to wire the retry/backoff next?
             </p>
           </AgentMessage>
 

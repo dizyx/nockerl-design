@@ -29,7 +29,7 @@ import com.dizyx.nockerl.design.tokens.nockerlInsetTaper
  * law violation by construction, so the type makes it impossible.
  *
  * The well is the recessed grammar: circular, with a MUTED glyph on `canvasAlt`
- * + a hairline. The inner shade FOLLOWS the circle ([nockerlInsetTaper], ): a
+ * + a hairline. The inner shade FOLLOWS the circle ([nockerlInsetTaper]): a
  * top-weighted radial that wraps the arc + a bottom catch-light, not an abrupt band. Three tones mirror
  * the web `.nk-es__well` variants exactly:
  * - [NockerlInsetIconTone.NEUTRAL]: muted `onCardMuted` mark on the plain well.

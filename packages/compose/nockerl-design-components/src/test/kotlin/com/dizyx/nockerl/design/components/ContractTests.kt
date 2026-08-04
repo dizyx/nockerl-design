@@ -78,7 +78,7 @@ class ContractTests {
         assertEquals(ToggleableState.On, nockerlCheckboxNext(ToggleableState.Indeterminate))
     }
 
-    // ── Pickers (ADR-0012): snapping + clamping contracts ───────────────────
+    // ── Pickers: snapping + clamping contracts ──────────────────────────────
 
     @Test
     fun minuteSnappingContract() {

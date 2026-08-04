@@ -411,7 +411,7 @@ fun GalleryTodoWidget() {
 }
 
 /**
- * The PLAN approval view (, per the ratified one-anatomy stance): the
+ * The PLAN approval view (per the ratified one-anatomy stance): the
  * anatomy's preview slot carries the rendered plan content (the host app
  * renders its markdown; representative structured text here) with the standard
  * outline confirm. It is a VIEW of the anatomy, never a separate component.

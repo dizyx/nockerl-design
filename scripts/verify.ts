@@ -103,7 +103,7 @@ check('swift NockerlElevation.level1 (offset)',
 check('swift NockerlElevation.blur (const 0)',
   swift.split('enum NockerlElevation {')[1]?.split('\n}')[0]?.match(/static let blur: CGFloat = ([0-9.]+)/)?.[1], '0');
 
-console.log('--- Radius (unified per ADR-0003) ---');
+console.log('--- Radius (unified across platforms) ---');
 check('web --radius-card (unified 16)', cssVar(':root','--radius-card'), '16px');
 check('web --radius-control', cssVar(':root','--radius-control'), '12px');
 
@@ -145,7 +145,7 @@ check('swift easing.standard', swift.includes('NockerlBezier(x1: 0.2, y1: 0, x2:
 check('css --motion-duration-base', cssVar(':root', '--motion-duration-base'), '200ms');
 check('css --motion-easing-standard', cssVar(':root', '--motion-easing-standard'), 'cubic-bezier(0.2, 0, 0, 1)');
 
-console.log('--- Layout grid + density (; status: review) ---');
+console.log('--- Layout grid + density (status: review) ---');
 check('css --grid-container-lg', cssVar(':root', '--grid-container-lg'), '1024px');
 check('css --grid-gutter (alias {space.5})', cssVar(':root', '--grid-gutter'), '20px');
 check('css --density-row-height-compact', cssVar(':root', '--density-row-height-compact'), '32px');

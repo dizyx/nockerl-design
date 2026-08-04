@@ -2,15 +2,15 @@
 
 The Kotlin/Jetpack-Compose side of the Nockerl design system, published to **GitHub Packages
 Maven**. Source of truth: **dizyx/nockerl-design**. Clients consume it as a versioned
-dependency and never re-invent the tokens/theme (ADR-0006/0007).
+dependency and never re-invent the tokens/theme.
 
 ## Modules
 
 | Coordinate | What |
 |---|---|
-| `com.dizyx.nockerl:design-tokens` | The token + theme layer: `NockerlColors` + palettes, `ThemeMode` / `LocalNockerlColors`, `NockerlTheme` (Activity-safe), `NockerlTypography` (**Outfit**, thin-forward, per ADR-0008), `NockerlShapes` (**card = 16**, per ADR-0003), and the "lit from above" material (`NockerlElevation`, `nockerlShadow`, `nockerlLitSurface`, `NockerlSurface`, `NockerlCard`). The Outfit variable font is bundled in the library. |
+| `com.dizyx.nockerl:design-tokens` | The token + theme layer: `NockerlColors` + palettes, `ThemeMode` / `LocalNockerlColors`, `NockerlTheme` (Activity-safe), `NockerlTypography` (**Outfit**, thin-forward), `NockerlShapes` (**card = 16**), and the "lit from above" material (`NockerlElevation`, `nockerlShadow`, `nockerlLitSurface`, `NockerlSurface`, `NockerlCard`). The Outfit variable font is bundled in the library. |
 | `com.dizyx.nockerl:design-components` | The component layer (**shipped in 0.5.0**): `NockerlButton` (the fill-ladder button family), `NockerlIconButton`, `NockerlChip`, and their shared control internals. This layer depends on `design-tokens`. Since Phases 3 and 4: `NockerlBottomSheet` + `NockerlSheetGrip`, `NockerlSegmented`, `NockerlSettingsRow`, the `NockerlListItem` grammar, and `Modifier.longPressPop`. |
-| `:nockerl-design-gallery` *(never published)* | The maintained Showkase gallery + the Roborazzi golden rail (ADR-0007: galleries live with the libraries). Every shipped component has a curated `@ShowkaseComposable` entry; the screenshot test renders each entry to a version-controlled golden PNG in dark + light (headless, no emulator). |
+| `:nockerl-design-gallery` *(never published)* | The maintained Showkase gallery + the Roborazzi golden rail (galleries live with the libraries). Every shipped component has a curated `@ShowkaseComposable` entry; the screenshot test renders each entry to a version-controlled golden PNG in dark + light (headless, no emulator). |
 
 ## The visual-regression rail (goldens)
 
@@ -29,7 +29,7 @@ the published modules must not.
 ## Consuming it (auth is required, even for reads)
 
 GitHub Packages Maven requires authentication **even to resolve/read** an artifact. There is
-no anonymous read, and Gradle cannot route through the the credential store proxy. Every consumer (CI and
+no anonymous read, and Gradle cannot route through the credential store proxy. Every consumer (CI and
 local dev machines) needs a **read-only Personal Access Token** with the **`read:packages`**
 scope.
 

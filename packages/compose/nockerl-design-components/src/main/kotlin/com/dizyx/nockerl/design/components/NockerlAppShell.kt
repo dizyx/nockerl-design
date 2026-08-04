@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
  * The **app shell**: the top-level scaffold as a PURE COMPOSITION of the
  * corrected components, so every toolbar/nav/lockup fix propagates here
  * automatically: [NockerlFacetedBackground] (the praised ground), a
- * [NockerlNavSurface] nav region (the ONE translucent layer, ), an optional
+ * [NockerlNavSurface] nav region (the ONE translucent layer), an optional
  * [NockerlTopBar], and the content region. This shell draws NOTHING bespoke.
  *
  * **Modes are EXPANDED + RAIL only** ([NockerlAppShellLayout]). The

@@ -12,7 +12,7 @@
 //   - Labels: selected = `accentPrimary` (cyan-on-plain, because the prior on-accent pick
 //     is moot with no fill to sit on) at medium weight; unselected = muted canvas ink.
 //
-// Capability union (, matching Compose `NockerlSegmented`): per-segment leading icons,
+// Capability union (matching Compose `NockerlSegmented`): per-segment leading icons,
 // per-segment disable, and the SM density tier for tight settings rows. Tokens-pure;
 // feedback honors the platform (design-laws §7).
 

@@ -223,7 +223,7 @@ fun NockerlLanguageBadge(
 }
 
 /**
- * The shared language-label normalization (; identical on web + Swift):
+ * The shared language-label normalization (identical on web + Swift):
  * trim + lowercase; blank in, `null` out ("TypeScript" -> "typescript").
  */
 fun nockerlLanguageLabel(raw: String): String? {

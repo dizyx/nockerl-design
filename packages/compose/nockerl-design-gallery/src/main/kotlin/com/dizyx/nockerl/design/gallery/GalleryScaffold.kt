@@ -14,7 +14,7 @@ import com.dizyx.nockerl.design.tokens.NockerlTheme
 
 /**
  * Shared scaffolding for the **design gallery**: the maintained Compose
- * showcase of every shipped design-system component (ADR-0007: galleries live
+ * showcase of every shipped design-system component (galleries live
  * with the libraries, not the consuming apps).
  *
  * The gallery has two consumers that render the *exact same* composables, so a

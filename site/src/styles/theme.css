@@ -56,7 +56,7 @@
 /* Starlight page title (rendered outside .sl-markdown-content) */
 .content-panel h1, .sl-markdown-content > h1:first-child { font-weight: 200; letter-spacing: var(--font-tracking-snug); }
 
-/* == Heading rhythm (, audited site-wide) == A heading that opens a new section leads it
+/* == Heading rhythm (audited site-wide) == A heading that opens a new section leads it
    by 1.5em; because that is PROPORTIONAL, the break scales with the heading's own size: a 35px
    H2 gets ~53px of air, a 16px H3 ~44px, so section > subsection separation is automatic and
    uniform (measured 53px H2 / 44px H3 across 16 pages, both themes). Paired with the tight ~16px

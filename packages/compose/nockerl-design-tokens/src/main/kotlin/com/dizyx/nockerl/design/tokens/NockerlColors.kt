@@ -98,7 +98,7 @@ data class NockerlColors(
      */
     val chromeSurface: Color,
     /**
-     * The sidebar / nav-rail's ONE ratified TRANSLUCENT surface (, LAW-5
+     * The sidebar / nav-rail's ONE ratified TRANSLUCENT surface (LAW-5
      * carve-out): [chromeSurface] at a FIXED ~0.88 translucency (never a slider)
      * so the [NockerlFacetedBackground] whispers through. The SOLE sanctioned
      * translucency surface. One-translucent-layer-max still holds (the facet is
@@ -196,7 +196,7 @@ data class NockerlColors(
     val accentTertiarySoft: Color,
     /** Low-alpha [accentQuaternary] tint. */
     val accentQuaternarySoft: Color,
-    /** The ONE sanctioned warm accent: orange (ADR-0009); decorative, rare, never status. */
+    /** The ONE sanctioned warm accent: orange. Decorative, rare, never status. */
     val accentWarm: Color,
     /** Low-alpha [accentWarm] tint (the notice wash). */
     val accentWarmSoft: Color,

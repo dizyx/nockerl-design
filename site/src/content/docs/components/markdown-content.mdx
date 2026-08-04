@@ -124,7 +124,7 @@ Text(attributed)
   nameLabel="Parameter"
   rows={[
     { name: 'text', type: 'String', required: true, description: 'The full (possibly partial) markdown for this content block.' },
-    { name: 'isStreaming', type: 'Boolean', required: true, description: 'When <code>true</code>, completed blocks parse once and stay stable; only the trailing block re-parses per SSE token (flash-free streaming, ).' },
+    { name: 'isStreaming', type: 'Boolean', required: true, description: 'When <code>true</code>, completed blocks parse once and stay stable; only the trailing block re-parses per SSE token (flash-free streaming).' },
     { name: 'onImageClick', type: '(String) -> Unit', required: true, description: 'Invoked with a Coil model when a rendered markdown image is tapped.' },
     { name: 'modifier', type: 'Modifier', default: 'Modifier', description: 'External modifier on the content Column.' },
     { name: 'textColor', type: 'Color', default: 'Color.Unspecified', description: 'Body text override; <code>Unspecified</code> resolves to <code>onSurface</code>. The user bubble passes <code>onUserCard</code>, the assistant bubble <code>onCardAlt</code>.' },

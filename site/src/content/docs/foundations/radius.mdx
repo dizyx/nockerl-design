@@ -10,7 +10,7 @@ import DocCallout from '../../../components/DocCallout.astro';
 
 <StatusBadge status="review" />
 
-Corner radius is **unified and intentional** (ADR-0003). Two values do most of the work:
+Corner radius is **unified and intentional**. Two values do most of the work:
 `radius-control` (12) and `radius-card` (16). The full pill is reserved. The scale is
 one shared truth across platforms; radius is **brand expression, not interaction behavior**,
 so it does not fork per OS.
@@ -52,18 +52,18 @@ the platform's native type. The semantic tokens are authored in `px`; the Compos
 the same numbers as **`dp`**, and the Swift build emits them as **points**, so `radius-control`
 is 12px on web, 12dp on Android, and 12pt on Swift, and `radius-card` is 16 on all three. This
 is the industry pattern (Fluent 2's global → alias → control layering; Spotify's near-identical
-cross-platform shape) and the explicit ADR-0003 posture: *unify brand expression, honor only
+cross-platform shape) and the posture this system takes: *unify brand expression, honor only
 real platform behavior.*
 
-The web `card → 4px` shadcn default that once diverged was **drift, not a decision**. ADR-0003
-dropped it, so web now inherits the unified 16. The only genuinely platform-specific shape token
+The web `card → 4px` shadcn default that once diverged was **drift, not a decision**. It was
+dropped, so web now inherits the unified 16. The only genuinely platform-specific shape token
 left is Android's `chamfer`.
 
 <DocCallout tone="note" title="Android-only: chamfer accent">
 `radius-chamfer` (**14dp**) drives Compose's `ChamferedCornerShape`, an angled corner *cut*
 (not a round) used sparingly for **workspace-pill / team-card** accents. It lives in
-`tokens/platform/android/radius.json` because it is the one legitimate per-platform shape delta
-(ADR-0003); every other radius falls through to the shared semantic scale unchanged. Web may
+`tokens/platform/android/radius.json` because it is the one legitimate per-platform shape
+delta; every other radius falls through to the shared semantic scale unchanged. Web may
 adopt an equivalent clip later. That is an open, deliberately-deferred option, not a promise.
 </DocCallout>
 

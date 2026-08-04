@@ -1,4 +1,4 @@
-// NockerlDatePickers: the shared date/time picker CONTRACT on SwiftUI (ADR-0012, B7).
+// NockerlDatePickers: the shared date/time picker CONTRACT on SwiftUI.
 //
 // Wraps the platform `DatePicker` (law §9, native interaction; the CONTRACT unifies):
 //   - `weekStartsOn` (0=Sunday…6=Saturday): DEFAULTS to the device locale; the explicit
@@ -6,7 +6,7 @@
 //     custom `Calendar.firstWeekday` flows in (Apple's firstWeekday is 1-based).
 //   - `entryMode` (`default | dial | wheel | text`): defaults to the platform idiom
 //     (graphical calendar / wheel where native). `dial` is not an Apple idiom and falls
-//     back to the default (documented, per the ADR's fallback rule).
+//     back to the default (documented, per the contract's fallback rule).
 //   - `minuteStep` / `min` / `max`: the shared web API. SwiftUI's DatePicker has no
 //     native minute stepping. Selections SNAP to the step on change (the documented
 //     clamping behavior, same pure rule as Compose); `min`/`max` clamp via the native
@@ -14,7 +14,7 @@
 
 import SwiftUI
 
-/// The shared entry-mode vocabulary (ADR-0012).
+/// The shared entry-mode vocabulary.
 public enum NockerlPickerEntryMode: Equatable {
     /// The platform idiom (graphical calendar on macOS/iOS).
     case `default`
@@ -26,7 +26,7 @@ public enum NockerlPickerEntryMode: Equatable {
     case text
 }
 
-/// Snap a minute value to the nearest step (the ADR-0012 documented clamping;
+/// Snap a minute value to the nearest step (the contract's documented clamping;
 /// identical semantics to Compose's `nockerlSnapMinutes`). `step <= 1` is a
 /// no-op; 60 wraps to 0.
 public func nockerlSnapMinutes(_ minute: Int, step: Int) -> Int {
@@ -36,7 +36,7 @@ public func nockerlSnapMinutes(_ minute: Int, step: Int) -> Int {
     return min(max(snapped, 0), 59)
 }
 
-/// A date (or time) picker under the ADR-0012 contract.
+/// A date (or time) picker under the shared contract.
 ///
 /// Unavailable on tvOS/watchOS: SwiftUI ships no comparable `DatePicker` there
 /// within this package's platform floors.
@@ -79,7 +79,7 @@ public struct NockerlDatePicker: View {
         self.minuteStep = minuteStep
         self.bounds = Self.range(min: min, max: max)
         // The snapping binding: writes snap the minute component to the step
-        // (the documented ADR-0012 clamping; no native stepping exists).
+        // (the documented clamping; no native stepping exists).
         if minuteStep > 1 {
             self.selection = Binding(
                 get: { selection.wrappedValue },
@@ -138,7 +138,7 @@ public struct NockerlDatePicker: View {
 
         /// Map the shared entry-mode vocabulary onto the platform styles.
         /// `.dial` is not an Apple idiom and `.wheel` is iOS-only, so the
-        /// documented fallbacks land on the platform default (ADR-0012).
+        /// documented fallbacks land on the platform default.
         @ViewBuilder
         private func styled(_ picker: some View) -> some View {
             #if os(iOS)
@@ -184,7 +184,7 @@ public struct NockerlDatePicker: View {
     }
 }
 
-/// The **range MODE** of the date-picker family (ADR-0012, ): a start→end
+/// The **range MODE** of the date-picker family: a start→end
 /// date range on the ONE contract, so a standalone range picker is unnecessary.
 ///
 /// SwiftUI ships NO graphical contiguous-range picker, so honor-the-platform

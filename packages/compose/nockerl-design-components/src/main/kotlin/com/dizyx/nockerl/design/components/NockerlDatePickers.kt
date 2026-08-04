@@ -16,13 +16,13 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 
 /**
- * The shared date/time picker CONTRACT (ADR-0012, ruling B7) on Compose,
+ * The shared date/time picker CONTRACT on Compose,
  * wrapping the platform Material 3 pickers (per law §9, the interaction stays
  * native; the CONTRACT is what unifies):
  *
  * - **`weekStartsOn`** (0=Sunday … 6=Saturday): the DEFAULT is the device
  *   locale on every platform. M3's calendar derives its first day from the
- *   locale and exposes no per-day override. Per ADR-0012, the unsupported
+ *   locale and exposes no per-day override. Under this contract, the unsupported
  *   explicit override FALLS BACK to the platform default (and this KDoc says
  *   so; the props table documents it). The prop exists so call sites are
  *   source-compatible across platforms.
@@ -41,7 +41,7 @@ enum class NockerlPickerEntryMode {
     /** The M3 clock dial (time; dates fall back to DEFAULT). */
     DIAL,
 
-    /** Not an Android idiom: falls back to DEFAULT (documented, ADR-0012). */
+    /** Not an Android idiom: falls back to DEFAULT (documented). */
     WHEEL,
 
     /** Keyboard entry (M3 input modes). */
@@ -49,14 +49,14 @@ enum class NockerlPickerEntryMode {
 }
 
 /**
- * Date picker under the ADR-0012 contract. Selection reports as UTC midnight
+ * Date picker under the shared contract. Selection reports as UTC midnight
  * millis (the M3 convention).
  *
  * @param selectedDateMillis current selection (UTC millis), or `null`.
  * @param onDateSelected fires with the (bounds-clamped) selection.
  * @param modifier outer modifier.
  * @param weekStartsOn override in the 0 to 6 range (UNSUPPORTED on M3, locale-driven);
- *   documented fallback per ADR-0012.
+ *   documented fallback.
  * @param entryMode [NockerlPickerEntryMode.TEXT] = M3 input mode; everything
  *   else = the calendar.
  * @param minMillis earliest selectable date (UTC millis), inclusive.
@@ -93,7 +93,7 @@ fun NockerlDatePicker(
 }
 
 /**
- * The **range MODE** of the date-picker family (ADR-0012, ): a start→end
+ * The **range MODE** of the date-picker family: a start→end
  * date range on the ONE contract, so a standalone range picker is unnecessary.
  * On Compose the platform reality is M3's separate [DateRangePicker] (its state
  * differs from the single picker's), presented here as the family's range mode,
@@ -143,14 +143,14 @@ fun NockerlDateRangePicker(
 }
 
 /**
- * Time picker under the ADR-0012 contract.
+ * Time picker under the shared contract.
  *
  * @param hour initial hour (0 to 23).
  * @param minute initial minute: snapped to [minuteStep] on the way in AND out.
  * @param onTimeSelected fires with the (step-snapped) hour/minute.
  * @param modifier outer modifier.
  * @param entryMode DIAL/DEFAULT = the M3 clock dial; TEXT = M3 [TimeInput];
- *   WHEEL falls back to the dial (documented, ADR-0012).
+ *   WHEEL falls back to the dial (documented).
  * @param minuteStep snap increment (1 = free); M3 has no native stepping, so
  *   the selection snaps on read: the documented clamping behavior.
  * @param is24Hour force 24h; `null` follows the device setting.
@@ -191,7 +191,7 @@ fun NockerlTimePicker(
 }
 
 /**
- * Snap a minute value to the nearest [step] (ADR-0012's documented clamping:
+ * Snap a minute value to the nearest [step] (the contract's documented clamping:
  * platforms without native stepping honor the contract by snapping). A step of
  * `<= 1` is a no-op; 60 wraps back to 0. Pure + shared with Swift.
  */

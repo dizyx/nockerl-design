@@ -103,12 +103,12 @@ public struct NockerlRecordingHUD: View {
     ///   - resultCopiedLabel: the success word when `.result(pasted: false)`.
     ///   - showBrand: `false` drops BOTH the logo and the divider (embedded chrome).
     ///   - animate: `false` freezes the dot pulse at peak (reduced-motion / snapshots).
-    ///   - animateBars: opt-in ~80ms ease on each bar height (; default off).
+    ///   - animateBars: opt-in ~80ms ease on each bar height (default off).
     ///   - showsCancel: render the trailing ghost Cancel (default `false`, since the host
     ///     usually owns its own controls, law §9).
     ///   - cancelLabel: the ghost Cancel's label.
     ///   - accessibilityLabel: overrides the phase's combined live label.
-    ///   - entrance: opt-in entrance/exit (; default `.none` = in place).
+    ///   - entrance: opt-in entrance/exit (default `.none` = in place).
     ///   - onCancel: the ghost Cancel action.
     public init(
         phase: NockerlRecordingHudPhase = .recording,

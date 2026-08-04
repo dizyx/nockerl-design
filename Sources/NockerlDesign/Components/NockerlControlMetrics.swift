@@ -6,5 +6,5 @@
 // directly (v1.15.0 migration). Its unrelated tenant `NockerlA11y` (the accessible-name helper)
 // moved to its own home, `NockerlA11y.swift`.
 //
-// Kept as an empty tombstone (rather than a hard delete) so the the credential store `--files` proxy push can
-// overlay it cleanly; safe to remove entirely in a later housekeeping pass.
+// Kept as an empty tombstone rather than a hard delete, so an incremental file-scoped push
+// overlays it cleanly; safe to remove entirely in a later housekeeping pass.

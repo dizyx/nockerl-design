@@ -372,7 +372,7 @@ export default function ChatBubbleDemo() {
           <NockerlFacetedBackground bare aria-hidden="true" />
           <ChatBubble role="agent">
             <p>
-              Routing every session through <code>the credential store</code> for credentials.
+              Routing every session through the <code>credential-store</code> proxy for credentials.
             </p>
           </ChatBubble>
           <ChatBubble role="user">

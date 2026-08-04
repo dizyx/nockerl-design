@@ -235,7 +235,7 @@ public struct NockerlBadge: View {
     }
 }
 
-/// The shared language-label normalization (; identical on web + Compose):
+/// The shared language-label normalization (identical on web + Compose):
 /// trim + lowercase; blank in, `nil` out ("TypeScript" -> "typescript").
 func nockerlLanguageLabel(_ raw: String) -> String? {
     let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()

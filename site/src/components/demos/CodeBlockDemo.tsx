@@ -71,7 +71,7 @@ export interface CodeBlockProps {
   diff?: boolean;
 }
 
-// The language tag is the shared hue-free <NockerlLanguageBadge> (, matches native):
+// The language tag is the shared hue-free <NockerlLanguageBadge> (matches native):
 // a language is METADATA, never status, so it carries NO per-language color. The
 // component normalizes the label (trim + lowercase) so the tag reads identically everywhere.
 

@@ -333,7 +333,7 @@ fun nockerlSurfaceGradient(
 ): Brush = Brush.verticalGradient(colors = listOf(top, bottom))
 
 /**
- * EXPERIMENTAL card gradient (, opt-in): a subtle theme-following DIAGONAL
+ * EXPERIMENTAL card gradient (opt-in): a subtle theme-following DIAGONAL
  * sheen for `nockerlSurface(gradient = nockerlCardGradient())`. Mirrors the react
  * `gradient` opt-in: 160° (top-trailing → bottom-leading) between two adjacent
  * NEUTRAL surface levels ([NockerlColors.cardSurface2] → [NockerlColors.cardSurface1]),

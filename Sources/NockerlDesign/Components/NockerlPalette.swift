@@ -31,9 +31,9 @@ public struct NockerlPalette {
     public let accentPrimary: Color
     /// Lit-from-above cyan, the top stop of the primary vertical fill gradient.
     public let accentPrimaryHi: Color
-    /// Deeper primary cyan: the DARK end of a fill gradient / pressed accent (the
-    /// Hi token's dark sibling; ). Resolves per theme (Light retuned one ramp
-    /// step deeper in  so light gradients actually grade).
+    /// Deeper primary cyan: the DARK end of a fill gradient / pressed accent, the
+    /// Hi token's dark sibling. Resolves per theme; the light ramp is retuned one
+    /// step deeper so light gradients actually grade.
     public let accentPrimaryDark: Color
     /// Low-alpha cyan tint: the secondary fill and the selected-chip wash (design-laws §6).
     public let accentPrimarySoft: Color
@@ -129,7 +129,7 @@ public struct NockerlPalette {
     public let shadowTint: Color
     /// The lit-from-above top catch-light (alpha baked into the token).
     public let surfaceHighlight: Color
-    /// The ONE sanctioned warm accent: orange (ADR-0009); decorative, never status.
+    /// The ONE sanctioned warm accent: orange. Decorative, never status.
     public let accentWarm: Color
     /// Low-alpha warm tint, the notice wash.
     public let accentWarmSoft: Color

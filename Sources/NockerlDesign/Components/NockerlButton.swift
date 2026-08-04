@@ -6,7 +6,7 @@
 // reserved for chips + the input bar, design-laws §4) and pulls every color from the
 // generated semantic palette via ``NockerlPalette``: no hardcoded colors, radii, or sizes.
 //
-// Label rule (design-laws §11 / ADR-0008): UPPERCASE, weight `.light`, tracked −0.03em.
+// Label rule (design-laws §11): UPPERCASE, weight `.light`, tracked −0.03em.
 // Buttons are the ONLY uppercase in the Nockerl type system.
 //
 // Feedback rule (design-laws §7): the fill is STATIC (the gradient never tweens); only
@@ -239,8 +239,8 @@ private struct ButtonVariantSpec {
 
 /// The unified Nockerl button. Use it for EVERY tappable label affordance on a SwiftUI
 /// surface. Renders one ``NockerlButtonVariant`` from the cyan fill ladder at the 12pt
-/// control radius, with an uppercase, light (300), −0.03em label (design-laws §11 /
-/// ADR-0008). Buttons are the only uppercase in the system.
+/// control radius, with an uppercase, light (300), −0.03em label (design-laws §11).
+/// Buttons are the only uppercase in the system.
 ///
 /// Fill ladder (design-laws §10; Design Review #1):
 /// - `.primary`: filled cyan vertical gradient, on-accent label.

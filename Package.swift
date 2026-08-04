@@ -11,8 +11,8 @@
 // mirrored into Sources/ on every build; do not edit NockerlTokens.swift by hand.
 // Components are authored code, verified on the macOS CI rail (swift.yml).
 //
-// Consume by pinning a git tag on the repo URL. See the Installation page and
-// docs/decisions/0006 (versioning) + 0007 (architecture).
+// Consume by pinning a git tag on the repo URL. See the Installation page for
+// the version line and the package layout.
 import PackageDescription
 
 let package = Package(
