@@ -112,9 +112,17 @@ function hunt(re: RegExp, text: string): RegExpMatchArray[] {
   return [...text.matchAll(re)];
 }
 
-/** Verbatim third-party legal text. Never reword a license. */
+/**
+ * Verbatim third-party legal text. Never reword a license.
+ *
+ * The two package copies are byte-identical to the root file and exist because npm resolves
+ * `files` against the package directory, so a package cannot ship a licence that lives above
+ * it. They carry the bundled-font copyright lines, which are someone else's words.
+ */
 const LEGAL_EXEMPT = new Set([
   'LICENSE',
+  'packages/tokens/LICENSE',
+  'packages/react/LICENSE',
   'Sources/NockerlDesign/Resources/Fonts/OFL-Outfit.txt',
   'Sources/NockerlDesign/Resources/Fonts/OFL-SpaceMono.txt',
   'packages/compose/nockerl-design-tokens/src/third_party/OFL.txt',
