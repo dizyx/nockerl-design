@@ -168,7 +168,7 @@ fun GalleryAccordionHeaderAccessory() {
 }
 
 /**
- * Accordion · Zebra (, EXPERIMENTAL opt-in): alternating-row wash. EVEN
+ * Accordion · Zebra (EXPERIMENTAL opt-in): alternating-row wash. EVEN
  * (1-based) rows take onCard @ 4%, odd rows plain (light/dark/light/dark). A
  * resting surface tone beneath hairlines/selection. Default off = flat rows.
  */

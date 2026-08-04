@@ -64,7 +64,7 @@ import com.dizyx.nockerl.design.tokens.nockerlShadow
  * empty; a long-press flips a manual override. The glyph CROSS-FADES + scales
  * between mic and send on the fast/standard motion tokens.
  *
- * **The adoption contract (, mirrors the react API 1:1).** Generic over
+ * **The adoption contract (mirrors the react API 1:1).** Generic over
  * app-specific, one shared contract on both platforms:
  * - [leadingAccessory] is a generic slot that REPLACES the built-in attach button
  *   entirely when provided (any control cluster; the caller owns its a11y).

@@ -25,7 +25,7 @@
 
 import SwiftUI
 
-/// The SHARED two-tier control density (foundations/density, ): a tier
+/// The SHARED two-tier control density (foundations/density): a tier
 /// re-selects rhythm (box/row height + vertical padding) from the space scale.
 /// Never fills, never type color. Components opt in PER INSTANCE (`density:
 /// .compact`), never via a global context.

@@ -322,7 +322,7 @@ final class ComponentTests: XCTestCase {
         _ = NockerlAccordion(items: items, mode: .multiple, initiallyExpanded: ["one"])
     }
 
-    // MARK: Date/time picker contract (ADR-0012): snapping + calendar mapping.
+    // MARK: Date/time picker contract: snapping + calendar mapping.
 
     func testMinuteSnappingContract() {
         XCTAssertEqual(nockerlSnapMinutes(7, step: 5), 5)
@@ -357,7 +357,7 @@ final class ComponentTests: XCTestCase {
     }
 
     func testDateRangePickerInstantiates() {
-        // The ADR-0012 range mode: two coordinated pickers on Apple.
+        // The range mode: two coordinated pickers on Apple.
         var start = Date(timeIntervalSince1970: 1_749_513_600)
         var end = Date(timeIntervalSince1970: 1_750_377_600)
         let startBinding = Binding(get: { start }, set: { start = $0 })
@@ -575,7 +575,7 @@ final class ComponentTests: XCTestCase {
         _ = NockerlLockup(product: "Dashboard", size: 28, tone: .onDark)
     }
 
-    // MARK: InsetIcon / EmptyState (, law ): informational treatment.
+    // MARK: InsetIcon / EmptyState: the informational treatment.
 
     func testInsetIconInstantiatesEveryTone() {
         for tone in [NockerlInsetIconTone.neutral, .brand, .error] {

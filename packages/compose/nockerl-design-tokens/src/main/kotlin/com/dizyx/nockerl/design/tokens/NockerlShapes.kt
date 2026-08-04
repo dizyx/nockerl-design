@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
  */
 
 /** Standard card corner radius (matches the mockup's 18-20px cards). */
-val NockerlCardRadius: Dp = 16.dp // ADR-0003: card radius unified to 16 across platforms
+val NockerlCardRadius: Dp = 16.dp // card radius unified to 16 across platforms
 
 /** Tighter radius for nested panels / chips. */
 val NockerlPanelRadius: Dp = 12.dp

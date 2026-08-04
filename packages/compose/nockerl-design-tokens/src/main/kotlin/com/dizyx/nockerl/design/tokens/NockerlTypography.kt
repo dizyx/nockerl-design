@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 
 /**
- * Outfit: the ratified Nockerl typeface (ADR-0008).
+ * Outfit: the ratified Nockerl typeface.
  *
  * A single variable font ([R.font.nockerl_outfit_variable]) exposed as one [Font] per weight
  * actually used by the thin-forward ramp, driven through Compose variable-font support
@@ -59,7 +59,7 @@ private fun role(s: NockerlTextStyle): TextStyle =
 /**
  * Material 3 [Typography] for Nockerl on Compose.
  *
- * The thin-forward type system on the **Outfit** typeface (ratified by ADR-0008): weight ramps
+ * The thin-forward type system on the **Outfit** typeface (ratified): weight ramps
  * *down* as size goes *up* (a display is the thinnest thing on the page), and **500 (medium) is
  * the hard bold cap**, so the system never sets type heavier than 500.
  *

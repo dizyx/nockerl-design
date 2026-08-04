@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * check-hand-roll.ts: the HAND-ROLL / DIVERGENCE gate (Round-5, ).
+ * check-hand-roll.ts: the HAND-ROLL / DIVERGENCE gate (Round-5).
  *
  * Makes it STRUCTURALLY IMPOSSIBLE to re-implement a packaged component instead of composing it,
  * or to keep two divergent copies of one component. It extends the composition harness beyond the

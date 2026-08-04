@@ -11,7 +11,7 @@
  *   - STATUS intents (functional signals): info (cyan), success, warning (amber), error.
  *   - `notice` is the RARE warm brand accent (accent.warm / orange), a special, NON-status
  *     highlight (an orange hairline + filled disc), deliberately DISTINCT from `warning` amber
- *     (design-law 10 + ADR-0009). Use sparingly: a featured/seasonal/heads-up announcement,
+ *     (design-law 10). Use sparingly: a featured/seasonal/heads-up announcement,
  *     not "something is wrong."
  */
 export type AlertIntent = 'info' | 'success' | 'warning' | 'error' | 'notice';

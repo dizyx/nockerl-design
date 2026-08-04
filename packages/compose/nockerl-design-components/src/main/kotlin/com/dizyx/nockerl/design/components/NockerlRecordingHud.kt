@@ -86,7 +86,7 @@ import kotlin.math.ln
  * @param resultCopiedLabel the success word when [pasted] is false.
  * @param showBrand `false` drops BOTH the logo and the divider (embedded chrome).
  * @param animate `false` freezes the dot pulse at peak (deterministic goldens).
- * @param animateBars opt-in ~80ms ease on each bar height (; default off).
+ * @param animateBars opt-in ~80ms ease on each bar height (default off).
  * @param showCancel render the trailing ghost Cancel (default false, the host
  *   usually owns its own controls, law §9).
  * @param cancelLabel the ghost cancel's label.

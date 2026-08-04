@@ -30,7 +30,7 @@ const ROOT = join(import.meta.dir, '..');
 
 /** The version-bearing sites: 5 manifests + the public "current version" doc anchors. */
 const SITES: Array<{ file: string; re: RegExp; label: string }> = [
-  // ── The five version-bearing manifests (the one-version line ADR-0006 enforces) ──
+  // ── The five version-bearing manifests that share the one version line ──────
   { file: 'package.json', re: /("version":\s*")[^"]+(")/, label: 'root package.json' },
   { file: 'packages/react/package.json', re: /("version":\s*")[^"]+(")/, label: '@dizyx/nockerl-react' },
   { file: 'packages/tokens/package.json', re: /("version":\s*")[^"]+(")/, label: '@dizyx/nockerl-tokens' },

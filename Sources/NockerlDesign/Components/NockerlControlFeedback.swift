@@ -79,7 +79,7 @@ extension View {
 /// The shared button/chip LABEL treatment, factored so the uppercase-vs-not and the
 /// macOS-12-safe tracking guard live in ONE place.
 ///
-/// Design-laws §11 / ADR-0008: button labels are UPPERCASE, weight `.light`, tracked
+/// Design-laws §11: button labels are UPPERCASE, weight `.light`, tracked
 /// −0.03em. `Text.tracking(_:)` requires macOS 13 / iOS 16 / tvOS 16 / watchOS 9, but the
 /// package floor is macOS 12 / iOS 15, so tracking is applied ONLY inside an `#available`
 /// check; below the floor the label renders without tracking (still uppercase + light).

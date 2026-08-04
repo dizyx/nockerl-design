@@ -359,7 +359,7 @@ export default function LongPressPopDemo() {
                   className={`nk-lp-target${openFor === 'bubble' ? ' nk-lp-target--lifted' : ''}${selected['bubble'] ? ' nk-lp-target--selected' : ''}`}
                   style={rippleVars('bubble', openFor === 'bubble')} {...targetProps(api, 'bubble', openFor === 'bubble')}
                 >
-                  <p>Routing every session through <code>the credential store</code> for credentials. Ship it.</p>
+                  <p>Routing every session through the <code>credential-store</code> proxy for credentials. Ship it.</p>
                   {selected['bubble'] && <span className="nk-lp-check" aria-hidden="true">{IconCheck}</span>}
                   {moreButton(api, 'bubble', 'Message actions', true)}
                 </div>
