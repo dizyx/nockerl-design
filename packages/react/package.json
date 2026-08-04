@@ -1,12 +1,9 @@
 {
   "name": "@dizyx/nockerl-react",
   "version": "2.0.0",
-  "description": "Nockerl design system - React components (token-pure, SSR-safe injected styles). Source of truth: dizyx/nockerl-design. Pair with @dizyx/nockerl-tokens for the CSS custom properties.",
+  "description": "React components for the Nockerl design system: token-pure, with SSR-safe injected styles. Source of truth: dizyx/nockerl-design. Pair with @dizyx/nockerl-tokens for the CSS custom properties.",
   "license": "MIT",
   "type": "module",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dizyx/nockerl-design.git",
@@ -14,7 +11,8 @@
   },
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -27,6 +25,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run clean && npm run build",
     "clean": "rm -rf dist"
   },
   "peerDependencies": {

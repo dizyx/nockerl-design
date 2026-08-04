@@ -1,31 +1,12 @@
 # @dizyx/nockerl-tokens
 
 The canonical Nockerl design tokens, web build (CSS custom properties), generated from the
-DTCG source in this repo (`tokens/` → Style Dictionary → `build/web/tokens.css`). Published to
-**GitHub Packages** under the `@dizyx` scope (GitHub Packages requires the npm scope to equal
-the GitHub org; the pure `@nockerl` brand is reserved for public npm later).
+DTCG source in this repo (`tokens/` → Style Dictionary → `build/web/tokens.css`).
 Consumed as a versioned dependency: **never vendored, never hardcoded**.
 
 ## Install
 
-### 1. Auth: GitHub Packages needs a `read:packages` PAT
-
-GitHub Packages (npm) has **no anonymous read**: resolving `@dizyx/*` requires a GitHub
-Personal Access Token with the **`read:packages`** scope. Create one at
-**GitHub → Settings → Developer settings → Personal access tokens** with `read:packages`, then
-add a scoped `.npmrc` in the consumer repo (never commit the raw token, inject it from the
-environment or your secret store):
-
-```ini
-# .npmrc (consumer repo)
-@dizyx:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_GITHUB_TOKEN}   # a PAT with read:packages
-```
-
-In CI, the Actions `GITHUB_TOKEN` already has `packages: read`, so set
-`NPM_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` and reuse the same `.npmrc`.
-
-### 2. Install
+Public on npm. No registry configuration and no token:
 
 ```bash
 npm install @dizyx/nockerl-tokens
@@ -79,12 +60,22 @@ web-only wiring.
 
 ## Publish (maintainers)
 
-Publishing is CI-only (`.github/workflows/release.yml`) using the Actions `GITHUB_TOKEN`, so no
-PAT, nothing on a dev machine. Bump the version, then trigger the workflow (release / manual /
-`repository_dispatch: release-tokens`). A `vX.Y.Z` git tag publishes this npm artifact **in
-lockstep** with `@dizyx/nockerl-react` and the Compose Maven artifact: one version line across
-the whole design system. Semver per ADR-0006.
+Publishing is CI-only (`.github/workflows/release.yml`) and uses npm **trusted publishing**
+over OIDC, so there is no npm token anywhere: not in the repo, not in a secret, not on a dev
+machine. The workflow proves its identity to npm at publish time and npm attaches a
+**provenance attestation**, which is what lets anyone confirm a published version really was
+built from this repo at that commit.
+
+Bump the version, then trigger the workflow (release / manual / `repository_dispatch`). A
+`vX.Y.Z` git tag publishes this npm artifact **in lockstep** with `@dizyx/nockerl-react` and
+the Compose Maven artifact: one version line across the whole design system, semver.
+
+Two things follow from how provenance works, and both bite if forgotten. The workflow has to
+run in the repository named by `repository.url` in `package.json`, so publishing is done from
+the public repository (the workflow checks this and says so before it fails). And a package
+has to exist before a trusted publisher can be attached to it, so the very first version of a
+brand new package is published by hand, and CI takes over from the second onward.
 
 ---
 
-MIT, see the repo-root [`LICENSE`](../../LICENSE).
+MIT. The full text ships in this package as [`LICENSE`](./LICENSE).

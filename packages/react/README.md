@@ -7,17 +7,9 @@ contract-checked (every component declares a `compose` contract; misuse warns in
 > Source of truth: **dizyx/nockerl-design**. Do not fork components into an app. Add or
 > change them upstream and bump the version.
 
-## Install (GitHub Packages)
+## Install
 
-GitHub Packages (npm) has no anonymous read, so you need a GitHub Personal Access Token with
-the **`read:packages`** scope. Put it in a scoped `.npmrc` (inject the token from the
-environment; never commit it). In CI, the Actions `GITHUB_TOKEN` already has `packages: read`.
-
-```ini
-# .npmrc
-@dizyx:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_GITHUB_TOKEN}   # a PAT with read:packages
-```
+Public on npm. No registry configuration and no token:
 
 ```bash
 npm install @dizyx/nockerl-react @dizyx/nockerl-tokens
@@ -91,7 +83,7 @@ Follow the OS preference by reflecting it onto `<html>` once at startup:
 
 ```ts
 const dark = matchMedia('(prefers-color-scheme: dark)');
-const apply = => document.documentElement.classList.toggle('dark', dark.matches);
+const apply = () => document.documentElement.classList.toggle('dark', dark.matches);
 apply();
 dark.addEventListener('change', apply);
 ```
@@ -129,4 +121,4 @@ use *your* React instance, not one of its own.)
 
 ---
 
-MIT. See the repo-root [`LICENSE`](../../LICENSE).
+MIT. The full text ships in this package as [`LICENSE`](./LICENSE).

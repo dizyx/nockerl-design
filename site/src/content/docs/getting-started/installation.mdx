@@ -16,32 +16,25 @@ lockstep from the same `vX.Y.Z` tag.
 
 | Platform | Tokens | Components | Registry |
 |---|---|---|---|
-| **Web** | `@dizyx/nockerl-tokens` | `@dizyx/nockerl-react` | GitHub Packages (npm) |
+| **Web** | `@dizyx/nockerl-tokens` | `@dizyx/nockerl-react` | npm (public) |
 | **Android** | `com.dizyx.nockerl:design-tokens` | `com.dizyx.nockerl:design-components` | GitHub Packages (Maven) |
 | **Swift** | `NockerlDesign` (tokens) | `NockerlDesign` (views) | Swift Package Manager (git tag) |
 
 ## Web
 
-The web build ships as two published npm packages on **GitHub Packages** (scope `@dizyx`):
+The web build ships as two **public npm packages** (scope `@dizyx`):
 `@dizyx/nockerl-tokens` (the CSS custom properties) and `@dizyx/nockerl-react` (the React
-components). You need a one-line registry config and a GitHub token with `read:packages`
-before installing.
+components). There is no registry configuration and no token: install them like any other
+dependency.
+
+Both are published from CI by [trusted
+publishing](https://docs.npmjs.com/trusted-publishers/), so every release carries a
+provenance attestation linking it back to the commit and workflow that built it. You can
+check one yourself with `npm audit signatures` after installing.
 
 <Steps>
 
-1. **Point the `@dizyx` scope at GitHub Packages.** Add an `.npmrc` to your project (or
-   `~/.npmrc`):
-
-   ```ini title=".npmrc"
-   @dizyx:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-   ```
-
-   `GITHUB_TOKEN` is read from the environment, a classic PAT (or fine-grained token)
-   with `read:packages`. **Never commit the token**; keep it in the environment or a
-   secret store. In CI, the Actions `GITHUB_TOKEN` already has `packages: read`.
-
-2. **Install the packages** with Bun (the Nockerl default runtime):
+1. **Install the packages** with Bun (the Nockerl default runtime):
 
    ```sh
    bun add @dizyx/nockerl-react @dizyx/nockerl-tokens
@@ -171,9 +164,9 @@ components.
 
   **Status: available.** Two Maven artifacts on **GitHub Packages**: `design-tokens` (the
   `NockerlTheme` + palettes + typography + shapes, with the Outfit variable font bundled in)
-  and `design-components` (the `NockerlButton` family). GitHub Packages Maven requires a
-  `read:packages` PAT **even to read**, and Gradle cannot route through the credential store proxy, so
-  every consumer authenticates directly.
+  and `design-components` (the `NockerlButton` family). Unlike the npm packages, GitHub
+  Packages Maven requires a `read:packages` token **even to read a public artifact**, so
+  every consumer has to authenticate.
 
   ```properties title="~/.gradle/gradle.properties (never commit a token)"
   gpr.user=<your-github-username>
@@ -229,8 +222,8 @@ components.
 
   **Status: available.** Library `NockerlDesign` (tokens **and** views). The repo is itself
   a Swift Package (root `Package.swift`), so you consume it by pinning a git tag on the repo
-  URL. SPM resolves it straight from GitHub, no separate registry. (The repo is private, so
-  the consuming machine needs git access to `dizyx`, exactly as for a clone.)
+  URL. SPM resolves it straight from GitHub, no separate registry and no authentication: the
+  repository is public.
 
   ```swift title="Package.swift"
   dependencies: [

@@ -1,9 +1,20 @@
 name: Publish @dizyx packages (npm tokens + react, maven design-tokens)
 
-# Publishing is CI-only and needs NO PAT / no the credential store change: the Actions GITHUB_TOKEN
-# can publish packages owned by this repo's org with `packages: write`. Trigger via a
+# Publishing is CI-only and carries NO long-lived credential of any kind. Trigger via a
 # git tag `vX.Y.Z` (the authoritative path, where the version is derived from and checked against
-# the tag), a manual run, or a repository_dispatch (the agent-reachable path).
+# the tag), a manual run, or a repository_dispatch (the automation-reachable path).
+#
+# THE NPM PACKAGES USE TRUSTED PUBLISHING (OIDC). The runner mints a short-lived identity
+# token, npm verifies it against the trusted publisher configured on the package, and no
+# token is ever stored, rotated, or leaked. There is deliberately no NODE_AUTH_TOKEN and no
+# .npmrc here: if either were present npm would quietly take the legacy token path instead,
+# and the first sign of that is usually a publish nobody can attribute.
+#
+# THIS MUST RUN FROM THE PUBLIC REPOSITORY. npm ties a provenance attestation to the
+# `repository.url` in package.json, so the workflow has to run in that exact repo or the
+# attestation is refused. Each npm job asserts the match up front rather than letting it
+# surface as an opaque auth failure. Provenance is what makes a published version traceable
+# to the commit and workflow that built it, which is the whole point of publishing in the open.
 #
 # ONE VERSION LINE: @dizyx/nockerl-tokens, @dizyx/nockerl-react (npm) and
 # com.dizyx.nockerl:design-tokens (Maven) ship in lockstep at the SAME version. A `vX.Y.Z`
@@ -25,15 +36,17 @@ on:
   push:
     tags: ["v*"]
 
+# Nothing is granted broadly. Each job below asks for exactly what it needs: the npm jobs
+# want an OIDC identity and no registry token, the Maven jobs want GitHub Packages write and
+# no identity. Neither should be able to do the other's job.
 permissions:
   contents: read
-  packages: write
 
 jobs:
-  # ── STRUCTURAL GUARD (): the ONE version line, verified up front. ─────────────
-  # ADR-0006: every artifact ships in lockstep from a single vX.Y.Z. The audit-era failure
-  # mode was a "successful" release that shipped nothing (a stale manifest at an older
-  # version). The per-job checks below only guard the manifest of the job that runs, so this
+  # STRUCTURAL GUARD: the ONE version line, verified up front.
+  # Every artifact ships in lockstep from a single vX.Y.Z. The failure mode this exists to
+  # prevent is a "successful" release that shipped nothing, because one manifest was left at
+  # an older version. The per-job checks below only guard the manifest of the job that runs, so this
   # job checks ALL FIVE version-bearing manifests agree with each other AND (on a tag) with
   # the tag, and every publish job `needs:` it, so a broken version line publishes NOTHING.
   # (site/package.json is private/unpublished; Package.swift carries no version, since SPM
@@ -55,7 +68,7 @@ jobs:
           for pair in "packages/tokens/package.json=$TOKENS" "packages/react/package.json=$REACT" "compose tokens build.gradle.kts=$GR_TOKENS" "compose components build.gradle.kts=$GR_COMPONENTS"; do
             NAME="${pair%%=*}"; VER="${pair#*=}"
             if [ -z "$VER" ]; then echo "::error::could not READ a version from $NAME - the guard cannot pass what it cannot see."; FAIL=1;
-            elif [ "$VER" != "$ROOT" ]; then echo "::error::$NAME is $VER but the root package.json is $ROOT - the ONE version line is broken (ADR-0006)."; FAIL=1; fi
+            elif [ "$VER" != "$ROOT" ]; then echo "::error::$NAME is $VER but the root package.json is $ROOT - the ONE version line is broken."; FAIL=1; fi
           done
           if [ "${{ github.ref_type }}" = "tag" ]; then
             TAG_VERSION="${GITHUB_REF_NAME#v}"
@@ -69,9 +82,38 @@ jobs:
   publish-tokens:
     needs: verify-version-line
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # The whole credential story for this job. No registry token exists to steal.
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+
+      # Node 22.14 and npm 11.5.1 are the floors for trusted publishing, and the npm that
+      # ships inside a Node release lags its own releases, so the upgrade is not redundant.
+      # registry-url pins the resolver to the public registry now that publishConfig is gone.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Ensure npm is new enough to speak OIDC
+        run: |
+          npm install -g npm@latest
+          echo "npm $(npm --version) on node $(node --version)"
+
+      - name: This must be the repo named in package.json, or provenance is refused
+        working-directory: packages/tokens
+        run: |
+          # npm checks the attestation's source repo against repository.url. A mismatch fails
+          # deep inside publish with an error that reads like a permissions problem, so
+          # compare them here where the message can actually say what is wrong.
+          DECLARED="$(node -p "require('./package.json').repository.url" | sed -E 's#^git\+##; s#^https://github\.com/##; s#\.git$##')"
+          if [ "$DECLARED" != "$GITHUB_REPOSITORY" ]; then
+            echo "::error::package.json declares $DECLARED but this workflow is running in $GITHUB_REPOSITORY. Publish from the public repository, or the provenance attestation cannot be issued."
+            exit 1
+          fi
+          echo "::notice::publishing from $GITHUB_REPOSITORY, which matches the manifest"
 
       - name: Build + verify + pack tokens
         run: |
@@ -103,20 +145,17 @@ jobs:
           if [ ! -s dist/tokens.css ]; then echo "::error::dist/tokens.css missing or empty after pack:tokens"; exit 1; fi
           grep -q 'Outfit' dist/tokens.css || { echo "::error::dist/tokens.css looks stale (no Outfit font) - build did not regenerate current tokens"; exit 1; }
 
-      - name: Configure GitHub Packages auth (user-level - npm ignores a workspace child .npmrc)
-        run: |
-          {
-            echo "@dizyx:registry=https://npm.pkg.github.com"
-            echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
-          } > "$HOME/.npmrc"
-
       - name: Publish (a 'version exists' result FAILS unless allow_existing)
         working-directory: packages/tokens
         env:
           ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
         run: |
           set -o pipefail
-          if npm publish 2>&1 | tee /tmp/pub.log; then
+          # --provenance is explicit rather than relied upon. It is documented as automatic
+          # under trusted publishing, but it has been observed not to fire, and a release that
+          # silently loses its attestation is exactly the kind of quiet regression nobody
+          # notices until someone tries to verify a version.
+          if npm publish --provenance 2>&1 | tee /tmp/pub.log; then
             echo "::notice::PUBLISHED_NOW @dizyx/nockerl-tokens@${{ steps.ver.outputs.pkg }}"
           elif grep -qiE "already exists|cannot publish over|EPUBLISHCONFLICT|409 Conflict" /tmp/pub.log; then
             if [ "$ALLOW_EXISTING" = "true" ]; then
@@ -132,9 +171,31 @@ jobs:
   publish-react:
     needs: verify-version-line
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Ensure npm is new enough to speak OIDC
+        run: |
+          npm install -g npm@latest
+          echo "npm $(npm --version) on node $(node --version)"
+
+      - name: This must be the repo named in package.json, or provenance is refused
+        working-directory: packages/react
+        run: |
+          DECLARED="$(node -p "require('./package.json').repository.url" | sed -E 's#^git\+##; s#^https://github\.com/##; s#\.git$##')"
+          if [ "$DECLARED" != "$GITHUB_REPOSITORY" ]; then
+            echo "::error::package.json declares $DECLARED but this workflow is running in $GITHUB_REPOSITORY. Publish from the public repository, or the provenance attestation cannot be issued."
+            exit 1
+          fi
+          echo "::notice::publishing from $GITHUB_REPOSITORY, which matches the manifest"
 
       - name: Install (workspace) + build @dizyx/nockerl-react (tsc -> dist)
         run: |
@@ -165,20 +226,13 @@ jobs:
           if [ ! -s dist/index.js ]; then echo "::error::dist/index.js missing or empty after build"; exit 1; fi
           if [ ! -s dist/index.d.ts ]; then echo "::error::dist/index.d.ts missing or empty after build"; exit 1; fi
 
-      - name: Configure GitHub Packages auth (user-level - npm ignores a workspace child .npmrc)
-        run: |
-          {
-            echo "@dizyx:registry=https://npm.pkg.github.com"
-            echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
-          } > "$HOME/.npmrc"
-
       - name: Publish (a 'version exists' result FAILS unless allow_existing)
         working-directory: packages/react
         env:
           ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
         run: |
           set -o pipefail
-          if npm publish 2>&1 | tee /tmp/pub.log; then
+          if npm publish --provenance 2>&1 | tee /tmp/pub.log; then
             echo "::notice::PUBLISHED_NOW @dizyx/nockerl-react@${{ steps.ver.outputs.pkg }}"
           elif grep -qiE "already exists|cannot publish over|EPUBLISHCONFLICT|409 Conflict" /tmp/pub.log; then
             if [ "$ALLOW_EXISTING" = "true" ]; then
@@ -194,6 +248,10 @@ jobs:
   publish-compose:
     needs: verify-version-line
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Maven still goes to GitHub Packages via the built-in GITHUB_TOKEN. Unchanged.
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -251,6 +309,9 @@ jobs:
   publish-components:
     needs: verify-version-line
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
