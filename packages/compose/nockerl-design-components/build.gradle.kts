@@ -69,7 +69,7 @@ dependencies {
 group = "com.dizyx.nockerl"
 // ONE VERSION LINE with the tokens module + the npm packages. The release workflow
 // verifies this equals the git tag before publishing.
-version = "2.0.0"
+version = "2.1.0"
 
 publishing {
     publications {
