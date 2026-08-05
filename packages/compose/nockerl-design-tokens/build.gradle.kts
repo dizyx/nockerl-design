@@ -6,7 +6,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    `maven-publish`
+    alias(libs.plugins.maven.publish)
 }
 
 android {
@@ -39,12 +39,9 @@ android {
     // resource collisions.
     resourcePrefix = "nockerl_"
 
-    // Expose a single `release` component for Maven publishing, with sources.
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
+    // The release variant is the published one. The sources and javadoc jars are wired by
+    // the publishing plugin below rather than here, so there is one place that decides
+    // what a published artifact contains.
 }
 
 dependencies {
@@ -64,22 +61,33 @@ group = "com.dizyx.nockerl"
 // verifies this equals the git tag before publishing.
 version = "2.1.0"
 
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-            groupId = "com.dizyx.nockerl"
-            artifactId = "design-tokens"
-            afterEvaluate { from(components["release"]) }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/dizyx/nockerl-design")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: ""
-                password = System.getenv("GITHUB_TOKEN") ?: ""
-            }
-        }
+// Published to Maven Central. Everything shared across the two artifacts (licence,
+// developers, scm, signing) is configured once in the root build; this declares only what
+// is specific to this module.
+//
+// Central requires a javadoc jar alongside sources. `publishJavadocJar = true` runs the
+// standard javadoc task over the Java stubs the Kotlin compiler already emits, which
+// produces real per class API pages (50 of them here, covering the public surface) rather
+// than the empty placeholder jar that is the usual answer for Kotlin. That is enough to
+// satisfy Central AND useful to a reader, without adding Dokka: a second documentation
+// pipeline that could drift from the docs site, for output this already covers.
+mavenPublishing {
+    coordinates("com.dizyx.nockerl", "design-tokens", version.toString())
+
+    configure(
+        com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
+            variant = "release",
+            sourcesJar = true,
+            publishJavadocJar = true,
+        ),
+    )
+
+    pom {
+        name.set("Nockerl Design Tokens")
+        description.set(
+            "Design tokens and theming for Jetpack Compose: the generated colour, type, " +
+                "shape, spacing and elevation values of the Nockerl design system, plus the " +
+                "NockerlTheme entry point.",
+        )
     }
 }

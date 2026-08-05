@@ -37,8 +37,8 @@ on:
     tags: ["v*"]
 
 # Nothing is granted broadly. Each job below asks for exactly what it needs: the npm jobs
-# want an OIDC identity and no registry token, the Maven jobs want GitHub Packages write and
-# no identity. Neither should be able to do the other's job.
+# want an OIDC identity and no registry token, the Maven jobs want neither, since Central is
+# reached with Portal user tokens. No job can do another's work.
 permissions:
   contents: read
 
@@ -249,9 +249,10 @@ jobs:
     needs: verify-version-line
     runs-on: ubuntu-latest
     permissions:
+      # Central is reached with Portal user tokens, not a GitHub identity, so this job
+      # needs nothing beyond reading the checkout. `packages: write` went with the move
+      # off GitHub Packages rather than being left behind unused.
       contents: read
-      # Maven still goes to GitHub Packages via the built-in GITHUB_TOKEN. Unchanged.
-      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -285,33 +286,69 @@ jobs:
             echo "::notice::releasing com.dizyx.nockerl:design-tokens:$PKG_VERSION (from build.gradle.kts; trigger=${{ github.event_name }})"
           fi
 
-      - name: Publish to GitHub Packages Maven (a 'version exists' result FAILS unless allow_existing)
-        working-directory: packages/compose
+      # A release that ships NOTHING is a failure, and this is how that is detected now.
+      #
+      # The old check grepped the publish log for a 409. Central does not work that way: it
+      # takes a bundle through its own validation lifecycle and reports a failed deployment,
+      # not an HTTP conflict from a Maven PUT, so the old pattern would never match and an
+      # already published version would fall through as a generic failure.
+      #
+      # Rather than guess at Central's rejection wording, this asks the question directly and
+      # BEFORE uploading: does the artifact already exist on Central. That is deterministic,
+      # it is verifiable today, and it fails fast instead of burning a signed upload.
+      - name: Refuse to re-release a version that is already on Central
+        id: exists
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
         run: |
-          set -o pipefail
-          if ./gradlew :nockerl-design-tokens:publishReleasePublicationToGitHubPackagesRepository --no-daemon --no-configuration-cache --console=plain 2>&1 | tee /tmp/mvn.log; then
-            echo "::notice::PUBLISHED_NOW com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }}"
-          elif grep -qiE "status code 409|already exists|Conflict|CONFLICT" /tmp/mvn.log; then
+          V="${{ steps.ver.outputs.pkg }}"
+          URL="https://repo1.maven.org/maven2/com/dizyx/nockerl/design-tokens/$V/design-tokens-$V.pom"
+          CODE="$(curl -s -o /dev/null -w '%{http_code}' -m 30 --head "$URL" || echo 000)"
+          echo "::notice::Central probe $URL -> $CODE"
+          if [ "$CODE" = "200" ]; then
             if [ "$ALLOW_EXISTING" = "true" ]; then
-              echo "::warning::ALREADY_PUBLISHED tolerated (allow_existing=true) - nothing shipped."
+              echo "::warning::ALREADY_PUBLISHED com.dizyx.nockerl:design-tokens:$V tolerated (allow_existing=true) - nothing will ship."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
             else
-              echo "::error::ALREADY_PUBLISHED com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }} - a release that ships NOTHING is a failure. Bump the module version (and the tag), or re-run manually with allow_existing=true if intended."
+              echo "::error::ALREADY_PUBLISHED com.dizyx.nockerl:design-tokens:$V - a release that ships NOTHING is a failure. Bump the module version (and the tag), or re-run manually with allow_existing=true if intended."
               exit 1
             fi
+          elif [ "$CODE" = "404" ]; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           else
-            echo "::error::MAVEN PUBLISH FAILED (not a version-conflict)"; exit 1
+            echo "::error::could not determine whether $V is already on Central (HTTP $CODE). Refusing to publish blind."
+            exit 1
           fi
+
+      # Uploads a signed bundle and leaves it as a STAGED deployment for a human to release
+      # from the Portal. Deliberate: Central is immutable once released, and this is a new
+      # namespace whose pipeline has not yet published successfully. Switch the task to
+      # publishAndReleaseToMavenCentral to make a tag publish end to end.
+      - name: Publish to Maven Central (staged deployment)
+        if: steps.exists.outputs.skip != 'true'
+        working-directory: packages/compose
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          set -o pipefail
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::SIGNING_KEY is not set. Central rejects unsigned artifacts, and the build signs only when a key is present, so this would upload an unsignable bundle."
+            exit 1
+          fi
+          ./gradlew :nockerl-design-tokens:publishToMavenCentral --no-daemon --no-configuration-cache --console=plain
+          echo "::notice::STAGED com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }} - release the deployment at https://central.sonatype.com/publishing/deployments to finish shipping it."
 
   publish-components:
     needs: verify-version-line
     runs-on: ubuntu-latest
     permissions:
+      # Central is reached with Portal user tokens, not a GitHub identity, so this job
+      # needs nothing beyond reading the checkout. `packages: write` went with the move
+      # off GitHub Packages rather than being left behind unused.
       contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -324,7 +361,7 @@ jobs:
       - name: Regenerate tokens + build the AAR (design-components depends on design-tokens)
         run: |
           bun install
-          bun run build
+          bun run build   # regenerates + syncs packages/compose/.../NockerlTokens.kt from the DTCG source
           cd packages/compose
           ./gradlew :nockerl-design-components:assembleRelease --no-daemon --console=plain
 
@@ -345,23 +382,57 @@ jobs:
             echo "::notice::releasing com.dizyx.nockerl:design-components:$PKG_VERSION (from build.gradle.kts; trigger=${{ github.event_name }})"
           fi
 
-      - name: Publish to GitHub Packages Maven (a 'version exists' result FAILS unless allow_existing)
-        working-directory: packages/compose
+      # A release that ships NOTHING is a failure, and this is how that is detected now.
+      #
+      # The old check grepped the publish log for a 409. Central does not work that way: it
+      # takes a bundle through its own validation lifecycle and reports a failed deployment,
+      # not an HTTP conflict from a Maven PUT, so the old pattern would never match and an
+      # already published version would fall through as a generic failure.
+      #
+      # Rather than guess at Central's rejection wording, this asks the question directly and
+      # BEFORE uploading: does the artifact already exist on Central. That is deterministic,
+      # it is verifiable today, and it fails fast instead of burning a signed upload.
+      - name: Refuse to re-release a version that is already on Central
+        id: exists
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ALLOW_EXISTING: ${{ github.event.inputs.allow_existing }}
         run: |
-          set -o pipefail
-          if ./gradlew :nockerl-design-components:publishReleasePublicationToGitHubPackagesRepository --no-daemon --no-configuration-cache --console=plain 2>&1 | tee /tmp/mvn.log; then
-            echo "::notice::PUBLISHED_NOW com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }}"
-          elif grep -qiE "status code 409|already exists|Conflict|CONFLICT" /tmp/mvn.log; then
+          V="${{ steps.ver.outputs.pkg }}"
+          URL="https://repo1.maven.org/maven2/com/dizyx/nockerl/design-components/$V/design-components-$V.pom"
+          CODE="$(curl -s -o /dev/null -w '%{http_code}' -m 30 --head "$URL" || echo 000)"
+          echo "::notice::Central probe $URL -> $CODE"
+          if [ "$CODE" = "200" ]; then
             if [ "$ALLOW_EXISTING" = "true" ]; then
-              echo "::warning::ALREADY_PUBLISHED tolerated (allow_existing=true) - nothing shipped."
+              echo "::warning::ALREADY_PUBLISHED com.dizyx.nockerl:design-components:$V tolerated (allow_existing=true) - nothing will ship."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
             else
-              echo "::error::ALREADY_PUBLISHED com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }} - a release that ships NOTHING is a failure. Bump the module version (and the tag), or re-run manually with allow_existing=true if intended."
+              echo "::error::ALREADY_PUBLISHED com.dizyx.nockerl:design-components:$V - a release that ships NOTHING is a failure. Bump the module version (and the tag), or re-run manually with allow_existing=true if intended."
               exit 1
             fi
+          elif [ "$CODE" = "404" ]; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           else
-            echo "::error::MAVEN PUBLISH FAILED (not a version-conflict)"; exit 1
+            echo "::error::could not determine whether $V is already on Central (HTTP $CODE). Refusing to publish blind."
+            exit 1
           fi
+
+      # Uploads a signed bundle and leaves it as a STAGED deployment for a human to release
+      # from the Portal. Deliberate: Central is immutable once released, and this is a new
+      # namespace whose pipeline has not yet published successfully. Switch the task to
+      # publishAndReleaseToMavenCentral to make a tag publish end to end.
+      - name: Publish to Maven Central (staged deployment)
+        if: steps.exists.outputs.skip != 'true'
+        working-directory: packages/compose
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          set -o pipefail
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::SIGNING_KEY is not set. Central rejects unsigned artifacts, and the build signs only when a key is present, so this would upload an unsignable bundle."
+            exit 1
+          fi
+          ./gradlew :nockerl-design-components:publishToMavenCentral --no-daemon --no-configuration-cache --console=plain
+          echo "::notice::STAGED com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }} - release the deployment at https://central.sonatype.com/publishing/deployments to finish shipping it."
