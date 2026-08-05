@@ -9,6 +9,9 @@ compose-bom = "2026.02.01"
 core-ktx = "1.16.0"
 ktlint-plugin = "14.1.0"
 detekt = "1.23.8"
+# Maven Central publishing. Pinned: it signs and uploads our public artifacts, so an
+# unreviewed version bump is not something to inherit silently.
+maven-publish-plugin = "0.33.0"
 # Gallery / screenshot rail (mirrors android-native's matrix so entries render the same).
 ksp = "2.3.6"
 showkase = "1.0.5"
@@ -56,6 +59,8 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+# Publishes the two library modules to Maven Central through the Central Portal API.
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish-plugin" }
 # Gallery module only: KSP2 (Showkase processor) + the Roborazzi record/verify tasks.
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

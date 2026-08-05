@@ -1,11 +1,11 @@
 // @dizyx/nockerl-design-components: the Compose component layer (leaf-first extraction).
 // Depends on nockerl-design-tokens for the theme/token vocabulary. First slice: the button
 // family (NockerlButton / NockerlIconButton / NockerlChip) + the internal control plumbing
-// (NockerlControlInternals). Published to GitHub Packages Maven as com.dizyx.nockerl:design-components.
+// (NockerlControlInternals). Published to Maven Central as com.dizyx.nockerl:design-components.
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    `maven-publish`
+    alias(libs.plugins.maven.publish)
 }
 
 android {
@@ -34,11 +34,9 @@ android {
 
     resourcePrefix = "nockerl_"
 
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
+    // The release variant is the published one. The sources and javadoc jars are wired by
+    // the publishing plugin below rather than here, so there is one place that decides
+    // what a published artifact contains.
 }
 
 dependencies {
@@ -71,22 +69,27 @@ group = "com.dizyx.nockerl"
 // verifies this equals the git tag before publishing.
 version = "2.1.0"
 
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-            groupId = "com.dizyx.nockerl"
-            artifactId = "design-components"
-            afterEvaluate { from(components["release"]) }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/dizyx/nockerl-design")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: ""
-                password = System.getenv("GITHUB_TOKEN") ?: ""
-            }
-        }
+// Published to Maven Central. Everything shared across the two artifacts (licence,
+// developers, scm, signing) is configured once in the root build; this declares only what
+// is specific to this module. The javadoc jar is real generated API documentation rather
+// than the usual empty placeholder; see the tokens module for why that needs no Dokka.
+mavenPublishing {
+    coordinates("com.dizyx.nockerl", "design-components", version.toString())
+
+    configure(
+        com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
+            variant = "release",
+            sourcesJar = true,
+            publishJavadocJar = true,
+        ),
+    )
+
+    pom {
+        name.set("Nockerl Design Components")
+        description.set(
+            "Jetpack Compose components of the Nockerl design system: buttons, chips, " +
+                "fields, surfaces and the shared control plumbing, built on the Nockerl " +
+                "design tokens.",
+        )
     }
 }
