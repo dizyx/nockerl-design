@@ -329,11 +329,13 @@ jobs:
             exit 1
           fi
 
-      # Uploads a signed bundle and leaves it as a STAGED deployment for a human to release
-      # from the Portal. Deliberate: Central is immutable once released, and this is a new
-      # namespace whose pipeline has not yet published successfully. Switch the task to
-      # publishAndReleaseToMavenCentral to make a tag publish end to end.
-      - name: Publish to Maven Central (staged deployment)
+      # Uploads a signed bundle and releases it, so a tag ships end to end with no manual
+      # step. This was deliberately staged for the first release, because Central is
+      # immutable once released and the namespace had never published successfully. 2.1.0
+      # went through that staged path and landed correctly, so the guard has served its
+      # purpose. The safety that remains is the repo1 probe above, which refuses to publish
+      # a version that already exists rather than discovering it mid-upload.
+      - name: Publish to Maven Central
         if: steps.exists.outputs.skip != 'true'
         working-directory: packages/compose
         env:
@@ -347,8 +349,8 @@ jobs:
             echo "::error::SIGNING_KEY is not set. Central rejects unsigned artifacts, and the build signs only when a key is present, so this would upload an unsignable bundle."
             exit 1
           fi
-          ./gradlew :nockerl-design-tokens:publishToMavenCentral --no-daemon --no-configuration-cache --console=plain
-          echo "::notice::STAGED com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }} - release the deployment at https://central.sonatype.com/publishing/deployments to finish shipping it."
+          ./gradlew :nockerl-design-tokens:publishAndReleaseToMavenCentral --no-daemon --no-configuration-cache --console=plain
+          echo "::notice::PUBLISHED com.dizyx.nockerl:design-tokens:${{ steps.ver.outputs.pkg }} to Maven Central. Allow 10 to 30 minutes to appear on repo1.maven.org and a few hours to show in search."
 
   publish-components:
     needs: verify-version-line
@@ -425,11 +427,13 @@ jobs:
             exit 1
           fi
 
-      # Uploads a signed bundle and leaves it as a STAGED deployment for a human to release
-      # from the Portal. Deliberate: Central is immutable once released, and this is a new
-      # namespace whose pipeline has not yet published successfully. Switch the task to
-      # publishAndReleaseToMavenCentral to make a tag publish end to end.
-      - name: Publish to Maven Central (staged deployment)
+      # Uploads a signed bundle and releases it, so a tag ships end to end with no manual
+      # step. This was deliberately staged for the first release, because Central is
+      # immutable once released and the namespace had never published successfully. 2.1.0
+      # went through that staged path and landed correctly, so the guard has served its
+      # purpose. The safety that remains is the repo1 probe above, which refuses to publish
+      # a version that already exists rather than discovering it mid-upload.
+      - name: Publish to Maven Central
         if: steps.exists.outputs.skip != 'true'
         working-directory: packages/compose
         env:
@@ -443,5 +447,5 @@ jobs:
             echo "::error::SIGNING_KEY is not set. Central rejects unsigned artifacts, and the build signs only when a key is present, so this would upload an unsignable bundle."
             exit 1
           fi
-          ./gradlew :nockerl-design-components:publishToMavenCentral --no-daemon --no-configuration-cache --console=plain
-          echo "::notice::STAGED com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }} - release the deployment at https://central.sonatype.com/publishing/deployments to finish shipping it."
+          ./gradlew :nockerl-design-components:publishAndReleaseToMavenCentral --no-daemon --no-configuration-cache --console=plain
+          echo "::notice::PUBLISHED com.dizyx.nockerl:design-components:${{ steps.ver.outputs.pkg }} to Maven Central. Allow 10 to 30 minutes to appear on repo1.maven.org and a few hours to show in search."
