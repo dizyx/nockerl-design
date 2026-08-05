@@ -38,9 +38,9 @@
  */
 import type { CSSProperties, ReactNode, RefObject } from 'react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import type { ComposeContract } from '../compose-contract';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlSurface } from '../primitives/Surface';
+import type { ComposeContract } from '../compose-contract.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlSurface } from '../primitives/Surface.js';
 
 // ─── NockerlMenu model ──────────────────────────────────────────────────────────────
 export type ItemKind = 'action' | 'checkbox' | 'radio';

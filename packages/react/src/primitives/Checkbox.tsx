@@ -42,7 +42,7 @@
  */
 import { forwardRef, useId } from 'react';
 import type { InputHTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlCheckboxSize = 'sm' | 'md';
 /** Tri-state value: false (off), true (on), 'mixed' (indeterminate parent). */

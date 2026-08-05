@@ -2,7 +2,7 @@
 // current page + total + sibling count it returns the ordered token list (numbers +
 // 'gap' where elided). Pure + deterministic.
 import { test, expect } from 'bun:test';
-import { pageTokens } from './Pagination';
+import { pageTokens } from './Pagination.js';
 
 test('renders every page (no gaps) when total is at or below the window', () => {
   // threshold is total <= 5 + siblings*2 -> for siblings 1 that is total <= 7.

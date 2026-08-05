@@ -2,7 +2,7 @@
 // byte-for-byte identical to the native rails' nockerlLanguageLabel (Compose + Swift)
 // so every host renders the same tag string. Pure + deterministic.
 import { test, expect } from 'bun:test';
-import { nockerlLanguageLabel } from './languageLabel';
+import { nockerlLanguageLabel } from './languageLabel.js';
 
 test('lowercases and trims to the canonical tag', () => {
   expect(nockerlLanguageLabel('TypeScript')).toBe('typescript');

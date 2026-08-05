@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
+    // NodeNext, not bundler. This package is "type": "module", so what it emits has to be
+    // loadable by Node's ESM resolver, and that resolver does no extension search: a bare
+    // './alertIntents' is simply not found. Under "bundler" the compiler accepted the
+    // extensionless form and emitted it verbatim, which loads fine in Bun and in any
+    // bundler and fails in Node, so the one runtime we develop in was the one runtime that
+    // could not see the bug. NodeNext makes tsc reject a missing extension at build time.
     "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "strict": true,

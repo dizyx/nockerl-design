@@ -37,8 +37,8 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
-import { TONE_FILL, type ProgressTone } from './ProgressTrack';
+import type { ComposeContract } from '../compose-contract.js';
+import { TONE_FILL, type ProgressTone } from './ProgressTrack.js';
 
 export type { ProgressTone };
 

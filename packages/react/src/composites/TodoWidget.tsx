@@ -19,9 +19,9 @@
  * status). TOKEN-REACTIVE; literals are pure glyph geometry. No backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import { NockerlProgressSegments } from '../primitives/ProgressTrack';
-import { NockerlSpinner } from '../primitives/Spinner';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlProgressSegments } from '../primitives/ProgressTrack.js';
+import { NockerlSpinner } from '../primitives/Spinner.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlTodoState = 'pending' | 'running' | 'done' | 'blocked';
 

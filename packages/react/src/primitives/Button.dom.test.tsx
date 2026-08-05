@@ -10,7 +10,7 @@ import { test, expect } from 'bun:test';
 import * as React from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import type { ReactNode } from 'react';
-import { NockerlButton, NOCKERL_BUTTON_STYLES } from './Button';
+import { NockerlButton, NOCKERL_BUTTON_STYLES } from './Button.js';
 
 const act = (React as unknown as { act: (cb: () => void) => void }).act;
 

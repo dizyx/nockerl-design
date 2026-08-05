@@ -30,10 +30,10 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import { ALERT_INTENT, type AlertIntent } from '../alertIntents';
-import type { ComposeContract } from '../compose-contract';
+import { ALERT_INTENT, type AlertIntent } from '../alertIntents.js';
+import type { ComposeContract } from '../compose-contract.js';
 
-export type { AlertIntent } from '../alertIntents';
+export type { AlertIntent } from '../alertIntents.js';
 
 export interface NockerlStatusDiscProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'color'> {
   /** Semantic intent that binds the coin fill from the shared ALERT_INTENT map. */

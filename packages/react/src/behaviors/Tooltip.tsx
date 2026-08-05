@@ -51,7 +51,7 @@
  */
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 // ─── Placement: the side of the trigger the tip prefers (it flips if it won't fit) ──
 export type Side = 'top' | 'bottom' | 'left' | 'right';

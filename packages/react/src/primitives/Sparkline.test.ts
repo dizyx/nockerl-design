@@ -2,7 +2,7 @@
 // NockerlSparkline algorithm verbatim). Given a series + box + pad it returns the SVG path
 // `d` and the `last` point for the trailing dot. Pure + deterministic geometry.
 import { test, expect } from 'bun:test';
-import { sparkPath } from './Sparkline';
+import { sparkPath } from './Sparkline.js';
 
 test('maps an ascending series across the padded box', () => {
   // 64x22 box, pad 1 -> innerW 62, innerH 20. min 0 / max 10 span the full height.

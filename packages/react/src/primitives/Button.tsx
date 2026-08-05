@@ -17,7 +17,7 @@
  */
 import { forwardRef, useRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'destructive';
 export type NockerlButtonSize = 'sm' | 'md' | 'lg';

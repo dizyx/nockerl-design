@@ -22,12 +22,12 @@
  * tone rides in on the --co-c custom property. No backticks in STYLES.
  */
 
-import { ALERT_INTENT } from '../alertIntents';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlStatusDisc } from '../primitives/StatusDisc';
+import { ALERT_INTENT } from '../alertIntents.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlStatusDisc } from '../primitives/StatusDisc.js';
 import type { ReactNode } from 'react';
-import type { AlertIntent } from '../alertIntents';
-import type { ComposeContract } from '../compose-contract';
+import type { AlertIntent } from '../alertIntents.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlCalloutTone = 'note' | 'tip' | 'important' | 'warning' | 'caution' | 'notice' | 'quote';
 

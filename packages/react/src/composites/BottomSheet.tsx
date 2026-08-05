@@ -34,11 +34,11 @@
  * owns the panel ref), so there is no single root element a forwarded ref could point to.
  */
 import { useEffect, useId, useState } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlIconButton } from '../primitives/IconButton';
-import { NockerlSurface } from '../primitives/Surface';
-import { NockerlOverlay } from '../behaviors/Overlay';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import { NockerlSurface } from '../primitives/Surface.js';
+import { NockerlOverlay } from '../behaviors/Overlay.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type SheetDetent = 'half' | 'full';
 

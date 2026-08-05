@@ -18,9 +18,9 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes } from 'react';
-import { NockerlBadge, type NockerlBadgeSize } from './Badge';
-import { nockerlLanguageLabel } from '../languageLabel';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlBadge, type NockerlBadgeSize } from './Badge.js';
+import { nockerlLanguageLabel } from '../languageLabel.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlLanguageBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'color' | 'children'> {
   /** The language name in any casing (e.g. 'TypeScript'). Normalized to a lowercase tag

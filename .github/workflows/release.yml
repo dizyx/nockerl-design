@@ -145,6 +145,9 @@ jobs:
           if [ ! -s dist/tokens.css ]; then echo "::error::dist/tokens.css missing or empty after pack:tokens"; exit 1; fi
           grep -q 'Outfit' dist/tokens.css || { echo "::error::dist/tokens.css looks stale (no Outfit font) - build did not regenerate current tokens"; exit 1; }
 
+      - name: The tarball must import under Node before it is allowed out
+        run: bun run check:node-esm tokens
+
       - name: Publish (a 'version exists' result FAILS unless allow_existing)
         working-directory: packages/tokens
         env:
@@ -225,6 +228,12 @@ jobs:
         run: |
           if [ ! -s dist/index.js ]; then echo "::error::dist/index.js missing or empty after build"; exit 1; fi
           if [ ! -s dist/index.d.ts ]; then echo "::error::dist/index.d.ts missing or empty after build"; exit 1; fi
+
+      # A file that exists is not a file that loads. 2.1.0 was published with a complete,
+      # correct-looking dist in which every relative specifier was unresolvable under Node,
+      # so it passed the check above and broke on arrival for anyone not using Bun.
+      - name: The tarball must import under Node before it is allowed out
+        run: bun run check:node-esm react
 
       - name: Publish (a 'version exists' result FAILS unless allow_existing)
         working-directory: packages/react

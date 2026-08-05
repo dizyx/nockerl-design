@@ -32,7 +32,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, ReactNode, RefObject } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 /** Where the panel sits in the stage. Sets the wrap layout; the consumer's CSS supplies the matching enter transform. */
 export type NockerlOverlayPlacement = 'center' | 'bottom' | 'left' | 'right';

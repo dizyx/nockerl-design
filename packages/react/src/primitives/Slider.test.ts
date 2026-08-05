@@ -1,7 +1,7 @@
 // Unit tests for fmt, the pure value formatter (mirrors Android formatValue): the
 // displayed precision is derived from the STEP, not the value. Pure + deterministic.
 import { test, expect } from 'bun:test';
-import { fmt } from './Slider';
+import { fmt } from './Slider.js';
 
 test('integer steps (>=1) drop all decimals and round', () => {
   expect(fmt(3, 1)).toBe('3');

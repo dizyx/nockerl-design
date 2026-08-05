@@ -35,9 +35,9 @@
  * remain only for pure geometry (icon boxes, the 20px indent step, hairline thickness, curves).
  */
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlSurface } from '../primitives/Surface';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlSurface } from '../primitives/Surface.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 // ─── File-type tint ramp: the categorical data tokens (NEVER the brand cyan) ──
 export type NockerlTreeFileType = 'folder' | 'typescript' | 'kotlin' | 'json' | 'css' | 'image' | 'default';

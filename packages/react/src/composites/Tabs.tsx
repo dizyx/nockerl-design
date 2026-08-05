@@ -39,8 +39,8 @@
  */
 import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
-import { NockerlSurface } from '../primitives/Surface';
+import type { ComposeContract } from '../compose-contract.js';
+import { NockerlSurface } from '../primitives/Surface.js';
 
 export type NockerlTabsVariant = 'underline' | 'enclosed';
 export type NockerlTabsSize = 'sm' | 'md';

@@ -20,7 +20,7 @@
  */
 import { forwardRef } from 'react';
 import type { ReactNode, SVGAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 /** NockerlIcon-size scale (px) - mirrors the --icon-* CSS tokens. One home for the 12-24 ramp. */
 export const ICON_SIZE = { xs: 12, sm: 14, md: 16, lg: 18, xl: 20, '2xl': 24 } as const;

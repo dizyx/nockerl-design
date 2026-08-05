@@ -35,7 +35,7 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlBadgeTone = 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 export type NockerlBadgeVariant = 'solid' | 'soft';

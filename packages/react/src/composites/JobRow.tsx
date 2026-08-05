@@ -22,11 +22,11 @@
  * TOKEN-REACTIVE; no backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import { NockerlListItem, type NockerlListItemStatus } from '../behaviors/ListItem';
-import { NockerlSpinner } from '../primitives/Spinner';
-import { NockerlBadge } from '../primitives/Badge';
-import { NockerlIcon } from '../primitives/Icon';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlListItem, type NockerlListItemStatus } from '../behaviors/ListItem.js';
+import { NockerlSpinner } from '../primitives/Spinner.js';
+import { NockerlBadge } from '../primitives/Badge.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlJobState = 'queued' | 'running' | 'success' | 'warning' | 'error';
 

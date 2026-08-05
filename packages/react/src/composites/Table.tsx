@@ -40,11 +40,11 @@
  */
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { NockerlButton } from '../primitives/Button';
-import { NockerlCheckbox } from '../primitives/Checkbox';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlSurface } from '../primitives/Surface';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlButton } from '../primitives/Button.js';
+import { NockerlCheckbox } from '../primitives/Checkbox.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlSurface } from '../primitives/Surface.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlTableAlign = 'start' | 'end' | 'center';
 export type NockerlTableSortDir = 'asc' | 'desc';

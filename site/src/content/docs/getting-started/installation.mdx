@@ -10,7 +10,7 @@ import { Steps } from '@astrojs/starlight/components';
 
 Clients **consume Nockerl Design as versioned packages**. They never copy values in by
 hand. Pin a version, upgrade deliberately, and a remodel in the framework reaches you on
-the next bump. All three platforms ship from **one version line** (currently `2.1.0`): the
+the next bump. All three platforms ship from **one version line** (currently `2.1.1`): the
 web npm packages, the Android Maven artifacts, and the Swift package are published in
 lockstep from the same `vX.Y.Z` tag.
 
@@ -44,7 +44,7 @@ check one yourself with `npm audit signatures` after installing.
    friends) and read your app's copy of React. Tokens-only consumers can install just
    `@dizyx/nockerl-tokens`.
 
-3. **Import the CSS variables** once, at your app's style entry point:
+2. **Import the CSS variables** once, at your app's style entry point:
 
    ```css title="src/styles/global.css"
    @import '@dizyx/nockerl-tokens/tokens.css';
@@ -54,7 +54,7 @@ check one yourself with `npm audit signatures` after installing.
    `--radius-*`, `--font-*`, `--elevation-*`, and the typography ramp) under `:root`
    (light) and `.dark` (dark).
 
-4. **Load the brand fonts.** The tokens name **Outfit** (`--font-family-sans`) and **Space
+3. **Load the brand fonts.** The tokens name **Outfit** (`--font-family-sans`) and **Space
    Mono** (`--font-family-mono`), but a token file cannot ship a typeface. Load the fonts
    yourself once, or every surface silently falls back to system fonts. Self-host with
    [Fontsource](https://fontsource.org) (no CDN runtime dependency; this docs site loads
@@ -78,7 +78,7 @@ check one yourself with `npm audit signatures` after installing.
    render. The Fontsource family names match the token names, so `--font-family-sans` /
    `--font-family-mono` resolve to the loaded faces with no further wiring.
 
-5. **Use a component.** Each component injects its own scoped `<style>`, so there is **no
+4. **Use a component.** Each component injects its own scoped `<style>`, so there is **no
    stylesheet import and no bundler config** beyond the tokens above:
 
    ```tsx
@@ -94,7 +94,7 @@ check one yourself with `npm audit signatures` after installing.
    }
    ```
 
-6. **Reference tokens, never raw values** in your own chrome. Bind to the variables,
+5. **Reference tokens, never raw values** in your own chrome. Bind to the variables,
    including the depth recipe: a neutral drop shadow **plus** the inset top catch-light,
    never a glow.
 
@@ -156,7 +156,7 @@ dark.addEventListener('change', apply);
 ## Android & Swift
 
 The per-platform packages follow the same publish-and-consume contract from the same DTCG
-source. **Both are available now** at the same `2.1.0` version line: tokens *and*
+source. **Both are available now** at the same `2.1.1` version line: tokens *and*
 components.
 
 <DocTabs surface={false}>
@@ -192,8 +192,8 @@ components.
 
   ```kotlin title="app/build.gradle.kts"
   dependencies {
-    implementation("com.dizyx.nockerl:design-tokens:2.1.0")
-    implementation("com.dizyx.nockerl:design-components:2.1.0")
+    implementation("com.dizyx.nockerl:design-tokens:2.1.1")
+    implementation("com.dizyx.nockerl:design-components:2.1.1")
   }
   ```
 
@@ -227,7 +227,7 @@ components.
 
   ```swift title="Package.swift"
   dependencies: [
-    .package(url: "https://github.com/dizyx/nockerl-design.git", from: "2.1.0")
+    .package(url: "https://github.com/dizyx/nockerl-design.git", from: "2.1.1")
   ],
   targets: [
     .target(name: "YourApp", dependencies: ["NockerlDesign"])

@@ -22,8 +22,8 @@
  * TOKEN-REACTIVE; literals are pure geometry. No backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import { NockerlButton } from '../primitives/Button';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlButton } from '../primitives/Button.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlApprovalActionsProps {
   /** Confirm label (e.g. "Approve", "Run tool", "Submit"). */

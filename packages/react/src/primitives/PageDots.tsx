@@ -11,7 +11,7 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlPageDotsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /** Current page index (0-based). */

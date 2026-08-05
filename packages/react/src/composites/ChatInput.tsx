@@ -34,10 +34,10 @@
  */
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlAttachmentPopover, type NockerlAttachment } from './AttachmentPopover';
-import { NockerlIconButton } from '../primitives/IconButton';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlAttachmentPopover, type NockerlAttachment } from './AttachmentPopover.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlChatInputProps {
   /** The message text (controlled). */

@@ -37,13 +37,13 @@
  * Literals remain only for pure geometry (icon viewBox, transition curves).
  */
 import { useEffect, useRef, useState } from 'react';
-import { ALERT_INTENT } from '../alertIntents';
-import { NockerlButton } from '../primitives/Button';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlIconButton } from '../primitives/IconButton';
-import { NockerlStatusDisc } from '../primitives/StatusDisc';
-import { NockerlSurface } from '../primitives/Surface';
-import type { ComposeContract } from '../compose-contract';
+import { ALERT_INTENT } from '../alertIntents.js';
+import { NockerlButton } from '../primitives/Button.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import { NockerlStatusDisc } from '../primitives/StatusDisc.js';
+import { NockerlSurface } from '../primitives/Surface.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlToastIntent = 'info' | 'success' | 'warning' | 'error' | 'notice';
 export interface NockerlToastProps {

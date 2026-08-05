@@ -25,7 +25,7 @@
  * glyph / line thickness) + transition curves. No backticks in STYLES.
  */
 import type { CSSProperties, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 // ─── Band ramp: cyan → amber → red at the real thresholds (0.60 / 0.85) ────────
 export function contextLineColor(ratio: number): string {

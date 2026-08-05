@@ -20,11 +20,11 @@
  * No backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import { NockerlStatusDot, type StatusKind } from '../primitives/StatusDot';
-import { NockerlBadge } from '../primitives/Badge';
-import { NockerlSparkline } from '../primitives/Sparkline';
-import { NockerlProgressTrack, type ProgressTone } from '../primitives/ProgressTrack';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlStatusDot, type StatusKind } from '../primitives/StatusDot.js';
+import { NockerlBadge } from '../primitives/Badge.js';
+import { NockerlSparkline } from '../primitives/Sparkline.js';
+import { NockerlProgressTrack, type ProgressTone } from '../primitives/ProgressTrack.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlNodeMetric {
   /** Metric label ("MEM", "GPU", "TEMP"). Rendered as a quiet eyebrow. */

@@ -24,9 +24,9 @@
  * dedupe in effect.
  */
 import { forwardRef, useEffect, useId, useRef, useState } from 'react';
-import { NockerlWell } from './Well';
+import { NockerlWell } from './Well.js';
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type FieldState = 'rest' | 'error' | 'disabled' | 'readonly';
 

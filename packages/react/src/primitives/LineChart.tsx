@@ -32,7 +32,7 @@
  */
 import { forwardRef, useId, useMemo, useState } from 'react';
 import type { CSSProperties, HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 /** One plot series: a key (React + toggle identity), a label, a token color, and its data. */
 export type ChartSeries = { key: string; label: string; color: string; data: number[] };

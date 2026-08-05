@@ -41,7 +41,7 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlSpinnerSize = 'xs' | 'sm' | 'md' | 'lg';
 export type NockerlSpinnerTone = 'accent' | 'onAccent' | 'currentColor';

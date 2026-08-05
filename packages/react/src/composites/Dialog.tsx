@@ -36,13 +36,13 @@
  * every color/font/radius/spacing is a var(--token); literals remain only for pure geometry.
  */
 import { useCallback, useId, useRef } from 'react';
-import { NockerlButton } from '../primitives/Button';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlIconButton } from '../primitives/IconButton';
-import { NockerlStatusDisc } from '../primitives/StatusDisc';
-import { NockerlSurface } from '../primitives/Surface';
-import { NockerlOverlay } from '../behaviors/Overlay';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlButton } from '../primitives/Button.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import { NockerlStatusDisc } from '../primitives/StatusDisc.js';
+import { NockerlSurface } from '../primitives/Surface.js';
+import { NockerlOverlay } from '../behaviors/Overlay.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlDialogProps {
   /** Whether the dialog is presented. */

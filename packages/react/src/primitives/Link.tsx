@@ -30,8 +30,8 @@
  */
 import { forwardRef } from 'react';
 import type { AnchorHTMLAttributes } from 'react';
-import { NockerlIcon } from './Icon';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from './Icon.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlLinkVariant = 'default' | 'muted';
 

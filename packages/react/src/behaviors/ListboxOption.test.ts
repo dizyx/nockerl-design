@@ -2,7 +2,7 @@
 // selected row sits inside a run of selected rows (so touching corners square off).
 // Pure: (prevSelected, nextSelected) -> run position, no side effects.
 import { test, expect } from 'bun:test';
-import { listboxRun, type ListboxOptionRun } from './ListboxOption';
+import { listboxRun, type ListboxOptionRun } from './ListboxOption.js';
 
 test('a lone selected row (no selected neighbors) is "single"', () => {
   expect(listboxRun(false, false)).toBe('single');

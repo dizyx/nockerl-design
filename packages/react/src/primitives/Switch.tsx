@@ -38,7 +38,7 @@
 
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlSwitchSize = 'sm' | 'md';
 

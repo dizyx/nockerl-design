@@ -23,7 +23,7 @@ Design tokens and components for Web, Android, and Swift.
 **Swift (SwiftPM)** resolves straight from this repo, no auth needed:
 
 ```swift
-.package(url: "https://github.com/dizyx/nockerl-design.git", from: "2.1.0")
+.package(url: "https://github.com/dizyx/nockerl-design.git", from: "2.1.1")
 ```
 
 **Web (npm)**
@@ -35,8 +35,8 @@ npm install @dizyx/nockerl-tokens @dizyx/nockerl-react
 **Android (Gradle)**
 
 ```kotlin
-implementation("com.dizyx.nockerl:design-tokens:2.1.0")
-implementation("com.dizyx.nockerl:design-components:2.1.0")
+implementation("com.dizyx.nockerl:design-tokens:2.1.1")
+implementation("com.dizyx.nockerl:design-components:2.1.1")
 ```
 
 All packages ship on one version line, so a given release of one is compatible with the

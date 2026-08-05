@@ -26,8 +26,8 @@
  * first-child / adjacent-sibling selectors); identical injected blocks dedupe in effect.
  */
 import { forwardRef, useState, type ButtonHTMLAttributes, type CSSProperties } from 'react';
-import { NockerlIcon } from './Icon';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from './Icon.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlAvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type NockerlAvatarShape = 'circle' | 'rounded';

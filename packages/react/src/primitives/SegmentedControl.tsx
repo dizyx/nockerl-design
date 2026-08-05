@@ -43,9 +43,9 @@
  * first-child / adjacent-sibling selectors); identical injected blocks dedupe in effect.
  */
 import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
-import { NockerlIcon } from './Icon';
+import { NockerlIcon } from './Icon.js';
 import type { HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type SegmentSize = 'sm' | 'md';
 

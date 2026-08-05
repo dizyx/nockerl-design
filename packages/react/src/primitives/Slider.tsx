@@ -38,7 +38,7 @@
  */
 import { forwardRef, useCallback, useRef, useState } from 'react';
 import type { ForwardedRef, HTMLAttributes, RefObject } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlSliderSize = 'sm' | 'md';
 

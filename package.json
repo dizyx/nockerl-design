@@ -1,6 +1,6 @@
 {
   "name": "nockerl-design",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -27,6 +27,7 @@
     "lint:react": "cd packages/react && eslint src --max-warnings 0",
     "check": "bun run typecheck && bun run build && bun run verify && bun run check:dashes",
     "check:dashes": "bun run scripts/check-dashes.ts",
+    "check:node-esm": "bun run scripts/check-node-esm.ts",
     "check:icons": "python3 scripts/measure-icon-geometry.py"
   },
   "dependencies": {},

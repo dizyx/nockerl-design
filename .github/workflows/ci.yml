@@ -69,6 +69,15 @@ jobs:
         # Runs here so a package-level type error fails the PR, never the publish.
         working-directory: packages/react
         run: bun run build
+      # Everything above this line runs in Bun, and Bun resolves extensionless relative
+      # imports that Node rejects outright. That gap shipped a react build where none of
+      # the emitted specifiers resolved under Node, so it worked here and broke every SSR
+      # and test-runner consumer. This installs the packed tarball and imports it with Node.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Packed tarballs import under Node, not just Bun
+        run: bun run check:node-esm
       - name: Astro check (site)
         working-directory: site
         run: bun run check

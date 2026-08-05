@@ -13,7 +13,7 @@ import {
   sameDay,
   toDay,
   type Day,
-} from './Calendar';
+} from './Calendar.js';
 
 test('key packs Y/M/D into a sortable YYYYMMDD integer', () => {
   expect(key({ y: 2026, m: 5, d: 15 })).toBe(20260515);

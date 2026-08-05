@@ -34,7 +34,7 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 // The semantic state set: success/online, warning/idle-or-pending, error/busy,
 // info/live, neutral/offline. These map 1:1 to the app's dot + status tokens.

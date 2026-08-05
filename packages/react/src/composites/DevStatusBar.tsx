@@ -20,9 +20,9 @@
  * pure geometry only. No backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import { NockerlKbd } from '../primitives/Kbd';
-import { NockerlStatusDot, type StatusKind } from '../primitives/StatusDot';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlKbd } from '../primitives/Kbd.js';
+import { NockerlStatusDot, type StatusKind } from '../primitives/StatusDot.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlDevStatusSegmentProps {
   /** The segment text (chrome-muted at rest; full chrome ink on hover when interactive). */

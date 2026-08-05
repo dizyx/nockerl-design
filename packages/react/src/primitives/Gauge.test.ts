@@ -8,7 +8,7 @@ import {
   GAUGE_LOW,
   gaugeBand,
   type GaugeBand,
-} from './Gauge';
+} from './Gauge.js';
 
 test('default thresholds match the SessionChipsBar constants', () => {
   expect(GAUGE_LOW).toBe(0.6);

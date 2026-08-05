@@ -43,7 +43,7 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, ReactNode, Ref } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlGaugeShape = 'ring' | 'bar';
 export type GaugeBand = 'safe' | 'warning' | 'critical';

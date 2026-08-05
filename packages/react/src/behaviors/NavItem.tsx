@@ -30,8 +30,8 @@
  */
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlNavItemLayout = 'row' | 'rail' | 'stack';
 export type NockerlNavItemStatus = 'streaming' | 'attention' | 'idle';

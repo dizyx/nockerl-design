@@ -14,7 +14,7 @@
  */
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlIconButtonStyle = 'plain' | 'filled-circle';
 

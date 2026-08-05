@@ -31,8 +31,8 @@
  */
 import { forwardRef, useId } from 'react';
 import type { ButtonHTMLAttributes } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlListItemStatus = 'success' | 'warning' | 'error' | 'info' | 'idle';
 

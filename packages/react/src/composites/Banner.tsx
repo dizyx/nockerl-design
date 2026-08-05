@@ -21,14 +21,14 @@
  * TOKEN-REACTIVE: every color, radius, space and type size is a var(--token); the intent
  * rides in on the --bn-c custom property. No backticks in STYLES.
  */
-import { ALERT_INTENT } from '../alertIntents';
-import { NockerlButton } from '../primitives/Button';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlIconButton } from '../primitives/IconButton';
-import { NockerlStatusDisc } from '../primitives/StatusDisc';
+import { ALERT_INTENT } from '../alertIntents.js';
+import { NockerlButton } from '../primitives/Button.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import { NockerlStatusDisc } from '../primitives/StatusDisc.js';
 import type { ReactNode } from 'react';
-import type { AlertIntent } from '../alertIntents';
-import type { ComposeContract } from '../compose-contract';
+import type { AlertIntent } from '../alertIntents.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlBannerIntent = 'info' | 'success' | 'warning' | 'danger' | 'notice' | 'neutral';
 

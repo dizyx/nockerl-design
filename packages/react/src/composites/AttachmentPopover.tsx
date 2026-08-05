@@ -20,7 +20,7 @@
  * TOKEN-REACTIVE: colors / radius / spacing / border-width are all var(--token);
  * tile geometry rides the space ramp via calc. No backticks in STYLES.
  */
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlAttachment {
   /** The thumbnail image source (object URL, data URI, or CDN URL). */

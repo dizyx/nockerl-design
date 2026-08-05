@@ -50,7 +50,7 @@
  */
 import { forwardRef, useId, useRef } from 'react';
 import type { HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type RadioSize = 'sm' | 'md';
 

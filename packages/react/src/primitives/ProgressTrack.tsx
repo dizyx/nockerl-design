@@ -39,7 +39,7 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type ProgressSize = 'thin' | 'thick';
 export type ProgressTone = 'accent' | 'success' | 'warning' | 'error';

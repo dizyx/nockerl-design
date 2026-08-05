@@ -32,7 +32,7 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, SVGAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlSparklineProps extends Omit<SVGAttributes<SVGSVGElement>, 'width' | 'height'> {
   /** The series, left-to-right. Normalized to its OWN min/max (the Android algorithm). */

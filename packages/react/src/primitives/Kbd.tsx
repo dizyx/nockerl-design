@@ -22,7 +22,7 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlKbdProps extends HTMLAttributes<HTMLElement> {
   /** The key legend: a glyph or short label (e.g. the cmd glyph, K, Esc, a chevron). */

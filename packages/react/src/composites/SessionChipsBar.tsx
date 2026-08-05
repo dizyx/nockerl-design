@@ -25,9 +25,9 @@
  */
 import { useLayoutEffect, useRef } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { NockerlIconButton } from '../primitives/IconButton';
-import { NockerlIcon } from '../primitives/Icon';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 const IconPlus = <NockerlIcon path="M12 5v14M5 12h14" />;
 

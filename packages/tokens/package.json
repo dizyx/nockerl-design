@@ -1,6 +1,6 @@
 {
   "name": "@dizyx/nockerl-tokens",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "The canonical web build of the Nockerl design tokens. CSS custom properties plus a typed token map (tokens.json and TS), generated from the DTCG source. Source of truth: dizyx/nockerl-design.",
   "license": "MIT",
   "type": "module",

@@ -48,8 +48,8 @@
  */
 import type { CSSProperties, ReactNode, RefObject } from 'react';
 import { useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
-import type { ComposeContract } from '../compose-contract';
-import { NockerlSurface } from '../primitives/Surface';
+import type { ComposeContract } from '../compose-contract.js';
+import { NockerlSurface } from '../primitives/Surface.js';
 
 // ─── Placement: the side of the trigger the panel prefers (it flips if it won't fit) ──
 export type Side = 'top' | 'bottom' | 'left' | 'right';

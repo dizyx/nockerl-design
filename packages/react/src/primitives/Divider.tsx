@@ -31,7 +31,7 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlDividerOrientation = 'horizontal' | 'vertical';
 /** Which hairline token the rule binds to. */

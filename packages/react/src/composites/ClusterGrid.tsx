@@ -12,7 +12,7 @@
  * with the root type size, deliberately not a px). No backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export const NOCKERL_CLUSTER_GRID_STYLES = `
 .nk-cg {

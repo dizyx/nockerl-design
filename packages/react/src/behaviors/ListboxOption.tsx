@@ -35,9 +35,9 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlCheckbox } from '../primitives/Checkbox';
+import type { ComposeContract } from '../compose-contract.js';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlCheckbox } from '../primitives/Checkbox.js';
 
 export type NockerlListboxOptionStatus = 'success' | 'warning' | 'error' | 'info' | 'idle';
 

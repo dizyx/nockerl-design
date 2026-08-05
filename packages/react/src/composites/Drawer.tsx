@@ -33,10 +33,10 @@
  * the panel ref) in modal mode, so there is no single root element a forwarded ref could point to.
  */
 import { useEffect, useId, useState } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlIconButton } from '../primitives/IconButton';
-import { NockerlOverlay } from '../behaviors/Overlay';
-import { assertComposeChildren, type ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import { NockerlOverlay } from '../behaviors/Overlay.js';
+import { assertComposeChildren, type ComposeContract } from '../compose-contract.js';
 
 export type DrawerEdge = 'left' | 'right';
 /** The ONE nav-surface presentation mode ( · D5). 'inline' = the persistent, in-layout

@@ -39,7 +39,7 @@
  * first-child / adjacent-sibling selectors); identical injected blocks dedupe in effect.
  */
 import { forwardRef, useMemo, useRef, useState, type CSSProperties, type HTMLAttributes, type KeyboardEvent, type Ref } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 // ── Shared day model + helpers (the verbatim math both demos carried) ──────────────
 /** A calendar day as plain Y/M/D (UTC-free, midnight-normalised; month is 0-indexed). */

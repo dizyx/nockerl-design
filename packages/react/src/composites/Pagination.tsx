@@ -20,10 +20,10 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes, KeyboardEvent } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlButton } from '../primitives/Button';
-import { NockerlIconButton } from '../primitives/IconButton';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlButton } from '../primitives/Button.js';
+import { NockerlIconButton } from '../primitives/IconButton.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlPaginationVariant = 'numbered' | 'compact' | 'prev-next';
 export type NockerlPaginationTone = 'accent' | 'neutral';

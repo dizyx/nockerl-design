@@ -27,7 +27,7 @@
  */
 import { forwardRef } from 'react';
 import type { CSSProperties, HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 /** One bar: a category label, its value, and a token color (categorical tint or brand cyan). */
 export type ChartBar = { label: string; value: number; color: string };

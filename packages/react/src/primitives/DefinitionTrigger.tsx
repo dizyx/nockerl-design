@@ -10,7 +10,7 @@
  */
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import type { ComposeContract } from '../compose-contract';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlDefinitionTriggerProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'type'> {

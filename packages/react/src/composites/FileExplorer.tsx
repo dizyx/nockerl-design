@@ -18,9 +18,9 @@
  * TOKEN-REACTIVE throughout; literals are pure geometry. No backticks in STYLES.
  */
 import type { ReactNode } from 'react';
-import { NockerlTree, type NockerlTreeNode } from './Tree';
-import { NockerlWell } from '../primitives/Well';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlTree, type NockerlTreeNode } from './Tree.js';
+import { NockerlWell } from '../primitives/Well.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export interface NockerlFileExplorerProps {
   /** Eyebrow title in the header strip. */

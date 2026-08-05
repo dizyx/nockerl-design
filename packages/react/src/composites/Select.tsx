@@ -40,11 +40,11 @@
  * literals remain only for pure geometry.
  */
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { NockerlIcon } from '../primitives/Icon';
-import { NockerlSurface } from '../primitives/Surface';
-import { NockerlWell } from '../primitives/Well';
-import { NockerlListboxOption } from '../behaviors/ListboxOption';
-import type { ComposeContract } from '../compose-contract';
+import { NockerlIcon } from '../primitives/Icon.js';
+import { NockerlSurface } from '../primitives/Surface.js';
+import { NockerlWell } from '../primitives/Well.js';
+import { NockerlListboxOption } from '../behaviors/ListboxOption.js';
+import type { ComposeContract } from '../compose-contract.js';
 
 export type NockerlSelectStatus = 'success' | 'warning' | 'error' | 'info' | 'idle';
 export type NockerlSelectSize = 'sm' | 'md';

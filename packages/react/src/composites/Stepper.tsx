@@ -28,8 +28,8 @@
  */
 import { forwardRef } from 'react';
 import type { HTMLAttributes } from 'react';
-import type { ComposeContract } from '../compose-contract';
-import { NockerlIcon } from '../primitives/Icon';
+import type { ComposeContract } from '../compose-contract.js';
+import { NockerlIcon } from '../primitives/Icon.js';
 
 export type StepStatus = 'done' | 'current' | 'upcoming' | 'error';
 export type NockerlStepperOrientation = 'horizontal' | 'vertical';

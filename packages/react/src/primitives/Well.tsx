@@ -37,7 +37,7 @@
  */
 import { forwardRef, Fragment } from 'react';
 import type { AllHTMLAttributes, CSSProperties, ElementType, ReactNode } from 'react';
-import { assertComposeChildren, type ComposeContract } from '../compose-contract';
+import { assertComposeChildren, type ComposeContract } from '../compose-contract.js';
 
 export type NockerlWellLayout = 'field' | 'area';
 
