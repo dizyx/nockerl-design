@@ -2,7 +2,7 @@
  * NockerlAttachmentPopover: the floating cluster of pending-image thumbnails that
  * appears ABOVE the chat pill the moment something is attached, brought up from the
  * Android app (chat/ui/ChatInputBar.kt · PendingImageRow) as design-system truth
- * (R5-2 task 2622). The web mirror of the shipped Compose `NockerlAttachmentPopover`.
+ * and rebuilt here as the web mirror of the shipped Compose `NockerlAttachmentPopover`.
  * Canonical truth is the native component; this is 1:1 the same grammar.
  *
  * Each thumbnail is chrome that FLOATS on the same top layer as the input pill (the

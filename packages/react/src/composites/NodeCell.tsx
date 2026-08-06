@@ -1,5 +1,5 @@
 /**
- * NockerlNodeCell, one CLUSTER NODE as a dashboard tile (WS4 · task 2655b,
+ * NockerlNodeCell, one CLUSTER NODE as a dashboard tile (the
  * agent-console epic). The unit of the ClusterStatusGrid mosaic: a lifted card
  * composing only shipped parts, with no new visual grammar:
  *

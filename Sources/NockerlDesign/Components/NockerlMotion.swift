@@ -1,4 +1,4 @@
-// NockerlMotion: the SwiftUI bridge for the RATIFIED motion tokens (r3).
+// NockerlMotion: the SwiftUI bridge for the RATIFIED motion tokens.
 //
 // The generated `NockerlMotionDuration` (seconds) + `NockerlMotionEasing` (bezier
 // control points) are raw values; this extension turns them into `Animation`s so

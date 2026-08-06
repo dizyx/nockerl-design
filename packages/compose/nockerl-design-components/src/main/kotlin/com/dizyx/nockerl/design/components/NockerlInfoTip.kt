@@ -25,7 +25,7 @@ import com.dizyx.nockerl.design.tokens.NockerlSurface
 
 /**
  * The **info tip**: a themed informational popover behind a small ⓘ trigger
- * ( gate 2), the settings-surface companion (it rides
+ * and the settings-surface companion (it rides
  * [NockerlFormSection]'s `headerAccessory` slot). Voice's InfoTip is the input;
  * this is the fresh-spec'd system piece:
  *

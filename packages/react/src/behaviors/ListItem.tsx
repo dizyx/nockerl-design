@@ -42,7 +42,7 @@ export interface NockerlListItemProps
   primary: string;
   /** Optional supporting line under the primary text (body.small role). */
   secondary?: string;
-  /** Optional leading status mark: renders the canonical B20 status ICON (shape + color
+  /** Optional leading status mark: renders the canonical status ICON (shape + color
    *  dual-coding, never a bare dot) in the status color. Status colors only, never cyan. */
   status?: NockerlListItemStatus;
   /** Optional leading ICON (any node) for action rows (share / rename / delete). Shown
@@ -85,10 +85,10 @@ const STATUS_COLOR: Record<NockerlListItemStatus, string> = {
   idle: 'var(--color-dot-idle)',
 };
 
-// The leading status mark is an ICON: shape + color dual-coding (adjudication B20 / design law 6),
+// The leading status mark is an ICON: shape + color dual-coding (design law 6),
 // NEVER a bare colored dot. Distinct silhouettes so the state reads without relying on hue alone:
 // ring+check (success), alert triangle (warning), ring+x (error), ring+i (info), a hollow ring (idle).
-// Canonicalized HERE so every consumer that passes `status` gets B20 by default. The wrapper path
+// Canonicalized HERE so every consumer that passes `status` gets the dual-coded icon by default. The wrapper path
 // (`leadingIcon`) stays available for action-row glyphs.
 const STATUS_ICON: Record<NockerlListItemStatus, React.ReactNode> = {
   success: <NockerlIcon><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.4 2.4 4.6-5" /></NockerlIcon>,
@@ -132,7 +132,7 @@ export const NOCKERL_LIST_ITEM_STYLES = `
    rather than inherited from the row, exactly as the danger row does below. */
 .nk-li--selected { color: var(--color-accent-primary); }
 .nk-li--selected .nk-li__primary { color: var(--color-accent-primary); }
-/* NESTED-RADIUS CAP (r4 clip class): rows are square, so a selected FIRST/LAST row's edge gets
+/* NESTED-RADIUS CAP: rows are square, so a selected FIRST/LAST row's edge gets
    sliced by a rounded clipping container. Containers opt in via --nk-nest-cap (= container
    radius - inset); default keeps rows square exactly as before. */
 .nk-li:nth-child(1 of .nk-li) { border-start-start-radius: var(--nk-nest-cap, var(--radius-none)); border-start-end-radius: var(--nk-nest-cap, var(--radius-none)); }

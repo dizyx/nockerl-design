@@ -107,7 +107,7 @@ const STYLES = `
 /* ── Inline chip strip: the SessionChipsBar session chip ────────────────────── */
 /* The chip itself (pill + label row + the context LINE INSIDE the pill) is the shared
    package NockerlContextChip canon (.nk-cchip*, self-injected), the SAME chip the
-   Floating pills island uses (Dashboard ). Only the row wrapper stays local. */
+   Floating pills island uses (Dashboard). Only the row wrapper stays local. */
 .nk-chips { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
 /* ── Interactive driver: a real slider + step buttons ───────────────────────── */
@@ -240,7 +240,7 @@ function ContextChips({ live }: { live: number }) {
           ? `${c.name}, ${Math.round((clamped as number) * 100)}% context, ${GAUGE_BAND_WORD[band]}`
           : `${c.name}, context not tracked (Cloud Agent)`;
         // The promoted NockerlContextChip renders the context LINE INSIDE the pill, the
-        // same session chip Floating pills uses (Dashboard ). Its inner line ramps
+        // same session chip Floating pills uses (Dashboard). Its inner line ramps
         // cyan -> amber -> red on the SAME tokens as GAUGE_BAND_FILL, so the strip stays
         // in lock-step with the named meter above. Static: no dot, no selection state.
         return (

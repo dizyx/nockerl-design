@@ -111,7 +111,7 @@ const STYLES = `
    flash-free reveal. We only RE-SKIN its slots for the tool-card idiom: a 24px family tile (the native AccentIconBadge size)
    in the leading slot, a MONO summary as the primary line, and a transparent, tighter body
    so the recessed well is the only fill inside. ── */
-/* IN-MESSAGE DENSITY (task 2674): the canon is the tool call INSIDE GatewayAgentMessage
+/* IN-MESSAGE DENSITY: the canon is the tool call INSIDE GatewayAgentMessage
    (native ToolAdapterCards: labelMedium 12sp mono names, a 24dp family badge, compact
    rows). NockerlListItem's default density (14px primary, 56px touch row) is the
    STANDALONE-list law. One step too large here, it read as "zoomed in". Same

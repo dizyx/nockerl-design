@@ -17,13 +17,13 @@ import com.dizyx.nockerl.design.tokens.LocalNockerlColors
 import com.dizyx.nockerl.design.tokens.nockerlInsetTaper
 
 /**
- * The **inset icon** is the ratified INFORMATIONAL icon treatment ( canon,
- * law ): a glyph that SINKS into a recessed disc well ("fields sink") rather
- * than sitting on a raised filled-circle. the design lead's "super classy" direction,
+ * The **inset icon** is the ratified INFORMATIONAL icon treatment: a glyph
+ * that SINKS into a recessed disc well ("fields sink") rather
+ * than sitting on a raised filled-circle, per the design lead's "super classy" direction,
  * first shipped on the EmptyState mark and now the canon for any purely
  * informational icon (EmptyState, Banner marks, panel-header cogs).
  *
- * **NEVER clickable (law ).** Flat/plain + filled-circle icons signal
+ * **NEVER clickable.** Flat/plain + filled-circle icons signal
  * *interactive*; the inset treatment signals *informational*. This composable
  * deliberately exposes NO click handler. An inset icon with an `onClick` is a
  * law violation by construction, so the type makes it impossible.

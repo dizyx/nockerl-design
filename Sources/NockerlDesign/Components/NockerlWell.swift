@@ -14,7 +14,7 @@
 // Shared: both draw the neutral `cardHairline` edge, clip content to the rounded shape, and
 // carry NO outer drop shadow. Only the field sinks; the container is flat ground.
 //
-// NOTE (future unify): `.nockerlFieldWell()` (input-only, ) renders the field recipe;
+// NOTE (future unify): `.nockerlFieldWell()` (input-only) renders the field recipe;
 // `.nockerlWell(.field)` is byte-identical to it. A later refactor can fold the field well
 // into `.nockerlWell(.field)`; kept separate here to stay additive.
 

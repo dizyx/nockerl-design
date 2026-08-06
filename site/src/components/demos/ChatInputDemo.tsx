@@ -1,5 +1,5 @@
 /**
- * ChatInputDemo: the live island for the shipped NockerlChatInput composite (R5-1 task 2621).
+ * ChatInputDemo: the live island for the shipped NockerlChatInput composite.
  *
  * The reusable floating-pill chat input lives in the published package
  * (@dizyx/nockerl-react → NockerlChatInput; canonical truth = the native Compose
@@ -9,7 +9,7 @@
  * pill pinned at the bottom. Type to watch the send↔mic morph; long-press the circle to
  * flip the mode manually; Enter sends (Shift+Enter breaks the line); sending appends a
  * real bubble to the feed. The + adds pending attachments, and the shipped
- * NockerlAttachmentPopover (R5-2 task 2622) floats them directly ABOVE the pill on the same
+ * NockerlAttachmentPopover floats them directly ABOVE the pill on the same
  * layer (warm dismissable edge vs the pill's persistent cyan); X removes; send consumes.
  *
  * The pill's design laws (chrome plane + the §2 signature --border-width-floating accent
@@ -42,7 +42,7 @@ function makeTile(index: number): NockerlAttachment {
   return { src: 'data:image/svg+xml,' + encodeURIComponent(svg), alt: 'Screenshot ' + String(index + 1) };
 }
 
-// The wide-proof stage widths (task 2676): the design lead's real device extremes (Pixel Fold
+// The wide-proof stage widths: the design lead's real device extremes (Pixel Fold
 // folded / unfolded) + the tokenized chat-column cap (1040 = --size-chat-column-max).
 const WIDE_STAGES = [
   { label: 'Folded · 360', width: 360 },
@@ -78,7 +78,7 @@ const STYLES = `
 .nk-cid__dock > * { pointer-events: auto; }
 /* the attachments row + Recording HUD render INSIDE the component's own host stack
    (the published API owns the alignment); the demo dock just positions it. */
-/* ── the WIDE-STAGE PROOF (task 2676): three fixed-width chat columns (folded 360 ·
+/* ── the WIDE-STAGE PROOF: three fixed-width chat columns (folded 360 ·
    unfolded 840 · wide 1040 = --size-chat-column-max) in a scrollable strip, proving the
    caps the design lead's Pixel Fold / tablet exercise: bubbles clamp to min(82%, bubbleMax) and
    the input pill clamps to bubbleMax CENTERED, so content never stretches edge-to-edge. ── */
@@ -112,7 +112,7 @@ export default function ChatInputDemo() {
   const [value, setValue] = useState('');
   const [sent, setSent] = useState<string[]>([]);
   const [pending, setPending] = useState<NockerlAttachment[]>([]);
-  // The RECORDING flow (task 2623): mic starts it; the HUD pops above the pill with a live
+  // The RECORDING flow: mic starts it; the HUD pops above the pill with a live
   // timer + synthetic levels; its ghost Cancel (or the mic again) ends it.
   const [recording, setRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -159,7 +159,7 @@ export default function ChatInputDemo() {
   };
 
   // Attach: each press adds a deterministic thumbnail (cap 6); the popover renders
-  // the moment the first one lands, floating directly ABOVE the pill (task 2622).
+  // the moment the first one lands, floating directly ABOVE the pill.
   const attach = () => setPending((p) => (p.length >= 6 ? p : [...p, makeTile(p.length)]));
 
   return (
@@ -173,7 +173,7 @@ export default function ChatInputDemo() {
 
       <p className="nk-cid__lbl">The whole flow (attach, type, record): everything floats on one layer</p>
       <div className="nk-cid__stage">
-        {/* the REAL faceted chat ground (task 2669), the one unified primitive */}
+        {/* the REAL faceted chat ground, the one unified primitive */}
         <NockerlFacetedBackground bare aria-hidden="true" />
         <div className="nk-cid__feed" ref={feedRef}>
           <ChatBubble role="agent">The chat input floats over the feed, and messages scroll under it.</ChatBubble>
@@ -190,9 +190,9 @@ export default function ChatInputDemo() {
         </div>
 
         <div className="nk-cid__dock">
-          {/* the WHOLE integration rides the published API (task 2682): the attachments
+          {/* the WHOLE integration rides the published API: the attachments
               MODEL renders the popover inside the component (warm dismissable edge vs the
-              pill's persistent cyan, task 2622), and the Recording HUD (task 2623) mounts
+              pill's persistent cyan), and the Recording HUD mounts
               through the generic contextAccessory slot. One component, adoption-ready. */}
           <NockerlChatInput
             value={value}

@@ -23,8 +23,8 @@ import com.dizyx.nockerl.design.tokens.LocalNockerlColors
 import com.dizyx.nockerl.design.tokens.NockerlControlShape
 
 /**
- * The **combobox**: pick from a list you can FILTER BY TYPING (combobox docs;
- * ruling C5). The input rides the shared recessed field well (the same
+ * The **combobox**: pick from a list you can FILTER BY TYPING (combobox docs).
+ * The input rides the shared recessed field well (the same
  * [nockerlFieldColors] treatment as every input), a persistent [label] is
  * bundled (law §14), and the platform [ExposedDropdownMenuBox] anchors the
  * option list (law §9). Filtering is live, case-insensitive substring on the

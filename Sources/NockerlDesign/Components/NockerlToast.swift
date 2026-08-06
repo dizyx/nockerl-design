@@ -6,13 +6,13 @@
 //
 // SCOPE is the view only: the countdown ring, pause-on-focus, and entry/exit motion
 // are HOST machinery (a toast host needs an overlay root the library cannot own),
-// but the CONTRACT is ratified (r2, A2) and ships here: ``NockerlToastDuration``
+// but the CONTRACT is ratified and ships here: ``NockerlToastDuration``
 // (short / base / long / persistent) and ``NockerlToastDuration/stackMax`` (3,
 // newest on top). A host consumes both.
 
 import SwiftUI
 
-/// The RATIFIED toast duration vocabulary (r2, A2). `base` is the web-shipped
+/// The RATIFIED toast duration vocabulary. `base` is the web-shipped
 /// 5-second default; `short`/`long` are the ramp around it; `persistent` never
 /// times out (the host shows the pin marker instead of the countdown ring).
 public enum NockerlToastDuration: Equatable, CaseIterable {
@@ -35,7 +35,7 @@ public enum NockerlToastDuration: Equatable, CaseIterable {
         }
     }
 
-    /// Maximum simultaneously-visible toasts: newest on top, older drop (r2, A2).
+    /// Maximum simultaneously-visible toasts: newest on top, older drop.
     public static let stackMax = 3
 }
 

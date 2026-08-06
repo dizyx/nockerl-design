@@ -452,7 +452,7 @@ object NockerlType {
     val eyebrow = NockerlTextStyle("Outfit", 500, 12.sp, 16.sp)
 }
 
-/** Motion durations (integer milliseconds). RATIFIED r3. */
+/** Motion durations (integer milliseconds). */
 object NockerlMotionDuration {
     val instantMs = 0
     val fastMs = 120

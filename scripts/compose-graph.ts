@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * compose-graph.ts: the COMPOSITION-CONTRACT gate (Round-4).
+ * compose-graph.ts: the COMPOSITION-CONTRACT gate.
  *
  * The code-derived, enforceable replacement for the old hand-maintained dependency
  * map. It reads every component's `export const compose` contract (see

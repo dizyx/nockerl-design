@@ -4,7 +4,7 @@
 // contrast (pills for chips + input, control radius for buttons) is the point Design
 // Review #1 locked in (design-laws §4).
 //
-// The ratified cyan grammar (r2, B2) + the full capability UNION (r2, C6:
+// The ratified cyan grammar + the full capability UNION (one contract:
 // selectable + removable + disabled on every platform):
 //   - selected:    SOLID `accentPrimary` fill + contrast-picked label + the shared
 //                  top catch-light (never a gradient).
@@ -30,7 +30,7 @@ public struct NockerlChip: View {
     ///   - selected: whether this chip is the active selection (defaults to `false`).
     ///   - action: invoked on tap.
     ///   - onRemove: when non-nil, the chip is REMOVABLE. A trailing ✕ renders with
-    ///     its own tap (ruling C6: the chip contract is the capability union).
+    ///     its own tap (the chip contract is the capability union).
     public init(
         _ text: String,
         selected: Bool = false,
@@ -85,7 +85,7 @@ private struct ChipStyle: ButtonStyle {
 
         var body: some View {
             let palette = NockerlPalette.resolve(colorScheme)
-            // Ratified B2: selected → SOLID accent + contrast-picked ink + catch-light;
+            // Ratified: selected → SOLID accent + contrast-picked ink + catch-light;
             // unselected → the soft cyan wash + cyan ink (the cohesive chip strip).
             // The fill is static; only feedback props animate.
             let fill: Color = selected ? palette.accentPrimary : palette.accentPrimarySoft

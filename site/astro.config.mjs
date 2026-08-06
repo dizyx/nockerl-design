@@ -44,7 +44,7 @@ export default defineConfig({
       ],
       description:
         'The single source of truth for everything visual across Nockerl: tokens, foundations, and cross-platform component specs.',
-      // A3: theme Expressive-Code's SURFACE from our tokens so code blocks read as our own
+      // Theme Expressive-Code's SURFACE from our tokens so code blocks read as our own
       // panel (token hairline + panel radius, flat) and the LIGHT-mode code surface is
       // differentiated (white card on the grey page, not grey-on-grey). `--nk-code-bg` is
       // defined per theme in theme.css; syntax token colours stay Starlight's EC defaults.
@@ -67,7 +67,7 @@ export default defineConfig({
       components: {
         SiteTitle: './src/components/SiteTitle.astro',
         // Prepend an honest "Kotlin/Swift = canonical-app API reference" note on every
-        // page whose frontmatter declares an android/swift platform (round-3 A1).
+        // page whose frontmatter declares an android/swift platform.
         MarkdownContent: './src/components/MarkdownContent.astro',
       },
       // Brand accent (cyan) + grey ramp drive Starlight's generated palette;

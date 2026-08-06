@@ -1,5 +1,5 @@
 /**
- * NockerlApprovalContent, the APPROVAL ANATOMY (WS2 · task 2653): the one shared
+ * NockerlApprovalContent, the APPROVAL ANATOMY: the one shared
  * content shape every agent-console approval renders (tool-call, plan, ask-user),
  * deliberately HOST-AGNOSTIC. It is pure content: no overlay, no scrim, no host
  * chrome. Mount it inside a NockerlBottomSheet (title on the sheet, actions PINNED in
@@ -15,7 +15,7 @@
  * ACTIONS row.
  *
  * `NockerlApprovalActions` is exported SEPARATELY as the ratified CTA grammar (Dialog
- * r5 canon: outline confirm · ghost cancel · destructive = outline-red; never a filled
+ * canon: outline confirm · ghost cancel · destructive = outline-red; never a filled
  * primary on a lifted surface), so sheet hosts can pin it in the footer while panel
  * hosts render it inline. One grammar, any host.
  *
@@ -69,7 +69,7 @@ export const NOCKERL_APPROVAL_CONTENT_STYLES = `
 `;
 
 /**
- * The ratified approval CTA row (Dialog r5 canon): outline confirm (tertiary cyan |
+ * The ratified approval CTA row (Dialog canon): outline confirm (tertiary cyan |
  * destructive outline-red) + ghost cancel. Pin it in a sheet's footer slot, or hand it
  * to NockerlApprovalContent's `actions` for inline hosts.
  */

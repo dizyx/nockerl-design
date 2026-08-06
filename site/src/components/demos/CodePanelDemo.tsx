@@ -1,5 +1,5 @@
 /**
- * CodePanelDemo: the live island for the dev-console CODE PANEL (WS5 · task 2656).
+ * CodePanelDemo: the live island for the dev-console CODE PANEL.
  * A real CodeMirror 6 editor themed ENTIRELY by design tokens (the liftable
  * `nockerlCodeMirrorTheme` in _codeMirrorTheme.ts, with zero hardcoded hues and both
  * themes free), inside panel chrome that reuses the code-block HEADER GRAMMAR verbatim:

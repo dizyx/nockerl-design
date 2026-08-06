@@ -6,7 +6,7 @@
 //   - a raw palette color (for the session-dot tokens: dotStreaming, dotAttention, …).
 //
 // Pulse (law §7): animates OPACITY only (1.0 ↔ 0.3), never a fill swap, and freezes
-// under Reduce Motion. Duration is the RATIFIED 800ms motion value (r2, B6; Voice's
+// under Reduce Motion. Duration is the RATIFIED 800ms motion value (Voice's
 // old 600ms recording dot conforms at swap). The web-only "ping" ring is DROPPED by
 // the same ruling: no platform implements it.
 //
@@ -90,7 +90,7 @@ public struct NockerlStatusDot: View {
 
     /// Pulse opacity floor (1.0 → 0.3, mirroring the Compose `PulsingDot`).
     static let pulseFloorOpacity: Double = 0.3
-    /// Pulse half-period: the `motion.duration.pulse` TOKEN (r2 B6 / r3 emitted).
+    /// Pulse half-period: the `motion.duration.pulse` TOKEN.
     static let pulseDuration: TimeInterval = NockerlMotionDuration.pulse
 
     /// A dot on the semantic status ladder.

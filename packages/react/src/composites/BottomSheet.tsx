@@ -71,15 +71,15 @@ export interface NockerlBottomSheetProps {
   /** The contained stage element that gates rendering so the sheet never escapes it. */
   stage: HTMLElement | null;
   /**
-   * PINNED FOOTER-ACTION BAR (task 2653): an approve/deny row that NEVER scrolls away,
+   * PINNED FOOTER-ACTION BAR: an approve/deny row that NEVER scrolls away,
    * rendered below the scrolling body on the sheet's own plane, with a hairline top
    * edge and an upward scroll-under cue when more body remains beneath it. Compose the
    * ratified CTA grammar in here (outline confirm · ghost cancel · destructive
-   * outline-red, the Dialog r5 canon). Empty = no footer, byte-identical sheet.
+   * outline-red, the Dialog canon). Empty = no footer, byte-identical sheet.
    */
   footer?: React.ReactNode;
   /**
-   * NESTED-SHEET BACK NAVIGATION (task 2653): when set, the header leads with a back
+   * NESTED-SHEET BACK NAVIGATION: when set, the header leads with a back
    * chevron (a real NockerlIconButton) BEFORE the title. View swapping stays with the
    * host (swap `title`/`children` on your own state); this is the affordance + a11y.
    */
@@ -151,7 +151,7 @@ export const NOCKERL_BOTTOM_SHEET_STYLES = `
 /* the body tightens its bottom gap when a pinned footer follows (the footer owns the
    landing space) */
 .nk-bs-body--footed { padding-bottom: var(--space-3); }
-/* PINNED FOOTER (task 2653), the approve/deny bar that never scrolls away: the sheet's
+/* PINNED FOOTER, the approve/deny bar that never scrolls away: the sheet's
    own plane, a persistent neutral hairline on top, actions right-aligned (the Dialog CTA
    grammar), and an UPWARD scroll-under cue (§7: interpolate the shadow, never a fill)
    when more body remains beneath. */
@@ -163,7 +163,7 @@ export const NOCKERL_BOTTOM_SHEET_STYLES = `
   transition: box-shadow var(--motion-duration-fast) var(--motion-easing-standard); }
 .nk-bs-foot--scrollable {
   box-shadow: 0 calc(-1 * var(--space-2)) var(--space-3) calc(-1 * var(--space-1)) color-mix(in srgb, var(--color-shadow-tint) 45%, transparent); }
-/* BACK affordance (task 2653): the nested-sheet chevron leads the header. */
+/* BACK affordance: the nested-sheet chevron leads the header. */
 .nk-bs-back { flex: 0 0 auto; margin-left: calc(-1 * var(--space-2)); }
 
 @media (prefers-reduced-motion: reduce) {
@@ -192,7 +192,7 @@ export function NockerlBottomSheet({
   // scrolled off its top, so content visibly passes UNDER the pinned title/subtitle. Reset
   // when the sheet closes so a re-open always starts flush (hairline-only).
   const [scrolled, setScrolled] = useState(false);
-  // task 2653, the pinned footer's UPWARD cue: true while more body remains beneath it.
+  // The pinned footer's UPWARD cue: true while more body remains beneath it.
   const [moreBelow, setMoreBelow] = useState(false);
   useEffect(() => {
     if (!open) {
@@ -231,7 +231,7 @@ export function NockerlBottomSheet({
         >
           {grip && <div className="nk-bs-grip" aria-hidden="true" />}
           <div className={`nk-bs-head${grip ? '' : ' nk-bs-head--nogrip'}${scrolled ? ' nk-bs-head--scrolled' : ''}`}>
-            {/* task 2653, the nested-sheet BACK affordance leads the header; view
+            {/* The nested-sheet BACK affordance leads the header; view
                 swapping stays with the host (swap title/children on your own state). */}
             {onBack && (
               <NockerlIconButton
@@ -277,7 +277,7 @@ export function NockerlBottomSheet({
           >
             {children}
           </div>
-          {/* task 2653, the PINNED footer-action bar: never scrolls away; carries the
+          {/* The PINNED footer-action bar: never scrolls away; carries the
               upward scroll-under cue while more body remains beneath it. */}
           {footer && <div className={`nk-bs-foot${moreBelow ? ' nk-bs-foot--scrollable' : ''}`}>{footer}</div>}
           {/* Recipe CSS injected as the LAST child of the panel; identical injected blocks dedupe. */}

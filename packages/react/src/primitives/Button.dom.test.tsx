@@ -1,4 +1,4 @@
-// Behavior tests for NockerlButton loading WIDTH STABILITY. The r4 bug: toggling
+// Behavior tests for NockerlButton loading WIDTH STABILITY. The bug: toggling
 // `loading` swapped the content (icon+text -> spinner+loadingText), so the button changed
 // width and shifted layouts. The fix renders BOTH faces stacked in one grid cell. The
 // hidden face reserves its width (visibility, not display), so the button is

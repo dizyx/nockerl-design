@@ -50,7 +50,7 @@
       }
     },
     "chat": {
-      "$description": "CHAT-SURFACE width caps (r5.2 task 2676, the adaptive/max-width pass). The proven message-column geometry, shared by web + Compose so folded (360dp) / unfolded (840dp) / tablet / wide web all clamp identically: content NEVER stretches edge-to-edge on wide chat surfaces.",
+      "$description": "CHAT-SURFACE width caps, the adaptive/max-width pass. The proven message-column geometry, shared by web + Compose so folded (360dp) / unfolded (840dp) / tablet / wide web all clamp identically: content NEVER stretches edge-to-edge on wide chat surfaces.",
       "bubbleMax": {
         "$type": "dimension",
         "$value": "460px",

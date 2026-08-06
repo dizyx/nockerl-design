@@ -31,9 +31,9 @@ import com.dizyx.nockerl.design.components.NockerlTextField
 
 /**
  * Gallery entries for the **action + form-scaffold family**: the FAB ramp
- * ([NockerlFab] / [NockerlExtendedFab], ratified solid accent, B13), the lifted
- * form section ([NockerlFormSection], B8), and the select trigger
- * ([NockerlSelect], C5: the open menu is a popup and cannot be statically
+ * ([NockerlFab] / [NockerlExtendedFab], ratified solid accent), the lifted
+ * form section ([NockerlFormSection]), and the select trigger
+ * ([NockerlSelect]: the open menu is a popup and cannot be statically
  * captured; the trigger states are).
  *
  * @see GalleryGroup
@@ -157,7 +157,7 @@ fun GallerySelects() {
     }
 }
 
-/** Combobox trigger states (C5 sibling of Select): empty, selected, disabled. */
+/** Combobox trigger states (the sibling of Select): empty, selected, disabled. */
 @ShowkaseComposable(name = "Combobox · Trigger states", group = GROUP)
 @Preview
 @Composable
@@ -244,7 +244,7 @@ fun GalleryTimePicker() {
     }
 }
 
-/** The stepper (B14): CYAN progress discs (horizontal, mid-flow). */
+/** The stepper: CYAN progress discs (horizontal, mid-flow). */
 @ShowkaseComposable(name = "Stepper · Horizontal", group = GROUP)
 @Preview
 @Composable

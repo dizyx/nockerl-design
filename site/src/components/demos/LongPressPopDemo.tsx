@@ -56,7 +56,7 @@ const STYLES = `
 /* The contained STAGE: the pop lives in HERE; it never takes over the page. */
 /* This stage keeps its own rule (uses --color-chat-bg, not the shared utility's --color-canvas). */
 .nk-lp-stage { position: relative; width: 100%; max-width: 480px; min-height: var(--size-container-lg); margin-inline: auto; border-radius: calc(var(--radius-card) + var(--space-2)); overflow: hidden; isolation: isolate; background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--color-card-surface1) 70%, transparent), transparent 60%), var(--color-chat-bg); border: var(--space-px) solid var(--color-card-hairline); box-shadow: inset 0 var(--space-px) 0 var(--color-surface-highlight), 0 var(--elevation-level3) 28px -12px color-mix(in srgb, var(--color-shadow-tint) 60%, transparent); }
-/* task 2669: children layer above the bare facet ground */
+/* Children layer above the bare facet ground */
 .nk-lp-stage > :not(.nk-fb-surface) { position: relative; }
 .nk-lp-board { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--space-4); min-height: var(--size-container-lg); }
 .nk-lp-board__cap { font-size: var(--font-size-10); letter-spacing: var(--font-tracking-eyebrow); text-transform: uppercase; color: var(--color-on-canvas-muted); font-weight: var(--font-weight-semibold); }
@@ -339,7 +339,7 @@ export default function LongPressPopDemo() {
         <NockerlKbd>Enter</NockerlKbd> runs, <NockerlKbd>Esc</NockerlKbd> closes.
       </p>
       <div className="nk-lp-stage" ref={stageRef}>
-        {/* the REAL faceted chat ground (task 2669) */}
+        {/* the REAL faceted chat ground */}
         <NockerlFacetedBackground bare aria-hidden="true" />
         {/* the NockerlMenu engine, driven POINT-anchored (openAt) with a modal `dim` scrim;
             onActivate runs the host action, then NockerlMenu closes + restores focus. The two

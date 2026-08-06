@@ -84,7 +84,7 @@ const STYLES = `
   box-shadow: 0 var(--space-1) var(--elevation-level2) -6px color-mix(in srgb, var(--color-shadow-tint) 60%, transparent), var(--nk-surface-sheen);
   overflow: hidden;
 }
-/* ZEBRA (task 2763, experimental): opt-in alternating-row tone (even rows get a subtle
+/* ZEBRA (experimental): opt-in alternating-row tone (even rows get a subtle
    neutral wash; odd rows plain). Theme-following via on-card. Default (no --zebra) is
    byte-identical. A resting surface wash BENEATH the hairlines/selection/hover. */
 .nk-acc--zebra > *:nth-of-type(even) { background: color-mix(in srgb, var(--color-on-card) 4%, transparent); }
@@ -380,7 +380,7 @@ export default function AccordionDemo() {
       </div>
 
       <div className="nk-acc-demo__group">
-        <p className="nk-acc-demo__lbl">Zebra (task 2763, experimental): opt-in alternating row tone; default stays plain</p>
+        <p className="nk-acc-demo__lbl">Zebra (experimental): opt-in alternating row tone; default stays plain</p>
         <NockerlSurface className="nk-acc nk-acc--zebra">
           <AccordionItem title="Sampling" hint="Temperature, top-p" icon={IconTune} defaultExpanded={false}>
             <p>Alternating rows carry a whisper of neutral wash that is theme-following, opt-in, and beneath the hairlines.</p>

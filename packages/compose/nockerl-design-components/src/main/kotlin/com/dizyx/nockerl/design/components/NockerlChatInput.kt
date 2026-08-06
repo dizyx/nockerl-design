@@ -54,8 +54,8 @@ import com.dizyx.nockerl.design.tokens.nockerlShadow
 
 /**
  * The **chat input**: the canonical FLOATING PILL bottom-of-chat input, brought
- * up from the Android app (chat/ui/ChatInputBar.kt) as design-system truth (R5-1
- * ). The praised design is KEPT verbatim: a large, fully-rounded pill that
+ * up from the Android app (chat/ui/ChatInputBar.kt) as design-system truth.
+ * The praised design is KEPT verbatim: a large, fully-rounded pill that
  * FLOATS above the message cards (chrome plane + a crisp accent edge + the L3
  * lift, never a glow), laid out `[attach] [text field] [send/mic]`.
  *
@@ -71,7 +71,7 @@ import com.dizyx.nockerl.design.tokens.nockerlShadow
  *   Precedence: `leadingAccessory ?: (onAttach → built-in attach button)`.
  * - [attachments] + [onRemoveAttachment] are the pending-attachments MODEL:
  *   non-empty renders the real [NockerlAttachmentPopover] directly ABOVE the
- *   pill (the canonical r5 integration) inside the component.
+ *   pill (the canonical integration) inside the component.
  * - [contextAccessory] is a generic slot riding above the pill, BELOW the
  *   attachments (stack order: attachments → context → pill). Session chips and
  *   the Recording HUD ride here, deliberately untyped, never session-typed.

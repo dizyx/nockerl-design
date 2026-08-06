@@ -1,5 +1,5 @@
 /**
- * _codeMirrorTheme: the NOCKERL CodeMirror 6 theme (WS5 · task 2656). Every value is a
+ * _codeMirrorTheme: the NOCKERL CodeMirror 6 theme. Every value is a
  * design token, zero hardcoded hues, so the editor is theme-reactive like everything
  * else. This is THE liftable recipe for the dashboard's console (import or copy; the
  * values are var(--token) strings that resolve at render, both themes for free).

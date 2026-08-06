@@ -50,7 +50,7 @@ public enum NockerlButtonVariant: Equatable {
     case neutralOutline
 }
 
-/// The shared size ramp (ratified r2, B1): visual heights 32/40/48pt with per-size
+/// The shared size ramp (ratified): visual heights 32/40/48pt with per-size
 /// type + padding (web `sm/md/lg` parity). The TOUCH target never shrinks below the
 /// ~44pt platform floor (`size.minTouch`): the style reserves the floor around the
 /// visual box, so an `.sm` button LOOKS 32pt but stays fully tappable.
@@ -140,7 +140,7 @@ public struct NockerlButtonStyle: ButtonStyle {
         var body: some View {
             let palette = NockerlPalette.resolve(colorScheme)
             let spec = ButtonVariantSpec(variant: variant, palette: palette, enabled: isEnabled)
-            // Ratified B1: the solid primary wears the shared top catch-light
+            // Ratified: the solid primary wears the shared top catch-light
             // (enabled only: a dimmed disabled fill stays flat).
             let lit = variant == .primary && isEnabled
 
@@ -203,7 +203,7 @@ private struct ButtonVariantSpec {
 
         switch variant {
         case .primary:
-            // Ratified B1: SOLID cyan. The lit-from-above read comes from the 1pt
+            // Ratified: SOLID cyan. The lit-from-above read comes from the 1pt
             // top catch-light the style overlays, never a gradient fill.
             self.fill = AnyShapeStyle(palette.accentPrimary)
             self.label = palette.onAccent

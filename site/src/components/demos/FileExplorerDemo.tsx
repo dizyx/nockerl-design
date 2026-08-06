@@ -1,6 +1,6 @@
 /**
  * FileExplorerDemo: the live island for the shipped NockerlFileExplorer shell
- * (WS5 · task 2656). A repo-ish forest in the shell: the header carries the eyebrow +
+ * A repo-ish forest in the shell: the header carries the eyebrow +
  * real NockerlIconButtons in the actions slot (collapse-all / expand-all); rows are the
  * REAL NockerlTree (file-type tints, arrow-key semantics); selecting a leaf updates the
  * readout; the Empty toggle proves the built-in Well empty state with an action.

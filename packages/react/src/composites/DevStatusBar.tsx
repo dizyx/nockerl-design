@@ -1,5 +1,5 @@
 /**
- * NockerlDevStatusBar is the dev-console STATUS BAR (WS5 · task 2656): the thin strip
+ * NockerlDevStatusBar is the dev-console STATUS BAR: the thin strip
  * pinned to the bottom of the web console. It reports ambient state: branch, agent /
  * job status, cursor position, keyboard hints. Deliberately NOT the Toolbar grammar
  * (Toolbar = a control surface of real actions at control scale); the status bar is

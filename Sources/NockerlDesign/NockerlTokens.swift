@@ -447,7 +447,7 @@ public enum NockerlType {
     public static let eyebrow = NockerlTextStyle(fontFamily: "Outfit", fontWeight: 500, fontSize: 12, lineHeight: 16)
 }
 
-/// Motion durations (seconds). RATIFIED r3.
+/// Motion durations (seconds).
 public enum NockerlMotionDuration {
     public static let instant: TimeInterval = 0
     public static let fast: TimeInterval = 0.12

@@ -1,4 +1,4 @@
-// NockerlFormSection: the ratified lifted-card treatment for grouped fields (r2, B8).
+// NockerlFormSection: the ratified lifted-card treatment for grouped fields.
 //
 // A form section = an uppercase eyebrow title (the sanctioned overline exception,
 // law §11) + optional description, with the fields on a ``NockerlCard`` at the shared

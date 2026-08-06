@@ -20,7 +20,7 @@ import org.junit.Test
  * no rendering: these are the pure functions + token bindings only.
  */
 class ContractTests {
-    // ── Stepper (B14): the shared visual-state rule ─────────────────────────
+    // ── Stepper: the shared visual-state rule ─────────────────────────
 
     @Test
     fun stepVisualStateMatrix() {
@@ -48,7 +48,7 @@ class ContractTests {
         assertEquals(NockerlStepVisualState.DONE, nockerlStepVisualState(index = 3, current = 4, errorAt = null))
     }
 
-    // ── Accordion (B4): the shared expansion semantics ──────────────────────
+    // ── Accordion: the shared expansion semantics ──────────────────────
 
     @Test
     fun accordionSingleModeReplacesTheOpenSection() {
@@ -68,7 +68,7 @@ class ContractTests {
         assertEquals(setOf("a", "b"), opened)
     }
 
-    // ── Checkbox ( port): the shared cycle contract ────────────────────
+    // ── Checkbox port: the shared cycle contract ────────────────────
 
     @Test
     fun checkboxCycleContractMatchesWebAndSwift() {
@@ -192,7 +192,7 @@ class ContractTests {
 
     @Test
     fun statusDotPulseBindsToTheMotionToken() {
-        // The  rebinding: the component constant IS the token, not a literal.
+        // The rebinding: the component constant IS the token, not a literal.
         assertEquals(NockerlMotionDuration.pulseMs, NockerlStatusDotDefaults.PULSE_MS)
     }
 

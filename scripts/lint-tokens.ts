@@ -59,10 +59,10 @@ const RULES: Record<string, Rule> = {
   // Sanctioned core exceptions: --color-core-categorical-* (data / chart / family hues, which have
   // no single semantic role) and the absolute --color-core-black / --color-core-white (scrims,
   // knockout ink). Everything else in the core ramp is banned from demos/primitives.
-  coreRamp: { re: /var\(--color-core-(?!categorical|black|white|logo)[a-z0-9-]+\)/g, hard: true, desc: 'core-ramp token reached from a demo/primitive → use the SEMANTIC layer (--color-accent-*/--color-status-*/--color-on-*); only --color-core-categorical-*, --color-core-logo-* (surface-driven brand ink, task 2684) + core black/white are sanctioned' },
+  coreRamp: { re: /var\(--color-core-(?!categorical|black|white|logo)[a-z0-9-]+\)/g, hard: true, desc: 'core-ramp token reached from a demo/primitive → use the SEMANTIC layer (--color-accent-*/--color-status-*/--color-on-*); only --color-core-categorical-*, --color-core-logo-* (surface-driven brand ink) + core black/white are sanctioned' },
   // HARD, PUBLISHED-COMPONENTS ONLY: a bare adjacent-sibling stacking margin (.x + .x { margin-top })
   // on a component a consumer can place in ANY layout LEAKS into a horizontal row / grid; the first
-  // item then rides higher (/, a repeat of ). Wrap the selector in :where() so the rule
+  // item then rides higher, which has now happened more than once. Wrap the selector in :where() so the rule
   // drops to ZERO specificity and a row/grid container neutralizes it with a plain class (space via
   // gap). Scoped to the react package: demo group/section stacks are author-controlled + always
   // vertical, so their bare `+` margins are fine. See docs/api-conventions.md (layout rhythm).
@@ -71,7 +71,7 @@ const RULES: Record<string, Rule> = {
 
 // HARD: a var(--space-N) that references a token the scale does NOT define resolves to
 // NOTHING and the property silently collapses (gap -> 0, min-height -> auto). Eight such usages
-// shipped (--space-7/--space-9, the scale skips 7 and 9) and produced the r4 "section headers
+// shipped (--space-7/--space-9, the scale skips 7 and 9) and produced the "section headers
 // smashed against content" class. Validate every space reference against the DTCG source.
 const SPACE_DEFINED = new Set(
   Object.keys((JSON.parse(readFileSync(join(ROOT, 'tokens/core/dimension.json'), 'utf8')) as { space: Record<string, unknown> }).space)

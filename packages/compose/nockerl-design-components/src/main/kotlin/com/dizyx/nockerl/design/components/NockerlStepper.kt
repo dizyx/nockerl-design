@@ -38,15 +38,15 @@ import com.dizyx.nockerl.design.tokens.nockerlRecessedSurface
 import com.dizyx.nockerl.design.tokens.nockerlShadow
 
 /**
- * The **stepper**: process steps for wizards/flows (stepper.mdx; the B14
+ * The **stepper**: process steps for wizards/flows (stepper.mdx; the
  * coverage gap closed). Discs at 32dp on the pill silhouette:
  * - **DONE**: solid `accentPrimary` + a check knocked out in `onAccent`, level-1
- *   lift + catch-light. **CYAN is the terminal/progress seal (B14 ratified:
+ *   lift + catch-light. **CYAN is the terminal/progress seal (ratified:
  *   flow completion is brand progress; green stays for validation messages)**.
  *   There is no green anywhere in this component.
  * - **CURRENT**: solid accent + the step number, ringed by an
  *   `accentPrimarySoft` halo (natives express the web's gradient as solid +
- *   catch-light, per the B1 doctrine).
+ *   catch-light, per the solid-primary doctrine).
  * - **UPCOMING**: a recessed `canvasAlt` well with a `divider` border and a
  *   muted number ("fields sink").
  * - **ERROR** (when [errorAt] == [current]): solid `statusError` + the ✕

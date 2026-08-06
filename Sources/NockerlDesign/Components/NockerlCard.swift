@@ -126,7 +126,7 @@ private struct CardChrome<Content: View>: View {
         // (fill + top catch-light + neutral shadow + edge) is now the ONE shared treatment,
         // so it can't drift from the tab panel / future surfaces (the NockerlRecessedDisc
         // lesson). The card keeps its own axes: the elevation rung, the selectable accent
-        // edge, and the  gradient fill. All are passed INTO the shared modifier, never inlined.
+        // edge, and the gradient fill. All are passed INTO the shared modifier, never inlined.
         content()
             .nockerlSurface(
                 variant: .card,

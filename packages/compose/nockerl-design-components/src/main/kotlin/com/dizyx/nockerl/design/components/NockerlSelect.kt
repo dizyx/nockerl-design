@@ -37,7 +37,7 @@ import com.dizyx.nockerl.design.tokens.NockerlControlShape
 import com.dizyx.nockerl.design.tokens.nockerlRecessedSurface
 
 /**
- * The **select**: pick ONE from a fixed list (select docs; ruling C5). The
+ * The **select**: pick ONE from a fixed list (select docs). The
  * trigger is the shared recessed field well ("fields sink"): `canvasAlt` inset on
  * the 12dp control radius with a hairline border, a persistent [label] above
  * (never placeholder-as-label, law §14), and a trailing chevron that ROTATES on

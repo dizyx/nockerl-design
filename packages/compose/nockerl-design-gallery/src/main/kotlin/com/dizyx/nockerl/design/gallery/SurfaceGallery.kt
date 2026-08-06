@@ -189,7 +189,7 @@ fun GalleryFacetedBackground() {
     }
 }
 
-/** The informational inset-icon treatment ( / law ): the 3 ratified tones. */
+/** The informational inset-icon treatment: the 3 ratified tones. */
 @ShowkaseComposable(name = "InsetIcon · Informational tones", group = GROUP)
 @Preview
 @Composable
@@ -215,7 +215,7 @@ fun GalleryInsetIcon() {
     }
 }
 
-/** The empty state ( first host): inset mark -> title -> description -> action. */
+/** The empty state (first host): inset mark -> title -> description -> action. */
 @ShowkaseComposable(name = "EmptyState · Inset mark + copy + action", group = GROUP)
 @Preview
 @Composable
@@ -333,7 +333,7 @@ fun GalleryNavSurface() {
 }
 
 /**
- * Dialog card (R5-17 ): the lifted modal panel, with an INSET header icon (the
+ * Dialog card: the lifted modal panel, with an INSET header icon (the
  * recessed intent well, never a raised coin on the lifted card) + FLAT/OUTLINE
  * CTAs (outline-cyan confirm on default, outline-red on destructive, never a
  * filled primary). Captured via [NockerlDialogCard] (a modal window has no
@@ -371,7 +371,7 @@ fun GalleryDialogCard() {
 }
 
 /**
- * NavSurface SOLID option (R5-14 ): the opaque `chromeSurface` rail, matching
+ * NavSurface SOLID option: the opaque `chromeSurface` rail, matching
  * the top bar, NO see-through (side-by-side foil to the translucent default above;
  * both options are token-driven).
  */
@@ -507,7 +507,7 @@ fun GalleryFormSectionSettings() {
 }
 
 /**
- * The VocabRow COMPOSITION ( gate 3, deliberately NOT a component): an
+ * The VocabRow COMPOSITION (deliberately NOT a component): an
  * expandable vocabulary row is [NockerlAccordion] (single-open, rotating
  * chevron: the disclosure canon) whose item content is a [NockerlChip] strip
  * (the misspelling tags). Everything here is existing canon; a dedicated

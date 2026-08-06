@@ -24,9 +24,9 @@ import com.dizyx.nockerl.design.tokens.NockerlSurface
  * AgentMessage stream-failed, ToolCallCard error) with a single quiet treatment
  * derived from the alert-family canon:
  *
- * - **The Banner inline-alert anatomy, which supersedes the r4 recessed well
- *   AND the r5 tinted lift.** A NEUTRAL
- *   `cardSurface1` plane, never a red/pink tint fill (the r5 5-7% tint read
+ * - **The Banner inline-alert anatomy, which supersedes the earlier recessed well
+ *   AND the tinted lift.** A NEUTRAL
+ *   `cardSurface1` plane, never a red/pink tint fill (the 5-7% tint read
  *   PINK on Light), LIFTED by the banner material (neutral drop shadow + top
  *   catch-light, law §1/§2), traced by the banner's whisper-red border (the
  *   canon 22% mix).
@@ -60,7 +60,7 @@ fun NockerlFailedTurn(
     NockerlSurface(
         modifier = modifier,
         shape = NockerlPanelShape,
-        // NEUTRAL plane, NEVER a red/pink tint fill (the r5 5-7% tint read PINK on
+        // NEUTRAL plane, NEVER a red/pink tint fill (the 5-7% tint read PINK on
         // Light). The banner material supplies
         // the lift: neutral drop shadow + top catch-light.
         color = colors.cardSurface1,

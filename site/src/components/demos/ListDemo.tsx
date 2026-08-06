@@ -52,9 +52,9 @@ import { NockerlDivider, NockerlIcon, NockerlListItem, NockerlListboxOption, Noc
 type Density = 'comfortable' | 'dense';
 type Status = 'success' | 'warning' | 'error' | 'info' | 'idle';
 
-// The leading STATUS mark (an ICON: shape + color dual-coding, adjudication B20, never a bare
+// The leading STATUS mark (an ICON: shape + color dual-coding, never a bare
 // colored dot) is now CANONICALIZED inside the NockerlListItem primitive: rows pass `status` and
-// get the B20 icon by default. The hand-rolled STATUS_COLOR/STATUS_ICON maps that used to
+// get the icon by default. The hand-rolled STATUS_COLOR/STATUS_ICON maps that used to
 // live here (feeding a `leadingIcon` wrapper) moved into the primitive verbatim.
 
 // The container owns layout: section headers (muted label), hairlines BETWEEN
@@ -73,11 +73,11 @@ const STYLES = `
 .nk-ls-card {
   box-shadow: 0 var(--space-1) var(--elevation-level2) -6px color-mix(in srgb, var(--color-shadow-tint) 60%, transparent), var(--nk-surface-sheen);
   overflow: hidden;
-  /* nested-radius opt-in (r4 clip class): edge rows curve to the card clip (16px card radius
+  /* nested-radius opt-in (the clip class): edge rows curve to the card clip (16px card radius
      minus the 1px hairline), so a selected first/last row's wash is never sliced. */
   --nk-nest-cap: calc(var(--radius-card) - var(--space-px));
 }
-/* task 2763 EXPERIMENTAL ZEBRA: opt-in alternating-row tone (even rows a subtle neutral
+/* EXPERIMENTAL ZEBRA: opt-in alternating-row tone (even rows a subtle neutral
    wash; odd rows plain). Theme-following via on-card. Default (no --zebra) byte-identical.
    A resting surface wash BENEATH the hairlines/selection/hover. */
 .nk-ls-card--zebra > *:nth-of-type(even) { background: color-mix(in srgb, var(--color-on-card) 4%, transparent); }
@@ -247,9 +247,9 @@ export default function ListDemo() {
           </NockerlSurface>
         </div>
 
-        {/* 2b. ZEBRA (task 2763, experimental): opt-in alternating-row tone on a plain card. */}
+        {/* 2b. ZEBRA (experimental): opt-in alternating-row tone on a plain card. */}
         <div>
-          <p className="nk-ls__lbl">Zebra (task 2763, experimental): opt-in alternating row tone</p>
+          <p className="nk-ls__lbl">Zebra (experimental): opt-in alternating row tone</p>
           <NockerlSurface className="nk-ls-card nk-ls-card--zebra">
             {FILES.map((r) => (
               <div key={r.id}>

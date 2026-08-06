@@ -63,7 +63,7 @@
    below each heading, every heading hugs its own content: a ~3.3:1 above:below ratio, so it reads
    as the START of its section, never a floater. We deliberately DO NOT override this to a larger
    fixed value: the proportional cadence is correct, and a global bump would shift every doc page,
-   breaking the r3 pixel-steady component baselines for no rhythm gain. This is the owned decision;
+   breaking the pixel-steady component baselines for no rhythm gain. This is the owned decision;
    tune the section lead here (not per page) if the cadence ever needs to change. */
 
 /* == Site chrome conforms to the thin-forward type system (heaviest weight = 500) == */
@@ -522,7 +522,7 @@ site-search .dialog-frame {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
   margin: 1rem 0;
-  /* B2: align-items:start so a row does NOT stretch its shorter swatches to match a
+  /* align-items:start so a row does NOT stretch its shorter swatches to match a
      taller neighbour. Combined with the fixed chip height + the 2-line min-height on
      __meta below, every swatch in a row is a uniform height regardless of how many
      lines its meta text wraps to. */
@@ -554,7 +554,7 @@ site-search .dialog-frame {
 .nk-swatch__meta {
   padding: var(--space-2) 10px;
   font-size: 12px;
-  /* B2: the meta is a fixed-height box (name line + a 2-line val slot); shorter metas
+  /* The meta is a fixed-height box (name line + a 2-line val slot); shorter metas
      top-align inside it, so swatch height no longer depends on how many lines the val
      wraps to. Every swatch in a row is uniform height. */
   display: flex;
@@ -570,7 +570,7 @@ site-search .dialog-frame {
   font-family: var(--sl-font-mono);
   color: var(--nk-muted);
   font-size: 11px;
-  /* B2: pin the line-height AND reserve exactly two of those lines, so a 1-line val and a
+  /* Pin the line-height AND reserve exactly two of those lines, so a 1-line val and a
      wrapped 2-line val occupy the identical height (2 * 1.4em). The wrapping value can no
      longer stretch its swatch taller than its neighbours, independent of prose line-height. */
   line-height: 1.4;

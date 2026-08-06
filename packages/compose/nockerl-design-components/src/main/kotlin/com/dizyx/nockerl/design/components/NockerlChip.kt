@@ -41,7 +41,7 @@ import com.dizyx.nockerl.design.tokens.NockerlPillShape
  * @param leadingContent optional leading content (e.g. a status dot) before the label.
  * @param onRemove when non-null, the chip is REMOVABLE: a trailing ✕ renders with
  *   its own tap target (the ratified chip contract is the capability UNION
- *   of selectable, removable, and disabled, on every platform, ruling C6).
+ *   of selectable, removable, and disabled, on every platform).
  */
 @Composable
 fun NockerlChip(
@@ -65,7 +65,7 @@ fun NockerlChip(
         enabled = enabled,
         fill = resolvedFill,
         shape = NockerlPillShape,
-        // Ratified B2: the SELECTED solid-accent keycap wears the top catch-light.
+        // Ratified: the SELECTED solid-accent keycap wears the top catch-light.
         litHighlight = selected && enabled,
         modifier = modifier,
     ) {

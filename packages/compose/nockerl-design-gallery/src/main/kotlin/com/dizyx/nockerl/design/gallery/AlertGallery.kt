@@ -163,7 +163,7 @@ fun GalleryCalloutSpecials() {
     }
 }
 
-/** The calm failure grammar: lifted alert (R5-5 ), danger coin, minimal red, retry. */
+/** The calm failure grammar: lifted alert, danger coin, minimal red, retry. */
 @ShowkaseComposable(name = "FailedTurn · Calm failure grammar", group = GROUP)
 @Preview
 @Composable

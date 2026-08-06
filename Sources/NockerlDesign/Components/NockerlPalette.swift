@@ -112,7 +112,7 @@ public struct NockerlPalette {
     /// Muted on-chrome ink, the nav row's RESTING ink (muted until engaged).
     public let onChromeMuted: Color
 
-    /// Cloud Agent engine accent ( engine->accent map).
+    /// Cloud Agent engine accent (engine->accent map).
     public let engineCloud: Color
 
     /// Local Engine engine accent.

@@ -33,7 +33,7 @@ import com.dizyx.nockerl.design.tokens.NockerlPillShape
  *
  * Tones map 1:1 onto semantic palette slots via [NockerlBadgeTone], never a raw
  * hue. Count/dot default to [NockerlBadgeTone.DANGER]: the unread hue is
- * RATIFIED danger-red (r2, B5). Client #1's agent-orange inbox badge conforms
+ * RATIFIED danger-red. Client #1's agent-orange inbox badge conforms
  * at swap time ([NockerlBadgeTone.AGENT] stays available for categorical uses).
  *
  * Anchoring: pin to a host with a plain `Box` overlay at the call site. This

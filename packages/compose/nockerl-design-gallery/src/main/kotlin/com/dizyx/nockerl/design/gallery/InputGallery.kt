@@ -171,12 +171,12 @@ fun GalleryAttachmentPopover() {
 /** Fixed equalizer levels: a deterministic stand-in for the live audio meter. */
 private val DemoAmplitudes = listOf(0.35f, 0.7f, 0.5f, 0.95f, 0.6f)
 
-/** The paused frozen-frame levels (value-exact from the web ). */
+/** The paused frozen-frame levels (value-exact from the web). */
 private val PausedAmplitudes = listOf(0.32f, 0.74f, 0.5f, 0.86f, 0.4f)
 
 /**
  * Recording HUD: the floating "Nockerl is listening" pill, leading brand mark
- * (the  fix), pulsing status dot, elapsed timer, live equalizer, ghost Cancel.
+ * (the fix), pulsing status dot, elapsed timer, live equalizer, ghost Cancel.
  * Captured with `animate = false` so the infinite pulse is frozen at peak.
  */
 @ShowkaseComposable(name = "RecordingHud · Listening", group = GROUP)
@@ -352,7 +352,7 @@ fun GalleryWidthCapsWide() {
 }
 
 /**
- * The  adoption contract, integrated: the ATTACHMENTS MODEL renders the
+ * The adoption contract, integrated: the ATTACHMENTS MODEL renders the
  * real popover above the pill and the generic CONTEXT slot (here the frozen
  * Recording HUD) rides between them, all inside the component's own host
  * stack, which owns the chat-column cap (stack order: attachments → context →

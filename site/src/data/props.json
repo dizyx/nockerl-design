@@ -459,14 +459,14 @@
           "type": "React.ReactNode",
           "optional": true,
           "default": null,
-          "description": "PINNED FOOTER-ACTION BAR (task 2653): an approve/deny row that NEVER scrolls away, rendered below the scrolling body on the sheet's own plane, with a hairline top edge and an upward scroll-under cue when more body remains beneath it. Compose the ratified CTA grammar in here (outline confirm · ghost cancel · destructive outline-red, the Dialog r5 canon). Empty = no footer, byte-identical sheet."
+          "description": "PINNED FOOTER-ACTION BAR: an approve/deny row that NEVER scrolls away, rendered below the scrolling body on the sheet's own plane, with a hairline top edge and an upward scroll-under cue when more body remains beneath it. Compose the ratified CTA grammar in here (outline confirm · ghost cancel · destructive outline-red, the Dialog canon). Empty = no footer, byte-identical sheet."
         },
         {
           "name": "onBack",
           "type": "(() => void) | undefined",
           "optional": true,
           "default": null,
-          "description": "NESTED-SHEET BACK NAVIGATION (task 2653): when set, the header leads with a back chevron (a real NockerlIconButton) BEFORE the title. View swapping stays with the host (swap <code>title</code>/<code>children</code> on your own state); this is the affordance + a11y."
+          "description": "NESTED-SHEET BACK NAVIGATION: when set, the header leads with a back chevron (a real NockerlIconButton) BEFORE the title. View swapping stays with the host (swap <code>title</code>/<code>children</code> on your own state); this is the affordance + a11y."
         },
         {
           "name": "backLabel",
@@ -788,7 +788,7 @@
           "type": "boolean",
           "optional": true,
           "default": "false",
-          "description": "Inert input + actions. Freeze ruling (task 2686/): react uses <code>disabled</code> (the DOM/react family idiom); compose keeps <code>enabled</code> (its idiom): semantics shared, casing platform-idiomatic per law §9."
+          "description": "Inert input + actions. Freeze ruling: react uses <code>disabled</code> (the DOM/react family idiom); compose keeps <code>enabled</code> (its idiom): semantics shared, casing platform-idiomatic per law §9."
         },
         {
           "name": "onAttach",
@@ -809,14 +809,14 @@
           "type": "ReactNode",
           "optional": true,
           "default": null,
-          "description": "GENERIC leading-accessory SLOT (task 2682) that replaces the built-in attach button entirely when provided (compose any control cluster; you own its a11y). The onAttach/attachIcon pair stays as the zero-config default."
+          "description": "GENERIC leading-accessory SLOT that replaces the built-in attach button entirely when provided (compose any control cluster; you own its a11y). The onAttach/attachIcon pair stays as the zero-config default."
         },
         {
           "name": "attachments",
           "type": "NockerlAttachment[]",
           "optional": true,
           "default": null,
-          "description": "PENDING ATTACHMENTS MODEL (task 2682): when non-empty the composite renders the real NockerlAttachmentPopover floating directly ABOVE the pill (the canonical r5 integration), aligned to the pill's column. Empty (default) renders nothing: the resting DOM is byte-identical to the bare pill."
+          "description": "PENDING ATTACHMENTS MODEL: when non-empty the composite renders the real NockerlAttachmentPopover floating directly ABOVE the pill (the canonical integration), aligned to the pill's column. Empty (default) renders nothing: the resting DOM is byte-identical to the bare pill."
         },
         {
           "name": "onRemoveAttachment",
@@ -830,7 +830,7 @@
           "type": "ReactNode",
           "optional": true,
           "default": null,
-          "description": "GENERIC context/accessory SLOT (task 2682) that rides directly above the pill (below the attachments row): session chips, a context-gauge strip, the Recording HUD. Deliberately untyped (never session-typed props); empty renders nothing."
+          "description": "GENERIC context/accessory SLOT that rides directly above the pill (below the attachments row): session chips, a context-gauge strip, the Recording HUD. Deliberately untyped (never session-typed props); empty renders nothing."
         },
         {
           "name": "maxLines",
@@ -1740,7 +1740,7 @@
           "type": "NockerlJobState",
           "optional": false,
           "default": null,
-          "description": "Job state → the leading mark: B20 status icon, a live spinner, or a muted clock."
+          "description": "Job state → the leading mark: the status icon, a live spinner, or a muted clock."
         },
         {
           "name": "time",
@@ -2006,7 +2006,7 @@
           "type": "NockerlListItemStatus",
           "optional": true,
           "default": null,
-          "description": "Optional leading status mark: renders the canonical B20 status ICON (shape + color dual-coding, never a bare dot) in the status color. Status colors only, never cyan."
+          "description": "Optional leading status mark: renders the canonical status ICON (shape + color dual-coding, never a bare dot) in the status color. Status colors only, never cyan."
         },
         {
           "name": "leadingIcon",
@@ -3798,7 +3798,7 @@
           "type": "((value: string) => void) | undefined",
           "optional": true,
           "default": null,
-          "description": "CLOSABLE tabs (task 2656 dev-tab-bar): when set, every tab grows a trailing close affordance (pointer) and DELETE / BACKSPACE closes the focused tab (the keyboard half of the ARIA deletable-tabs pattern; the X itself stays out of the tab order). The list stays CONTROLLED: this only reports the value; the host removes the tab + moves selection."
+          "description": "CLOSABLE tabs (dev-tab-bar): when set, every tab grows a trailing close affordance (pointer) and DELETE / BACKSPACE closes the focused tab (the keyboard half of the ARIA deletable-tabs pattern; the X itself stays out of the tab order). The list stays CONTROLLED: this only reports the value; the host removes the tab + moves selection."
         }
       ]
     },
@@ -4099,7 +4099,7 @@
           "type": "ReactNode",
           "optional": true,
           "default": null,
-          "description": "The header ACCESSORY seat (the ratified settings-grammar name, task 2657/2686): a chip, an info tip, a collapse control owned by the host. It trails the title."
+          "description": "The header ACCESSORY seat (the ratified settings-grammar name): a chip, an info tip, a collapse control owned by the host. It trails the title."
         },
         {
           "name": "className",

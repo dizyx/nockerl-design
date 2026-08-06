@@ -43,10 +43,10 @@ export const TIER: Record<string, number> = {
   AgentMessage: 3, ToolCallCard: 3, StatCard: 3, KeyValue: 3, ContextGauge: 3, DiffViewer: 3,
   FileUpload: 3, EmptyState: 3, RecordingHud: 3, CodeBlock: 3, OtpInput: 3, FieldValidation: 3,
   MarkdownContent: 3, List: 3, Fab: 3, RadioGroup: 3, Chart: 3, Timeline: 3,
-  // task 2654: the FloatingPills canon promoted into the package as two composites
+  // The FloatingPills canon promoted into the package as two composites
   // (the demo file keeps the FloatingPills name but is a package-backed harness now).
   SessionChip: 3, SessionChipsBar: 3,
-  // task 2655: agent-console orchestration telemetry (web-first true gaps)
+  // Agent-console orchestration telemetry (web-first true gaps)
   JobRow: 3, NodeCell: 3, ClusterGrid: 4, TodoWidget: 3,
   // tier 4: patterns / shells
   AppShell: 4, TopBar: 4, Sidebar: 4, BottomNav: 4, Panel: 4, CommandPalette: 4,

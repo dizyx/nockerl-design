@@ -36,7 +36,7 @@ import com.dizyx.nockerl.design.tokens.nockerlRecessedSurface
  *   **Tabs navigate between views; the segmented control selects an option**:
  *   the underline-in-enclosure keeps that distinction legible.
  *
- * Per the B12 ruling, SwiftUI keeps its native tab idiom (system `TabView` /
+ * Per the ruling, SwiftUI keeps its native tab idiom (system `TabView` /
  * segmented `Picker`, laws §9/§12). There is no Swift enclosed-tabs port, since
  * "enclosed tabs" is not an Apple pattern; a Swift surface uses the platform tab.
  *
@@ -74,7 +74,7 @@ fun NockerlTabs(
     }
 }
 
-/** The shared underlined tab row (B12 sliding accent indicator). */
+/** The shared underlined tab row (the sliding accent indicator). */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TabsRow(
@@ -91,7 +91,7 @@ private fun TabsRow(
         containerColor = Color.Transparent,
         contentColor = colors.onCanvas,
         indicator = {
-            // The ONE sliding indicator (B12): the M3 indicator-scope modifier
+            // The ONE sliding indicator: the M3 indicator-scope modifier
             // animates OFFSET + WIDTH toward the active tab (transform-only: the
             // accent fill never tweens, law §7 amendment). An UNDERLINE, never
             // a fill, so enclosed tabs stay distinct from the segmented pill.

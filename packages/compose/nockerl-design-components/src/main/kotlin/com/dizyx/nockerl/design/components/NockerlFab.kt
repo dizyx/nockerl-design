@@ -28,7 +28,7 @@ import com.dizyx.nockerl.design.tokens.nockerlShadow
 
 /**
  * The **floating action button**, the one floating affordance (fab.mdx), on the
- * RATIFIED solid treatment (r2, B13): a SOLID `accentPrimary` circle (never a
+ * RATIFIED solid treatment: a SOLID `accentPrimary` circle (never a
  * gradient, never the tonal scroll-chip drift) with a contrast-picked glyph, the
  * level-3 floating-chrome drop + the shared `surfaceHighlight` catch-light.
  *
@@ -175,7 +175,7 @@ data class NockerlFabAction(
  * ONE level-2 drop, and the shared catch-light, grounded in the elevation ladder
  * like every other lifted surface, not two loose pieces on the scrim.
  *
- * Justified right (the  idiom): rows right-align above the trigger. The menu
+ * Justified right (the idiom): rows right-align above the trigger. The menu
  * is CONTROLLED: the host owns [expanded]; tapping the trigger toggles it.
  *
  * @param icon the trigger FAB glyph.

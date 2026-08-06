@@ -23,7 +23,7 @@ import com.dizyx.nockerl.design.tokens.NockerlEyebrow
 
 /**
  * The **form section**: the RATIFIED lifted-card treatment for grouped fields
- * (r2, B8; form-layout.mdx): an uppercase eyebrow title (the sanctioned overline
+ * (form-layout.mdx): an uppercase eyebrow title (the sanctioned overline
  * exception, law §11) + optional description, with the fields on a [NockerlCard]
  * at the shared 12dp interior rhythm. This settles the Android flat-divider vs
  * Voice lifted-card split: the CARD wins on every platform.

@@ -8,7 +8,7 @@
 //                  fixed 0.15 wash + full-hue label) or solid (tone fill + picked ink).
 //
 // Tones map 1:1 onto semantic palette slots, never a raw hue. The count/dot default
-// tone is `.danger`: the unread hue is RATIFIED danger-red (r2, B5). Client #1's
+// tone is `.danger`: the unread hue is RATIFIED danger-red. Client #1's
 // agent-orange inbox badge conforms at swap time (`.agent` stays available for
 // categorical uses).
 //
@@ -93,7 +93,7 @@ public struct NockerlBadge: View {
     /// - Parameters:
     ///   - count: the count to display.
     ///   - tone: the semantic hue (defaults to ``NockerlBadgeTone/danger``, the
-    ///     ratified unread hue, r2 B5).
+    ///     ratified unread hue).
     ///   - label: optional accessible name; defaults to the rendered count text.
     public init(count: Int, tone: NockerlBadgeTone = .danger, label: String? = nil) {
         self.content = .count(count)

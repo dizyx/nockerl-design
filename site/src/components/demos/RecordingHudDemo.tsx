@@ -16,7 +16,7 @@
  * 32767), clamped to [0.08, 1], identical across both platforms. Levels here are
  * SYNTHETIC (a sum-of-sines pseudo-waveform), never a real microphone.
  *
- * THE BRAND MARK LEADS (ratified task 2623): the canonical HUD opens with the real
+ * THE BRAND MARK LEADS (ratified): the canonical HUD opens with the real
  * monochrome Nockerl mark, so the pill reads as *Nockerl is listening*, never an
  * anonymous red strip (the native NockerlRecordingHud leads with NockerlLogo the same
  * way). `showBrand` therefore DEFAULTS TRUE; the brand-less variant stays available
@@ -80,7 +80,7 @@ export const STYLES = `
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-pill);
   background: var(--color-chrome-surface);
-  /* task 2623: the §2 SIGNATURE floating edge (the ratified --border-width-floating, the
+  /* The §2 SIGNATURE floating edge (the ratified --border-width-floating, the
      same weight as the chat pill it rides above) gives it identical floating language. */
   border: var(--border-width-floating) solid var(--color-accent-primary);
   box-shadow: 0 var(--elevation-level3) 22px -8px color-mix(in srgb, var(--color-shadow-tint) 60%, transparent),
@@ -90,7 +90,7 @@ export const STYLES = `
 }
 .nk-hud--error { border-color: var(--color-status-warning); }
 /* left anchor: the REAL monochrome Nockerl mark + a divider, fixed through every
-   phase. The CANONICAL default (task 2623: the pill reads as "Nockerl is listening");
+   phase. The CANONICAL default (the pill reads as "Nockerl is listening");
    showBrand={false} opts out for tightly embedded chrome. The mark inherits text
    color via currentColor, so it adapts to light/dark with no extra tokens. */
 .nk-hud__brand { flex: 0 0 auto; display: inline-flex; color: var(--color-on-chrome); }
@@ -244,7 +244,7 @@ export interface RecordingHudProps {
    */
   dismissing?: boolean | undefined;
   /**
-   * Show the real Nockerl mark on the left. TRUE by default (ratified task 2623: the
+   * Show the real Nockerl mark on the left. TRUE by default (ratified: the
    * canonical HUD LEADS with the brand, matching the native NockerlRecordingHud, so
    * the pill reads as "Nockerl is listening"). Pass false to opt out in tightly
    * embedded chrome. The mark is the shared monochrome <NockerlLogo>
@@ -323,7 +323,7 @@ export function RecordingHud({ phase, levels, elapsed, error, pasted, dismissing
 // RecordingHud is a LEAF: its content is DATA (phase / levels / elapsed / error) + the NockerlLogo
 // glyph, with no component slot. The indeterminate "Transcribing" loader composes the real NockerlSpinner
 // primitive (the Voice HUD is its documented source); the optional trailing Cancel composes a real
-// ghost NockerlButton (task 2623, the native HUD order); the equalizer + record dot stay hand-rolled as
+// ghost NockerlButton (the native HUD order); the equalizer + record dot stay hand-rolled as
 // the HUD's own signature meter. The stop/pause/cancel IconButtons + NockerlSegmentedControl live in the demo
 // scaffold, not the HUD itself. No owns.
 export const compose = {
@@ -434,7 +434,7 @@ export default function RecordingHudDemo() {
               <RecordingHud phase={phase} levels={levels} elapsed={elapsed}
                 pasted={resultPasted} dismissing={dismissing}
                 error="Mic unavailable, transcription failed. Tap to retry." />
-              <p className="nk-hud-demo__cap"><b>With logo</b>: <span>the canonical default (task 2623), Nockerl is listening</span></p>
+              <p className="nk-hud-demo__cap"><b>With logo</b>: <span>the canonical default, Nockerl is listening</span></p>
             </div>
             <div className="nk-hud-demo__variant">
               <RecordingHud phase={phase} levels={levels} elapsed={elapsed} showBrand={false}

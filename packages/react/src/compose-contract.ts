@@ -1,5 +1,5 @@
 /**
- * compose-contract.ts: the COMPOSITION CONTRACT convention (Round-4).
+ * compose-contract.ts: the COMPOSITION CONTRACT convention.
  *
  * Every shipped design component (primitives + composites + shells) exports a
  * `const compose` describing HOW it may be composed. This file is the single,

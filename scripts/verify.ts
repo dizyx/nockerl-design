@@ -109,7 +109,7 @@ check('web --radius-control', cssVar(':root','--radius-control'), '12px');
 
 console.log('--- Border (design-laws §2: cyan-stroke weight is SEMANTIC) ---');
 // The three weights must stay DISTINCT and must agree across all three platforms: collapsing
-// selection onto floating is exactly the drift  normalized away.
+// selection onto floating is exactly the drift this check normalizes away.
 check('web --border-width-floating', cssVar(':root','--border-width-floating'), '1.5px');
 check('web --border-width-selection', cssVar(':root','--border-width-selection'), '1px');
 check('web --border-width-indicator', cssVar(':root','--border-width-indicator'), '1px');
@@ -135,7 +135,7 @@ check('swift light accentPrimary', swiftColor('NockerlLightColors','accentPrimar
 check('swift dark cardHairline (alpha)', swiftColor('NockerlDarkColors','cardHairline'),
   'Color(red: 1.000, green: 1.000, blue: 1.000, opacity: 0.0784313725490196)');
 
-console.log('--- Motion (RATIFIED r3; round-trips on all three targets) ---');
+console.log('--- Motion (round-trips on all three targets) ---');
 check('kt duration.base', kt.match(/val baseMs = (\d+)/)?.[1], '200');
 check('kt duration.pulse', kt.match(/val pulseMs = (\d+)/)?.[1], '800');
 check('kt easing.standard', kt.includes('val standard = CubicBezierEasing(0.2f, 0f, 0f, 1f)') ? 'ok' : 'missing', 'ok');

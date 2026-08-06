@@ -41,8 +41,8 @@ import { formatTokenCount } from './format';
 export type StatTrend = 'up' | 'down';
 export type StatTone = 'default' | 'featured';
 export type StatSize = 'comfortable' | 'compact';
-/** Opt-in icon-plate tint (task 2740) that colors the stat glyph + its plate a soft hue.
- *  Omit for the D6 neutral hairline plate (the default, canon-unchanged). */
+/** Opt-in icon-plate tint that colors the stat glyph + its plate a soft hue.
+ *  Omit for the neutral hairline plate (the default, canon-unchanged). */
 export type StatTint = 'accent' | 'success' | 'warning' | 'danger';
 
 export interface StatDelta {
@@ -68,14 +68,14 @@ export interface StatCardProps {
   /** `featured` fills the tile with the cyan gradient (one per cluster). */
   tone?: StatTone;
   /**
-   * OPT-IN icon-plate tint (task 2740) that colors the leading glyph + its plate a soft hue
+   * OPT-IN icon-plate tint that colors the leading glyph + its plate a soft hue
    * (soft wash fill + hue border + hue glyph, the Badge-soft recipe). Omit for the
-   * ratified D6 NEUTRAL hairline plate: the default renders byte-identical. Ignored
+   * ratified NEUTRAL hairline plate: the default renders byte-identical. Ignored
    * on `featured` tiles (the featured chip inverts to on-accent, and owns the plate).
    */
   tint?: StatTint;
   /**
-   * EXPERIMENTAL (task 2763, not ratified canon; the design lead is evaluating). A subtle,
+   * EXPERIMENTAL (not ratified canon; the design lead is evaluating). A subtle,
    * THEME-FOLLOWING surface gradient (a gentle diagonal between two neutral surface
    * levels, NOT the loud `featured` cyan). Default `false` = the flat `card-surface1`
    * fill, byte-identical. Ignored on `featured` (which owns the fill).
@@ -145,7 +145,7 @@ const STYLES = `
 }
 .nk-sc--compact .nk-sc__chip { width: var(--space-8); height: var(--space-8); border-radius: var(--radius-track); }
 /* task-2740 OPT-IN tint: colors the glyph + plate a soft hue (soft wash 14% + hue border 28% +
-   hue glyph, the Badge-soft recipe). Default (no tint class) stays the neutral D6 plate above.
+   hue glyph, the Badge-soft recipe). Default (no tint class) stays the neutral plate above.
    The hue class sets --nk-sc-tint; the tinted class applies the recipe. Ignored on featured. */
 .nk-sc--tint-accent { --nk-sc-tint: var(--color-accent-primary); }
 .nk-sc--tint-success { --nk-sc-tint: var(--color-status-success); }
@@ -156,7 +156,7 @@ const STYLES = `
   color: var(--nk-sc-tint);
   border-color: color-mix(in srgb, var(--nk-sc-tint) 28%, transparent);
 }
-/* task 2763 EXPERIMENTAL: a subtle THEME-FOLLOWING surface gradient (a gentle diagonal
+/* EXPERIMENTAL: a subtle THEME-FOLLOWING surface gradient (a gentle diagonal
    between two neutral surface levels; both are theme tokens so it adapts). Distinct from
    the loud featured cyan. Out-specifies NockerlSurface's flat fill via the demo-root prefix. */
 .nk-sc-demo .nk-sc--gradient { background: linear-gradient(160deg, var(--color-card-surface2), var(--color-card-surface1)); }
@@ -279,7 +279,7 @@ export function StatCard({
     featured ? 'nk-sc--featured' : '',
     // tint is an OPT-IN icon-plate hue; ignored on featured (which owns the chip).
     tint && !featured ? `nk-sc--tinted nk-sc--tint-${tint}` : '',
-    // EXPERIMENTAL (task 2763) subtle theme-following surface gradient; ignored on featured.
+    // EXPERIMENTAL subtle theme-following surface gradient; ignored on featured.
     gradient && !featured ? 'nk-sc--gradient' : '',
   ]
     .filter(Boolean)
@@ -390,7 +390,7 @@ export default function StatCardDemo() {
       </div>
 
       <p className="nk-sc-demo__lbl" style={{ marginTop: 'var(--space-6)' }}>
-        Icon-plate tint (task 2740, opt-in): default stays the neutral D6 plate; tint colors the glyph + plate
+        Icon-plate tint (opt-in): default stays the neutral plate; tint colors the glyph + plate
       </p>
       <div className="nk-sc-grid">
         <StatCard label="Neutral · default" value="42" icon={IconSessions} />
@@ -400,7 +400,7 @@ export default function StatCardDemo() {
       </div>
 
       <p className="nk-sc-demo__lbl" style={{ marginTop: 'var(--space-6)' }}>
-        Experimental (task 2763): subtle theme-following surface gradient; opt-in, default stays the flat surface
+        Experimental: subtle theme-following surface gradient; opt-in, default stays the flat surface
       </p>
       <div className="nk-sc-grid">
         <StatCard label="Flat · default" value="42" icon={IconSessions} />

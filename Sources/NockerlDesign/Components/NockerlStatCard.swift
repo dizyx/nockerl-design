@@ -1,22 +1,22 @@
 // NockerlStatCard: the single-KPI stat / metric tile on Swift. THIS is the
-// package canon (the r4 canon lived site-side; Voice's hand-rolled HomeSection StatCard
+// package canon (it previously lived site-side; Voice's hand-rolled HomeSection StatCard
 // normalizes on adoption). Anatomy (feeds the adoption diff):
 //
-//   - the leading icon renders in one of TWO modes (packet ): `.flat`, a BARE
+//   - the leading icon renders in one of TWO modes: `.flat`, a BARE
 //     `accentPrimary` (cyan) glyph pinned top-left, NO plate/box/background; or `.inset`,
 //     the recessed `NockerlInsetIcon` disc idiom (canvasAlt sunken plane + inner top
 //     shade + hairline, circular) at plate scale. The always-on hairline plate is retired.
 //   - a `StatTint` (success/warning/danger/accent) recolors the GLYPH: cyan is the `.flat`
 //     default, neutral the `.inset` default; a `danger` error-count reads red, a `success`
 //     uptime green (color-as-info, law §10). Status hue rides the glyph, never a plate.
-//   - the anatomy STACKS (head row: icon + label / value row below), the r4 grid rule.
+//   - the anatomy STACKS (head row: icon + label / value row below), the grid rule.
 //   - the value is the OUTFIT brand font at display size (the design lead: mono is for
 //     code only, Outfit for stat values); the delta figure is de-mono'd to Outfit too.
 //   - the card is the flat `NockerlCard` chrome (surface1 + catch-light + hairline + the L2
 //     neutral shadow). No gradient.
 //
 // The head row reserves the plate height even when no icon is passed, so headline numbers
-// share one value offset across a tile row (the r4 grid rule).
+// share one value offset across a tile row (the grid rule).
 
 import SwiftUI
 
@@ -28,7 +28,7 @@ public enum NockerlStatTrend {
     case down
 }
 
-/// The leading-icon rendering mode (packet ). Retires the always-on hairline plate.
+/// The leading-icon rendering mode. Retires the always-on hairline plate.
 public enum NockerlStatIconMode: Equatable {
     /// A BARE glyph pinned top-left: no plate / box / background. Default hue is
     /// `accentPrimary` (cyan); a ``NockerlStatTint`` recolors the glyph (danger = red, …).
@@ -64,7 +64,7 @@ public struct NockerlStatDelta {
     }
 }
 
-/// The status hue that colors the leading GLYPH (packet ), repurposed from the retired
+/// The status hue that colors the leading GLYPH, repurposed from the retired
 /// plate tint. Mirrors the react `StatTint`. Warm hues stay status-meaningful (a `danger`
 /// error-count glyph, a `success` uptime glyph); `accent` is the earned-cyan case.
 public enum NockerlStatTint: Equatable {
@@ -148,7 +148,7 @@ public struct NockerlStatCard<IconContent: View>: View {
         NockerlCard {
             VStack(alignment: .leading, spacing: stackGap) {
                 // HEAD: the icon + label band. min-height = the plate box so icon-less
-                // tiles keep the value row at the same offset (the r4 grid rule).
+                // tiles keep the value row at the same offset (the grid rule).
                 HStack(spacing: stackGap) {
                     if let icon {
                         iconView(icon, palette: palette, plate: plate, glyphSize: glyphSize)
@@ -197,7 +197,7 @@ public struct NockerlStatCard<IconContent: View>: View {
                 .foregroundColor(tint?.color(in: palette) ?? palette.accentPrimary)
                 .frame(height: plate, alignment: .topLeading)
         case .inset:
-            // The recessed disc via the ONE shared  primitive (v1.12.1). It was a stale
+            // The recessed disc via the ONE shared primitive (v1.12.1). It was a stale
             // top-only LINEAR band, which drifted from NockerlInsetIcon's radial recipe. A
             // StatTint maps the disc to a TONE: `.accent` = the CYAN brand disc (the
             // Transcription cloud-card look, which fixes the previous always-gray), the

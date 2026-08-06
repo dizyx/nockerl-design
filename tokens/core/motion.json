@@ -29,7 +29,7 @@
       "pulse": {
         "$type": "duration",
         "$value": "800ms",
-        "$description": "Status-dot live pulse half-period (adjudication B6; the one attention rhythm)."
+        "$description": "Status-dot live pulse half-period: the one attention rhythm."
       }
     },
     "easing": {

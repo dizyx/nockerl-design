@@ -1,5 +1,5 @@
 /**
- * NockerlClusterGrid, the CLUSTER STATUS mosaic (WS4 · task 2655b, agent-console
+ * NockerlClusterGrid, the CLUSTER STATUS mosaic (the agent-console
  * epic): a responsive auto-fill grid of NockerlNodeCell tiles, the fleet wall
  * (the compute cluster, a worker pool) at a glance.
  *

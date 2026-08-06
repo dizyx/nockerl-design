@@ -32,7 +32,7 @@ import { NockerlFacetedBackground } from '@dizyx/nockerl-react';
 // at the speaker. Fills never swap on interaction.
 export const AM_STYLES = `
 .nk-am-demo { font-family: var(--font-family-sans); color: var(--color-on-canvas); }
-/* the chat GROUND: darkest layer; bubbles lift off it. task 2669: the ground IS the
+/* the chat GROUND: darkest layer; bubbles lift off it. The ground IS the
    real FacetedBackground primitive (bare, clipped to the rounded stage); --color-chat-bg
    stays as the paint-behind fallback, and every non-facet child layers above. */
 .nk-am-stage { position: relative; overflow: hidden;
@@ -69,7 +69,7 @@ export const AM_STYLES = `
   color: var(--color-on-user-card);
   border-color: color-mix(in srgb, var(--color-user-card) 72%, var(--color-shadow-tint));   /* seat the bottom edge so the gradient's end stop doesn't read as an off-color 1px line */
   border-radius: var(--radius-bubble) var(--radius-bubble-tail) var(--radius-bubble) var(--radius-bubble); }
-/* failed turn: the BANNER INLINE-ALERT grammar (task 2673 ruling; SUPERSEDES the r4
+/* failed turn: the BANNER INLINE-ALERT grammar (SUPERSEDES the earlier
    recessed well for chat failures): a SOLID neutral card surface, the intent only WHISPERED
    into the border (the banner's 22% mix), LIFTED with the banner's neutral shadow + top
    catch-light. Never a red fill, never a bare inset well. Red rides only in the leading
@@ -146,7 +146,7 @@ export const AM_STYLES = `
    accent-warm control-radius square with the glyph KNOCKED OUT to the canvas ink + a catch-light /
    drop, so the thinking header reads as one clean card like the tool-call cards, just warm-hued. */
 .nk-am-think__brain { width: 24px; height: 24px; flex: 0 0 auto; border-radius: var(--radius-control);
-  margin-right: var(--space-1);   /* task 2675: one token step so "Thinking" clears the tile */
+  margin-right: var(--space-1);   /* one token step so "Thinking" clears the tile */
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--color-accent-warm); color: var(--color-canvas);
   box-shadow: 0 var(--space-px) var(--elevation-level1) color-mix(in srgb, var(--color-shadow-tint) 40%, transparent),
@@ -183,7 +183,7 @@ export const AM_STYLES = `
 .nk-am-typing__lbl { font-size: var(--font-size-12);
   color: color-mix(in srgb, var(--color-dot-streaming) 85%, transparent); margin-left: var(--space-1); }
 @keyframes nk-am-pulse { 0%,100% { opacity: 1; transform: translateY(0); } 50% { opacity: .3; transform: translateY(1px); } }
-/* failed-turn footer: the shared NockerlStatusDisc rendered INSET (task 2673, the banner's
+/* failed-turn footer: the shared NockerlStatusDisc rendered INSET (the banner's
    recessed disc form: intent color in the glyph + soft wash + whisper border), leading a
    title-weight line. One failure grammar with Banner + the ChatBubble failed bubble; the
    disc recipe is owned in the primitive. */
@@ -255,7 +255,7 @@ export function AssistantMessage({ model, time, wide = false, ariaLabel = 'Chat 
     : 'min(82%, var(--size-chat-bubble-max))';
   return (
     <div className="nk-am-stage" aria-label={ariaLabel}>
-      {/* the REAL faceted chat ground (task 2669): the one unified primitive */}
+      {/* the REAL faceted chat ground: the one unified primitive */}
       <NockerlFacetedBackground bare aria-hidden="true" />
       <div className="nk-am-row nk-am-row--assistant" style={{ '--nk-am-max': maxWidth } as CSSProperties}>
         {(model || time) && (

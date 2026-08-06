@@ -1,9 +1,9 @@
 /**
- * JobRowDemo: the live island for the shipped NockerlJobRow (WS4 · task 2655a).
+ * JobRowDemo: the live island for the shipped NockerlJobRow.
  *
  * Two presentations of the SAME component, proving the component-vs-view split:
  *   • the INBOX list, rows stacked on one card surface (the Dashboard inbox /
- *     job-notification feed shape): leading state mark (B20 status icon · live
+ *     job-notification feed shape): leading state mark (the status icon · live
  *     spinner · queued clock) + title / detail + relative time + an unread count
  *     badge. Selecting an unread row marks it read LIVE: the ink dims, the badge
  *     drops (the whole inbox semantic).
