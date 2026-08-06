@@ -57,7 +57,7 @@ export interface TabItemDef {
   /** Inert + clearly-seen single tab (skipped by arrow keys). */
   disabled?: boolean;
   /**
-   * UNSAVED marker (task 2656 dev-tab-bar): a small neutral dot in the trailing slot,
+   * UNSAVED marker (dev-tab-bar): a small neutral dot in the trailing slot,
    * the editor "dirty" idiom. With `onClose` it yields to the close X on hover/focus.
    */
   dirty?: boolean;
@@ -81,7 +81,7 @@ export interface NockerlTabsProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   /** Renders the body for the active tab. Falls back to the tab's own `panel`. */
   renderPanel?: (value: string) => ReactNode;
   /**
-   * CLOSABLE tabs (task 2656 dev-tab-bar): when set, every tab grows a trailing close
+   * CLOSABLE tabs (dev-tab-bar): when set, every tab grows a trailing close
    * affordance (pointer) and DELETE / BACKSPACE closes the focused tab (the keyboard half
    * of the ARIA deletable-tabs pattern; the X itself stays out of the tab order). The list
    * stays CONTROLLED: this only reports the value; the host removes the tab + moves
@@ -161,7 +161,7 @@ export const NOCKERL_TABS_STYLES = `
    the scale skips) and have resolved to auto since birth; removed rather than silently
    grown. Enclosed tab geometry is 's redesign anyway. */
 
-/* ── DEV-TAB trailing slot (task 2656): a 16px grid stacking the DIRTY dot and the
+/* ── DEV-TAB trailing slot: a 16px grid stacking the DIRTY dot and the
    close X. Dot at rest; with a closable tab the X cross-fades in on the TAB's hover /
    focus (opacity only: interpolatable, frozen under reduced motion). X hit area is
    pointer-only (keyboard closes via Delete). ── */
@@ -298,7 +298,7 @@ export const NockerlTabs = forwardRef<HTMLDivElement, NockerlTabsProps>(function
     else if (k === 'ArrowLeft' || k === 'ArrowUp') move(idx, -1);
     else if (k === 'Home') select(enabledIdx[0] ?? idx);
     else if (k === 'End') select(enabledIdx[enabledIdx.length - 1] ?? idx);
-    // deletable-tabs pattern (task 2656): Delete/Backspace closes the focused tab.
+    // deletable-tabs pattern: Delete/Backspace closes the focused tab.
     else if ((k === 'Delete' || k === 'Backspace') && onClose) onClose(tabs[idx]!.value);
     else return;
     e.preventDefault();
@@ -341,7 +341,7 @@ export const NockerlTabs = forwardRef<HTMLDivElement, NockerlTabsProps>(function
               <span>{t.label}</span>
               {typeof t.count === 'number' && <span className="nk-tb__badge">{t.count}</span>}
             </span>
-            {/* trailing dev-tab affordance (task 2656): the dirty dot at rest; with
+            {/* trailing dev-tab affordance: the dirty dot at rest; with
                 onClose the X takes over on hover/focus. The X is a pointer affordance,
                 kept OUT of the tab order because the keyboard closes via Delete
                 (role=presentation, nested-interactive-free). */}

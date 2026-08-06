@@ -1,5 +1,5 @@
 /**
- * NockerlTodoWidget, the live PLAN-PROGRESS widget (WS4 · task 2655c, agent-console
+ * NockerlTodoWidget, the live PLAN-PROGRESS widget (the agent-console
  * epic). The agent's running plan as a compact card: what's done, what's running
  * NOW, what's blocked, what's still ahead. The Stepper is its closest sibling, but a
  * plan is not a wizard: steps don't navigate, they REPORT. This is a quiet
@@ -40,7 +40,7 @@ export interface NockerlTodoWidgetProps {
   title?: string;
   /** The plan steps, in order. */
   items: NockerlTodoItem[];
-  /** The header ACCESSORY seat (the ratified settings-grammar name, task 2657/2686):
+  /** The header ACCESSORY seat (the ratified settings-grammar name):
    *  a chip, an info tip, a collapse control owned by the host. It trails the title. */
   headerAccessory?: ReactNode;
   className?: string;

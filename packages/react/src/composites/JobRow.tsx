@@ -1,10 +1,10 @@
 /**
- * NockerlJobRow, the JOB / NOTIFICATION row (WS4 · task 2655a, agent-console epic):
+ * NockerlJobRow, the JOB / NOTIFICATION row (the agent-console epic):
  * one background job or inbox notification as a list row. A THIN SHELL over the
  * NockerlListItem grammar. It maps job semantics onto shipped parts and invents no
  * new row anatomy:
  *
- *   • leading: the job STATE as the ListItem B20 status mark (success / warning /
+ *   • leading: the job STATE as the ListItem status mark (success / warning /
  *     error), a live NockerlSpinner while `running`, or a muted clock while `queued`
  *     (shape + color dual-coding, never a bare colored dot);
  *   • primary: the job title; secondary: the detail line;
@@ -35,7 +35,7 @@ export interface NockerlJobRowProps {
   title: string;
   /** Supporting detail line ("finished in 4m 12s · 3,412 documents"). */
   detail?: string;
-  /** Job state → the leading mark: B20 status icon, a live spinner, or a muted clock. */
+  /** Job state → the leading mark: the status icon, a live spinner, or a muted clock. */
   state: NockerlJobState;
   /** Relative timestamp display label ("2m ago"), the Timeline time idiom. */
   time?: string;
@@ -75,7 +75,7 @@ const IconClock = (
   </NockerlIcon>
 );
 
-// success / warning / error ride the ListItem B20 status mark verbatim.
+// success / warning / error ride the ListItem status mark verbatim.
 const STATUS_FOR: Partial<Record<NockerlJobState, NockerlListItemStatus>> = {
   success: 'success',
   warning: 'warning',

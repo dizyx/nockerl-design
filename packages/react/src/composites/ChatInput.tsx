@@ -1,6 +1,6 @@
 /**
  * NockerlChatInput: the canonical FLOATING PILL bottom-of-chat input, brought up from
- * the Android app (chat/ui/ChatInputBar.kt) as design-system truth (R5-1 task 2621). The
+ * the Android app (chat/ui/ChatInputBar.kt) as design-system truth. The
  * web mirror of the shipped Compose `NockerlChatInput`. Canonical truth is the native
  * component; this is 1:1 the same grammar.
  *
@@ -9,7 +9,7 @@
  * (--border-width-floating in the full accent) + the Level3 lift, never a glow. It is laid
  * out `[attach] [text field] [send/mic]`.
  *
- * **The one refinement (task 2621): a CLEAN send↔mic switch.** The trailing 48px accent
+ * **The one refinement: a CLEAN send↔mic switch.** The trailing 48px accent
  * circle is a single toggle: SEND when there's text (auto), MIC when empty; a
  * long-press flips a manual override (cleared the moment a send fires). Where the app
  * hard-swapped two same-color glyphs (busy, ambiguous), the glyph now CROSS-FADES +
@@ -52,7 +52,7 @@ export interface NockerlChatInputProps {
   placeholder?: string;
   /** Accessible name for the text field (screen readers). */
   ariaLabel?: string;
-  /** Inert input + actions. Freeze ruling (task 2686/): react uses `disabled`
+  /** Inert input + actions. Freeze ruling: react uses `disabled`
    *  (the DOM/react family idiom); compose keeps `enabled` (its idiom): semantics
    *  shared, casing platform-idiomatic per law §9. */
   disabled?: boolean;
@@ -61,14 +61,14 @@ export interface NockerlChatInputProps {
   /** The attach glyph (default a plus; pass a paperclip from your set). */
   attachIcon?: ReactNode;
   /**
-   * GENERIC leading-accessory SLOT (task 2682) that replaces the built-in attach button
+   * GENERIC leading-accessory SLOT that replaces the built-in attach button
    * entirely when provided (compose any control cluster; you own its a11y). The
    * onAttach/attachIcon pair stays as the zero-config default.
    */
   leadingAccessory?: ReactNode;
   /**
-   * PENDING ATTACHMENTS MODEL (task 2682): when non-empty the composite renders the
-   * real NockerlAttachmentPopover floating directly ABOVE the pill (the canonical r5
+   * PENDING ATTACHMENTS MODEL: when non-empty the composite renders the
+   * real NockerlAttachmentPopover floating directly ABOVE the pill (the canonical
    * integration), aligned to the pill's column. Empty (default) renders nothing:
    * the resting DOM is byte-identical to the bare pill.
    */
@@ -76,7 +76,7 @@ export interface NockerlChatInputProps {
   /** Remove handler for the attachments model (fired with the index). */
   onRemoveAttachment?: ((index: number) => void) | undefined;
   /**
-   * GENERIC context/accessory SLOT (task 2682) that rides directly above the pill (below
+   * GENERIC context/accessory SLOT that rides directly above the pill (below
    * the attachments row): session chips, a context-gauge strip, the Recording HUD.
    * Deliberately untyped (never session-typed props); empty renders nothing.
    */
@@ -95,19 +95,19 @@ export interface NockerlChatInputProps {
 // motion tokens, frozen under reduced motion.
 export const NOCKERL_CHAT_INPUT_STYLES = `
 .nk-ci {
-  /* task 2666, the CONCENTRIC gap: at the single-line rest height (6 + 48 + 6 = 60)
+  /* The CONCENTRIC gap: at the single-line rest height (6 + 48 + 6 = 60)
      the 48px action circle keeps an EQUAL 6px gap against the pill's rounded end-cap
      (and top/bottom): the circle sits concentric with the end-cap. Leading stays 12
      (space-3) so the attach glyph breathes like the native start inset. */
   --nk-ci-gap: calc(var(--space-1) + var(--space-0-5));
   display: flex; align-items: center; width: 100%; box-sizing: border-box;
-  /* task 2676, the ADAPTIVE cap (scout-1: the pill had NO cap and stretched edge-to-edge
+  /* The ADAPTIVE cap (the pill had NO cap and stretched edge-to-edge
      on unfolded/tablet/wide): clamp to the chat column's bubble width and CENTER, so the
      input always aligns with the message column. Narrow surfaces are unaffected (100%
      under the cap); the Compose input adopts the same size.chat.bubbleMax. */
   max-width: var(--size-chat-bubble-max); margin-inline: auto;
   /* align-items: CENTER (the native Row's CenterVertically): the input text sits
-     vertically centered in the pill (task 2666), and everything stays centered as the
+     vertically centered in the pill, and everything stays centered as the
      field grows to five lines. */
   padding: var(--nk-ci-gap) var(--nk-ci-gap) var(--nk-ci-gap) var(--space-3);
   gap: var(--space-1);
@@ -123,7 +123,7 @@ export const NOCKERL_CHAT_INPUT_STYLES = `
 }
 .nk-ci--disabled { opacity: .72; }
 /* the leading attach button: muted ink (a quiet secondary affordance). Its hover wash
-   is a CIRCLE inside the pill (task 2666): the plain IconButton's default rounded-square
+   is a CIRCLE inside the pill: the plain IconButton's default rounded-square
    wash reads as a foreign corner inside a stadium, so the pill rounds it fully. */
 .nk-ci__attach { flex: 0 0 auto; color: var(--color-on-chrome-muted); }
 .nk-ci__attach.nk-ico--plain { border-radius: var(--radius-pill); }
@@ -136,11 +136,11 @@ export const NOCKERL_CHAT_INPUT_STYLES = `
   line-height: var(--font-line-height-20); color: var(--color-on-chrome);
   caret-color: var(--color-accent-primary);
   padding: var(--space-2) var(--space-1);
-  /* task 2682, maxLines is a param: the cap rides a custom property (default 5). */
+  /* maxLines is a param: the cap rides a custom property (default 5). */
   max-height: calc(var(--font-line-height-20) * var(--nk-ci-max-lines, 5) + var(--space-4));
   overflow-y: auto; scrollbar-width: thin;
 }
-/* THE HOST STACK (task 2682), rendered ONLY when accessories exist (attachments and/or
+/* THE HOST STACK, rendered ONLY when accessories exist (attachments and/or
    the context slot): a self-contained column that owns the chat-column cap + centering,
    so the popover / context accessory align with the pill in ANY host. The pill inside
    defers its own cap to the stack. Without accessories the bare pill renders exactly as
@@ -178,7 +178,7 @@ export const NOCKERL_CHAT_INPUT_STYLES = `
 
 /* the MORPH: both glyphs stack in one grid cell; the active one fades + scales IN
    (0.6 -> 1) as the other fades + scales OUT, on the fast/standard motion tokens.
-   One legible morph instead of a same-color hard swap (the task 2621 refinement). */
+   One legible morph instead of a same-color hard swap. */
 .nk-ci__glyphs { display: grid; place-items: center; }
 .nk-ci__glyph {
   grid-area: 1 / 1; display: inline-flex; opacity: 0; transform: scale(.6);
@@ -195,7 +195,7 @@ export const NOCKERL_CHAT_INPUT_STYLES = `
 
 // ─── glyphs (stroke icons on currentColor, the on-accent ink tints them) ──────
 const IconPlus = <NockerlIcon path="M12 5v14M5 12h14" />;
-// the SEND glyph, the Material filled send (task 2666: aims RIGHT, exactly the
+// the SEND glyph, the Material filled send (aims RIGHT, exactly the
 // Icons.AutoMirrored.Filled.Send the native circle draws). A FILLED path, so it stays a
 // bespoke fill-based svg (the NockerlIcon shell is stroke-based), the same sanctioned
 // inline-fill exception as the HUD's stop square.
@@ -311,7 +311,7 @@ export const NockerlChatInput = forwardRef<HTMLTextAreaElement, NockerlChatInput
   }, [sendMode, fireSend, onMic]);
   useEffect(() => clearPress, [clearPress]);
 
-  // task 2682, the pill itself (unchanged grammar); accessories may stack above it.
+  // The pill itself (unchanged grammar); accessories may stack above it.
   const pill = (
     <div
       className={['nk-ci', disabled ? 'nk-ci--disabled' : '', className].filter(Boolean).join(' ')}
@@ -362,7 +362,7 @@ export const NockerlChatInput = forwardRef<HTMLTextAreaElement, NockerlChatInput
     </div>
   );
 
-  // task 2682, accessories present → the self-contained HOST STACK (owns the chat-column
+  // Accessories present → the self-contained HOST STACK (owns the chat-column
   // cap + centering so the popover/context align with the pill in any host). Without
   // accessories the bare pill renders EXACTLY as before (resting DOM byte-identical).
   const hasAttachments = attachments != null && attachments.length > 0;
@@ -383,7 +383,7 @@ export const NockerlChatInput = forwardRef<HTMLTextAreaElement, NockerlChatInput
 });
 
 // LEAF: composes NockerlIconButton (the attach action) + NockerlAttachmentPopover (the
-// task 2682 attachments model). OWNS textarea + button:
+// attachments model). OWNS textarea + button:
 // (1) the FIELD is deliberately a transparent-in-pill textarea, NOT the recessed
 // NockerlTextArea well: the native field is transparent for the same reason (part of
 // the pill, never a box-in-a-box), so wrapping the well primitive would re-skin it;

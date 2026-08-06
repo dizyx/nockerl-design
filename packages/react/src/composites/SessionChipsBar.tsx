@@ -1,6 +1,6 @@
 /**
  * NockerlSessionChipsBar: the floating SESSION CHIPS BAR container, promoted from the
- * site-side FloatingPills canon (WS3 · task 2654; design signed-off-grade, move
+ * site-side FloatingPills canon (design signed-off-grade, move
  * mechanical). Sourced faithfully from Android's `chat/ui/SessionChipsBar.kt`: a flat
  * horizontal scroller of session keycaps + a trailing cyan "+" CTA, floating over the
  * chat feed.

@@ -21,7 +21,7 @@
  *   - the form field is a RECESSED WELL (the NockerlTextField primitive), the inverse of the card.
  *   - actions are OUTLINE, never a filled CTA: a lifted modal spends its emphasis on
  *     the card lift, so Confirm is tertiary (outline cyan) | destructive (outline red) and
- *     Cancel is ghost (D1 emphasis-budget). Cyan is still the only accent; destructive rides
+ *     Cancel is ghost (the emphasis budget). Cyan is still the only accent; destructive rides
  *     warm --color-status-error (color + icon + text, never color alone).
  *   - BOTH header icons (destructive AND fork) are the shared NockerlStatusDisc coin rendered
  *     INSET: a recessed well (soft wash + whisper border + intent-color glyph) that
@@ -98,7 +98,7 @@ export const NOCKERL_DIALOG_STYLES = `
 /* BODY: supporting copy + optional form field, title-aligned (left). */
 .nk-dlg-body { padding: 0 var(--space-5) var(--space-2); display: flex; flex-direction: column; gap: var(--space-3); }
 /* ACTIONS: right-aligned row of Cancel (ghost) + Confirm OUTLINE (tertiary cyan | destructive
-   red). A lifted modal keeps OUTLINE actions (D1 emphasis-budget), never a filled CTA. */
+   red). A lifted modal keeps OUTLINE actions (the emphasis budget), never a filled CTA. */
 .nk-dlg-actions { display: flex; justify-content: flex-end; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5) var(--space-5); }
 @media (prefers-reduced-motion: reduce) {
   .nk-dlg-card { transition: none; transform: scale(1); }   /* no scale pop: appear in place */
@@ -185,7 +185,7 @@ export function NockerlDialog({
               // The STATUS header is the shared NockerlStatusDisc coin, error-intent, rendered
               // INSET: a recessed well (soft wash + whisper border; the intent color
               // rides the GLYPH) that sinks into the lifted card so nothing competes with the
-              // card lift (D1 emphasis-budget). One grammar with Banner / Callout / Toast.
+              // card lift (the emphasis budget). One grammar with Banner / Callout / Toast.
               <NockerlStatusDisc intent="error" inset className="nk-dlg-disc">
                 {IconWarnKnockout}
               </NockerlStatusDisc>
@@ -224,7 +224,7 @@ export function NockerlDialog({
             {/* The confirm CTA is FLAT/OUTLINE, never a filled primary: `tertiary`
                 (outline cyan) for the default tone, `destructive` (outline red) for the
                 destructive tone. A lifted modal spends its emphasis on the card lift, so the
-                actions stay outline (D1 emphasis-budget); Cancel is ghost. */}
+                actions stay outline (the emphasis budget); Cancel is ghost. */}
             <NockerlButton
               ref={confirmRef}
               text={confirmLabel}

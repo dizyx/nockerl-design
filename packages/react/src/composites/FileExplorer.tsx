@@ -1,5 +1,5 @@
 /**
- * NockerlFileExplorer, the dev-console FILE EXPLORER SHELL (WS5 · task 2656). Per the
+ * NockerlFileExplorer, the dev-console FILE EXPLORER SHELL. Per the
  * de-phantom verdict this is deliberately a THIN SHELL over the shipped pieces. It
  * invents no tree, no rows, no wells:
  *
