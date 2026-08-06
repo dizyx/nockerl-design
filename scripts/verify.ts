@@ -135,7 +135,7 @@ check('swift light accentPrimary', swiftColor('NockerlLightColors','accentPrimar
 check('swift dark cardHairline (alpha)', swiftColor('NockerlDarkColors','cardHairline'),
   'Color(red: 1.000, green: 1.000, blue: 1.000, opacity: 0.0784313725490196)');
 
-console.log('--- Motion (RATIFIED r3; round-trips on all three targets) ---');
+console.log('--- Motion (round-trips on all three targets) ---');
 check('kt duration.base', kt.match(/val baseMs = (\d+)/)?.[1], '200');
 check('kt duration.pulse', kt.match(/val pulseMs = (\d+)/)?.[1], '800');
 check('kt easing.standard', kt.includes('val standard = CubicBezierEasing(0.2f, 0f, 0f, 1f)') ? 'ok' : 'missing', 'ok');

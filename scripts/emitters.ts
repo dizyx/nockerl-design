@@ -132,7 +132,7 @@ export function ktMotionObjects(durations: TToken[], easings: TToken[]): string 
     return `    val ${dimMember('', t)} = CubicBezierEasing(${x1}f, ${y1}f, ${x2}f, ${y2}f)`;
   });
   return (
-    '/** Motion durations (integer milliseconds). RATIFIED r3. */\n' +
+    '/** Motion durations (integer milliseconds). */\n' +
     `object NockerlMotionDuration {\n${dur.join('\n')}\n}` +
     '\n\n/** Motion easing curves. `standard` is THE default transition ease. */\n' +
     `object NockerlMotionEasing {\n${eas.join('\n')}\n}`
@@ -199,7 +199,7 @@ export function swiftMotionEnums(durations: TToken[], easings: TToken[]): string
     return `    public static let ${dimMember('', t)} = NockerlBezier(x1: ${x1}, y1: ${y1}, x2: ${x2}, y2: ${y2})`;
   });
   return (
-    '/// Motion durations (seconds). RATIFIED r3.\npublic enum NockerlMotionDuration {\n' +
+    '/// Motion durations (seconds).\npublic enum NockerlMotionDuration {\n' +
     dur.join('\n') +
     '\n}\n\n/// A cubic-bezier easing (control points). Feed `Animation.timingCurve`.\n' +
     'public struct NockerlBezier {\n    public let x1: Double\n    public let y1: Double\n    public let x2: Double\n    public let y2: Double\n}\n\n' +

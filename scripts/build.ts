@@ -197,7 +197,7 @@ function webEmittable(toks: TToken[]): TToken[] {
     (t) =>
       isColor(t) ||
       ['radius', 'border', 'size', 'elevation', 'space', 'icon', 'grid', 'density'].includes(firstSeg(t)) ||
-      // Motion durations + easings (RATIFIED r3); springs stay un-emitted.
+      // Motion durations + easings; springs stay un-emitted.
       ['duration', 'cubicBezier'].includes(String(t.$type ?? t.type)) ||
       (firstSeg(t) === 'font' &&
         ['size', 'lineHeight', 'family', 'weight', 'tracking'].includes(t.path[1] ?? '')),

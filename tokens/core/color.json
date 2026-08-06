@@ -161,7 +161,7 @@
         }
       },
       "logo": {
-        "$description": "The BRAND MARK's monochrome ink system (task 2684 · law §11 CANON: the mark is MONOCHROME on every surface, and cyan lives ONLY in the lockup's product word). SURFACE-driven, not theme-driven: a host picks the ink set for the surface it sits on (ink = dark ink for light surfaces; inverse = light ink for dark surfaces). Three shades per set = the mark's layered facet ladder [base=left facet, hi=center strongest, lo=right softest]; a single flat fill is WRONG. Core layer: one identity, no new hues.",
+        "$description": "The BRAND MARK's monochrome ink system (law §11 CANON: the mark is MONOCHROME on every surface, and cyan lives ONLY in the lockup's product word). SURFACE-driven, not theme-driven: a host picks the ink set for the surface it sits on (ink = dark ink for light surfaces; inverse = light ink for dark surfaces). Three shades per set = the mark's layered facet ladder [base=left facet, hi=center strongest, lo=right softest]; a single flat fill is WRONG. Core layer: one identity, no new hues.",
         "ink": {
           "$type": "color",
           "$value": "#555555",
