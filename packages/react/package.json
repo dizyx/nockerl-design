@@ -1,6 +1,6 @@
 {
   "name": "@dizyx/nockerl-react",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "React components for the Nockerl design system: token-pure, with SSR-safe injected styles. Source of truth: dizyx/nockerl-design. Pair with @dizyx/nockerl-tokens for the CSS custom properties.",
   "license": "MIT",
   "type": "module",
