@@ -1,0 +1,115 @@
+---
+/**
+ * PageTitle: Starlight's page heading, with one substitution.
+ *
+ * On the introduction page the title IS the brand lockup rather than a description of
+ * it: the Design product icon, "Nockerl" at weight 200, the product word "Design" in
+ * cyan, and the version beside it. A design system's front door should be set in its
+ * own type system. Every other page delegates to Starlight's own component untouched,
+ * so this override adds a special case and changes nothing else.
+ *
+ * Reuses the shared <NockerlLockup> ("one lockup, all surfaces"), the same component
+ * the header uses; see SiteTitle.astro, which is the 24px version of this. Static SSR,
+ * no hydration.
+ *
+ * ACCESSIBILITY: the lockup renders the wordmark as two adjacent spans, so its text
+ * content reads as one run without a space. The h1 therefore carries an explicit
+ * accessible name, and the version sits OUTSIDE the heading so the page keeps exactly
+ * one h1 named "Nockerl Design". `_top` is the id Starlight's own title carries and the
+ * table of contents links to, so it has to survive the substitution.
+ *
+ * OPTICAL SIZING: this is not the header lockup scaled up. Two things are tuned.
+ *
+ * The wordmark is driven from `--sl-text-h1` rather than a fixed pixel size, so the
+ * title reads at exactly the scale a heading on this page reads at, and follows
+ * Starlight's own breakpoint (that variable steps up above 50rem). NockerlLockup
+ * derives the wordmark as `--nk-lock-h * 0.9` and spreads `style` after its own
+ * default, so dividing by 0.9 here lands the wordmark on the heading size exactly.
+ *
+ * The mark is then held to the wordmark's size instead of the lockup box that
+ * implies. At 24px the header can scale both together, but a dense circular icon
+ * gains visual weight faster than extralight letterforms do, so at title size the
+ * naive ratio makes the mark shout over the word beside it.
+ */
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import NockerlLockup from './NockerlLockup';
+import DesignMark from '../../../logos/app-icons/design.svg';
+import DesignMarkOnDark from '../../../logos/app-icons/design-on-dark.svg';
+import pkg from '../../../package.json';
+
+// The home page is the only route whose slug is empty.
+const isHome = Astro.locals.starlightRoute.id === '';
+// Read straight from the manifest the bump script maintains, so the badge can never
+// drift from the version the site was built at.
+const version = pkg.version;
+---
+
+{
+  isHome ? (
+    <div class="home-title">
+      <h1 id="_top" aria-label="Nockerl Design" translate="no">
+        <NockerlLockup size={42} product="Design" style={{ '--nk-lock-h': 'calc(var(--sl-text-h1) / 0.9)' }}>
+          <DesignMark class="home-mark home-mark--light" width="42" height="42" aria-hidden="true" />
+          <DesignMarkOnDark class="home-mark home-mark--dark" width="42" height="42" aria-hidden="true" />
+        </NockerlLockup>
+      </h1>
+      <span class="home-version" title={`Documenting version ${version}`}>v{version}</span>
+    </div>
+  ) : (
+    <Default />
+  )
+}
+
+<style>
+  /* The lockup and its version badge share one baseline row. `flex-wrap` lets the badge
+     drop under the lockup on a narrow phone rather than squeezing the wordmark. */
+  .home-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  /* The h1 keeps Starlight's heading colour (theme.css remaps --sl-color-white to the
+     strong on-surface ink) because the "Nockerl" word paints with currentColor. Its own
+     font-size is irrelevant: the lockup sizes itself from the mark height. */
+  .home-title h1 {
+    margin: 0;
+    line-height: 1;
+    color: var(--sl-color-white);
+  }
+
+  /* The product icon ships a light and an on-dark cut, so the pair is swapped by theme
+     rather than recolouring one file. Dark is the site default. */
+  /* Held to the wordmark's size, not the lockup box, per the optical note above. The
+     width/height attributes on the elements are only a pre-CSS fallback. */
+  .home-mark {
+    flex: 0 0 auto;
+    width: var(--sl-text-h1);
+    height: var(--sl-text-h1);
+  }
+  .home-mark--light {
+    display: none;
+  }
+  :global([data-theme='light']) .home-mark--light {
+    display: block;
+  }
+  :global([data-theme='light']) .home-mark--dark {
+    display: none;
+  }
+
+  /* Same badge grammar as the header, one step up in size to sit with a title rather
+     than with 24px chrome. Quiet ink: it is a reference detail, not part of the title. */
+  .home-version {
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 7px;
+    font-family: var(--font-family-mono);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--sl-color-gray-2);
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+</style>

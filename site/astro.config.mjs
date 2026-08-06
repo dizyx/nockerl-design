@@ -66,6 +66,9 @@ export default defineConfig({
       // instead of Starlight's default text title. See src/components/SiteTitle.astro.
       components: {
         SiteTitle: './src/components/SiteTitle.astro',
+        // The introduction page's title IS the brand lockup rather than plain text.
+        // Every other page delegates to Starlight's own heading. See PageTitle.astro.
+        PageTitle: './src/components/PageTitle.astro',
         // Prepend an honest "Kotlin/Swift = canonical-app API reference" note on every
         // page whose frontmatter declares an android/swift platform.
         MarkdownContent: './src/components/MarkdownContent.astro',
