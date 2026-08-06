@@ -24,3 +24,22 @@ jobs:
         run: swift build -v
       - name: Test
         run: swift test
+
+      # The same tests again, through the Xcode build system, and this is not redundant.
+      #
+      # An asset catalog is only loadable once actool has compiled it into Assets.car, and
+      # actool belongs to Xcode. Plain `swift build` copies Marks.xcassets into the bundle
+      # UNCOMPILED, so no product mark resolves and the tests that check resolution skip
+      # themselves rather than fail. Everything above therefore stays green whether the
+      # marks work or not.
+      #
+      # Consumers resolve this package from an app that Xcode builds, so this run is the one
+      # that matches how the marks are actually used, and the only place the resolution
+      # assertions execute at all: every mark loads from Bundle.module, the light and dark
+      # cuts differ, and each paints real pixels.
+      - name: Test through the Xcode build system (compiles the asset catalog)
+        run: |
+          xcodebuild test \
+            -scheme NockerlDesign \
+            -destination 'platform=macOS' \
+            -derivedDataPath "$RUNNER_TEMP/dd"

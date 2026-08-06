@@ -37,6 +37,19 @@ let package = Package(
             // families instead of silently falling back to SF.
             resources: [
                 .copy("Resources/Fonts"),
+                // The product marks, as a COMPILED asset catalog. `.process` rather than
+                // `.copy` is load bearing: a catalog has to be run through actool to become
+                // a usable Assets.car, and `.copy` would ship the raw directory, which
+                // resolves to nothing at runtime while still building cleanly.
+                //
+                // A catalog is also the only workable shape here. SwiftUI cannot render a
+                // raw SVG from a bundle, so the marks cannot simply be copied in as files;
+                // catalogs do support SVG, and give light and dark switching plus vector
+                // scaling at any size for free.
+                //
+                // GENERATED from logos/app-icons by `bun run build`, and `check:marks`
+                // fails if the two drift. Do not edit the catalog by hand.
+                .process("Resources/Marks.xcassets"),
             ]
         ),
         .testTarget(

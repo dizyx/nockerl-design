@@ -18,6 +18,7 @@
  */
 import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { syncMarks } from './sync-marks';
 import { fileURLToPath } from 'node:url';
 import StyleDictionary from 'style-dictionary';
 import { transforms } from 'style-dictionary/enums';
@@ -385,10 +386,18 @@ async function main(): Promise<void> {
   // the tracked copy it publishes to GitHub Packages Maven.
   await copyFile(out('android/NockerlTokens.kt'), composeTokens('NockerlTokens.kt'));
 
+  // Mirror the product marks into the package's asset catalog. Same lockstep reasoning as
+  // the token sources above: `logos/app-icons/` is the source of truth, and a hand copied
+  // second set inside the package would drift the first time an icon was corrected.
+  // SwiftUI cannot read a raw SVG from a bundle, so the art has to arrive as a compiled
+  // catalog; `scripts/check-marks.ts` fails if the two ever disagree.
+  const marks = await syncMarks();
+
   console.log(
     'Built: build/web/tokens.css, build/android/NockerlTokens.kt, build/swift/NockerlTokens.swift\n' +
       'Synced: Sources/NockerlDesign/NockerlTokens.swift (SPM package source)\n' +
-      '        packages/compose/nockerl-design-tokens/.../NockerlTokens.kt (Compose module)',
+      '        packages/compose/nockerl-design-tokens/.../NockerlTokens.kt (Compose module)\n' +
+      `        Sources/NockerlDesign/Resources/Marks.xcassets (${marks.length} product marks)`,
   );
 }
 

@@ -1,0 +1,26 @@
+{
+  "images": [
+    {
+      "filename": "security.svg",
+      "idiom": "universal"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "security-on-dark.svg",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "nockerl-design",
+    "version": 1
+  },
+  "properties": {
+    "preserves-vector-representation": true,
+    "template-rendering-intent": "original"
+  }
+}
