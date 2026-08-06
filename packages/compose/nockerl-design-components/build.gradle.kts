@@ -67,7 +67,7 @@ dependencies {
 group = "com.dizyx.nockerl"
 // ONE VERSION LINE with the tokens module + the npm packages. The release workflow
 // verifies this equals the git tag before publishing.
-version = "2.1.1"
+version = "2.2.0"
 
 // Published to Maven Central. Everything shared across the two artifacts (licence,
 // developers, scm, signing) is configured once in the root build; this declares only what

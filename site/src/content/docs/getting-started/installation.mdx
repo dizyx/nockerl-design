@@ -10,7 +10,7 @@ import { Steps } from '@astrojs/starlight/components';
 
 Clients **consume Nockerl Design as versioned packages**. They never copy values in by
 hand. Pin a version, upgrade deliberately, and a remodel in the framework reaches you on
-the next bump. All three platforms ship from **one version line** (currently `2.1.1`): the
+the next bump. All three platforms ship from **one version line** (currently `2.2.0`): the
 web npm packages, the Android Maven artifacts, and the Swift package are published in
 lockstep from the same `vX.Y.Z` tag.
 
@@ -156,7 +156,7 @@ dark.addEventListener('change', apply);
 ## Android & Swift
 
 The per-platform packages follow the same publish-and-consume contract from the same DTCG
-source. **Both are available now** at the same `2.1.1` version line: tokens *and*
+source. **Both are available now** at the same `2.2.0` version line: tokens *and*
 components.
 
 <DocTabs surface={false}>
@@ -192,8 +192,8 @@ components.
 
   ```kotlin title="app/build.gradle.kts"
   dependencies {
-    implementation("com.dizyx.nockerl:design-tokens:2.1.1")
-    implementation("com.dizyx.nockerl:design-components:2.1.1")
+    implementation("com.dizyx.nockerl:design-tokens:2.2.0")
+    implementation("com.dizyx.nockerl:design-components:2.2.0")
   }
   ```
 
@@ -227,7 +227,7 @@ components.
 
   ```swift title="Package.swift"
   dependencies: [
-    .package(url: "https://github.com/dizyx/nockerl-design.git", from: "2.1.1")
+    .package(url: "https://github.com/dizyx/nockerl-design.git", from: "2.2.0")
   ],
   targets: [
     .target(name: "YourApp", dependencies: ["NockerlDesign"])
