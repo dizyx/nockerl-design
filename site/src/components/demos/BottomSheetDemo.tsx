@@ -132,7 +132,7 @@ export default function BottomSheetDemo() {
     triggerRef.current?.focus(); // restore focus to the opener
   }, []);
 
-  // task 2653, the approve kind: a pinned footer + a nested detail view w/ back-nav
+  // The approve kind: a pinned footer + a nested detail view w/ back-nav
   const [nested, setNested] = useState(false);
   useEffect(() => {
     if (!open) setNested(false);
@@ -224,7 +224,7 @@ export default function BottomSheetDemo() {
           leadingIcon={kind === 'settings' ? IconCog : undefined}
           onBack={kind === 'approve' && nested ? () => setNested(false) : undefined}
           footer={
-            /* the ratified CTA row (task 2653b) pinned in the footer slot, never a
+            /* the ratified CTA row pinned in the footer slot, never a
                hand-rolled Deny/Approve pair; the full anatomy lives on the Approval
                content page. */
             kind === 'approve' && !nested ? <NockerlApprovalActions onConfirm={close} onCancel={close} /> : undefined
@@ -251,7 +251,7 @@ export default function BottomSheetDemo() {
                 <NockerlButton text="View command detail" variant="ghost" size="sm" onClick={() => setNested(true)} />
                 <div className="nk-bs-divider" />
                 <p className="nk-bs-row__s">Scroll filler - resize the detent to half to see the footer cue engage.</p>
-                <p className="nk-bs-row__s">The sheet body scrolls under the pinned footer, exactly like content scrolls under the header (the r4 cue, inverted).</p>
+                <p className="nk-bs-row__s">The sheet body scrolls under the pinned footer, exactly like content scrolls under the header (the same cue, inverted).</p>
                 <p className="nk-bs-row__s">Approve / Deny stay reachable at every scroll position - the whole point of the pinned bar.</p>
               </>
             )

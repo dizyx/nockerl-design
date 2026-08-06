@@ -1,5 +1,5 @@
 /**
- * DevStatusBarDemo: the live island for the shipped NockerlDevStatusBar (WS5 · task 2656).
+ * DevStatusBarDemo: the live island for the shipped NockerlDevStatusBar.
  * A faux console viewport proves the seat: content above, the thin strip pinned to the
  * bottom edge. Segments show the grammar: informational spans (branch, position),
  * status-dotted state (agent streaming), and interactive keys (problems, the palette

@@ -9,7 +9,7 @@
  *   - decimals = 0 (default): Android-exact integer buckets via floor, uppercase K.
  *       82_000 -> "82K", 200_000 -> "200K", 1_240_000 -> "1M". Mirrors ChatUtils.kt so
  *       ContextGauge stays byte-for-byte with the app it documents.
- *   - decimals = 1: the ratified web "8.4k" policy (adjudication 2026-07-02 · B15).
+ *   - decimals = 1: the ratified web "8.4k" policy.
  *       ONE decimal below 10 of the unit, INTEGER (rounded) at/above 10, a LOWERCASE
  *       `k` for thousands + an uppercase `M` for millions (a trailing ".0" is dropped):
  *         8_400 -> "8.4k" · 42_000 -> "42k" · 1_240_000 -> "1.2M" · 15_700 -> "16k".

@@ -138,7 +138,7 @@ const STYLES = `
       sideways shadow + an inner edge catch-light + a trailing hairline. ── */
 .nk-sb { position: relative; z-index: 1; flex: 0 0 auto; display: flex; flex-direction: column; min-height: 0; background: var(--color-surface-translucency-sidebar); border-right: var(--space-px) solid var(--color-chrome-hairline); transition: width .24s cubic-bezier(.2,0,0,1); overflow: hidden;
   box-shadow: var(--elevation-level2) 0 18px -10px color-mix(in srgb, var(--color-shadow-tint) 55%, transparent), inset calc(-1 * var(--space-px)) 0 0 var(--color-surface-highlight); }
-/* task 2667, the OPAQUE two-state option (§5 deterministic, never a slider): solid
+/* The OPAQUE two-state option (§5 deterministic, never a slider): solid
    chrome, no see-through; translucent (the token) stays the default above. */
 .nk-sb--solid { background: var(--color-chrome-surface); }
 .nk-sb--expanded { width: 232px; }    /* echoes Voice's 216pt panel */
@@ -223,7 +223,7 @@ export function Sidebar({
 }: {
   sections?: NavSection[];
   collapsed: boolean;
-  /** task 2667: the two ratified surface states (§5, deterministic, never a slider) are
+  /** The two ratified surface states (§5, deterministic, never a slider) are
    *  translucent (the sanctioned sidebar-translucency token; the facet shows through)
    *  or solid (opaque chrome). */
   surface?: 'solid' | 'translucent';
@@ -407,7 +407,7 @@ export default function SidebarDemo() {
           text={collapsed ? 'Expand' : 'Collapse to rail'}
           onClick={() => setCollapsed((c) => !c)}
         />
-        {/* task 2667: the opaque↔translucent TOGGLE, OUTSIDE the stage (the AppShell
+        {/* The opaque↔translucent TOGGLE, OUTSIDE the stage (the AppShell
             demo's Surface pattern): two deterministic states per §5, never a slider. */}
         <NockerlSegmentedControl
           label="Sidebar surface"

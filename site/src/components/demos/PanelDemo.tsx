@@ -69,7 +69,7 @@ const STYLES = `
   border-bottom: var(--space-px) solid var(--color-card-hairline);  /* hairline, not a shadow */
 }
 /* the panel-header icon is INFORMATIONAL (a <span> label, not a control), so per the ratified
-   icon-interactivity canon (D7: inset = informational) it wears the INSET treatment, not a filled
+   icon-interactivity canon (inset = informational) it wears the INSET treatment, not a filled
    accent tile. Same recessed-disc recipe as the EmptyState well: canvasAlt sunk under an inner top
    shade + hairline, muted glyph. Settings cog + all panel-header marks, consistently (). */
 .nk-pnl__tile {

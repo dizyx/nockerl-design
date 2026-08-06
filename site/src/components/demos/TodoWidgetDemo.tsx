@@ -1,6 +1,6 @@
 /**
- * TodoWidgetDemo: the live island for the shipped NockerlTodoWidget (WS4 · task
- * 2655c). An agent plan that ADVANCES live: Step forward walks the running step to
+ * TodoWidgetDemo: the live island for the shipped NockerlTodoWidget (the
+ * agent-console epic). An agent plan that ADVANCES live: Step forward walks the running step to
  * done and starts the next (the count + segment meter + glyphs all move together);
  * Block flips the running step into the blocked state with a warm reason line;
  * Reset restarts. Exactly the console widget an agent session renders while

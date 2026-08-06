@@ -1,11 +1,11 @@
 /**
  * BreadcrumbsDemo: the live island for the Breadcrumbs canon (now the shared
- * _Breadcrumbs module; extracted for task 2640 so the component could grow the
+ * _Breadcrumbs module; extracted so the component could grow the
  * width-aware mobile collapse without busting this file's budget).
  *
  * Shows: the full trail (leading glyphs, non-interactive current crumb); a deep
  * trail whose middle collapses into the keyboard-operable "…" menu; a width-capped
- * trail proving the current-crumb ellipsis; and (task 2640) a PHONE-NARROW stage
+ * trail proving the current-crumb ellipsis; and a PHONE-NARROW stage
  * where the trail AUTO-collapses to first + "…" + current (breadcrumbs are a desktop
  * pattern; on mobile the fold keeps every ancestor reachable through the same
  * overflow menu). Desktop stages render exactly as before (NO-REGRESS).
@@ -30,7 +30,7 @@ const STYLES = `
   color: var(--color-on-canvas-muted); font-weight: var(--font-weight-semibold); margin: 0 0 var(--space-2); }
 .nk-bc-demo__lbl + .nk-bc-bar, .nk-bc-bar + .nk-bc-demo__lbl { margin-top: 0; }
 .nk-bc-demo__block + .nk-bc-demo__block { margin-top: var(--space-5); }
-/* task 2640, the phone-narrow stage: a real mobile content width (the size ramp's
+/* The phone-narrow stage: a real mobile content width (the size ramp's
    container-lg), proving the auto-collapse without any viewport trickery. */
 .nk-bc-demo__phone { max-width: var(--size-container-lg); }
 .nk-bc-demo__note { font-size: var(--font-size-12); color: var(--color-on-canvas-muted); margin-top: var(--space-4); }

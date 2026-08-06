@@ -1,6 +1,6 @@
 /**
- * _CopyButton: THE one copy-to-clipboard affordance (r4). Every demo that offers
- * "copy this" composes THIS, never a hand-rolled variant: r4 review proved divergence
+ * _CopyButton: THE one copy-to-clipboard affordance. Every demo that offers
+ * "copy this" composes THIS, never a hand-rolled variant: review proved divergence
  * (KeyValue confirmed with a CYAN check, CodeBlock with an on-card/black one, Panel's gave
  * no feedback at all). One component = one confirmation grammar:
  *

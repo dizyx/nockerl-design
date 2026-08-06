@@ -1,12 +1,12 @@
 /**
  * _Breadcrumbs: the shared, site-local Breadcrumbs canon (extracted from
- * BreadcrumbsDemo for task 2640 so the component grows without busting the demo's
+ * BreadcrumbsDemo so the component grows without busting the demo's
  * file budget). A hierarchical path/trail in CHROME: a <nav> landmark wrapping an
  * ordered list; each ancestor composes the real NockerlLink, the last crumb is the
  * current page (aria-current, non-interactive), and a deep middle collapses into a
- * keyboard-operable "…" popover (the r4 overflow menu).
+ * keyboard-operable "…" popover (the overflow menu).
  *
- * MOBILE / NARROW (task 2640): breadcrumbs are a desktop pattern, so on a phone-narrow
+ * MOBILE / NARROW: breadcrumbs are a desktop pattern, so on a phone-narrow
  * container the trail auto-collapses to FIRST + "…" + CURRENT (the hidden ancestors
  * stay reachable through the same keyboard-operable overflow menu), and the current
  * crumb keeps its ellipsis. Width-aware via one ResizeObserver on the bar (the bar is
@@ -14,7 +14,7 @@
  * the collapse state). Desktop rendering is UNTOUCHED: the threshold only bites
  * below a phone-ish container width (NO-REGRESS: the praised desktop trail).
  *
- * Laws, verbatim (unchanged from the r4 build): chrome bar + signature cyan line;
+ * Laws, verbatim (unchanged from the earlier build): chrome bar + signature cyan line;
  * neutral shadow + catch-light (no glow); current crumb reads via weight + color;
  * flash-free hover; focus is an outline; 12px control radius; cyan is the only
  * accent. TOKEN-REACTIVE throughout; literals are pure geometry only.
@@ -292,7 +292,7 @@ function OverflowMenu({ hidden, onPick }: { hidden: Crumb[]; onPick: (label: str
   );
 }
 
-// task 2640: the phone-narrow threshold (px). Below this CONTAINER width the trail
+// The phone-narrow threshold (px). Below this CONTAINER width the trail
 // auto-collapses to first + "…" + current. A JS geometry constant (the size ramp has
 // no phone-breakpoint token); the bar's width is parent-driven so this never oscillates.
 const NARROW_CONTAINER = 480;
@@ -303,7 +303,7 @@ const NARROW_CONTAINER = 480;
  * crumb is the current page (aria-current, non-interactive). Pass `collapseAfter`
  * to fold the middle into a keyboard-operable "…" popover when the trail is deep.
  * On a phone-narrow container the trail AUTO-collapses to first + "…" + current
- * (task 2640); the desktop render is untouched.
+ * crumb; the desktop render is untouched.
  */
 export function Breadcrumbs({
   items,
@@ -320,7 +320,7 @@ export function Breadcrumbs({
 }) {
   const last = items.length - 1;
 
-  // task 2640, width-aware: one ResizeObserver on the bar (block-level, parent-driven
+  // Width-aware: one ResizeObserver on the bar (block-level, parent-driven
   // width → measuring cannot feed back into the collapse). SSR renders the desktop
   // shape; a narrow container corrects on mount.
   const barRef = useRef<HTMLDivElement>(null);

@@ -1,8 +1,8 @@
 /**
- * DevTabBarDemo: the live island for the dev-console TAB BAR (WS5 · task 2656).
+ * DevTabBarDemo: the live island for the dev-console TAB BAR.
  *
  * Deliberately NOT a new component. The editor tab bar IS the shipped NockerlTabs
- * composite extended with the dev-tab affordances (the R5-4 extend-never-fork rule):
+ * composite extended with the dev-tab affordances (the extend-never-fork rule):
  * `onClose` (closable tabs, a pointer X + the ARIA deletable-tabs Delete key) and
  * per-tab `dirty` (the unsaved dot, yielding to the X on hover). Overflow rides Tabs'
  * own scroll + edge-fade idiom, so opening enough files scrolls the strip with fades.
@@ -41,7 +41,7 @@ interface FileTab {
 
 const FILES: FileTab[] = [
   { value: 'chat-input', label: 'ChatInput.tsx', dirty: true, body: 'export function NockerlChatInput() {\n  // the floating pill\n}' },
-  { value: 'tabs', label: 'Tabs.tsx', dirty: false, body: 'export function NockerlTabs() {\n  // closable + dirty (task 2656)\n}' },
+  { value: 'tabs', label: 'Tabs.tsx', dirty: false, body: 'export function NockerlTabs() {\n  // closable + dirty\n}' },
   { value: 'tokens', label: 'tokens.css', dirty: true, body: ':root {\n  --color-accent-primary: #0cc0df;\n}' },
   { value: 'catalog', label: 'component-catalog.md', dirty: false, body: '# Nockerl Component Catalog' },
   { value: 'gateway', label: 'gateway.ts', dirty: false, body: 'export const gateway = createGateway();' },

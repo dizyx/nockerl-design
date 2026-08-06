@@ -117,7 +117,7 @@ const STYLES = `
 .nk-cb__row--add .nk-cb__sign { color: var(--color-status-success); background: color-mix(in srgb, var(--color-status-success) 14%, var(--color-canvas-alt)); }
 .nk-cb__row--del .nk-cb__sign { color: var(--color-status-error); background: color-mix(in srgb, var(--color-status-error) 14%, var(--color-canvas-alt)); }
 /* the code line itself: the left rail on a highlighted line is a SHAPE, not a halo. That inset
-   rail is the ONE sanctioned carve-out of design law 6 (ratified B18): editorial emphasis in
+   rail is the ONE sanctioned carve-out of design law 6 (ratified): editorial emphasis in
    code's own grammar, always paired with a wash, never status, never selection, and never
    outside code surfaces. Do not copy this rail to any non-code component. */
 .nk-cb__line { display: table-cell; width: 100%; padding: 0 var(--space-3) 0 var(--space-2);

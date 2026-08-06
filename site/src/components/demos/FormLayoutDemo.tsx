@@ -77,7 +77,7 @@ const STYLES = `
 .nk-fsec__opt { font-size: var(--font-size-10); letter-spacing: var(--font-tracking-eyebrow); text-transform: uppercase;
   color: var(--color-on-card-muted); font-weight: var(--font-weight-medium); }
 .nk-fsec__desc { font-size: var(--font-size-12); line-height: var(--font-line-height-16); color: var(--color-on-card-muted); margin: 0; }
-/* task 2657 gate-4 MIRROR: the settings-grammar slots, API-aligned with compose/swift.
+/* MIRROR: the settings-grammar slots, API-aligned with compose/swift.
    headerAccessory: trailing the header, center-aligned (the InfoTip seat). The header
    flips to a row ONLY when the seat is filled, so a slotless section renders the exact
    pre-slot markup (resting pixel-identical). */
@@ -154,7 +154,7 @@ const STYLES = `
 `;
 
 // ─── Section: a lifted card with a header (uppercase muted) + description ──────
-// Settings grammar (task 2657 gate 4, mirrored from compose 90336cbd / swift): two
+// Settings grammar (mirrored from compose / swift): two
 // optional slots complete the "SettingsCard" usage. `headerAccessory` trails the
 // header (the InfoTip seat) and `footer` sits inside the card under a hairline
 // (hints or section actions). Both absent → the exact pre-slot markup renders
@@ -231,7 +231,7 @@ function SettingRow({
 export const compose = {
   slots: {
     default: { accepts: '*' },
-    // task 2657 gate-4 settings-grammar slots (API-aligned with the compose/swift FormSection)
+    // Settings-grammar slots (API-aligned with the compose/swift FormSection)
     headerAccessory: { accepts: '*', required: false },
     footer: { accepts: '*', required: false },
   },
@@ -262,7 +262,7 @@ export default function FormLayoutDemo() {
   const [bio, setBio] = useState('Building Nockerl on the side.');
   const [theme, setTheme] = useState('system');
   const [digest, setDigest] = useState(true);
-  // task 2657 gate-4 slots demo: the header (i) toggles the section-footer hint live.
+  // Slots demo: the header (i) toggles the section-footer hint live.
   const [prefsHint, setPrefsHint] = useState(true);
   const [mentions, setMentions] = useState(true);
   const [marketing, setMarketing] = useState(false);
@@ -352,8 +352,8 @@ export default function FormLayoutDemo() {
           optional
           description="Defaults for new sessions and how we reach you."
           headerAccessory={
-            /* the InfoTip SEAT (task 2657): a quiet ghost (i). Here it live-toggles the
-               section-footer hint (a real behavior, icon-interactivity canon D7). */
+            /* the InfoTip SEAT: a quiet ghost (i). Here it live-toggles the
+               section-footer hint (a real behavior, the icon-interactivity canon). */
             <NockerlIconButton
               icon={
                 <NockerlIcon>

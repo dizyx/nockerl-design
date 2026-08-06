@@ -95,7 +95,7 @@ const STYLES = `
 /* The BAR (a lifted chrome pill-track w/ the design-laws SECTION-2 floating accent border +
    the scroll-aware edge fade) and the KEYCAP pill (label row over the inner context
    LINE) are the PACKAGE canon: NockerlSessionChipsBar + NockerlSessionChip
-   (@dizyx/nockerl-react, promoted from this page's site-local originals, task 2654).
+   (@dizyx/nockerl-react, promoted from this page's site-local originals).
    The Context gauge inline strip renders the same pill. Only the
    FLOAT positioning + entrance + feed stay local. */
 
@@ -221,7 +221,7 @@ export default function FloatingPillsDemo() {
 
       <p className="nk-fp__lbl">Session chips bar + scroll-to-bottom pill, floating over a scrolling feed</p>
       <div className="nk-fp__stage">
-        {/* the REAL faceted chat ground (task 2669) */}
+        {/* the REAL faceted chat ground */}
         <NockerlFacetedBackground bare aria-hidden="true" />
         {/* the floating SESSION CHIPS bar is the PROMOTED package container (§2 floating
             accent border + scroll-aware edge fade + the trailing cyan "+" CTA); this

@@ -94,7 +94,7 @@ const IconRetry = icon('M21 12a9 9 0 1 1-3-6.7M21 4v4h-4');
 export const STYLES = `
 .nk-cb-demo { font-family: var(--font-family-sans); color: var(--color-on-canvas); }
 /* the chat GROUND: darkest layer; bubbles lift off it */
-/* task 2669: the chat ground IS the real FacetedBackground primitive (bare, clipped
+/* The chat ground IS the real FacetedBackground primitive (bare, clipped
    to the rounded stage); chat-bg stays as the paint-behind fallback. */
 .nk-cb-stage { position: relative; overflow: hidden;
   background: var(--color-chat-bg); border: var(--space-px) solid var(--color-card-hairline);
@@ -146,8 +146,8 @@ export const STYLES = `
 
 /* SENDING: own message in flight, dimmed with a tinted shadow held back (depth recedes) */
 .nk-cb-bubble--sending { filter: brightness(.92); opacity: .82; }
-/* FAILED bubble: the BANNER INLINE-ALERT grammar (task 2673 ruling, which supersedes both the
-   r4 recessed well AND the r5 7%-tint lift, whose tint read PINK over the light card-alt).
+/* FAILED bubble: the BANNER INLINE-ALERT grammar (the ruling supersedes both the
+   recessed well AND the 7%-tint lift, whose tint read PINK over the light card-alt).
    A SOLID neutral card surface (never a red/pink fill), the intent only WHISPERED into the
    border (the banner's 22% mix), LIFTED with the banner's neutral shadow + catch-light (cards
    LIFT, so the shadow is never colored and never a glow, law 1). The red state is carried by
@@ -188,7 +188,7 @@ button.nk-cb-bubble:focus-visible { outline: var(--space-0-5) solid var(--color-
 .nk-cb-sending-dots i:nth-child(3) { animation-delay: .3s; }
 @keyframes nk-cb-pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
 
-/* failed body: the BANNER INLINE-ALERT anatomy (task 2673). The INSET error disc leads
+/* failed body: the BANNER INLINE-ALERT anatomy. The INSET error disc leads
    (recessed and informational, per the icon-interactivity canon), a TITLE (error, semibold)
    sits over the MUTED message (the banner's titled variant), Retry is a real button
    below. One failure grammar with Banner + the AgentMessage failed turn. */
@@ -292,7 +292,7 @@ export function ChatBubble({
     <>
       {failed ? (
         <div className="nk-cb-fail">
-          {/* the banner's INSET status disc (task 2673): recessed, intent in the glyph */}
+          {/* the banner's INSET status disc: recessed, intent in the glyph */}
           <NockerlStatusDisc intent="error" inset>{IconAlert}</NockerlStatusDisc>
           <span className="nk-cb-fail__body">
             <span className="nk-cb-fail__title">Failed</span>
@@ -315,7 +315,7 @@ export function ChatBubble({
       className={`nk-cb-row nk-cb-row--${role} nk-cb-row--grp-${group} nk-cb-appear`}
       style={{ '--nk-cb-max': 'min(82%, var(--size-chat-bubble-max))' } as CSSProperties}
     >
-      {/* Justified raw (round-3 toggle-cleanup): on a SELECTABLE message bubble, aria-pressed
+      {/* Justified raw (the toggle cleanup): on a SELECTABLE message bubble, aria-pressed
           is its selected state on a content bubble, NOT a toggle / segmented control or a
           NockerlButton facsimile. The bubble is the message surface, so it stays a plain button. */}
       {onSelect && !failed ? (
