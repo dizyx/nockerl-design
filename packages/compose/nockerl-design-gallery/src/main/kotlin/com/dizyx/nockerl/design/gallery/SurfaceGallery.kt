@@ -410,7 +410,7 @@ fun GalleryAppShellAndroid() {
             NockerlAppShell(
                 layout = NockerlAppShellLayout.RAIL,
                 topBarTitle = "Sessions",
-                animateBackground = false, // deterministic golden (the  lesson)
+                animateBackground = false, // deterministic golden: motion off so the snapshot cannot flake
                 nav = {
                     Column(
                         modifier = Modifier.padding(horizontal = 16.dp),
