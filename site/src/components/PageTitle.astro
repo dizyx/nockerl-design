@@ -31,6 +31,7 @@
  * gains visual weight faster than extralight letterforms do, so at title size the
  * naive ratio makes the mark shout over the word beside it.
  */
+import type { CSSProperties } from 'react';
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 import NockerlLockup from './NockerlLockup';
 import DesignMark from '../../../logos/app-icons/design.svg';
@@ -39,6 +40,9 @@ import pkg from '../../../package.json';
 
 // The home page is the only route whose slug is empty.
 const isHome = Astro.locals.starlightRoute.id === '';
+// A custom property is not in React's CSSProperties, so it needs the same cast the
+// lockup itself uses internally to accept one.
+const lockupSize = { '--nk-lock-h': 'calc(var(--sl-text-h1) / 0.9)' } as CSSProperties;
 // Read straight from the manifest the bump script maintains, so the badge can never
 // drift from the version the site was built at.
 const version = pkg.version;
@@ -48,7 +52,7 @@ const version = pkg.version;
   isHome ? (
     <div class="home-title">
       <h1 id="_top" aria-label="Nockerl Design" translate="no">
-        <NockerlLockup size={42} product="Design" style={{ '--nk-lock-h': 'calc(var(--sl-text-h1) / 0.9)' }}>
+        <NockerlLockup size={42} product="Design" style={lockupSize}>
           <DesignMark class="home-mark home-mark--light" width="42" height="42" aria-hidden="true" />
           <DesignMarkOnDark class="home-mark home-mark--dark" width="42" height="42" aria-hidden="true" />
         </NockerlLockup>
@@ -81,9 +85,9 @@ const version = pkg.version;
   }
 
   /* The product icon ships a light and an on-dark cut, so the pair is swapped by theme
-     rather than recolouring one file. Dark is the site default. */
-  /* Held to the wordmark's size, not the lockup box, per the optical note above. The
-     width/height attributes on the elements are only a pre-CSS fallback. */
+     rather than recolouring one file. Dark is the site default. Its size is held to the
+     wordmark's, not to the lockup box, per the optical note above; the width/height
+     attributes on the elements are only a pre-CSS fallback. */
   .home-mark {
     flex: 0 0 auto;
     width: var(--sl-text-h1);
