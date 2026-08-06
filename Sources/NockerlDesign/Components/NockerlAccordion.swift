@@ -1,4 +1,4 @@
-// NockerlAccordion: a few collapsible sections (ratified B4, adjudication 2026-07-02).
+// NockerlAccordion: a few collapsible sections, on the ratified disclosure grammar.
 //
 // ONE disclosure grammar on every platform: a single TRAILING chevron that ROTATES
 // 180° on expand (a transform, law §7). Voice's old leading chevron.right/down

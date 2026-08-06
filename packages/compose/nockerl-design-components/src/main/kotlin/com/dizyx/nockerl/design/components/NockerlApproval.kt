@@ -109,8 +109,8 @@ fun NockerlApprovalActions(
 }
 
 /**
- * The **approval sheet** is the ANDROID-IDIOM host (the RATIFIED
- * hosting stance, adjudication addendum 2026-07-05): approvals use ONE shared
+ * The **approval sheet** is the ANDROID-IDIOM host (the RATIFIED hosting
+ * stance): approvals use ONE shared
  * anatomy ([NockerlApprovalContent] + [NockerlApprovalActions]) hosted
  * platform-idiomatically. On Android / touch / mobile widths the anatomy
  * rides THIS sheet shell; web/desktop hosts it in inline panels (law §9

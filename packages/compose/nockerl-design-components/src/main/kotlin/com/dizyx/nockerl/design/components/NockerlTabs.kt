@@ -20,8 +20,8 @@ import com.dizyx.nockerl.design.tokens.NockerlProgressTrackShape
 import com.dizyx.nockerl.design.tokens.nockerlRecessedSurface
 
 /**
- * The standardized **tabs**, ratified B12 (adjudication 2026-07-02; law §7
- * amendment): the selection indicator **SLIDES** wherever the component is ours.
+ * The standardized **tabs** (a law §7 amendment): the selection indicator
+ * **SLIDES** wherever the component is ours.
  * Its OFFSET and WIDTH animate (interpolatable transforms) while the cyan
  * fill itself never tweens. The indicator is a `NockerlBorder.widthIndicator`
  * accent line on the squared 2dp track radius (the progress-track vocabulary,
