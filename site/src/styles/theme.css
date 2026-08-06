@@ -71,7 +71,29 @@
    that reads heavy against our system. Bring both to our medium cap (500), the nav
    stays light, and the active page reads via the cyan accent, not a bold weight. */
 .sidebar-content .large { font-weight: var(--font-weight-medium); }
-.sidebar-content a[aria-current='page'] { font-weight: var(--font-weight-medium); }
+/* The ACTIVE sidebar item reads the way our own nav row reads (NockerlNavItem's
+   `.nk-nav--on`): a thin cyan edge at the selection weight and opacity, cyan ink, and a
+   medium weight, with NO fill. Starlight ships a solid accent fill with inverted text,
+   which is the one treatment design law 6 rules out.
+
+   Both of its colour declarations have to be answered, not just the fill: leaving
+   `color: var(--sl-color-text-invert)` in place would paint invert-coloured ink on a
+   surface that no longer has the fill behind it, which is invisible.
+
+   Starlight's sidebar rules live inside `@layer starlight.core`, so any unlayered rule
+   here wins outright, whatever its specificity.
+
+   The RESTING row reserves the same edge in transparent, exactly as `.nk-nav` does, so
+   selecting a row colours an edge that is already there instead of adding one and pushing
+   the row over by a pixel. Hover is deliberately untouched: it stays Starlight's ink
+   change, because our own hover treatment wants more room between rows than this nav has. */
+.sidebar-content a { border: var(--border-width-selection) solid transparent; }
+.sidebar-content a[aria-current='page'] {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent-primary);
+  background-color: transparent;
+  border-color: color-mix(in srgb, var(--color-accent-primary) calc(var(--border-opacity-selection) * 100%), transparent);
+}
 /* The page status badge ("In review") sits above the lede and was touching it. Give it
    clear air below (it's an inline-flex pill, so the margin extends its line box). */
 .sl-markdown-content > .nk-status { margin-bottom: var(--space-5); }
