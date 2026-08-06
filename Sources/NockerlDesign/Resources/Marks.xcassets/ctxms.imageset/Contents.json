@@ -1,0 +1,26 @@
+{
+  "images": [
+    {
+      "filename": "ctxms.svg",
+      "idiom": "universal"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "ctxms-on-dark.svg",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "nockerl-design",
+    "version": 1
+  },
+  "properties": {
+    "preserves-vector-representation": true,
+    "template-rendering-intent": "original"
+  }
+}
