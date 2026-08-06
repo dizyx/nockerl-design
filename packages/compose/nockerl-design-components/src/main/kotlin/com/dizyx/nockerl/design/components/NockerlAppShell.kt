@@ -20,16 +20,16 @@ import androidx.compose.ui.unit.dp
  * [NockerlTopBar], and the content region. This shell draws NOTHING bespoke.
  *
  * **Modes are EXPANDED + RAIL only** ([NockerlAppShellLayout]). The
- * compact/bottom-navigation mode is KILLED per the ratified /#2596c
+ * compact/bottom-navigation mode is KILLED per the ratified
  * (bottom nav is dead; the enum simply has no such case).
  *
- * **Brand-placement rule (#2596b): the main nav owns the brand.** When the nav
+ * **Brand-placement rule: the main nav owns the brand.** When the nav
  * surface is present, its header composes the REAL [NockerlLockup] and the top
  * bar carries only a title/actions ([NockerlTopBar.showBrand] stays false).
  * Logo/title duplication between top bar and left nav is impossible by
  * construction here.
  *
- * **Platform presets** (#2596d, product guidance, expressed as configurations):
+ * **Platform presets** (product guidance, expressed as configurations):
  * - **Android**, top bar PRESENT: `NockerlAppShell(topBarTitle = "...", …)`.
  * - **Voice**, LEFT-NAV ONLY, no top bar: `NockerlAppShell(topBarTitle = null)`.
  * - **Web**: a mixture (the web shell mixes per breakpoint; not a native preset).
@@ -99,7 +99,7 @@ fun NockerlAppShell(
 }
 
 /**
- * The shell layouts (#2596c): EXPANDED + RAIL **only**. The compact/bottom-nav
+ * The shell layouts: EXPANDED + RAIL **only**. The compact/bottom-nav
  * mode is ratified-dead and deliberately has no case here.
  */
 enum class NockerlAppShellLayout(

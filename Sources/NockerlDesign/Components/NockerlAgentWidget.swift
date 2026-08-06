@@ -1,4 +1,4 @@
-// NockerlAgentWidget: the compact agent-run card on Swift (WS1 #2652b mirror,
+// NockerlAgentWidget: the compact agent-run card on Swift (a mirror of the Compose canon,
 // to the Compose canon): IDENTITY-led (initials avatar + name + mono model
 // badge) where the spawn block is mechanism-led (family tile); the shared
 // lifecycle chip trails; optional one-line detail under the name.

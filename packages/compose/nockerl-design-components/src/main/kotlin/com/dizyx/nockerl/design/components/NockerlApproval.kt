@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.dizyx.nockerl.design.tokens.LocalNockerlColors
 
 /**
- * The **approval content** anatomy (WS2 ) is the host-agnostic approval
+ * The **approval content** anatomy is the host-agnostic approval
  * body, a 1:1 mirror of the react `NockerlApprovalContent` (builder-1 owns the
  * anatomy; this is the compose implementation of the SAME contract):
  *
@@ -109,7 +109,7 @@ fun NockerlApprovalActions(
 }
 
 /**
- * The **approval sheet** is the ANDROID-IDIOM host (WS2 ; the RATIFIED
+ * The **approval sheet** is the ANDROID-IDIOM host (the RATIFIED
  * hosting stance, adjudication addendum 2026-07-05): approvals use ONE shared
  * anatomy ([NockerlApprovalContent] + [NockerlApprovalActions]) hosted
  * platform-idiomatically. On Android / touch / mobile widths the anatomy

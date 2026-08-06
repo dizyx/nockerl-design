@@ -4,8 +4,12 @@
 // NockerlRecordingHud.
 //
 // ANATOMY (left → right, showBrand default true):
-//   [ NockerlLogo (16, theme ink) ] → [ gray vertical divider ] → [ CONTENT that
-//   MORPHS per phase ] → [ optional trailing ghost Cancel ]
+//   [ leading mark (16, theme ink; NockerlLogo by default) ] → [ gray vertical divider ]
+//   → [ CONTENT that MORPHS per phase ] → [ optional trailing ghost Cancel ]
+//
+// The mark is the ONE substitutable part. A product that must not show the house mark
+// passes its own and still gets this anatomy; the divider, the gaps and the constant pill
+// height are not negotiable, which is the point of supplying a mark rather than a layout.
 //
 // THE COLOR SPLIT (the core fix that kills the over-warming, law §10): the record DOT
 // is the ONLY warm element (statusError); the TIMER is THEME INK (onCanvas, never
@@ -67,7 +71,16 @@ public enum NockerlRecordingHudEntrance: Equatable {
 }
 
 /// The floating recording HUD pill (see the file header), value-exact to the web
-/// canon. `phase` selects the morphing content; the logo + divider are fixed.
+/// canon. `phase` selects the morphing content; the divider and spacing are fixed, and the
+/// leading mark is supplied by the caller (defaulting to the house mark).
+///
+/// THE TYPE IS DELIBERATELY NOT GENERIC. Taking the mark as `NockerlRecordingHUD<Mark: View>`
+/// is the more idiomatic SwiftUI shape and it is source breaking: every place a consumer
+/// spells the type rather than inferring it, a stored property, a return type, an array
+/// element, stops compiling and needs a generic argument. Consumers resolve this package by
+/// version through SPM and we cannot see their call sites, so the mark is erased to `AnyView`
+/// once in the initialiser instead. The cost is one erasure for a single small glyph per HUD,
+/// which is not measurable here; the benefit is that no existing source has to change.
 public struct NockerlRecordingHUD: View {
     private let phase: NockerlRecordingHudPhase
     private let elapsedLabel: String
@@ -85,7 +98,12 @@ public struct NockerlRecordingHUD: View {
     private let accessibilityLabelOverride: String?
     private let entrance: NockerlRecordingHudEntrance
     private let styleSelector: NockerlHudStyleSelector?
+    private let mark: AnyView
     private let onCancel: () -> Void
+
+    /// The leading mark's canonical height. A supplied mark should size itself to this so it
+    /// sits on the same optical line as the house mark it replaces.
+    public static let markHeight: CGFloat = 16
 
     @State private var pulsed = false
     @Environment(\.colorScheme) private var colorScheme
@@ -109,8 +127,14 @@ public struct NockerlRecordingHUD: View {
     ///   - cancelLabel: the ghost Cancel's label.
     ///   - accessibilityLabel: overrides the phase's combined live label.
     ///   - entrance: opt-in entrance/exit (default `.none` = in place).
+    ///   - mark: the LEADING mark, defaulting to the house `NockerlLogo`. A product that must
+    ///     not show the house mark supplies its own here and still gets this component's
+    ///     anatomy: the divider, the gaps and the constant pill height stay ours. The slot is
+    ///     bounded to the content-band height so a supplied mark cannot grow the pill; size
+    ///     the mark to `markHeight` to sit where the house mark sits. `showBrand: false` still
+    ///     drops the mark AND the divider, which is what embedded chrome wants.
     ///   - onCancel: the ghost Cancel action.
-    public init(
+    public init<Mark: View>(
         phase: NockerlRecordingHudPhase = .recording,
         elapsedLabel: String = "",
         levels: [CGFloat] = [],
@@ -127,6 +151,14 @@ public struct NockerlRecordingHUD: View {
         accessibilityLabel: String? = nil,
         entrance: NockerlRecordingHudEntrance = .none,
         styleSelector: NockerlHudStyleSelector? = nil,
+        // A VALUE, not a `@ViewBuilder` closure, and that is deliberate. A builder would make
+        // this a second function-type parameter, and `onCancel` is the last one, so an
+        // existing `NockerlRecordingHUD { ... }` would still bind to `onCancel` but only
+        // through backward matching, which the compiler now deprecates. Consumers would start
+        // seeing a warning on code they had not touched, and a warnings-as-errors build would
+        // fail. A value parameter has no such interaction, and a leading mark is a single
+        // expression anyway.
+        mark: Mark = NockerlLogo(size: NockerlRecordingHUD.markHeight),
         onCancel: @escaping () -> Void = {}
     ) {
         self.phase = phase
@@ -145,6 +177,8 @@ public struct NockerlRecordingHUD: View {
         self.accessibilityLabelOverride = accessibilityLabel
         self.entrance = entrance
         self.styleSelector = styleSelector
+        // Erased once, here, rather than making the struct generic. See the note on the type.
+        self.mark = AnyView(mark)
         self.onCancel = onCancel
     }
 
@@ -185,8 +219,13 @@ public struct NockerlRecordingHUD: View {
 
         HStack(spacing: NockerlSpace.space3) {
             if showBrand {
-                // The brand mark LEADS (task 2623), theme-adaptive ink, never cyan.
-                NockerlLogo(size: 16)
+                // The mark LEADS, on theme-adaptive ink, never cyan. It defaults to the house
+                // mark and is replaceable; the divider and every gap around it are not.
+                // Bounded to the content-band height so a supplied mark can never make the
+                // pill taller than it already is. The default is 16 against a 24 bound, so
+                // this does not move it.
+                mark
+                    .frame(maxHeight: NockerlSpace.space6)
                 // The slight gray vertical divider (the web nk-hud__rule): 1×24.
                 Rectangle()
                     .fill(palette.divider)

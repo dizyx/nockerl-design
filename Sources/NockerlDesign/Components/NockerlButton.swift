@@ -7,7 +7,10 @@
 // generated semantic palette via ``NockerlPalette``: no hardcoded colors, radii, or sizes.
 //
 // Label rule (design-laws §11): UPPERCASE, weight `.light`, tracked −0.03em.
-// Buttons are the ONLY uppercase in the Nockerl type system.
+// Buttons are the only uppercase CONTROL. They are not the only uppercase in the type
+// system: the eyebrow role is the sanctioned overline exception, and section headers,
+// callouts and form sections all set uppercase on it. Reach for `.eyebrow` for an overline
+// or a field label, not for the caption role and not for sentence case.
 //
 // Feedback rule (design-laws §7): the fill is STATIC (the gradient never tweens); only
 // interpolatable properties (opacity / brightness / scale) animate. See
@@ -240,7 +243,8 @@ private struct ButtonVariantSpec {
 /// The unified Nockerl button. Use it for EVERY tappable label affordance on a SwiftUI
 /// surface. Renders one ``NockerlButtonVariant`` from the cyan fill ladder at the 12pt
 /// control radius, with an uppercase, light (300), −0.03em label (design-laws §11).
-/// Buttons are the only uppercase in the system.
+/// Buttons are the only uppercase CONTROL. The eyebrow role is the other sanctioned
+/// uppercase, used for overlines and field labels; see ``NockerlTypeRole/eyebrow``.
 ///
 /// Fill ladder (design-laws §10; Design Review #1):
 /// - `.primary`: filled cyan vertical gradient, on-accent label.

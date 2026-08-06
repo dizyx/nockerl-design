@@ -44,7 +44,7 @@ data class NockerlTranscriptItem(
 )
 
 /**
- * The **agent transcript panel** (WS1 #2652c) is the first-class composition
+ * The **agent transcript panel** is the first-class composition
  * SHELL for agent/chat feeds (the verdict: every ROW ships; the scroll +
  * grouping + day markers + auto-follow shell was the gap). It owns:
  *

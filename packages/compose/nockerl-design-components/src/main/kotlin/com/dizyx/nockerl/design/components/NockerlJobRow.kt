@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.dizyx.nockerl.design.tokens.LocalNockerlColors
 
 /**
- * The **job / notification row** (WS4 #2655a), the compose mirror of the react
+ * The **job / notification row**, the compose mirror of the react
  * `NockerlJobRow` (1:1 contract; builder-1 owns the API): one background job or
  * inbox notification as a list row, a THIN SHELL over the [NockerlListItemRow]
  * grammar (no new row anatomy):

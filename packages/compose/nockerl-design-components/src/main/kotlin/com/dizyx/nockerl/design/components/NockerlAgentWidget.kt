@@ -20,7 +20,7 @@ import com.dizyx.nockerl.design.tokens.NockerlPanelShape
 import com.dizyx.nockerl.design.tokens.NockerlSurface
 
 /**
- * The **agent-run widget** (WS1 #2652b) is the compact "an agent is working"
+ * The **agent-run widget** is the compact "an agent is working"
  * card, a TOOL-CARD-FAMILY SIBLING composed entirely from shipped cells (the
  * verdict: real new composition, not a new invention): the IDENTITY header
  * ([NockerlAvatar] + name + mono model badge) leads, the lifecycle chip

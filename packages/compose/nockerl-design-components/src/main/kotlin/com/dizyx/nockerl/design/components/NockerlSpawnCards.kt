@@ -32,7 +32,7 @@ import com.dizyx.nockerl.design.tokens.nockerlLitSurface
 import com.dizyx.nockerl.design.tokens.nockerlShadow
 
 /**
- * The **spawn cards** (WS1 #2652a): the agent-spawn surfaces as TOOL-CARD-FAMILY
+ * The **spawn cards**: the agent-spawn surfaces as TOOL-CARD-FAMILY
  * siblings (the verdict: EXTEND the tool-card grammar, don't invent): the family
  * TILE leads, a status chip (dot + label + elapsed) trails, children stack inside.
  * The dashboard app's spawn UI is INPUT only. This is the fresh-spec'd system

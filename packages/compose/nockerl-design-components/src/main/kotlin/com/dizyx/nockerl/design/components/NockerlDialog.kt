@@ -86,7 +86,7 @@ fun NockerlDialog(
  * @param onConfirm confirm tapped.
  * @param modifier outer modifier.
  * @param body optional supporting body text.
- * @param icon optional header intent: the INSET status well (#2637a).
+ * @param icon optional header intent: the INSET status well.
  * @param tone default (outline-cyan confirm) or destructive (outline-red).
  * @param dismissLabel optional ghost dismiss label; `null` hides it.
  * @param onDismiss dismiss tapped (required when [dismissLabel] is set).
@@ -118,7 +118,7 @@ fun NockerlDialogCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (icon != null) {
-                // #2637a: the INSET intent well sinks into the lifted card
+                // The INSET intent well sinks into the lifted card
                 // (a raised coin would compete with the card's lift).
                 NockerlStatusDisc(intent = icon, inset = true)
             }
@@ -145,7 +145,7 @@ fun NockerlDialogCard(
                         variant = NockerlButtonVariant.GHOST,
                     )
                 }
-                // #2637b: the confirm is NEVER a filled primary, outline cyan
+                // The confirm is NEVER a filled primary, outline cyan
                 // by default, outline red when destructive (same treatment).
                 NockerlButton(
                     text = confirmLabel,

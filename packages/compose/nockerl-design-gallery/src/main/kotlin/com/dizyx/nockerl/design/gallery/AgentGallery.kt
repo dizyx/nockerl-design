@@ -41,7 +41,7 @@ import com.dizyx.nockerl.design.components.NockerlTranscriptItem
 import com.dizyx.nockerl.design.tokens.LocalNockerlColors
 
 /**
- * Gallery entries for the **agent & spawn family** (WS1 ), tool-card-family
+ * Gallery entries for the **agent & spawn family**, tool-card-family
  * siblings: the spawn block + child cards (and the agent-run widget as it lands).
  *
  * RUNNING pulses are frozen (`animate = false`): deterministic goldens.
@@ -50,7 +50,7 @@ import com.dizyx.nockerl.design.tokens.LocalNockerlColors
  */
 
 /**
- * Spawn cards (#2652a): a RUNNING block with three children across the lifecycle
+ * Spawn cards: a RUNNING block with three children across the lifecycle
  * ladder (running · done · failed), plus a standalone completed block. The
  * agent-family tile leads, the status chip trails, children stack at the card
  * rhythm.
@@ -104,7 +104,7 @@ fun GallerySpawnCards() {
 }
 
 /**
- * Agent-run widget (#2652b): identity-led (avatar + name + mono model badge)
+ * Agent-run widget: identity-led (avatar + name + mono model badge)
  * with the shared lifecycle chip: running (pulse frozen), done, failed.
  */
 @ShowkaseComposable(name = "AgentWidget · Lifecycle", group = GROUP)
@@ -145,7 +145,7 @@ fun GalleryAgentWidget() {
 private const val GALLERY_DAY = 86_400_000L
 
 /**
- * Transcript panel (#2652c): the composition shell, keyed lazy rows (real
+ * Transcript panel: the composition shell, keyed lazy rows (real
  * shipped cells), a day marker at the UTC boundary, and the floating
  * jump-to-latest affordance (visible because the capture rests at the TOP of
  * an overflowing panel, deterministic). autoFollow off for the static frame.
@@ -207,7 +207,7 @@ fun GalleryTranscriptPanel() {
 }
 
 /**
- * Approval anatomy configs (WS2 ): TOOL approval (mono command preview +
+ * Approval anatomy configs: TOOL approval (mono command preview +
  * DANGER risk banner + destructive outline confirm) and ASK-USER (checkbox
  * options + a DISABLED confirm until answered). The anatomy is captured
  * directly (the modal sheet host has no stable golden frame: the DialogCard
@@ -298,7 +298,7 @@ fun GalleryApprovalContent() {
 }
 
 /**
- * Job / notification rows (#2655a): the ListItem-grammar shell across states,
+ * Job / notification rows: the ListItem-grammar shell across states,
  * UNREAD success (full voice + count badge), READ warning (dimmed ink), READ
  * error, and QUEUED (muted clock). The RUNNING spinner is motion, so it is
  * deliberately NOT captured (the search-field precedent); the state is
@@ -343,7 +343,7 @@ fun GalleryJobRow() {
 }
 
 /**
- * Cluster mosaic (#2655b): NodeCell tiles wrap in the grid shell. Each tile
+ * Cluster mosaic: NodeCell tiles wrap in the grid shell. Each tile
  * carries a health dot + name + role badge, then mono metric values with a
  * sparkline trend and gauge-band pressure bars (cyan < .60 / amber < .85 /
  * red), shown across the status ladder.
@@ -381,7 +381,7 @@ fun GalleryClusterGrid() {
 }
 
 /**
- * Todo widget (#2655c): the read-only plan card. It carries a mono count, the
+ * Todo widget: the read-only plan card. It carries a mono count, the
  * cyan segments meter (filled done cells read as progress, not status), and the
  * step ladder: done (dimmed, seen ink), blocked (warm reason line), pending
  * (muted ring). The RUNNING spinner is motion, so it is deliberately NOT

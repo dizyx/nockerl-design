@@ -32,7 +32,7 @@ import com.dizyx.nockerl.design.tokens.NockerlProgressTrackShape
 import com.dizyx.nockerl.design.tokens.NockerlSurface
 
 /**
- * The **cluster status grid** (WS4 #2655b), the compose mirror of the react
+ * The **cluster status grid**, the compose mirror of the react
  * `NockerlClusterGrid`: a responsive wrap of [NockerlNodeCell] tiles (the fleet
  * wall at a glance). Deliberately a pure LAYOUT shell: health, metrics, and
  * badges all live in the cells. Tiles wrap at a minimum readable width and
@@ -74,7 +74,7 @@ data class NockerlNodeMetric(
 )
 
 /**
- * One **cluster node** tile (WS4 #2655b, react mirror): a lifted card composing
+ * One **cluster node** tile (react mirror): a lifted card composing
  * shipped parts only: the health [NockerlStatusDot] + name + optional soft
  * NEUTRAL role badge in the head; metric rows (mono values; sparkline trends or
  * gauge-band pressure bars) in the middle; an open [footer] slot.
