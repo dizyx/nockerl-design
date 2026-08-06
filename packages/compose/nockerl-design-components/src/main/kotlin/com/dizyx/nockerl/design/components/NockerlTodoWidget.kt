@@ -64,7 +64,7 @@ enum class NockerlTodoState {
 }
 
 /**
- * The **todo widget** (WS4 #2655c): the compose mirror of the react
+ * The **todo widget**: the compose mirror of the react
  * `NockerlTodoWidget` (1:1 contract): the agent's running plan as a compact
  * lifted card. A plan is not a wizard: steps don't navigate, they REPORT, so
  * this is a quiet read-only card, the Stepper's sibling, not a control.

@@ -142,7 +142,7 @@ private fun CheckboxBox(
         label = "nockerlCheckboxFill",
     )
     val controlAlpha = if (!enabled && !filled) DISABLED_OFF_ALPHA else 1f
-    // The 1px DEFINING EDGE: accent mixed 68% into the shadow tint (#2530a).
+    // The 1px DEFINING EDGE: accent mixed 68% into the shadow tint.
     val edge = lerp(colors.shadowTint, colors.accentPrimary, EDGE_ACCENT_FRACTION)
     val mark = if (enabled) colors.onAccent else colors.onAccent.copy(alpha = 0.8f)
 
@@ -236,5 +236,5 @@ enum class NockerlCheckboxSize(
 /** Disabled-off control opacity (the web's `.55`). */
 private const val DISABLED_OFF_ALPHA = 0.55f
 
-/** Defining-edge mix: accent 68% into shadow tint (web color-mix, #2530a). */
+/** Defining-edge mix: accent 68% into shadow tint (web color-mix). */
 private const val EDGE_ACCENT_FRACTION = 0.68f

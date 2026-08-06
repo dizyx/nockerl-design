@@ -509,8 +509,8 @@ export default function ToolCallCardDemo() {
             output={{ lines: [[T('ToolFamily.kt:139:'), T('internal fun ', 'key'), T('familyAccent')]] }}
           />
           <ToolCallCard
-            name="Fetch nockerel.ai/docs" family="external" status="success" elapsedSeconds={1.2} icon={IconWeb}
-            params={[{ label: 'url', value: 'https://nockerel.ai/docs' }]}
+            name="Fetch nockerl.ai/docs" family="external" status="success" elapsedSeconds={1.2} icon={IconWeb}
+            params={[{ label: 'url', value: 'https://nockerl.ai/docs' }]}
             output={{ lines: [[T('200 OK', 'str'), T(' · '), T('14.2 kB', 'num')]] }}
           />
           <ToolCallCard

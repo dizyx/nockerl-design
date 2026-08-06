@@ -9,11 +9,20 @@ import SwiftUI
 
 /// The Nockerl brand lockup (see the file header). `NockerlLockup()` → mark +
 /// monochrome "Nockerl"; `NockerlLockup(product: "Voice")` → adds the cyan 400 word.
+///
+/// The mark is substitutable, for a product that must not show the house mark. Everything
+/// else stays ours: the two weights, the sentence case, the tracking, and both gaps, which
+/// are derived from `size` rather than passed in.
+///
+/// NOT GENERIC, for the same reason as `NockerlRecordingHUD`: making the type generic over
+/// the mark breaks every consumer that spells the type instead of inferring it. The mark is
+/// erased to `AnyView` in the initialiser so no existing source has to change.
 public struct NockerlLockup: View {
     private let product: String?
     private let size: CGFloat
     private let tone: NockerlLogoTone?
     private let stacked: Bool
+    private let mark: AnyView?
 
     /// Create a lockup.
     /// - Parameters:
@@ -22,6 +31,36 @@ public struct NockerlLockup: View {
     ///   - size: the MARK height (the wordmark is optically sized from it).
     ///   - tone: force the mark's ink ladder, or `nil` (default) for theme-aware.
     ///   - stacked: stack the wordmark beneath the mark instead of inline.
+    ///   - mark: the leading mark, defaulting to the house `NockerlLogo` at `size`. Supply
+    ///     one to lead with a product's own art while keeping the lockup's typography and
+    ///     spacing. A supplied mark owns its own sizing, since `size` also drives the
+    ///     wordmark and both gaps: pass art already sized to `size` to sit where the house
+    ///     mark sits.
+    public init<Mark: View>(
+        product: String? = nil,
+        size: CGFloat = 28,
+        tone: NockerlLogoTone? = nil,
+        stacked: Bool = false,
+        // A value rather than a `@ViewBuilder` closure, matching the HUD. See the note there:
+        // a builder parameter changes how an unlabeled trailing closure is matched, and a
+        // leading mark is a single expression.
+        mark: Mark
+    ) {
+        self.product = product
+        self.size = size
+        self.tone = tone
+        self.stacked = stacked
+        self.mark = AnyView(mark)
+    }
+
+    /// The lockup with the house mark, the existing signature unchanged.
+    ///
+    /// This is a second initialiser rather than a default argument on the one above, which is
+    /// where this differs from `NockerlRecordingHUD`. The HUD's default mark is a constant
+    /// size, so a default expression can build it. The house mark here has to inherit `size`
+    /// and `tone` from sibling parameters, and a Swift default argument cannot refer to other
+    /// parameters. So the mark stays optional and the house mark is resolved at render time,
+    /// where those values are in scope.
     public init(
         product: String? = nil,
         size: CGFloat = 28,
@@ -32,10 +71,11 @@ public struct NockerlLockup: View {
         self.size = size
         self.tone = tone
         self.stacked = stacked
+        self.mark = nil
     }
 
     public var body: some View {
-        LockupBody(product: product, size: size, tone: tone, stacked: stacked)
+        LockupBody(product: product, size: size, tone: tone, stacked: stacked, mark: mark)
     }
 
     private struct LockupBody: View {
@@ -43,6 +83,7 @@ public struct NockerlLockup: View {
         let size: CGFloat
         let tone: NockerlLogoTone?
         let stacked: Bool
+        let mark: AnyView?
 
         @Environment(\.colorScheme) private var colorScheme
 
@@ -65,14 +106,19 @@ public struct NockerlLockup: View {
                 }
             }
 
+            // The supplied mark, or the house mark at the lockup's size when none was given.
+            let leadingMark = mark ?? AnyView(
+                NockerlLogo(size: size, tone: tone, accessibilityLabel: nil)
+            )
+
             if stacked {
                 VStack(spacing: size * 0.2) {
-                    NockerlLogo(size: size, tone: tone, accessibilityLabel: nil)
+                    leadingMark
                     wordmark
                 }
             } else {
                 HStack(alignment: .center, spacing: markGap) {
-                    NockerlLogo(size: size, tone: tone, accessibilityLabel: nil)
+                    leadingMark
                     wordmark
                 }
             }

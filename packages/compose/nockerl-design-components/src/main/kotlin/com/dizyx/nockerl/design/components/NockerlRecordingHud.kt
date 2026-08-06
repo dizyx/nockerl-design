@@ -133,7 +133,7 @@ fun NockerlRecordingHud(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (showBrand) {
-                // The brand mark LEADS (task 2623), theme-adaptive ink, never cyan.
+                // The brand mark LEADS, theme-adaptive ink, never cyan.
                 NockerlLogo(size = 16.dp, contentDescription = "Nockerl")
                 // The slight gray vertical divider (the web nk-hud__rule): 1×24.
                 Box(

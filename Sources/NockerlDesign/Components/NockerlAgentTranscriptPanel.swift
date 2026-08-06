@@ -1,5 +1,5 @@
-// NockerlAgentTranscriptPanel: the transcript composition SHELL on Swift (WS1
-// #2652c mirror, to the Compose canon): keyed lazy rows, UTC day markers,
+// NockerlAgentTranscriptPanel: the transcript composition SHELL on Swift (a mirror
+// of the Compose canon): keyed lazy rows, UTC day markers,
 // auto-follow while at the bottom, and the floating jump-to-latest affordance
 // (the solid accent circle, the cyan floating-layer identity).
 

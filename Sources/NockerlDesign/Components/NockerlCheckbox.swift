@@ -69,7 +69,7 @@ public struct NockerlCheckbox: View {
     private let size: NockerlCheckboxSize
     private let enabled: Bool
 
-    /// Defining-edge mix: accent 68% into shadow tint (web color-mix, #2530a).
+    /// Defining-edge mix: accent 68% into shadow tint (web color-mix).
     static let edgeAccentFraction: Double = 0.68
     /// Disabled-off control opacity (the web's `.55`).
     static let disabledOffOpacity: Double = 0.55

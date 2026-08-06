@@ -239,7 +239,7 @@ fun NockerlSheetGrip() {
  * @param leadingIcon optional decorative glyph shown top-left, centered on the
  *   title line (e.g. a settings cog beside "Settings"); rides the neutral on-plane
  *   ink, never a status disc, never cyan. The divider is unchanged.
- * @param onBack optional NESTED-SHEET back affordance (WS2): the header leads
+ * @param onBack optional NESTED-SHEET back affordance: the header leads
  *   with a chevron icon button; view swapping stays host-owned (mirror of the
  *   react onBack).
  * @param backContentDescription the back affordance's a11y name.
@@ -270,7 +270,7 @@ fun NockerlSheetHeader(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (onBack != null) {
-                    // Nested-sheet back: leads the header (WS2 mirror).
+                    // Nested-sheet back: leads the header (mirror).
                     NockerlIconButton(
                         icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = backContentDescription,
@@ -350,7 +350,7 @@ fun NockerlSheetHeader(
 }
 
 /**
- * A **sheet footer** (WS2) is the PINNED action bar that never scrolls away:
+ * A **sheet footer** is the PINNED action bar that never scrolls away:
  * place it as the LAST child of a sheet whose scrollable middle carries
  * `weight(1f)`, and it stays put while content scrolls BENEATH. The separation
  * strip is the header cue INVERTED: a persistent hairline on the footer's top

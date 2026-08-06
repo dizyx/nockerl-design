@@ -542,7 +542,7 @@ fun GalleryVocabRowComposition() {
 }
 
 /**
- * Sheet footer + nested-back header (WS2): the header leads with the back
+ * Sheet footer + nested-back header: the header leads with the back
  * chevron; the PINNED footer never scrolls away. Its inverted separation cue
  * (hairline on top + shadow fading UP, shown engaged here) signals content
  * still scrolls beneath. Actions carry the ratified CTA grammar (outline

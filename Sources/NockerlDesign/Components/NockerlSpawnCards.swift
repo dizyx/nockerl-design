@@ -1,4 +1,4 @@
-// NockerlSpawnCards: the agent-spawn surfaces on Swift (WS1 #2652a mirror, to
+// NockerlSpawnCards: the agent-spawn surfaces on Swift (mirror, to
 // the Compose canon): tool-card-family siblings. The family TILE leads, the
 // lifecycle chip (dot + label + elapsed) trails, children stack at the card
 // rhythm. Lifecycle: RUNNING = info-cyan pulsing dot, SUCCESS / ERROR = warm

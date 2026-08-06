@@ -23,7 +23,7 @@ import com.dizyx.nockerl.design.tokens.LocalNockerlColors
  * The **top bar**: the app's top chrome strip on the `chromeSurface` plane with
  * a bottom `chromeHairline`, mirroring the corrected web TopBar.
  *
- * **Brand-placement rule (#2596b): the MAIN NAV owns the brand.** When the shell
+ * **Brand-placement rule: the MAIN NAV owns the brand.** When the shell
  * shows a nav surface, the top bar carries a plain [title] (+ actions) and NO
  * lockup: never duplicate the logo/title between top bar and left nav. Pass
  * [showBrand]=true ONLY when the top bar is the sole chrome (no nav surface,
