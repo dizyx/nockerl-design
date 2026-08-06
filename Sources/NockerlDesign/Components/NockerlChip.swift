@@ -4,7 +4,7 @@
 // contrast (pills for chips + input, control radius for buttons) is the point Design
 // Review #1 locked in (design-laws §4).
 //
-// The ratified cyan grammar (r2, B2) + the full capability UNION (r2, C6:
+// The ratified cyan grammar + the full capability UNION (one contract:
 // selectable + removable + disabled on every platform):
 //   - selected:    SOLID `accentPrimary` fill + contrast-picked label + the shared
 //                  top catch-light (never a gradient).

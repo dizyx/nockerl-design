@@ -99,7 +99,7 @@ const IconTerminal = icon('m5 8 4 4-4 4M12 16h6');
 const IconCheck = icon('M20 6 9 17l-5-5');
 const IconAlert = icon('M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z');
 // The failed-turn disc glyph: the alert family's error mark (an X). The disc renders
-// INSET (task 2673, the banner's recessed form), so currentColor resolves to the INTENT
+// INSET (the banner's recessed form), so currentColor resolves to the INTENT
 // ink (status-error), not the knockout canvas. Verbatim the Banner error grammar so the
 // failed turn reads identically across the alert family.
 const IconFailKnockout = <NockerlIcon path="m15 9-6 6M9 9l6 6" strokeWidth={2.6} />;

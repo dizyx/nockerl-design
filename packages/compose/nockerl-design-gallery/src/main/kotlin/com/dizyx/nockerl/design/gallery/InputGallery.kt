@@ -171,7 +171,7 @@ fun GalleryAttachmentPopover() {
 /** Fixed equalizer levels: a deterministic stand-in for the live audio meter. */
 private val DemoAmplitudes = listOf(0.35f, 0.7f, 0.5f, 0.95f, 0.6f)
 
-/** The paused frozen-frame levels (value-exact from the web ). */
+/** The paused frozen-frame levels (value-exact from the web). */
 private val PausedAmplitudes = listOf(0.32f, 0.74f, 0.5f, 0.86f, 0.4f)
 
 /**

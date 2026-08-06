@@ -6,7 +6,7 @@
 //   - a raw palette color (for the session-dot tokens: dotStreaming, dotAttention, …).
 //
 // Pulse (law §7): animates OPACITY only (1.0 ↔ 0.3), never a fill swap, and freezes
-// under Reduce Motion. Duration is the RATIFIED 800ms motion value (r2, B6; Voice's
+// under Reduce Motion. Duration is the RATIFIED 800ms motion value (Voice's
 // old 600ms recording dot conforms at swap). The web-only "ping" ring is DROPPED by
 // the same ruling: no platform implements it.
 //

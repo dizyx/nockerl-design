@@ -50,7 +50,7 @@ public enum NockerlButtonVariant: Equatable {
     case neutralOutline
 }
 
-/// The shared size ramp (ratified r2, B1): visual heights 32/40/48pt with per-size
+/// The shared size ramp (ratified): visual heights 32/40/48pt with per-size
 /// type + padding (web `sm/md/lg` parity). The TOUCH target never shrinks below the
 /// ~44pt platform floor (`size.minTouch`): the style reserves the floor around the
 /// visual box, so an `.sm` button LOOKS 32pt but stays fully tappable.

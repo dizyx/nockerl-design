@@ -4,7 +4,7 @@
 // AgentMessage stream-failed, ToolCallCard error) with a single quiet treatment
 // derived from the alert-family canon:
 //
-//   - The Banner inline-alert anatomy, which supersedes the r4 recessed well:
+//   - The Banner inline-alert anatomy, which supersedes the recessed well:
 //     a NEUTRAL cardSurface1 plane (never a
 //     red/pink tint fill), LIFTED (neutral L2 drop + top catch-light), traced by
 //     the banner's whisper-red border (the canon 22% mix). The INSET error disc

@@ -3,7 +3,7 @@
 // sitting on a raised filled-circle. the design lead's "super classy" direction, first on
 // the EmptyState mark and now canon for any purely informational icon.
 //
-// NEVER clickable (law ): flat/plain + filled-circle icons signal interactive;
+// NEVER clickable: flat/plain + filled-circle icons signal interactive;
 // the inset treatment signals informational. This view exposes NO action. An inset
 // icon with a tap handler is a law violation by construction, so the type forbids it.
 //

@@ -1,5 +1,5 @@
 // NockerlStatCard: the single-KPI stat / metric tile on Swift. THIS is the
-// package canon (the r4 canon lived site-side; Voice's hand-rolled HomeSection StatCard
+// package canon (it previously lived site-side; Voice's hand-rolled HomeSection StatCard
 // normalizes on adoption). Anatomy (feeds the adoption diff):
 //
 //   - the leading icon renders in one of TWO modes (packet ): `.flat`, a BARE

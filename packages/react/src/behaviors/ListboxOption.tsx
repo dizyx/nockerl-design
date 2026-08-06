@@ -148,7 +148,7 @@ export const NOCKERL_LISTBOX_OPTION_STYLES = `
 .nk-opt--selected.nk-opt--run-top { border-end-start-radius: 0; border-end-end-radius: 0; border-bottom-color: transparent; }
 .nk-opt--selected.nk-opt--run-middle { border-radius: 0; border-top-color: transparent; border-bottom-color: transparent; }
 .nk-opt--selected.nk-opt--run-bottom { border-start-start-radius: 0; border-start-end-radius: 0; border-top-color: transparent; }
-/* NESTED-RADIUS CAP (r4 clip class): inside a ROUNDED clipping container the first/last row's
+/* NESTED-RADIUS CAP: inside a ROUNDED clipping container the first/last row's
    OUTER corners must match the container curve (inner = outer - inset), or the selection edge /
    active ring gets SLICED by the container clip at the corners. Containers OPT IN by declaring
    --nk-nest-cap: calc(<container radius> - <inset to the row>); rows fall back to their own

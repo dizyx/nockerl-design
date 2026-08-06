@@ -131,7 +131,7 @@ const TONES: NockerlBadgeTone[] = ['accent', 'info', 'success', 'warning', 'dang
 // Language tags feed the hue-free NockerlLanguageBadge, with mixed casing to prove the shared
 // nockerlLanguageLabel normalization (all render lowercase, e.g. 'TypeScript' → 'typescript').
 const LANGS = ['TypeScript', 'Kotlin', 'Swift', 'JSON', 'Shell'];
-// An APP-side language→color mapping (task 2639: the app owns this; the framework ships
+// An APP-side language→color mapping (the app owns this; the framework ships
 // none). Sanctioned categorical hues + one status hue, permitted for this one case.
 const APP_LANG_COLORS = [
   'var(--color-core-categorical-sky400)',
@@ -289,7 +289,7 @@ export default function BadgeDemo() {
         ))}
       </div>
 
-      {/* ── app-configured tag colors (task 2639 relaxation): the APP supplies its own
+      {/* ── app-configured tag colors: the APP supplies its own
              language→color mapping via the color prop; the framework ships no map.
              Status hues are permitted for this one case (identity metadata, not state). */}
       <p className="nk-badge-demo__lbl">Language · app-configured color (optional): the app supplies its own mapping via the color prop</p>

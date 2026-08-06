@@ -1,4 +1,4 @@
-// NockerlStepper: process steps for wizards/flows (stepper.mdx; the B14 gap closed).
+// NockerlStepper: process steps for wizards/flows (stepper.mdx).
 //
 // 32pt discs on the pill silhouette:
 //   - DONE:      solid `accentPrimary` + checkmark knockout. **CYAN is the terminal /

@@ -189,7 +189,7 @@ fun GalleryFacetedBackground() {
     }
 }
 
-/** The informational inset-icon treatment ( / law ): the 3 ratified tones. */
+/** The informational inset-icon treatment: the 3 ratified tones. */
 @ShowkaseComposable(name = "InsetIcon · Informational tones", group = GROUP)
 @Preview
 @Composable
@@ -333,7 +333,7 @@ fun GalleryNavSurface() {
 }
 
 /**
- * Dialog card (R5-17 ): the lifted modal panel, with an INSET header icon (the
+ * Dialog card: the lifted modal panel, with an INSET header icon (the
  * recessed intent well, never a raised coin on the lifted card) + FLAT/OUTLINE
  * CTAs (outline-cyan confirm on default, outline-red on destructive, never a
  * filled primary). Captured via [NockerlDialogCard] (a modal window has no
@@ -371,7 +371,7 @@ fun GalleryDialogCard() {
 }
 
 /**
- * NavSurface SOLID option (R5-14 ): the opaque `chromeSurface` rail, matching
+ * NavSurface SOLID option: the opaque `chromeSurface` rail, matching
  * the top bar, NO see-through (side-by-side foil to the translucent default above;
  * both options are token-driven).
  */

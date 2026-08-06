@@ -58,7 +58,7 @@ public struct NockerlAccordionItem: Identifiable {
     }
 }
 
-/// The ratified disclosure modes (B4).
+/// The ratified disclosure modes.
 public enum NockerlAccordionMode: Equatable {
     /// One section open at a time: opening one closes the rest (the default).
     case single

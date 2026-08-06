@@ -123,7 +123,7 @@ export const NOCKERL_BANNER_STYLES = `
 /* THE SIGNATURE is a status DISC. It lives in the NockerlStatusDisc primitive (.nk-disc), which
    the alert family shares. Banner renders <NockerlStatusDisc inset>, the RECESSED well form
    the intent color sits in the glyph + a soft wash + a whisper border, sunk under an
-   inner top shade. Still a disc (Law 6), informational + non-interactive (D7). The recipe
+   inner top shade. Still a disc (Law 6), informational + non-interactive. The recipe
    (well / radius / inset shade / status ink) is owned in the primitive, single-sourced; the
    raised filled coin stays the default for toast / callout / transcript. */
 
@@ -209,7 +209,7 @@ export function NockerlBanner({
           {...(intent === 'neutral' ? { color: INTENT_COLOR.neutral } : {})}
           // INSET (ratified): the banner sinks its status coin into a recessed
           // well. The intent color moves to the glyph + a soft wash + a whisper border.
-          // Informational + non-interactive (D7); status still lives in a disc (Law 6).
+          // Informational + non-interactive; status still lives in a disc (Law 6).
           inset
           // the first-line-box centring nudge Banner's disc always carried.
           lineNudge="calc((var(--font-line-height-20) - var(--space-6)) / 2)"

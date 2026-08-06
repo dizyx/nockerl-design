@@ -42,7 +42,7 @@ public struct NockerlSelectOption: Identifiable, Equatable, Sendable {
 }
 
 /// The plainest picker: pick ONE value from a fixed list (no typing). The Swift twin of
-/// the web/Compose `NockerlSelect` (nockerl-design ).
+/// the web/Compose `NockerlSelect`.
 ///
 /// A recessed WELL trigger (fields sink): canvasAlt fill + inner top catch-shadow + a
 /// hairline at rest, the thin cyan SELECTION edge while OPEN (a choice-in-progress state,

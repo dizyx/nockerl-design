@@ -1,14 +1,14 @@
 /**
  * ApprovalContentDemo: the live island for the shipped NockerlApprovalContent anatomy
- * (WS2 · task 2653). The package owns the anatomy (title → preview → options → risk
+ * itself. The package owns the anatomy (title → preview → options → risk
  * note → actions) and the ratified CTA grammar (NockerlApprovalActions: outline confirm ·
- * ghost cancel · destructive = outline-red, Dialog r5 canon); this harness proves the
+ * ghost cancel · destructive = outline-red, Dialog canon); this harness proves the
  * HOST-AGNOSTIC claim live. The SAME element tree renders into:
  *
  *   • a PANEL host, an inline lifted card: title via the content's own title row,
  *     actions INLINE via the `actions` slot;
  *   • a SHEET host, the real NockerlBottomSheet in a contained phone stage: title on the
- *     SHEET header, actions PINNED in the sheet's `footer` slot (task 2653a), the
+ *     SHEET header, actions PINNED in the sheet's `footer` slot, the
  *     content keeping only preview / options / risk.
  *
  * The host wiring is RATIFIED (2026-07-05 adjudication addendum): one anatomy,
@@ -125,7 +125,7 @@ function RiskNote({ text }: { text: React.ReactNode }) {
 type ViewKind = 'tool' | 'shell' | 'plan' | 'ask';
 type HostKind = 'panel' | 'sheet';
 type ContextKind = 'desktop' | 'compact';
-// THE RATIFIED WIRING (task 2653, 2026-07-05): desktop/pointer -> inline panel;
+// THE RATIFIED WIRING (2026-07-05): desktop/pointer -> inline panel;
 // compact/touch -> the web BottomSheet. The host follows the context, period.
 const HOST_FOR: Record<ContextKind, HostKind> = { desktop: 'panel', compact: 'sheet' };
 
@@ -314,7 +314,7 @@ export default function ApprovalContentDemo() {
         </div>
       ) : (
         /* SHEET HOST: the sheet owns the title (header) and PINS the same actions
-           in its footer slot (task 2653a); the content keeps only the middle slots. */
+           in its footer slot; the content keeps only the middle slots. */
         <div className="nk-acd-stage" ref={setStage}>
           <div className="nk-acd-app" aria-hidden={sheetOpen}>
             <div className="nk-acd-app__line nk-acd-app__line--w70" />

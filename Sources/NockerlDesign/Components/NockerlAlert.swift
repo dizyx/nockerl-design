@@ -104,7 +104,7 @@ public struct NockerlStatusDisc: View {
     ///   - inset: render as the RECESSED intent well (soft wash + whisper
     ///     border + inner top shade, intent color on the GLYPH) instead of the
     ///     raised coin, for marks on a lifted plane (twin of the Compose
-    ///     `inset`, r5  / ).
+    ///     `inset`).
     public init(intent: NockerlAlertIntent, inset: Bool = false) {
         self.intent = intent
         self.inset = inset

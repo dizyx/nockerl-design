@@ -84,7 +84,7 @@ const STYLES = `
   box-shadow: 0 var(--space-1) var(--elevation-level2) -6px color-mix(in srgb, var(--color-shadow-tint) 60%, transparent), var(--nk-surface-sheen);
   overflow: hidden;
 }
-/* ZEBRA (task 2763, experimental): opt-in alternating-row tone (even rows get a subtle
+/* ZEBRA (experimental): opt-in alternating-row tone (even rows get a subtle
    neutral wash; odd rows plain). Theme-following via on-card. Default (no --zebra) is
    byte-identical. A resting surface wash BENEATH the hairlines/selection/hover. */
 .nk-acc--zebra > *:nth-of-type(even) { background: color-mix(in srgb, var(--color-on-card) 4%, transparent); }

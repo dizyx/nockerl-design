@@ -143,7 +143,7 @@ fun GalleryIconButtons() {
 
 /**
  * Copy-button states: the resting copy glyph and the **bare cyan confirm check**
- * (no fill, R5-13). The confirm is stateful/timed in real use; the controlled
+ * (no fill). The confirm is stateful/timed in real use; the controlled
  * overload renders both endpoints deterministically for the golden.
  */
 @ShowkaseComposable(name = "CopyButton · Idle + confirmed", group = GROUP)

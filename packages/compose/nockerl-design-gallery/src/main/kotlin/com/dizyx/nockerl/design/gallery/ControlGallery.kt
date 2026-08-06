@@ -33,7 +33,7 @@ import com.dizyx.nockerl.design.components.NockerlSettingsRow
  * @see GalleryGroup
  */
 
-/** The chip contract (C6 union): selected, unselected, removable, and disabled. */
+/** The chip contract (the capability union): selected, unselected, removable, and disabled. */
 @ShowkaseComposable(name = "Chip · Selected + unselected", group = GROUP)
 @Preview
 @Composable
@@ -93,7 +93,7 @@ fun GallerySettingsRows() {
     }
 }
 
-/** The accordion (B4): trailing rotating chevron, first section expanded. */
+/** The accordion: trailing rotating chevron, first section expanded. */
 @ShowkaseComposable(name = "Accordion · Single mode", group = GROUP)
 @Preview
 @Composable
@@ -195,7 +195,7 @@ fun GalleryAccordionZebra() {
     }
 }
 
-/** Tabs (B12): the sliding accent indicator resting under the active tab. */
+/** Tabs: the sliding accent indicator resting under the active tab. */
 @ShowkaseComposable(name = "Tabs · Sliding indicator", group = GROUP)
 @Preview
 @Composable
