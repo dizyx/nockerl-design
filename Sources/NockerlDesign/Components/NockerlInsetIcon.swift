@@ -1,6 +1,6 @@
-// NockerlInsetIcon: the ratified INFORMATIONAL icon treatment ( canon, law
-// ). A glyph that SINKS into a recessed disc well ("fields sink") rather than
-// sitting on a raised filled-circle. the design lead's "super classy" direction, first on
+// NockerlInsetIcon: the ratified INFORMATIONAL icon treatment. A glyph that
+// SINKS into a recessed disc well ("fields sink") rather than
+// sitting on a raised filled-circle, per the design lead's "super classy" direction, first on
 // the EmptyState mark and now canon for any purely informational icon.
 //
 // NEVER clickable: flat/plain + filled-circle icons signal interactive;
@@ -33,7 +33,7 @@ public enum NockerlInsetIconSize: Equatable {
 }
 
 /// A purely-informational icon in a recessed well (see the file header). No tap
-/// affordance by design (law ).
+/// affordance by design.
 public struct NockerlInsetIcon: View {
     private let systemName: String
     private let accessibilityLabel: String?

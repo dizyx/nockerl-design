@@ -16,7 +16,7 @@
 // red); the METER bars are accentPrimary (brand cyan). The pill carries the §2
 // floating accent edge (accentPrimary; statusWarning in the error phase only).
 //
-// PHASES ( folded in, the full dictation lifecycle, not recording-only):
+// PHASES (the full dictation lifecycle, not recording-only):
 //   recording:    pulsing red dot → mono timer (ink) → live cyan equalizer
 //   paused:       static dimmed dot → muted timer → frozen muted equalizer → "Paused"
 //   transcribing: indeterminate spinner → "Transcribing…"
@@ -59,7 +59,7 @@ public enum NockerlRecordingHudPhase: Equatable {
     case result(pasted: Bool)
 }
 
-/// The HUD's opt-in entrance/exit ( bonus, additive, and the default `.none`
+/// The HUD's opt-in entrance/exit (additive, and the default `.none`
 /// preserves the current in-place appearance). Motion is EYEBALL-only.
 public enum NockerlRecordingHudEntrance: Equatable {
     /// No transition: appears/disappears in place (the default, unchanged).

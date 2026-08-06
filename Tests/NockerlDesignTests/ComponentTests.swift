@@ -408,7 +408,7 @@ final class ComponentTests: XCTestCase {
     }
 
     func testLanguageBadgeNormalizationContract() {
-        // The shared  contract (identical on web + Compose): trim + lowercase.
+        // The shared contract (identical on web + Compose): trim + lowercase.
         XCTAssertEqual(nockerlLanguageLabel("TypeScript"), "typescript")
         XCTAssertEqual(nockerlLanguageLabel("  Kotlin  "), "kotlin")
         XCTAssertNil(nockerlLanguageLabel("   "))
@@ -493,7 +493,7 @@ final class ComponentTests: XCTestCase {
         )
     }
 
-    // MARK: Checkbox: the ratified  port (tri-state, contained control).
+    // MARK: Checkbox: the ratified port (tri-state, contained control).
 
     func testCheckboxInstantiatesEveryStateAndSize() {
         for state in [NockerlCheckedState.off, .on, .mixed] {
@@ -512,7 +512,7 @@ final class ComponentTests: XCTestCase {
     }
 
     func testCheckboxTreatmentConstantsArePinned() {
-        // The  defining-edge mix + the web disabled ladder.
+        // The defining-edge mix + the web disabled ladder.
         XCTAssertEqual(NockerlCheckbox.edgeAccentFraction, 0.68, accuracy: 1e-9)
         XCTAssertEqual(NockerlCheckbox.disabledOffOpacity, 0.55, accuracy: 1e-9)
         XCTAssertEqual(NockerlCheckbox.disabledOnFillOpacity, 0.5, accuracy: 1e-9)
@@ -656,7 +656,7 @@ final class ComponentTests: XCTestCase {
     }
 
     func testStatusDotPulseBindsToTheMotionToken() {
-        // The  rebinding: the component constant IS the token, not a literal.
+        // The rebinding: the component constant IS the token, not a literal.
         // (Reduce Motion freezes the pulse at full opacity; the floor is the other
         // half of that contract, asserted in the pulse-contract test above.)
         XCTAssertEqual(NockerlStatusDot.pulseDuration, NockerlMotionDuration.pulse, accuracy: 1e-9)

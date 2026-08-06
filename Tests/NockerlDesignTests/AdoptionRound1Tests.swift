@@ -316,7 +316,7 @@ extension AdoptionRound1Tests {
 
 extension AdoptionRound1Tests {
     func testExperimentalTonesInstantiate() {
-        // gradient opt-in on Card (StatCard's gradient param was removed in ).
+        // gradient opt-in on Card (StatCard's gradient param was removed).
         _ = NockerlCard(gradient: true) { Text("card") }
         // StatCard icon modes: .flat (default) + .inset recessed disc.
         _ = NockerlStatCard(label: "Tokens", value: "1.2M", iconMode: .inset) { Image(systemName: "bolt") }

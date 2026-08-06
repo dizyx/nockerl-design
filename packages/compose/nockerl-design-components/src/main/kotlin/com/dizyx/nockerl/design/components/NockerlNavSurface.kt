@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.dizyx.nockerl.design.tokens.LocalNockerlColors
 
 /**
- * The **nav surface** is the ONE edge-anchored navigation panel ( · D5): the
+ * The **nav surface** is the ONE edge-anchored navigation panel: the
  * SAME component in two modes, so the drawer and the persistent sidebar/nav-rail
  * are one surface, not two (mirroring the web's unified `NockerlNavSurface` /
  * `NockerlDrawer`).
@@ -31,7 +31,7 @@ import com.dizyx.nockerl.design.tokens.LocalNockerlColors
  * The panel offers **BOTH ratified surface options** (R5-14 , token-driven):
  *
  * - [NockerlNavSurfaceStyle.TRANSLUCENT] (default) is the single ratified
- *   translucent surface ( · LAW-5 carve-out): `surfaceTranslucencySidebar`,
+ *   translucent surface (a LAW-5 carve-out): `surfaceTranslucencySidebar`,
  *   a FIXED token alpha (never a slider), so a [NockerlFacetedBackground] behind
  *   it whispers through (the Nockerl-voice look). One-translucent-layer-max still
  *   holds: the facet is the OPAQUE ground, this panel is the ONE translucent
@@ -111,7 +111,7 @@ fun NockerlNavSurface(
 }
 
 /**
- * The nav-surface **opacity options** (R5-14 ): both ratified, token-driven,
+ * The nav-surface **opacity options**: both ratified, token-driven,
  * mirroring the web's `navSurface: 'solid' | 'translucent'`.
  */
 enum class NockerlNavSurfaceStyle {

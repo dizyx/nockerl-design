@@ -29,7 +29,7 @@
 import SwiftUI
 
 /// The shared calm failure card (see the file header). Pass `onRetry: nil` for a
-/// display-only failure with no action. The  slots are ADDITIVE and stay
+/// display-only failure with no action. The slots are ADDITIVE and stay
 /// inside the ratified banner grammar: [timestamp]/[duration] are a quiet
 /// metadata line in the existing text column; [trailingActions] joins the
 /// existing quiet action area; [isRetrying] swaps the retry icon for the small
@@ -141,7 +141,7 @@ public struct NockerlFailedTurn<TrailingActions: View>: View {
 
                 Spacer(minLength: 0)
 
-                // The quiet trailing action area (banner grammar ): [trailingActions]
+                // The quiet trailing action area (banner grammar): [trailingActions]
                 // then retry, grouped as ONE CENTER-aligned compact icon row so every
                 // control shares a baseline. The red state stays on border + disc + title.
                 // (v1.13.2: was direct children of the .top HStack, so the .sm text retry

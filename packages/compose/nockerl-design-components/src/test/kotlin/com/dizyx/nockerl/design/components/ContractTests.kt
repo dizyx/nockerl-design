@@ -68,7 +68,7 @@ class ContractTests {
         assertEquals(setOf("a", "b"), opened)
     }
 
-    // ── Checkbox ( port): the shared cycle contract ────────────────────
+    // ── Checkbox port: the shared cycle contract ────────────────────
 
     @Test
     fun checkboxCycleContractMatchesWebAndSwift() {
@@ -192,7 +192,7 @@ class ContractTests {
 
     @Test
     fun statusDotPulseBindsToTheMotionToken() {
-        // The  rebinding: the component constant IS the token, not a literal.
+        // The rebinding: the component constant IS the token, not a literal.
         assertEquals(NockerlMotionDuration.pulseMs, NockerlStatusDotDefaults.PULSE_MS)
     }
 

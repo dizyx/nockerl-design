@@ -66,7 +66,7 @@ fun NockerlApprovalContent(
  * The **approval actions** row is exported SEPARATELY (mirror of the react
  * export) so sheet hosts can PIN it in [NockerlSheetFooter] while panel/dialog
  * hosts render it INLINE with no wrapper required (freeze triage: the former
- * RowScope receiver was vestigial friction and is gone pre-1.0). The ratified CTA grammar (Dialog r5 ): OUTLINE
+ * RowScope receiver was vestigial friction and is gone pre-1.0). The ratified CTA grammar (Dialog canon): OUTLINE
  * confirm ([NockerlButtonVariant.TERTIARY], or [NockerlButtonVariant.DESTRUCTIVE]
  * outline-red when [destructive]) + GHOST cancel, never a filled primary.
  *

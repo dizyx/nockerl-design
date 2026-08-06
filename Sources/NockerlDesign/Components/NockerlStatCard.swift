@@ -2,7 +2,7 @@
 // package canon (it previously lived site-side; Voice's hand-rolled HomeSection StatCard
 // normalizes on adoption). Anatomy (feeds the adoption diff):
 //
-//   - the leading icon renders in one of TWO modes (packet ): `.flat`, a BARE
+//   - the leading icon renders in one of TWO modes: `.flat`, a BARE
 //     `accentPrimary` (cyan) glyph pinned top-left, NO plate/box/background; or `.inset`,
 //     the recessed `NockerlInsetIcon` disc idiom (canvasAlt sunken plane + inner top
 //     shade + hairline, circular) at plate scale. The always-on hairline plate is retired.
@@ -28,7 +28,7 @@ public enum NockerlStatTrend {
     case down
 }
 
-/// The leading-icon rendering mode (packet ). Retires the always-on hairline plate.
+/// The leading-icon rendering mode. Retires the always-on hairline plate.
 public enum NockerlStatIconMode: Equatable {
     /// A BARE glyph pinned top-left: no plate / box / background. Default hue is
     /// `accentPrimary` (cyan); a ``NockerlStatTint`` recolors the glyph (danger = red, …).
@@ -64,7 +64,7 @@ public struct NockerlStatDelta {
     }
 }
 
-/// The status hue that colors the leading GLYPH (packet ), repurposed from the retired
+/// The status hue that colors the leading GLYPH, repurposed from the retired
 /// plate tint. Mirrors the react `StatTint`. Warm hues stay status-meaningful (a `danger`
 /// error-count glyph, a `success` uptime glyph); `accent` is the earned-cyan case.
 public enum NockerlStatTint: Equatable {
@@ -197,7 +197,7 @@ public struct NockerlStatCard<IconContent: View>: View {
                 .foregroundColor(tint?.color(in: palette) ?? palette.accentPrimary)
                 .frame(height: plate, alignment: .topLeading)
         case .inset:
-            // The recessed disc via the ONE shared  primitive (v1.12.1). It was a stale
+            // The recessed disc via the ONE shared primitive (v1.12.1). It was a stale
             // top-only LINEAR band, which drifted from NockerlInsetIcon's radial recipe. A
             // StatTint maps the disc to a TONE: `.accent` = the CYAN brand disc (the
             // Transcription cloud-card look, which fixes the previous always-gray), the

@@ -33,7 +33,7 @@ import com.dizyx.nockerl.design.tokens.nockerlShadow
  * The **attachment popover**: the floating cluster of pending-image thumbnails
  * that appears ABOVE the chat pill the moment something is attached, brought up
  * from the Android app (chat/ui/ChatInputBar.kt · PendingImageRow) as design-system
- * truth (R5-2 ).
+ * truth.
  *
  * Each thumbnail is chrome that FLOATS on the same top layer as the input pill (L3
  * lift, so the message cards scroll UNDER it), traced by the warm agent-family edge

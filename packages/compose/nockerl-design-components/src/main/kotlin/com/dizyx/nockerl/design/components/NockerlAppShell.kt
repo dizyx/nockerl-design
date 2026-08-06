@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.dp
  * @param product the brand lockup's cyan product word (nav header).
  * @param animateBackground drift the facet tone-wave (default). `false` freezes
  *   it at phase 0, for reduced-motion hosts and DETERMINISTIC snapshots (an
- *   infinite transition has no stable capture frame; the  lesson).
- * @param navSurface the nav rail's opacity option (R5-14 ): TRANSLUCENT
+ *   infinite transition has no stable capture frame; the lesson).
+ * @param navSurface the nav rail's opacity option: TRANSLUCENT
  *   (default: the facet whispers through, the Voice look) or SOLID (opaque
  *   chrome, matches the top bar). Mirrors the web's `navSurface` prop.
  * @param content the content region, laid over the faceted ground.

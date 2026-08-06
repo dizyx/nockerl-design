@@ -1,4 +1,4 @@
-// NockerlRecessedDisc: the ONE shared INTERNAL recessed-disc chrome ( canon), so the
+// NockerlRecessedDisc: the ONE shared INTERNAL recessed-disc chrome (canon), so the
 // disc renders IDENTICALLY everywhere and never drifts again (v1.12.1 fix: NockerlStatCard
 // `.inset` had forked a stale pre- top-only band while NockerlInsetIcon used the correct
 // shape-following radials). Both now compose THIS one modifier.
@@ -11,7 +11,7 @@
 
 import SwiftUI
 
-/// The shared  recessed-disc chrome. Apply to a centered glyph:
+/// The shared recessed-disc chrome. Apply to a centered glyph:
 /// `Image(systemName:).nockerlRecessedDisc(fill:border:size:)`.
 struct NockerlRecessedDisc: ViewModifier {
     let fill: Color
@@ -59,7 +59,7 @@ struct NockerlRecessedDisc: ViewModifier {
 }
 
 extension View {
-    /// Apply the shared  recessed-disc chrome (fill + two shape-following radials +
+    /// Apply the shared recessed-disc chrome (fill + two shape-following radials +
     /// circle clip + hairline border). See ``NockerlRecessedDisc``.
     func nockerlRecessedDisc(fill: Color, border: Color, size: CGFloat) -> some View {
         modifier(NockerlRecessedDisc(fill: fill, border: border, size: size))

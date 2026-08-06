@@ -67,7 +67,7 @@ fun NockerlTopBar(
     ) {
         if (showBrand) {
             // The REAL lockup (the top bar is the sole chrome here): mark
-            // slightly taller than the text, cyan product word ( canon).
+            // slightly taller than the text, cyan product word (canon).
             NockerlLockup(product = product, size = 22.dp)
         } else if (title != null) {
             Text(

@@ -106,7 +106,7 @@ internal const val ALERT_SOFT_WASH_ALPHA = 0.16f
  * Decorative by design: the HOST alert carries the semantic text, so the disc
  * itself exposes no accessibility content.
  *
- * **Inset variant (R5-17 ).** With `inset = true` the coin INVERTS into a
+ * **Inset variant.** With `inset = true` the coin INVERTS into a
  * RECESSED WELL: a soft intent wash + a whisper intent border + the inner top
  * shade ([nockerlRecessedSurface]), with the intent color moving onto the GLYPH.
  * It SINKS instead of lifting ("cards lift, fields sink"), for marks that sit

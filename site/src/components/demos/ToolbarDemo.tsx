@@ -265,7 +265,7 @@ const OVER_NARROW: OverItem[] = [
 // (separators), and the overflow ⋯ now composes the real NockerlMenu primitive (anchored surface + scrim +
 // item rows + focus-trap keyboard, clamped to the toolbar stage). No owns.
 // The accepts list declares every real primitive the toolbar slots; 'NockerlMenu' is included
-// for the overflow ⋯ (added in the  re-verify; the compose graph is regenerated to match).
+// for the overflow ⋯ (added in the re-verify; the compose graph is regenerated to match).
 export const compose = {
   slots: { default: { accepts: ['NockerlButton', 'NockerlIconButton', 'NockerlSegmentedControl', 'NockerlDivider', 'NockerlMenu'] } },
 } satisfies ComposeContract;

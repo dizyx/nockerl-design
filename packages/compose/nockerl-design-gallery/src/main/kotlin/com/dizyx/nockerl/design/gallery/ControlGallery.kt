@@ -226,7 +226,7 @@ fun GalleryTabsEnclosed() {
     }
 }
 
-/** The ratified tri-state checkbox ( port): off well, contained ON, distinct MIXED dash. */
+/** The ratified tri-state checkbox port: off well, contained ON, distinct MIXED dash. */
 @ShowkaseComposable(name = "Checkbox · Tri-state + disabled", group = GROUP)
 @Preview
 @Composable

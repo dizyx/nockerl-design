@@ -215,7 +215,7 @@ fun GalleryInsetIcon() {
     }
 }
 
-/** The empty state ( first host): inset mark -> title -> description -> action. */
+/** The empty state (first host): inset mark -> title -> description -> action. */
 @ShowkaseComposable(name = "EmptyState · Inset mark + copy + action", group = GROUP)
 @Preview
 @Composable
@@ -507,7 +507,7 @@ fun GalleryFormSectionSettings() {
 }
 
 /**
- * The VocabRow COMPOSITION ( gate 3, deliberately NOT a component): an
+ * The VocabRow COMPOSITION (deliberately NOT a component): an
  * expandable vocabulary row is [NockerlAccordion] (single-open, rotating
  * chevron: the disclosure canon) whose item content is a [NockerlChip] strip
  * (the misspelling tags). Everything here is existing canon; a dedicated

@@ -39,7 +39,7 @@ import com.dizyx.nockerl.design.tokens.NockerlMotionEasing
 /**
  * The standardized **accordion**, a few collapsible sections on the ratified
  * disclosure grammar: ONE grammar on every platform, a single
- * **THE disclosure-grammar reference ( quad).** The family (Accordion,
+ * **THE disclosure-grammar reference.** The family (Accordion,
  * ListItem-expandable, ToolCallCard accordion, Panel/Well collapse) shares ONE
  * grammar: a TRAILING chevron-down rotating 180° + a vertical reveal, BOTH on
  * the base duration + standard easing motion tokens. The other three quad

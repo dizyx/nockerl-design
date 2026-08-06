@@ -1,11 +1,11 @@
-// NockerlFacetedBackground: the Nockerl signature surface ( package port).
+// NockerlFacetedBackground: the Nockerl signature surface (package port).
 //
 // An animated low-poly triangle field behind content: large soft facets, each a
 // whisper of tonal variation off the `chatBg` token, with a slow (~18s) tone-wave
 // drifting diagonally. Calm, geometric, on-brand (the mark is a triangle). Never
 // glow/aurora.
 //
-// MAX-SMOOTHNESS TECHNIQUE (the  native-butter contract):
+// MAX-SMOOTHNESS TECHNIQUE (the native-butter contract):
 // 1. `TimelineView(.animation)`: CAPPED at 20fps via `minimumInterval` (v1.14.0
 //    perf cut; was uncapped up to the display's 120fps, ~55% of a CPU core idle).
 //    For the slow ~18s sine the per-frame luminance step is ~0.001 (sub-perceptual),

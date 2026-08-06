@@ -16,7 +16,7 @@
 // border, which put TWO competing rectangles in one small floating pill whenever the cursor
 // sat off the selected row. Now: arrowing moves cyan INK, committing moves the BOX (border +
 // check). One box on screen, never two. Same "state reads by ink, not extra chrome or
-// weight" principle as the v1.16.2 tab-label fix and the  border-weight normalization.
+// weight" principle as the v1.16.2 tab-label fix and the border-weight normalization.
 
 import SwiftUI
 
@@ -162,7 +162,7 @@ struct NockerlHudStyleDrawer: View {
         }
     }
 
-    /// The shipped stance. Defaults to the  recommendation (cyan + one `.medium` step);
+    /// The shipped stance. Defaults to the recommendation (cyan + one `.medium` step);
     /// flip to `.inkOnly` if the design lead prefers the purer, fully-interpolatable cursor.
     static let cursorStance: CursorStance = .inkAndWeight
 
@@ -242,7 +242,7 @@ struct NockerlHudStyleDrawer: View {
     /// NOTE the last row: under the shipped `.inkAndWeight` stance the cursor is INVISIBLE
     /// once it lands on the selected row (both terms are `isSelected || isHighlighted`), and
     /// that is the state the drawer OPENS in. Pinned by `testCursorCollapsesIntoSelectionOnTheSameRow`
-    /// and rendered as the third column of the  preview, open for the design lead's ruling.
+    /// and rendered as the third column of the preview, open for the design lead's ruling.
     ///
     /// Arrowing moves INK; committing moves the BOX. Before v1.17.0 the keyboard cursor drew
     /// a second inset neutral border, so a selected row + an arrowed-over row put TWO competing
@@ -285,7 +285,7 @@ struct NockerlHudStyleDrawer: View {
         .padding(.vertical, NockerlSpace.space2)
         .frame(minHeight: NockerlSize.minTouch, alignment: .leading)
         .frame(maxWidth: .infinity, alignment: .leading)
-        // §6 selection by OUTLINE: the thin accentPrimary edge (no wash).  softens it to
+        // §6 selection by OUTLINE: the thin accentPrimary edge (no wash), softened to
         // `opacity.selection` at `widthSelection`, matching the NockerlNavRow reference.
         //
         // This is the ONLY box in the drawer. v1.17.0 removed the keyboard cursor's

@@ -109,7 +109,7 @@ check('web --radius-control', cssVar(':root','--radius-control'), '12px');
 
 console.log('--- Border (design-laws §2: cyan-stroke weight is SEMANTIC) ---');
 // The three weights must stay DISTINCT and must agree across all three platforms: collapsing
-// selection onto floating is exactly the drift  normalized away.
+// selection onto floating is exactly the drift this check normalizes away.
 check('web --border-width-floating', cssVar(':root','--border-width-floating'), '1.5px');
 check('web --border-width-selection', cssVar(':root','--border-width-selection'), '1px');
 check('web --border-width-indicator', cssVar(':root','--border-width-indicator'), '1px');

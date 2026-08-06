@@ -22,14 +22,14 @@ import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.sin
 
-// ── The Nockerl signature surface ( package port) ───────────────────────
+// ── The Nockerl signature surface (package port) ───────────────────────
 //
 // A subtle, premium, GEOMETRIC field behind content: a low-poly mesh of large
 // soft TRIANGULAR facets (on-brand, since the Nockerl mark is a triangle), each a
 // whisper of tonal variation off the `chatBg` token, with a slow tone-wave
 // drifting diagonally. NOT glow / aurora / neon; calm, "active but not busy".
 //
-// MAX-SMOOTHNESS TECHNIQUE (the  native-butter contract):
+// MAX-SMOOTHNESS TECHNIQUE (the native-butter contract):
 // 1. The phase derives from a THROTTLED frame clock CAPPED at ~20fps (v1.14.0 perf
 //    cut; was `rememberInfiniteTransition` running per-frame up to the display's
 //    120fps). For the slow ~18s sine the per-frame luminance step is ~0.001

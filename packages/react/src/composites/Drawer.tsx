@@ -39,7 +39,7 @@ import { NockerlOverlay } from '../behaviors/Overlay.js';
 import { assertComposeChildren, type ComposeContract } from '../compose-contract.js';
 
 export type DrawerEdge = 'left' | 'right';
-/** The ONE nav-surface presentation mode ( · D5). 'inline' = the persistent, in-layout
+/** The ONE nav-surface presentation mode. 'inline' = the persistent, in-layout
  *  nav-rail / sidebar role (no scrim, app stays live); 'overlay' = the drawer role (scrim + focus
  *  trap). 'modal' is accepted as a DEPRECATED alias of 'overlay'. */
 export type NavSurfaceMode = 'inline' | 'overlay';
@@ -69,7 +69,7 @@ export interface NockerlDrawerProps {
   children: React.ReactNode;
 }
 
-/** The ONE nav-surface props ( · D5): `NockerlNavSurface` and `NockerlDrawer` are the SAME
+/** The ONE nav-surface props: `NockerlNavSurface` and `NockerlDrawer` are the SAME
  *  component under two names: the single edge-anchored nav / panel surface (inline rail + overlay
  *  drawer). AppShell composes ONE of these, not two. */
 export type NockerlNavSurfaceProps = NockerlDrawerProps;
@@ -234,7 +234,7 @@ export const compose = {
   },
 } satisfies ComposeContract;
 
-/** The ONE nav-surface ( · D5): `NockerlNavSurface` IS `NockerlDrawer` (the same component,
+/** The ONE nav-surface: `NockerlNavSurface` IS `NockerlDrawer` (the same component,
  *  two names). inline mode = the persistent sidebar / nav-rail role; overlay mode = the drawer role.
  *  AppShell composes ONE nav surface, not two. NockerlDrawer stays for the drawer / inspector role. */
 export const NockerlNavSurface = NockerlDrawer;

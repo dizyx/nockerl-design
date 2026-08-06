@@ -18,7 +18,7 @@ import com.dizyx.nockerl.design.tokens.NockerlElevation
 import com.dizyx.nockerl.design.tokens.NockerlSurface
 
 /**
- * The **dialog**, the ONE modal confirm surface (R5-17 ), brought up as
+ * The **dialog**, the ONE modal confirm surface, brought up as
  * native design-system truth mirroring the web `NockerlDialog` composite:
  *
  * - **Lifted card on the sheet rung.** A [NockerlSurface] card (16dp radius,

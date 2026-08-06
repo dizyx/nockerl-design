@@ -5,7 +5,7 @@
  * no feedback at all). One component = one confirmation grammar:
  *
  *   - composes the real NockerlIconButton (plain): centering + shape + wash + focus ring all
- *     come from the primitive ( fixed the glyph cell there);
+ *     come from the primitive (which fixed the glyph cell there);
  *   - ONE glyph pair: the doc-on-doc copy outline -> the registry check, sized at half the
  *     button box (14px in the standard 28px button);
  *   - ONE confirmation: a BARE CYAN CHECKMARK. The glyph flips to var(--color-accent-primary)
