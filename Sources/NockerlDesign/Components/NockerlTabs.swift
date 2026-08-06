@@ -9,7 +9,7 @@
 // ground (`NockerlWell(.container)`) that liftable cards sit ON, so a panel holding cards
 // reads with depth, not a card-on-card blend (§2/§3); `.card` is a lifted `NockerlCard`-weight
 // surface for plain content. Either way, the CONTAINED bar native `TabView` lacked (Voice's
-// B12-amend trigger, 2026-07-17; NOT a §2 cyan float, since §2 is for floating-over-content).
+// amendment trigger, 2026-07-17; NOT a §2 cyan float, since §2 is for floating-over-content).
 //
 // DISTINCT from ``NockerlSegmented``: that flips mutually-exclusive MODES with NO panel (one
 // pill on a connected track). NockerlTabs NAVIGATE SECTION content: each tab owns a panel; the

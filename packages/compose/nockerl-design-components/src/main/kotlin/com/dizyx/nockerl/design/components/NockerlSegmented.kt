@@ -36,11 +36,11 @@ import com.dizyx.nockerl.design.tokens.nockerlRecessedSurface
 
 /**
  * The standardized **segmented control**: the ratified **sliding cyan pill**
- * (r2, B3): a recessed `canvasAlt` track well ("fields sink") on the shared
+ * in a recessed `canvasAlt` track well ("fields sink") on the shared
  * control radius, with ONE solid-accent indicator that **slides** between
  * segments. The fill never tweens (design-laws §7). The pill's OFFSET animates
  * (an interpolatable transform) and the labels cross-fade color; the indicator
- * wears the shared top catch-light like every solid-accent surface (B1/B2).
+ * wears the shared top catch-light like every solid-accent surface.
  *
  * The active label is contrast-picked against the solid accent; inactive labels
  * are muted canvas ink. The indicator radius nests one step inside the track

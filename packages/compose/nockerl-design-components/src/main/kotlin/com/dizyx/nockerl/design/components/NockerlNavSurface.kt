@@ -28,7 +28,7 @@ import com.dizyx.nockerl.design.tokens.LocalNockerlColors
  * - [NockerlNavSurfaceMode.OVERLAY] is the drawer role: a palette scrim behind the
  *   panel (tap [onScrimClick] to dismiss).
  *
- * The panel offers **BOTH ratified surface options** (R5-14 , token-driven):
+ * The panel offers **BOTH ratified surface options** (token-driven):
  *
  * - [NockerlNavSurfaceStyle.TRANSLUCENT] (default) is the single ratified
  *   translucent surface (a LAW-5 carve-out): `surfaceTranslucencySidebar`,

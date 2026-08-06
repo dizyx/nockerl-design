@@ -93,7 +93,7 @@ public struct NockerlBadge: View {
     /// - Parameters:
     ///   - count: the count to display.
     ///   - tone: the semantic hue (defaults to ``NockerlBadgeTone/danger``, the
-    ///     ratified unread hue, r2 B5).
+    ///     ratified unread hue).
     ///   - label: optional accessible name; defaults to the rendered count text.
     public init(count: Int, tone: NockerlBadgeTone = .danger, label: String? = nil) {
         self.content = .count(count)

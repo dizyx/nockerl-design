@@ -28,7 +28,7 @@ import com.dizyx.nockerl.design.tokens.nockerlShadow
 
 /**
  * The **floating action button**, the one floating affordance (fab.mdx), on the
- * RATIFIED solid treatment (r2, B13): a SOLID `accentPrimary` circle (never a
+ * RATIFIED solid treatment: a SOLID `accentPrimary` circle (never a
  * gradient, never the tonal scroll-chip drift) with a contrast-picked glyph, the
  * level-3 floating-chrome drop + the shared `surfaceHighlight` catch-light.
  *

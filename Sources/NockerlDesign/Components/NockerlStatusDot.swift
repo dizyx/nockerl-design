@@ -90,7 +90,7 @@ public struct NockerlStatusDot: View {
 
     /// Pulse opacity floor (1.0 → 0.3, mirroring the Compose `PulsingDot`).
     static let pulseFloorOpacity: Double = 0.3
-    /// Pulse half-period: the `motion.duration.pulse` TOKEN (r2 B6 / r3 emitted).
+    /// Pulse half-period: the `motion.duration.pulse` TOKEN.
     static let pulseDuration: TimeInterval = NockerlMotionDuration.pulse
 
     /// A dot on the semantic status ladder.

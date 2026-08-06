@@ -28,7 +28,7 @@ import com.dizyx.nockerl.design.tokens.NockerlSurface
  *   [NockerlStatusDisc] `inset` variant: a RECESSED intent well ("fields
  *   sink") so nothing competes with the card's own lift. Never a raised coin
  *   here.
- * - **FLAT/OUTLINE CTAs, never a filled primary** (the r4 D1 emphasis budget,
+ * - **FLAT/OUTLINE CTAs, never a filled primary** (the emphasis budget,
  *   extended: lifted modal = outline actions). Confirm renders
  *   [NockerlButtonVariant.TERTIARY] (outline cyan) on the default [tone] and
  *   [NockerlButtonVariant.DESTRUCTIVE] (outline red) on

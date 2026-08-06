@@ -9,14 +9,14 @@
 //   - a `StatTint` (success/warning/danger/accent) recolors the GLYPH: cyan is the `.flat`
 //     default, neutral the `.inset` default; a `danger` error-count reads red, a `success`
 //     uptime green (color-as-info, law §10). Status hue rides the glyph, never a plate.
-//   - the anatomy STACKS (head row: icon + label / value row below), the r4 grid rule.
+//   - the anatomy STACKS (head row: icon + label / value row below), the grid rule.
 //   - the value is the OUTFIT brand font at display size (the design lead: mono is for
 //     code only, Outfit for stat values); the delta figure is de-mono'd to Outfit too.
 //   - the card is the flat `NockerlCard` chrome (surface1 + catch-light + hairline + the L2
 //     neutral shadow). No gradient.
 //
 // The head row reserves the plate height even when no icon is passed, so headline numbers
-// share one value offset across a tile row (the r4 grid rule).
+// share one value offset across a tile row (the grid rule).
 
 import SwiftUI
 
@@ -148,7 +148,7 @@ public struct NockerlStatCard<IconContent: View>: View {
         NockerlCard {
             VStack(alignment: .leading, spacing: stackGap) {
                 // HEAD: the icon + label band. min-height = the plate box so icon-less
-                // tiles keep the value row at the same offset (the r4 grid rule).
+                // tiles keep the value row at the same offset (the grid rule).
                 HStack(spacing: stackGap) {
                     if let icon {
                         iconView(icon, palette: palette, plate: plate, glyphSize: glyphSize)

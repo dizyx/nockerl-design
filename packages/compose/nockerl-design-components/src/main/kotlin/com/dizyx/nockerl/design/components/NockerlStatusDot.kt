@@ -34,7 +34,7 @@ import com.dizyx.nockerl.design.tokens.NockerlMotionDuration
  *   [NockerlColors.dotUnread], …, but never a literal).
  *
  * Pulse (design-laws §7): animates ALPHA only (1.0 ↔ 0.3) at the RATIFIED 800ms
- * motion value (r2, B6; [tween] + [RepeatMode.Reverse]). The web-only "ping" ring
+ * motion value ([tween] + [RepeatMode.Reverse]). The web-only "ping" ring
  * is DROPPED by the same ruling. No platform implements it.
  *
  * A11y (law §13): state is never color-alone; pass a [contentDescription] (or use
@@ -158,6 +158,6 @@ object NockerlStatusDotDefaults {
     /** Pulse alpha floor (1.0 → 0.3, interpolatable only, law §7). */
     const val PULSE_FLOOR_ALPHA = 0.3f
 
-    /** Pulse half-period: the `motion.duration.pulse` TOKEN (B6 / r3 emitted). */
+    /** Pulse half-period: the `motion.duration.pulse` TOKEN. */
     val PULSE_MS = NockerlMotionDuration.pulseMs
 }

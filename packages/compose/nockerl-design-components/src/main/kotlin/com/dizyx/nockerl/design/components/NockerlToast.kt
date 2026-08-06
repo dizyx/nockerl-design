@@ -30,7 +30,7 @@ import com.dizyx.nockerl.design.tokens.NockerlSurface
  *
  * SCOPE is the view only: the countdown ring, pause-on-focus, and entry/exit
  * motion are HOST machinery (a toast host needs an overlay root the library
- * cannot own), but the CONTRACT is ratified (r2, A2) and ships here:
+ * cannot own), but the CONTRACT is ratified and ships here:
  * [NockerlToastDuration] (short / base / long / persistent) and
  * [NockerlToastDefaults.STACK_MAX] (3, newest on top). A host consumes both.
  *
@@ -118,7 +118,7 @@ fun NockerlToast(
 }
 
 /**
- * The RATIFIED toast duration vocabulary (r2, A2). `BASE` is the web-shipped
+ * The RATIFIED toast duration vocabulary. `BASE` is the web-shipped
  * 5000ms default; `SHORT`/`LONG` are the ramp around it; `PERSISTENT` never
  * times out (the host shows the pin marker instead of the countdown ring).
  */
@@ -139,7 +139,7 @@ enum class NockerlToastDuration(
     PERSISTENT(null),
 }
 
-/** Ratified toast-host constants (r2, A2). */
+/** Ratified toast-host constants. */
 object NockerlToastDefaults {
     /** Maximum simultaneously-visible toasts: newest on top, older drop. */
     const val STACK_MAX = 3

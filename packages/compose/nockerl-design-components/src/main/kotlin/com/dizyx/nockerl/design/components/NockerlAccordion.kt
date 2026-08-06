@@ -177,7 +177,7 @@ data class NockerlAccordionItem(
     val content: @Composable () -> Unit,
 )
 
-/** The ratified disclosure modes (B4). */
+/** The ratified disclosure modes. */
 enum class NockerlAccordionMode {
     /** One section open at a time: opening one closes the rest (the default). */
     SINGLE,

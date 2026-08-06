@@ -123,7 +123,7 @@ private fun NockerlButtonVariant.resolve(colors: NockerlColors): VariantColors =
     }
 
 /**
- * The shared size ramp (ratified r2, B1): visual heights 32/40/48 with per-size
+ * The shared size ramp (ratified): visual heights 32/40/48 with per-size
  * type + padding: web `sm/md/lg` parity. The TOUCH target never shrinks below
  * the platform floor: the button composes Compose Material's
  * `minimumInteractiveComponentSize` (48dp on Android, law §14) around the
@@ -195,7 +195,7 @@ fun NockerlButton(
         border = border,
         minWidth = size.height,
         minHeight = size.height,
-        // Ratified B1: the solid primary wears the top catch-light (enabled only,
+        // Ratified: the solid primary wears the top catch-light (enabled only,
         // a dimmed disabled fill stays flat).
         litHighlight = variant == NockerlButtonVariant.PRIMARY && enabled,
         // Touch floor: the visual box may be 32dp (SM); the interactive area keeps

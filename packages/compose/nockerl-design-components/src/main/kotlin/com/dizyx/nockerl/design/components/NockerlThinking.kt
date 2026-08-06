@@ -37,8 +37,8 @@ import com.dizyx.nockerl.design.tokens.nockerlLitSurface
 import com.dizyx.nockerl.design.tokens.nockerlShadow
 
 /**
- * The **thinking / reasoning** card is the agent's chain-of-thought surface (R5-6
- * ), brought up as native design-system truth. It fixes two things the app
+ * The **thinking / reasoning** card is the agent's chain-of-thought surface,
+ * brought up as native design-system truth. It fixes two things the app
  * had wrong: the brain glyph sat BARE, and the panel was a double box (an
  * accordion nested inside a parent).
  *

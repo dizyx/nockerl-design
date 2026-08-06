@@ -2,7 +2,7 @@
 //
 // 32pt discs on the pill silhouette:
 //   - DONE:      solid `accentPrimary` + checkmark knockout. **CYAN is the terminal /
-//                progress seal (B14 ratified: flow completion is brand progress; green
+//                progress seal (ratified: flow completion is brand progress; green
 //                stays for validation messages)**. No green anywhere here.
 //   - CURRENT:   solid accent + the step number (reduce-fills, 2026-07-13: the
 //                `accentPrimarySoft` halo wash is DROPPED; the accent disc + cyan

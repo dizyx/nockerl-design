@@ -18,7 +18,7 @@ import com.dizyx.nockerl.design.tokens.NockerlControlShape
  * recolors client #1 re-derives (text-field spec; "cards lift, fields sink",
  * design-laws §2).
  *
- * Treatment (RATIFIED, r2 C1): the field SINKS into a `canvasAlt` inset well on
+ * Treatment (RATIFIED): the field SINKS into a `canvasAlt` inset well on
  * the 12dp control radius with a hairline resting border; focus = the accent
  * border at M3's 2dp focused thickness (the ratified 2px outline focus); error
  * swaps the family to `statusError` and colors the supporting line.

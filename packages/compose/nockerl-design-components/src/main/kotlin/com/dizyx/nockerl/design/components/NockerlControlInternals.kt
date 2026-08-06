@@ -96,7 +96,7 @@ internal fun NockerlControlContainer(
             .background(color = fill, shape = shape)
     val bordered =
         if (border != null) clipped.border(borderWidth, border, shape) else clipped
-    // Ratified solid-fill treatment (r2 B1/B2 + the match-web-exactly ruling): the
+    // Ratified solid-fill treatment (the match-web-exactly ruling): the
     // catch-light is the SAME `surfaceHighlight` token the web binds: one identical
     // value on every platform, no per-platform highlight drift.
     val lit = if (litHighlight) bordered.nockerlLitSurface(shape = shape) else bordered

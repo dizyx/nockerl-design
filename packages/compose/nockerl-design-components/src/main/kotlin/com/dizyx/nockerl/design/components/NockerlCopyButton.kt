@@ -20,7 +20,7 @@ import kotlinx.coroutines.delay
 /**
  * The **copy button**: the ONE copy affordance for every "copy code / copy
  * message" surface, brought up as native design-system truth so all
- * copy buttons compose this single component (exactly what the R5-4 hand-roll gate
+ * copy buttons compose this single component (exactly what the hand-roll gate
  * protects) rather than hand-rolling the confirm.
  *
  * It composes [NockerlIconButton] in the `PLAIN` (no-fill) style, swapping only the
