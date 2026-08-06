@@ -267,7 +267,7 @@ extension AdoptionRound1Tests {
     }
 }
 
-// MARK: RT5: RecordingHUD phase machine (value-exact web alignment, /)
+// MARK: RT5: RecordingHUD phase machine (value-exact web alignment)
 
 extension AdoptionRound1Tests {
     func testRecordingHudPhasesInstantiate() {

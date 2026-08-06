@@ -1,4 +1,4 @@
-// NockerlTabs: the first-class Swift sectioned-content switcher (v1.15.0;  / B12-amend).
+// NockerlTabs: the first-class Swift sectioned-content switcher (v1.15.0).
 //
 // The bespoke Nockerl tabs-with-panels for SwiftUI. Ported 1:1 from the canonical web
 // `NockerlTabs` (packages/react/src/composites/Tabs.tsx) + Compose `NockerlTabs.kt`: a row of
