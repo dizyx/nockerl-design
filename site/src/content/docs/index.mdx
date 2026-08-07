@@ -18,31 +18,22 @@ import pkg from '../../../../package.json';
 ## What this is
 
 **Nockerl Design is an open source design framework.** It is MIT licensed and free for
-anyone to use, in commercial work as much as in personal projects, and you are welcome
-here whether or not you have ever heard of the rest of Nockerl.
+anyone to use, commercially or otherwise.
 
-It is built first for the Nockerl suite, which includes Nockerl Voice, Nockerl Security
-and Nockerl Design itself. That is why it is opinionated rather than a neutral toolkit:
-the decisions are already made, written down, and enforced by the build. It is also what
-makes it worth borrowing, because a framework that real products ship on has had its
-edges found.
+It was built first for the Nockerl suite: Nockerl Voice, Nockerl Security and Nockerl
+Design, with many more to come. That is why it is opinionated rather than a neutral
+toolkit.
 
-Three builds come out of that one source, and they are the same ones those products
-install:
+Three builds come out of one source:
 
-- **Android**, as Kotlin and Jetpack Compose, published to Maven Central.
-- **macOS**, as a Swift package, installed through Swift Package Manager.
-- **Web**, as React, published to npm.
+- **Android**, as Kotlin and Jetpack Compose, on Maven Central.
+- **macOS**, as a Swift package, through Swift Package Manager.
+- **Web**, as React, on npm.
 
-The current version is **{pkg.version}** and the framework is in active development. The
-foundations are settled and the products ship on them, but the component surface is still
-moving, so read a minor version as something that can change an API. None of that should
-put you off. Try it, and the [Installation](/getting-started/installation/) page has what
-to add to your build.
+It is version **{pkg.version}** and still actively under construction. The
+[Installation](/getting-started/installation/) page has what to add to your build.
 
-These are the products it dresses today. Every mark below is read straight from
-`logos/app-icons/` in this repository, the same source the products themselves consume, so
-none of them keeps a private copy and a brand change ships everywhere at once.
+The products it dresses today:
 
 <div class="nk-products not-content">
   <span class="nk-product"><VoiceMark class="nk-product__mark nk-product__mark--light" /><VoiceMarkOnDark class="nk-product__mark nk-product__mark--dark" />Nockerl Voice</span>
@@ -66,8 +57,8 @@ none of them keeps a private copy and a brand change ships everywhere at once.
   [data-theme='light'] .nk-product__mark--dark { display: none; }
 `}</style>
 
-Voice is Swift on macOS, CtxMS and Security are in build, and Nockerl Design is this
-documentation site, which is client number one of its own published packages.
+Voice is Swift on macOS, CtxMS and Security are in build, and this site is the first
+client of its own packages.
 
 <FeatureCards client:load />
 
