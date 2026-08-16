@@ -3,8 +3,10 @@
  * check-dashes.ts, the typographic dash gate.
  *
  * Fails if an em dash, en dash, or any of their lookalikes appears anywhere in the
- * tracked tree. These characters are the clearest signal of machine-generated prose, and
- * a repository full of them reads as generated no matter how good the work underneath is.
+ * tracked tree. The em dash is a crutch. It lets a sentence avoid deciding what the
+ * relationship between two clauses actually is, so a page full of them flattens into one
+ * long undifferentiated line. Banning it forces the choice, and the writing gets better
+ * for having to make it.
  *
  * There is deliberately NO inline escape hatch. No pragma, no ignore comment, no
  * per-line suppression. If you hit this gate, the fix is to rewrite the sentence:
@@ -16,9 +18,10 @@
  *   deletion     the clause adds nothing, which is often the honest answer
  *   rewrite      the dash is propping up a run-on
  *
- * Do not "fix" a failure by swapping in a hyphen. That trades one tell for another and
- * reads just as generated. A plain hyphen is right only for a genuinely hyphenated
- * compound, or a list separator that already reads naturally that way.
+ * Do not "fix" a failure by swapping in a hyphen. A hyphen in that position is simply the
+ * wrong punctuation, not a lighter dash, and it dodges the same decision the em dash was
+ * dodging. A plain hyphen is right only for a genuinely hyphenated compound, or a list
+ * separator that already reads naturally that way.
  *
  * The ONLY exemption is verbatim third-party legal text, listed in LEGAL_EXEMPT below.
  * That list is intentionally hardcoded: widening it requires editing this file in a
